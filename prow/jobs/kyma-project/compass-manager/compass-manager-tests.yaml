@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240208-803a1000"
             command:
               - "/bin/sh"
             args:

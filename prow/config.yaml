@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240108-3e260bd9
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240108-3e260bd9
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240108-3e260bd9
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240108-3e260bd9
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240205-083480ba
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240205-083480ba
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240205-083480ba
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240205-083480ba
         resources:
           clonerefs:
             requests:
@@ -288,7 +288,9 @@ branch-protection:
           required_status_checks:
             contexts:
               - "run-eslint"
-              - "run-unit-tests / build"
+              - "run-go-linter"
+              - "run-go-checks"
+              - "run-go-tests / build"
               - "run-keb-chart-tests / finish-keb-chart-tests"
               - "markdown-link-check"
               - "validate-labels"
@@ -336,6 +338,13 @@ branch-protection:
               - "docs validation"
               - "unit tests"
               - "build"
+        serverless:
+          unmanaged: true
+        keda-manager:
+          unmanaged: true
+        warden:
+          unmanaged: true
+
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -480,11 +489,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
       - name: GKE_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

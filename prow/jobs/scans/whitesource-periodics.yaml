@@ -25,7 +25,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240208-803a1000"
             securityContext:
               privileged: false
               seccompProfile:
@@ -72,7 +72,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240208-803a1000"
             securityContext:
               privileged: false
               seccompProfile:
@@ -90,55 +90,6 @@ periodics: # runs on schedule
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-    - name: hydroform-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "hydroform-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-whitesource-product-kyma: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: hydroform
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: hydroform
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: CUSTOM_EXCLUDE
-                value: "**/examples/**"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -168,7 +119,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240208-803a1000"
             securityContext:
               privileged: false
               seccompProfile:
@@ -194,101 +145,7 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: kyma-2.20-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.20-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-release: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          base_ref: release-2.20
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: kyma
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
   
 
 #-------------Previous Release--------------------
-    - name: kyma-2.19-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.19-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-release-previous: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          base_ref: release-2.19
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: kyma
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
   

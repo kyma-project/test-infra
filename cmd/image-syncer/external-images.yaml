@@ -1,7 +1,7 @@
 targetRepoPrefix:  "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
-- source: "alpine@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48"
-  tag: "3.19.0"
+- source: "alpine@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b"
+  tag: "3.19.1"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
   amd64Only: true
 - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
@@ -19,9 +19,9 @@ images:
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
   amd64Only: true
-- source: "istio/pilot:1.20.1-distroless"
-- source: "istio/proxyv2:1.20.1-distroless"
-- source: "istio/install-cni:1.20.1-distroless"
+- source: "istio/pilot:1.20.2-distroless"
+- source: "istio/proxyv2:1.20.2-distroless"
+- source: "istio/install-cni:1.20.2-distroless"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
@@ -46,7 +46,7 @@ images:
 - source: "natsio/nats-server-config-reloader:0.14.1"
 - source: "quay.io/prometheus/prometheus:v2.45.0"
 - source: "natsio/nats-box:0.14.1"
-- source: "natsio/prometheus-nats-exporter:0.13.0"
+- source: "natsio/prometheus-nats-exporter:0.14.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
 - source: "i331641/kyma-perf:v1"

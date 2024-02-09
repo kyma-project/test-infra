@@ -19,6 +19,9 @@ resource "google_cloud_run_service" "security_dashboard_token" {
   name     = "security-dashboard-token"
   location = "europe-west1"
 
+  // FIX(long-apply): See https://github.com/hashicorp/terraform-provider-google/issues/5898#issuecomment-605062566
+  autogenerate_revision_name = true
+
   metadata {
     annotations = {
       "run.googleapis.com/client-name" = "terraform"
@@ -28,12 +31,12 @@ resource "google_cloud_run_service" "security_dashboard_token" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/security-dashboard-token:0.0.2"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240119-eb6d3cc9"
         env {
           name = "CLIENT_SECRET"
           value_from {
             secret_key_ref {
-              key = "latest"
+              key  = "latest"
               name = "security-dashboard-oauth-client-secret"
             }
           }
@@ -42,8 +45,18 @@ resource "google_cloud_run_service" "security_dashboard_token" {
           name = "CLIENT_ID"
           value_from {
             secret_key_ref {
-              key = "latest"
+              key  = "latest"
               name = "security-dashboard-oauth-client-id"
+            }
+          }
+        }
+
+        env {
+          name = "GH_BASE_URL"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "gh-internal-url"
             }
           }
         }
