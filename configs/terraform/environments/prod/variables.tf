@@ -200,3 +200,15 @@ variable "automated_approver_rules_path" {
   description = "Path to the automated-approver rules file"
   default     = "../../../../configs/automated-approver-rules.yaml"
 }
+
+
+variable "kyma-project-github-org" {
+  type        = string
+  default     = "kyma-project"
+  description = "The GitHub organization where the Kyma project is hosted"
+}
+variable "kyma-incubator-github-org" {
+  type        = string
+  default     = "kyma-incubator"
+  description = "The GitHub organization where the Kyma Incubator is hosted"
+}
