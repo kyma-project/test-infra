@@ -71,8 +71,6 @@ type Config struct {
 	ADOProjectName string `yaml:"ado-project-name" json:"ado-project-name"`
 	// ADO pipeline ID to call for triggering ADO pipeline
 	ADOPipelineID int `yaml:"ado-pipeline-id" json:"ado-pipeline-id"`
-	// ADO pipeline ID to call for triggering ADO test pipeline
-	ADOTestPipelineID int `yaml:"ado-test-pipeline-id" json:"ado-test-pipeline-id"`
 	// ADO pipeline version to call for triggering ADO pipeline
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 }
