@@ -47,36 +47,43 @@ func (p OCIImageBuilderTemplateParams) SetPullNumber(number string) {
 }
 
 // SetBaseSHA sets required parameter BaseSHA.
+// For presubmit job, this is the pull request base commit SHA with source code for building image for tests.
+// For postsubmit job, this is the branch commit SHA with source code used for building image.
 func (p OCIImageBuilderTemplateParams) SetBaseSHA(sha string) {
 	// TODO: Rename key to BaseSHA
 	p["PullBaseSHA"] = sha
 }
 
 // SetPullSHA sets optional parameter PullSHA.
+// This is the pull request head commit SHA with source code for building image for tests.
 func (p OCIImageBuilderTemplateParams) SetPullSHA(sha string) {
 	// TODO: Rename key to PullSHA
 	p["PullPullSHA"] = sha
 }
 
 // SetImageName sets required parameter ImageName.
+// This is the name of the image to be built.
 func (p OCIImageBuilderTemplateParams) SetImageName(name string) {
 	// TODO: Rename key to ImageName
 	p["Name"] = name
 }
 
 // SetDockerfilePath sets required parameter DockerfilePath.
+// This is a path relative to the context directory path.
 func (p OCIImageBuilderTemplateParams) SetDockerfilePath(path string) {
 	// TODO: Rename key to DockerfilePath
 	p["Dockerfile"] = path
 }
 
 // SetBuildContext sets required parameter BuildContext.
+// This is the path to the build context directory.
 func (p OCIImageBuilderTemplateParams) SetBuildContext(context string) {
 	// TODO: Rename key to BuildContext
 	p["Context"] = context
 }
 
 // SetExportTags sets optional parameter ExportTags.
+// If true, ADO pipeline will export tags names and values as builda args to the image build process.
 func (p OCIImageBuilderTemplateParams) SetExportTags(export bool) {
 	p["ExportTags"] = strconv.FormatBool(export)
 }
@@ -96,6 +103,7 @@ func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 
 // SetUseKanikoConfigFromPR sets optional parameter UseKanikoConfigFromPR.
 // If true, ADO pipeline will use a Kaniko config from PR.
+// This is used for testing purposes.
 func (p OCIImageBuilderTemplateParams) SetUseKanikoConfigFromPR(useKanikoFromPR bool) {
 	p["UseKanikoConfigFromPR"] = strconv.FormatBool(useKanikoFromPR)
 }
