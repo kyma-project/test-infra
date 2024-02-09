@@ -7,15 +7,18 @@ import (
 	"strconv"
 )
 
-// ErrRequiredParamNotSet is returned when required parameter is not set
+// ErrRequiredParamNotSet is returned when the required template parameter is not set
 type ErrRequiredParamNotSet string
 
+// Error returns the error message with the parameter name.
+// Example of usage: ErrRequiredParamNotSet("RepoName")
+// Returns: "required parameter not set: RepoName"
 func (e ErrRequiredParamNotSet) Error() string {
 	return "required parameter not set: " + string(e)
 }
 
+// OCIImageBuilderTemplateParams holds parameters accepted by oci-image-builder ADO pipeline.
 // TODO: Rename, remove Template, as this is are parameters for pipeline execution.
-// OCIImageBuilderTemplateParams is a map of parameters for OCIImageBuilderTemplate
 type OCIImageBuilderTemplateParams map[string]string
 
 // SetRepoName sets required parameter RepoName
@@ -79,22 +82,26 @@ func (p OCIImageBuilderTemplateParams) SetExportTags(export bool) {
 }
 
 // SetBuildArgs sets optional parameter BuildArgs.
+// This parameter is used to provide additional arguments for image build.
 func (p OCIImageBuilderTemplateParams) SetBuildArgs(args string) {
 	p["BuildArgs"] = args
 }
 
-// SetImageTags sets optional parameter ImageTags.
+// SetImageTags sets optional parameter Tags.
+// This parameter is used to provide additional tags for the image.
 func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 	// TODO: Rename key to ImageTags
 	p["Tags"] = tags
 }
 
-// SetImageTags sets optional parameter UseKanikoConfigFromPR.
+// SetUseKanikoConfigFromPR sets optional parameter UseKanikoConfigFromPR.
+// If true, ADO pipeline will use a Kaniko config from PR.
 func (p OCIImageBuilderTemplateParams) SetUseKanikoConfigFromPR(useKanikoFromPR bool) {
 	p["UseKanikoConfigFromPR"] = strconv.FormatBool(useKanikoFromPR)
 }
 
-// Validate validates if required OCIImageBuilderTemplateParams are set
+// Validate validates if required OCIImageBuilderTemplateParams are set.
+// Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {
 	var (
 		jobType string
