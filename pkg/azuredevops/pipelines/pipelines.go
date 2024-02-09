@@ -413,13 +413,8 @@ func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests 
 //
 //	Each option is a function that modifies the pipeline run arguments.
 //
-// The function sets the pipeline ID based on the "UseKanikoConfigFromPR" template parameter.
-// If this parameter is set to "true",
-// the pipeline ID is set to the test pipeline ID from the ADO configuration.
-//
 // If all options are successfully applied, the function returns the run arguments and nil for the error.
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
-	// Set the pipeline ID based on the "UseKanikoConfigFromPR" template parameter.
 	pipelineID := &adoConfig.ADOPipelineID
 
 	// Create the pipeline run arguments.
