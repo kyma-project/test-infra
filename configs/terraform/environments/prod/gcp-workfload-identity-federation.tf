@@ -1,4 +1,5 @@
 module "gh_com_kyma_project_workload_identity_federation" {
+  // TODO(Kacper Malachowski): Use google's module instead when https://github.com/opentofu/registry/issues/209 is fixed
   source = "../../modules/gcp-workload-identity-federation"
 
   project_id  = data.google_client_config.gcp.id
