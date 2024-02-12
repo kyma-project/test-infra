@@ -635,6 +635,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
                     - "--dockerfile=tests/gitserver/Dockerfile"
+                    - "--tag=$(PULL_BASE_SHA)"
+                    - "--tag=$(PULL_BASE_REF)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
