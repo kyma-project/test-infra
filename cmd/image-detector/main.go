@@ -195,6 +195,8 @@ type client struct {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
+//
+//nolint:revive
 func (c *client) Changes() []func(context.Context) (string, []string, error) {
 	return []func(context.Context) (string, []string, error){
 		func(ctx context.Context) (string, []string, error) {
