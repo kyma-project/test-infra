@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 	"os"
+
+	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -60,6 +61,7 @@ func main() {
 		Use:   "gardener-rotate",
 		Short: "gardener-rotate rotates kubeconfig saved in Secret Manager",
 		Long:  `gardener-rotate creates new gardener service account token and saves updated kubeconfig in Secret Manager`,
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 			log.SetLevel(logrus.InfoLevel)
 			ctx := context.Background()
