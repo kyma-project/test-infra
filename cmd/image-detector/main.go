@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/github/bumper"
 	"io"
 	"log"
 	"os"
 	"sort"
+
+	"github.com/kyma-project/test-infra/pkg/github/bumper"
 
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/securityconfig"
@@ -46,6 +47,7 @@ var rootCmd = &cobra.Command{
 	Use:   "image-detector",
 	Short: "Image Detector CLI",
 	Long:  "Command-Line tool to retrieve list of images and update security-config",
+	//nolint:revive
 	Run: func(cmd *cobra.Command, args []string) {
 		// load security config
 		reader, err := os.Open(SecScannerConfig)
@@ -193,6 +195,8 @@ type client struct {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
+//
+//nolint:revive
 func (c *client) Changes() []func(context.Context) (string, []string, error) {
 	return []func(context.Context) (string, []string, error){
 		func(ctx context.Context) (string, []string, error) {

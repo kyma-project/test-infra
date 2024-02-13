@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/tools/prtagbuilder"
 	"os"
+
+	"github.com/kyma-project/test-infra/pkg/tools/prtagbuilder"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -17,6 +18,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "prtagbuilder [-o, --org string], [-r, --repo string], [-b --baseref string], [-O --numberonly]",
 		Short: "prtagbuilder will find pull request number for commit or branch head.",
+		//nolint:revive
 		RunE: func(cmd *cobra.Command, args []string) error {
 			numFlags := cmd.Flags().NFlag()
 			if numFlags == 1 && !cmd.Flags().Changed("numberonly") || numFlags > 1 {

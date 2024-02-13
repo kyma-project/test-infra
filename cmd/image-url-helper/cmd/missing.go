@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/missing"
-	"os"
-	"path/filepath"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/spf13/cobra"
@@ -26,6 +27,7 @@ func MissingCmd() *cobra.Command {
 		Long:    "Find all images that don't exist",
 		Example: "image-url-helper missing",
 		Args:    cobra.ExactArgs(0),
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)

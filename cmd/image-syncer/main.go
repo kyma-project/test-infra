@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/imagesync"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/kyma-project/test-infra/pkg/imagesync"
 
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -221,6 +222,7 @@ func main() {
 		Use:   "image-syncer",
 		Short: "image-syncer copies images between docker registries",
 		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 			logLevel := logrus.InfoLevel
 			if cfg.Debug {

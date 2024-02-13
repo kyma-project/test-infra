@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/check"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
-	"os"
-	"path/filepath"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/spf13/cobra"
@@ -26,6 +27,7 @@ func CheckCmd() *cobra.Command {
 		Long:    "Find all image usages that doesn't use imageurl template",
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)

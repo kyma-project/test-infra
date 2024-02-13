@@ -35,6 +35,7 @@ func FromFiles(files []string, extract ExtractFunc) ([]string, error) {
 // FindFilesInDirectory returns list of files that match regexp under specified directory
 func FindFilesInDirectory(rootPath, regex string) ([]string, error) {
 	var files []string
+	//nolint:revive
 	err := filepath.Walk(rootPath, func(path string, info fs.FileInfo, err error) error {
 		re := regexp.MustCompile(regex)
 

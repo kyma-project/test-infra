@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/github/bumper"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/kyma-project/test-infra/pkg/github/bumper"
 
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -25,6 +26,7 @@ type client struct {
 // returns commit message for the changes
 func (c *client) Changes() []func(context.Context) (string, []string, error) {
 	return []func(context.Context) (string, []string, error){
+		//nolint:revive
 		func(ctx context.Context) (string, []string, error) {
 			return "Bumping index.md", []string{"docs/index.md"}, nil
 		},
@@ -56,6 +58,7 @@ func main() {
 	}
 
 	startPath, err := os.Getwd()
+	//nolint:revive
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
 		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(path, o) {
 			mdLine := getDescription(path, o)
