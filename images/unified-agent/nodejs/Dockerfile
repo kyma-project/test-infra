@@ -21,11 +21,11 @@ RUN addgroup -g 1000 node \
     && echo "$CHECKSUM  node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" | sha256sum -c - \
       && tar -xJf "node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
       && ln -s /usr/local/bin/node /usr/local/bin/nodejs; \
-  && rm -f "node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" \
-  && apk del .build-deps \
-  # smoke tests
-  && node --version \
-  && npm --version
+    && rm -f "node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" \
+    && apk del .build-deps \
+    # smoke tests
+    && node --version \
+    && npm --version
 
 ENV YARN_VERSION 1.22.21
 
@@ -51,6 +51,5 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && apk del .build-deps-yarn \
   # smoke test
   && yarn --version
-
 
 COPY javascript-wss-unified-agent.config /wss
