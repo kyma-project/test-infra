@@ -50,6 +50,29 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
 
 globalSets:
+  kaniko_buildpack_no_signify_secret:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+    command: /image-builder
+    request_memory: "1.5Gi"
+    request_cpu: "1"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: RuntimeDefault
+    labels:
+      preset-sa-kyma-push-images: "true"
+    volumes:
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - name: config
+        mountPath: /config
+        readOnly: true
   kaniko_buildpack:
     skip_report: "false"
     max_concurrency: "10"
