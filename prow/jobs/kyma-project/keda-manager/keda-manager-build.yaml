@@ -3,49 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-project/keda-manager:
-    - name: pre-keda-module-build
-      annotations:
-        description: "keda module build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-keda-module-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/|\.md$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240214-620b2e43"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-              - name: MODULE_SHA
-                value: "PR-${PULL_NUMBER}"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-keda-manager-operator-build
       annotations:
         description: "keda operator build job"
@@ -100,47 +57,6 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
-    - name: post-keda-module-build
-      annotations:
-        description: "keda module build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keda-module-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/|\.md$'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240214-620b2e43"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: post-keda-manager-operator-build
       annotations:
         description: "keda module build job"
