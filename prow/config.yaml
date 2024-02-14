@@ -301,6 +301,10 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+        template-operator:
+          required_status_checks:
+            contexts:
+              - "lint"
         lifecycle-manager:
           required_status_checks:
             contexts:
