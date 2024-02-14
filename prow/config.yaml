@@ -305,6 +305,7 @@ branch-protection:
           required_status_checks:
             contexts:
               - "lint"
+              - "Run integration tests"
         lifecycle-manager:
           required_status_checks:
             contexts:
