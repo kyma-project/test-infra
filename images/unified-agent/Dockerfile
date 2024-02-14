@@ -1,6 +1,6 @@
-FROM alpine:3.19.1
+FROM alpine:3.18.4
 
-ARG UNIFIED_AGENT_VERSION=v24.1.1
+ARG UNIFIED_AGENT_VERSION=v23.10.2
 
 RUN apk upgrade --no-cache; \
     apk add --no-cache \
