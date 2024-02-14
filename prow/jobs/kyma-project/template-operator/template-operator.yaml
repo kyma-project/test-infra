@@ -1,37 +1,5 @@
 presubmits:
   kyma-project/template-operator:
-    - name: pull-template-op-lint
-      annotations:
-        description: "executes the 'golangci-lint lint' command in the template-operator repository before any pull request."
-        owner: "jellyfish"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-template-op-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240213-8ff8b1f2"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "make lint"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pull-template-op-tests
       annotations:
         description: "template operator test"
