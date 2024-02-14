@@ -1,40 +1,5 @@
 presubmits:
   kyma-project/template-operator:
-    - name: pull-template-op-tests
-      annotations:
-        description: "template operator test"
-        owner: "jellyfish"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-template-op-tests"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240214-620b2e43"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "make test"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pull-build-template-operator
       annotations:
         description: "template operator build"
