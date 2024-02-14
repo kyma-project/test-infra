@@ -1,6 +1,6 @@
 FROM local/unified-agent:latest
 
-ENV NODE_VERSION 16.20.2
+ENV NODE_VERSION 20.11.0
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \
@@ -12,7 +12,7 @@ RUN addgroup -g 1000 node \
       && case "${alpineArch##*-}" in \
         x86_64) \
           ARCH='x64' \
-          CHECKSUM="d2df78a192bd78b958e19a77821916a38def5e9e46c0c9a0989fdf5eb6c14a7e" \
+          CHECKSUM="a8bec39586538896715be7a2ca7ef08727a58ad94d25876c5db11cafacff4c37" \
           ;; \
         *) ;; \
       esac \
