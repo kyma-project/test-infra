@@ -101,4 +101,3 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 
 
 COPY javascript-wss-unified-agent.config /wss
-RUN chmod 777 /wss/javascript-wss-unified-agent.config
