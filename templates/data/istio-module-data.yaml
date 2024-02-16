@@ -114,6 +114,7 @@ templates:
                     - "--build-arg=VERSION=$(PULL_BASE_REF)"
                   branches:
                     - ^main$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
