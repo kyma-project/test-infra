@@ -18,4 +18,3 @@ RUN curl -LO https://github.com/whitesource/unified-agent-distribution/releases/
 ENV LANG C.UTF-8
 
 COPY start-wssagent.sh /
-RUN chmod 777 start-wssagent.sh
