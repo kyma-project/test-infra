@@ -10,6 +10,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      branches:
+        - main
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
@@ -57,6 +59,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      branches:
+        - main
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
@@ -188,6 +192,8 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      branches:
+        - main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
