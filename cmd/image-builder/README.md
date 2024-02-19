@@ -99,18 +99,15 @@ They provide details about the context in which the tool is running.
 
 Here is the list of environment variables used by Image Builder:
 
-1. `REPO_NAME`: The name of the repository with source coude to build image from.
-2. `REPO_OWNER`: The owner of the repository with srouce code.
-3. `JOB_TYPE`: The type of the job. This can be either `presubmit` or `postsubmit`. Presubmit represents a pull request
-   job, and postsubmit represents a push job.
-4. `PULL_NUMBER`: The number of the pull request.
-5. `PULL_BASE_SHA`: The base SHA of the pull request or push commit SHA.
-6. `PULL_PULL_SHA`: The pull request head SHA of the pull request.
-7. `ADO_PAT`: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the
-   Azure DevOps API.
-8. `USE_BUILDKIT`: Determines whether to use BuildKit for building the image. A buildkit-image-builder image has this
-   variable set to `true` by default.
-9. `CI`: Determines whether the image builder is running in CI mode.
+1. **REPO_NAME**: The name of the repository with source code to build an image from.
+2. **REPO_OWNER**: The owner of the repository with source code.
+3. **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request job, and `postsubmit` represents a push job.
+4. **PULL_NUMBER**: The number of the pull request.
+5. **PULL_BASE_SHA**: The base SHA of the pull request or push commit SHA.
+6. **PULL_PULL_SHA**: The pull request head SHA of the pull request.
+7. **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the Azure DevOps API.
+8. **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set to `true` by default.
+9. **CI**: Determines whether the image builder runs in CI mode.
 
 ### Command Line Flags
 
