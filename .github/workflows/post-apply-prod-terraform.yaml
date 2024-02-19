@@ -20,6 +20,7 @@ jobs:
       id-token: "write" # needed for gcp_auth to create id token
       issues: "write" # needed for tfcmt to post comments
       pull-requests: "write" # needed for tfcmt to post comments
+      actions: "write" # needed for setting variables
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
