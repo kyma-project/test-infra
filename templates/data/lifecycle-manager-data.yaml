@@ -41,3 +41,23 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+              - jobConfig:
+                  name: release-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle-manager release image by semantic version tag
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$ # any three-numbers semver tag
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
+                    - "--export-tags"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack_no_signify_secret
+                    - jobConfig_postsubmit
