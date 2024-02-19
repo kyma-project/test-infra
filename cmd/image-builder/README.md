@@ -77,7 +77,7 @@ Image Builder is configured using a global configuration YAML file, set of envir
 ### Configuration YAML File
 
 `image-builder` requires a configuration YAML file. The file holds the global configuration for the tool and is maintained by the authors.
-Use `--config` flag to provide a path to the config yaml file.
+Use `--config` flag to provide a path to the config YAML file.
 
 For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
 
@@ -99,15 +99,17 @@ They provide details about the context in which the tool is running.
 
 Here is the list of environment variables used by Image Builder:
 
-1. **REPO_NAME**: The name of the repository with source code to build an image from.
-2. **REPO_OWNER**: The owner of the repository with source code.
-3. **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request job, and `postsubmit` represents a push job.
-4. **PULL_NUMBER**: The number of the pull request.
-5. **PULL_BASE_SHA**: The base SHA of the pull request or push commit SHA.
-6. **PULL_PULL_SHA**: The pull request head SHA of the pull request.
-7. **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the Azure DevOps API.
-8. **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set to `true` by default.
-9. **CI**: Determines whether the image builder runs in CI mode.
+- **REPO_NAME**: The name of the repository with source code to build an image from.
+- **REPO_OWNER**: The owner of the repository with source code.
+- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request job, and `postsubmit`
+  represents a push job.
+- **PULL_NUMBER**: The number of the pull request.
+- **PULL_BASE_SHA**: The base SHA of the pull request or push commit SHA.
+- **PULL_PULL_SHA**: The pull request head SHA of the pull request.
+- **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the Azure DevOps API.
+- **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set
+  to `true` by default.
+- **CI**: Determines whether the image builder runs in CI mode.
 
 ### Command Line Flags
 
