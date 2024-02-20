@@ -1,7 +1,7 @@
 # image-builder
 
 Image Builder is a tool for building OCI-compliant images.
-It can build images using different backends, such as Kaniko, Buildkit, and Azure DevOps (ADO).
+It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
 It also supports signing images with a pre-defined set of signing services
 to verify that the image comes from a trusted repository and has not been altered in the meantime.
 The tool is designed to be used in ProwJobs.
@@ -77,11 +77,11 @@ Image Builder is configured using a global configuration YAML file, set of envir
 ### Configuration YAML File
 
 `image-builder` requires a configuration YAML file. The file holds the global configuration for the tool and is maintained by the authors.
-Use `--config` flag to provide a path to the config YAML file.
+Use the `--config` flag to provide a path to the config YAML file.
 
 For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
 
-Example file:
+Here's an example file:
 ```yaml
 registry: eu.gcr.io/kyma-project
 reproducible: true
@@ -156,7 +156,7 @@ in the `org/repo` key, image-builder also uses this service to sign the image.
 If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary
 is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
 
-Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
+Currently, Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
 
 ### Sign-Only Mode
@@ -185,7 +185,7 @@ stdout.
 Image Builder supports three build backends:
 
 - kaniko
-- Buildkit
+- BuildKit
 - Azure DevOps pipelines
 
 kaniko and BuildKit build images locally while the Azure DevOps pipelines backend call ADO API.
