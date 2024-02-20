@@ -1,4 +1,4 @@
-# image-builder
+# Image Builder
 
 Image Builder is a tool for building OCI-compliant images.
 It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
@@ -152,7 +152,7 @@ sign-config:
 ```
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
-in the `org/repo` key, image-builder also uses this service to sign the image.
+in the `org/repo` key, Image Builder also uses this service to sign the image.
 If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary
 is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
 
