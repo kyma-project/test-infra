@@ -338,6 +338,8 @@ branch-protection:
               - "docs validation"
               - "unit tests"
               - "build"
+          exclude:
+            - "^v3$"
         serverless:
           unmanaged: true
         keda-manager:
