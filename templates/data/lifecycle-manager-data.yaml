@@ -18,6 +18,10 @@ templates:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile"
+                  request_memory: 8Gi
+                  request_cpu: 2
+                  limits_memory: 16Gi
+                  limits_cpu: 4
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -37,6 +41,10 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
+                  request_memory: 8Gi
+                  request_cpu: 2
+                  limits_memory: 16Gi
+                  limits_cpu: 4
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -57,6 +65,10 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=$(PULL_BASE_REF)"
                     - "--export-tags"
+                  request_memory: 8Gi
+                  request_cpu: 2
+                  limits_memory: 16Gi
+                  limits_cpu: 4
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack_no_signify_secret
