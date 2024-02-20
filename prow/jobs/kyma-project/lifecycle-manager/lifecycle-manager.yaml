@@ -33,8 +33,11 @@ presubmits: # runs on PRs
               - "--dockerfile=Dockerfile"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -86,8 +89,11 @@ postsubmits: # runs on main
               - "--tag=latest"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -137,8 +143,11 @@ postsubmits: # runs on main
               - "--export-tags"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
