@@ -33,8 +33,11 @@ presubmits: # runs on PRs
               - "--dockerfile=Dockerfile"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -86,8 +89,11 @@ postsubmits: # runs on main
               - "--tag=latest"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -102,4 +108,52 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: release-lifecycle-mgr-build
+      annotations:
+        description: "build lifecycle-manager release image by semantic version tag"
+        owner: "jellyfish"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-lifecycle-mgr-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=lifecycle-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--export-tags"
+            resources:
+              requests:
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   

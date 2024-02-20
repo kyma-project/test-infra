@@ -12,8 +12,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:55f716237933c85cee01748700755b4ac8736fb1ca974c9aed051691b68d6dc2"
-  tag: "1.21.5-alpine3.19"
+- source: "golang@sha256:8e96e6cff6a388c2f70f5f662b64120941fcd7d4b89d62fec87520323a316bd9"
+  tag: "1.22.0-alpine3.19"
   amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
@@ -58,3 +58,5 @@ images:
   amd64Only: true
 - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
   tag: "v1.16-debian-1"
+- source: "gcr.io/istio-testing/ext-authz:1.22-dev"
+  amd64Only: true
