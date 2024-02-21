@@ -46,6 +46,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-kyma-metrics-collector-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   run_if_changed: "^components/kyma-metrics-collector"
                   args:
                     - --name=control-plane/kyma-metrics-collector
@@ -61,6 +62,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kyma-metrics-collector-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-metrics-collector"

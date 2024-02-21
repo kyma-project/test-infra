@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-eventing-auth-manager-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   args:
                     - "--name=eventing-auth-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -22,6 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-eventing-auth-manager-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
