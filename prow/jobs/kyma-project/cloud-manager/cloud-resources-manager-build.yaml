@@ -1,12 +1,12 @@
 presubmits:
-  kyma-project/cloud-resources-manager:
-    - name: pull-cloud-resources-manager-build
+  kyma-project/cloud-manager:
+    - name: pull-cloud-manager-build
       annotations:
-        description: "Cloud Resources Manager image build on PR"
+        description: "Cloud Manager image build on PR"
         owner: "phoenix" # 2024-01-31 13:53
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-cloud-resources-manager-build"
+        prow.k8s.io/pubsub.runID: "pull-cloud-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^.*.go|go.mod
@@ -32,7 +32,7 @@ presubmits:
             command:
               - "/image-builder"
             args:
-              - "--name=cloud-resources-manager"
+              - "--name=cloud-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
