@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-schema-migrator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: framefrog,gopher
                     description: build schema migrator
@@ -22,6 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: framefrog,gopher
                     description: build schema migrator
@@ -124,6 +126,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-e2e-provisioning-test-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: "gopher"
                     description: "E2E provisioning test build on PR"
@@ -139,6 +142,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-e2e-provisioning-test-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: "gopher"
                     description: "E2E provisioning test build on main"
