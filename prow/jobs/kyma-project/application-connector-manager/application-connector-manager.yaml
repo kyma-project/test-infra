@@ -65,7 +65,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -205,7 +205,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -283,4 +283,3 @@ postsubmits: # runs on main
               limits:
                 memory: 4Gi
                 cpu: 3
-  
