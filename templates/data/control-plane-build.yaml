@@ -85,6 +85,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-kubeconfig-service-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: sre
                     description: "Builds and validates kubeconfig-service before merge"
@@ -100,6 +101,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kubeconfig-service-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: sre
                     description: build kubeconfig-service
