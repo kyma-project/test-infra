@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^resources/|^tests/|^nginx/"
+      run_if_changed: "^resources/|^tests/|^nginx/|^src/"
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -54,7 +54,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^resources/|^tests/|^nginx/"
+      run_if_changed: "^resources/|^tests/|^nginx/|^src/"
       cluster: untrusted-workload
       branches:
         - ^master$

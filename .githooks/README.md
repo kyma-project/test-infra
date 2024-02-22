@@ -19,6 +19,7 @@ Now your local Git repository uses Git hooks from the `.githooks` path.
 
 This is an issue that is known for all JetBrains IDEs which run on a Mac.
 Upon startup, GoLand will initialize the `PATH` based on the macOS' `launchd` path.
+<!-- markdown-link-check-disable-next-line -->
 The [solution](https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications) is to add `/usr/local/bin` path to the system `PATH` variable by using the command listed below.
 ```shell
 sudo launchctl config user path /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
