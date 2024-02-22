@@ -16,7 +16,7 @@ on:
 jobs:
   post-apply-prod-terraform:
     permissions:
-      contents: "write" # needed for gcp_auth and setting variables
+      contents: "read" # needed for gcp_auth
       id-token: "write" # needed for gcp_auth to create id token
       issues: "write" # needed for tfcmt to post comments
       pull-requests: "write" # needed for tfcmt to post comments
