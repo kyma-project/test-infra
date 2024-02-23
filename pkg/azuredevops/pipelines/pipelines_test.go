@@ -47,7 +47,6 @@ var _ = Describe("Pipelines", func() {
 			ADOOrganizationURL: "https://dev.azure.com",
 			ADOProjectName:     "example-project",
 			ADOPipelineID:      123,
-			ADOTestPipelineID:  321,
 			ADOPipelineVersion: 1,
 		}
 	})
