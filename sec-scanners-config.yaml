@@ -10,6 +10,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240117-44b831e4
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240118-242312c0
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02
+    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02-buildkit
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240219-35c5adeb
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240219-35c5adeb
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240219-35c5adeb
