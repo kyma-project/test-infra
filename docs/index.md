@@ -8,7 +8,7 @@
 
 [gardener-rotate](/cmd/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
 
-[image-builder](/cmd/image-builder/README.md) - This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
+[Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images.
 
 [Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
