@@ -29,17 +29,3 @@ module "gh_com_kyma_project_workload_identity_federation" {
   }
 }
 
-# TODO(kacpermalachowski): Create custom PAT: https://stackoverflow.com/questions/77214899/permission-needed-to-create-an-environment-from-a-github-actions-workflow
-# resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
-#   provider      = github.kyma_project
-#   repository    = "test-infra"
-#   variable_name = "gcp_terraform_executor_service_account_email"
-#   value         = google_service_account.terraform_executor.email
-# }
-
-# resource "github_actions_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
-#   provider      = github.kyma_project
-#   repository    = "test-infra"
-#   variable_name = "gh_com_kyma_project_gcp_workload_identity_federation_provider"
-#   value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
-# }
