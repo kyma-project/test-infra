@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -84,7 +84,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -126,4 +126,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
