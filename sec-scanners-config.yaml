@@ -39,7 +39,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240223-6719ca5a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240223-6719ca5a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240223-6719ca5a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240223-6719ca5a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240223-1cf33f35
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240223-6719ca5a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20240223-6719ca5a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20240223-6719ca5a
