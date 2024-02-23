@@ -15,7 +15,7 @@
             "-wait_file",
             "--name=*"
           ],
-          "image": "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
+          "image": "europe-docker.pkg.dev/kyma-project/prod/image-builder:*"
         },
         {
           "command": [
@@ -56,7 +56,7 @@
               "command": [
                 "/tekton/bin/entrypoint"
               ],
-              "image": "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c",
+              "image": "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20230227-a5399439c",
               "name": "step-build-image"
             }
           ],
