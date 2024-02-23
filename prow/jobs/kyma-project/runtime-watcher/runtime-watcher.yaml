@@ -31,8 +31,11 @@ presubmits:
               - "--dockerfile=Dockerfile"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -82,6 +85,13 @@ postsubmits:
               - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
+            resources:
+              requests:
+                memory: 8Gi
+                cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
