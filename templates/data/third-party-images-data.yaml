@@ -8,6 +8,7 @@ templates:
             limits_memory: 6Gi
         jobConfigs:
           - repoName: "kyma-project/third-party-images"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             jobs:
               - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"

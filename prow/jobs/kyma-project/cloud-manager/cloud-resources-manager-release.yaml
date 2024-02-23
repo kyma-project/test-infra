@@ -1,12 +1,12 @@
 postsubmits:
-  kyma-project/cloud-resources-manager:
-    - name: release-cloud-resources-manager-build
+  kyma-project/cloud-manager:
+    - name: release-cloud-manager-build
       annotations:
-        description: "Cloud Resources Manager image build for a release."
+        description: "Cloud Manager image build for a release."
         owner: "phoenix"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-cloud-resources-manager-build"
+        prow.k8s.io/pubsub.runID: "release-cloud-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^.*.go|go.mod
@@ -34,7 +34,7 @@ postsubmits:
             command:
               - "/image-builder"
             args:
-              - "--name=cloud-resources-manager"
+              - "--name=cloud-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
