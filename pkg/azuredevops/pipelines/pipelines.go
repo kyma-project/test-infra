@@ -1,4 +1,7 @@
-// Package pipelines provides a clients for calling Azure DevOps pipelines API
+// Package pipelines allows calling Azure DevOps pipelines API to interact with kyma-project pipelines.
+// It provides a set of functions to trigger a pipeline, get its status, and check the logs.
+// It also includes functions to run tests on the build logs and timeline.
+// These functions are designed to interact with kyma-project pipelines and it's tests.
 // TODO: Add more structured logging with debug severity to track execution in case of troubleshooting
 package pipelines
 
@@ -51,6 +54,16 @@ type TimelineTest struct {
 	Result string
 }
 
+// Config is a struct that holds the configuration for Azure DevOps (ADO) pipelines.
+// It includes the ADO organization URL, project name, pipeline ID, test pipeline ID, and pipeline version.
+// These fields are used to trigger ADO pipelines and are required for the correct operation of the pipelines.
+//
+// Fields:
+// ADOOrganizationURL: The URL of the ADO organization.
+// ADOProjectName: The name of the ADO project.
+// ADOPipelineID: The ID of the ADO oci-image-builder pipeline.
+// ADOTestPipelineID: The ID of the ADO test pipeline.
+// ADOPipelineVersion: The version of the ADO pipeline.
 type Config struct {
 	// ADO organization URL to call for triggering ADO pipeline
 	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
@@ -58,8 +71,6 @@ type Config struct {
 	ADOProjectName string `yaml:"ado-project-name" json:"ado-project-name"`
 	// ADO pipeline ID to call for triggering ADO pipeline
 	ADOPipelineID int `yaml:"ado-pipeline-id" json:"ado-pipeline-id"`
-	// ADO pipeline ID to call for triggering ADO test pipeline
-	ADOTestPipelineID int `yaml:"ado-test-pipeline-id" json:"ado-test-pipeline-id"`
 	// ADO pipeline version to call for triggering ADO pipeline
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 }
@@ -68,6 +79,11 @@ func (c Config) GetADOConfig() Config {
 	return c
 }
 
+// NewClient creates a new Azure DevOps (ADO) client to interact with ADO pipelines.
+// It takes the ADO organization URL and a personal access token (PAT) as input parameters.
+// Parameters:
+// adoOrganizationURL - is the URL of the ADO organization containing the pipelines.
+// adoPAT - is the personal access token for authentication in ADO API.
 // TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
 func NewClient(adoOrganizationURL, adoPAT string) Client {
 	adoConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
@@ -75,6 +91,12 @@ func NewClient(adoOrganizationURL, adoPAT string) Client {
 	return pipelines.NewClient(ctx, adoConnection)
 }
 
+// NewBuildClient creates a new Azure DevOps (ADO) build client to interact with ADO pipelines.
+// Build client is used to get build logs and timeline for a specific pipeline run.
+// It takes the ADO organization URL and a personal access token (PAT) as input parameters.
+// Parameters:
+// adoOrganizationURL - is the URL of the ADO organization containing the pipelines.
+// adoPAT - is the personal access token for authentication in ADO API.
 // TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
 func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 	buildConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
@@ -82,9 +104,24 @@ func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 	return build.NewClient(ctx, buildConnection)
 }
 
+// GetRunResult is a function that retrieves the result of a specific Azure DevOps (ADO) pipeline run.
+// It continuously checks the state of the pipeline run until it is completed.
+// The function takes a context, an ADO client, an ADO configuration, a pipeline run ID, and a sleep duration as arguments.
+//
+// Parameters:
+// adoClient - The ADO client to interact with the ADO pipelines.
+// adoConfig - The configuration for the ADO pipeline organization.
+// pipelineRunID - The ID of the pipeline run whose result is to be fetched.
+// sleep - The duration to wait between each check of the pipeline run state.
+//
+// The function returns the result of the pipeline run and an error. If the pipeline run is still in progress,
+// the function waits for the specified sleep duration before checking again. If an error occurs while getting
+// the pipeline run, the function returns the error. If the pipeline run is completed, the function returns
+// the result of the pipeline run.
 // TODO: implement sleep parameter to be passed as a functional option
 func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int, sleep time.Duration) (*pipelines.RunResult, error) {
 	for {
+		// Sleep for the specified duration before checking the pipeline run state.
 		time.Sleep(sleep)
 		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
 			Project:    &adoConfig.ADOProjectName,
@@ -94,15 +131,32 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 		if err != nil {
 			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
 		}
+		// If the pipeline run is completed, return the result of the pipeline run.
 		if *pipelineRun.State == pipelines.RunStateValues.Completed {
 			return pipelineRun.Result, nil
 		}
+		// If the pipeline run is still in progress, print a message and continue the loop.
 		// TODO: use structured logging with info severity
 		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", sleep)
 	}
 }
 
+// GetRunLogs is a function that retrieves the logs of a specific Azure DevOps (ADO) pipeline run.
+// It fetches the build logs metadata and then makes an HTTP request to get the actual logs.
+// The function takes a context, a build client, an HTTP client, an ADO configuration, a pipeline run ID, and an ADO personal access token (PAT) as arguments.
+//
+// Parameters:
+// buildClient - The ADO build client to interact with the ADO pipelines.
+// httpClient - The HTTP client to make requests to the ADO API to get logs content.
+// adoConfig - The configuration for the ADO pipelines organization.
+// pipelineRunID - The ID of the pipeline run whose logs are to be fetched.
+// adoPAT - The personal access token for authentication in ADO API.
+//
+// The function returns the logs of the pipeline run as a string and an error. If an error occurs while getting
+// the build logs metadata, making the HTTP request, reading the HTTP response body, or closing the HTTP response body,
+// the function returns the error. If the pipeline run logs are successfully fetched, the function returns the logs.
 func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
+	// Fetch the build logs metadata for the pipeline run.
 	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 		Project: &adoConfig.ADOProjectName,
 		BuildId: pipelineRunID,
@@ -111,18 +165,21 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
 	}
 
-	// Last item in a list represent logs from all pipeline steps visible in ADO GUI
+	// The last item in the list represents logs from all pipeline steps visible in ADO GUI
 	lastLog := (*buildLogs)[len(*buildLogs)-1]
+	// Create an HTTP request to get the actual logs content.
 	req, err := http.NewRequest("GET", *lastLog.Url, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed creating http request getting build log, err: %w", err)
 	}
 	req.SetBasicAuth("", adoPAT)
+	// Make the HTTP request to get the actual logs content.
 	// TODO: implement checking http response status code, if it's not 2xx, return error
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
 	}
+	// Read the HTTP response body to get the logs content.
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("failed reading http body with build log, err: %w", err)
@@ -343,9 +400,22 @@ func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests 
 	return tests.BuildTests, tests.TimelineTests, nil
 }
 
+// NewRunPipelineArgs is a function that creates the arguments required to trigger run an Azure DevOps (ADO) pipeline.
+// It takes a map of pipeline parameters, an ADO configuration,
+// and a variadic slice of pipeline run arguments options as input parameters.
+//
+// Parameters:
+// templateParameters - A map of key-value pairs that represent the parameters for the pipeline.
+// adoConfig - The configuration for the ADO pipelines organization.
+// pipelineRunArgs - A variadic slice of options for the pipeline run arguments.
+//
+//	Each option is a function that modifies the pipeline run arguments.
+//
+// If all options are successfully applied, the function returns the run arguments and nil for the error.
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
 	pipelineID := &adoConfig.ADOPipelineID
 
+	// Create the pipeline run arguments.
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,
 		PipelineId: pipelineID,
@@ -354,9 +424,11 @@ func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, 
 			TemplateParameters: &templateParameters,
 		},
 	}
+	// Set pipeline version if it's not 0 in the global ADO configuration.
 	if adoConfig.ADOPipelineVersion != 0 {
 		adoRunPipelineArgs.PipelineVersion = &adoConfig.ADOPipelineVersion
 	}
+	// Apply the pipeline run arguments options.
 	for _, arg := range pipelineRunArgs {
 		err := arg(&adoRunPipelineArgs)
 		if err != nil {
@@ -368,9 +440,22 @@ func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, 
 	return adoRunPipelineArgs, nil
 }
 
+// RunPipelineArgsOptions is a type that defines a function that modifies the RunPipelineArgs.
+// This function takes a pointer to a RunPipelineArgs and returns an error.
+// It is used to pass functional options to the NewRunPipelineArgs function.
 type RunPipelineArgsOptions func(*pipelines.RunPipelineArgs) error
 
-func PipelinePreviewRun(overrideYamlPath string) func(args *pipelines.RunPipelineArgs) error {
+// PipelinePreviewRun is a function that returns a RunPipelineArgsOptions.
+// This function sets the PreviewRun field of the RunParameters to true and
+// reads the override YAML file with ADO pipeline definition from the provided path to set the YamlOverride field.
+//
+// Parameters:
+// overrideYamlPath - The path to the ADO pipeline definition YAML file.
+//
+// Returns a function that modifies the RunPipelineArgs.
+// This function reads the override YAML file, converts it to a string,
+// and sets the YamlOverride field of the RunParameters.
+func PipelinePreviewRun(overrideYamlPath string) RunPipelineArgsOptions {
 	return func(args *pipelines.RunPipelineArgs) error {
 		args.RunParameters.PreviewRun = ptr.To(true)
 		data, err := os.ReadFile(overrideYamlPath)

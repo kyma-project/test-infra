@@ -1,32 +1,87 @@
-# image-builder
+# Image Builder
 
-This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
+Image Builder is a tool for building OCI-compliant images.
+It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
+It also supports signing images with a pre-defined set of signing services
+to verify that the image comes from a trusted repository and has not been altered in the meantime.
+The tool is designed to be used in ProwJobs.
 
 Key features:
 * automatically provides a default tag, which is computed based on a template provided in `config.yaml`
-* ~~allows for concurrent builds of image variants that use the same `Dockerfile`~~ See [Known issues](#known-issues) #1
 * supports adding multiple tags to the image
 * saves command outputs to separate files
 * when running in Prow's presubmit job, supports pushing images to different repositories with different tags 
 * supports pushing the same images to multiple repositories
 * supports caching of built layers to reduce build times
 
-## Known issues
+## Quickstart Guide
 
-1. Currently, building different variants of the same image is not working. The issue is tracked in https://github.com/kyma-project/test-infra/issues/5975
-2. This tool is still at an early stage of development. It is stable enough as a replacement for `docker build`. However, you can expect bugs and codebase changes.
+To build an image in an SLC-29 compliant way, use Image Builder with ADO backend in your ProwJob for building images.
+Here is an example of a ProwJob for building images with ADO backend:
 
-For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=image-builder:%20).
+```yaml
+    - name: pull-build-buildkit-image-builder
+      annotations:
+        description: "build buildkit image-builder image"
+        owner: "neighbors"
+      labels:
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      decorate: true
+      cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=buildkit-image-builder"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
+              - "--build-in-ado=true"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+```
 
-## Use config.yaml file
+It builds the `buildkit-image-builder` image using the image-builder ADO backend.
+It uses the Dockerfile from the `cmd/image-builder/images/buildkit/Dockerfile` path and the config from the `kaniko-build-config` ConfigMap.
+Because it's a presubmit ProwJob it does not sign the image.
+Signing images is supported only in postsubmit ProwJobs.
 
-`image-builder` requires a configuration file to be provided with a set of variables, which are used during the
-execution.
-A `--config` flag is required.
+## Configuration
 
-For more information, refer to the [config.go](config.go) file.
+Image Builder is configured using a global configuration YAML file, set of environment variables, and command line flags.
 
-Example file:
+### Configuration YAML File
+
+`image-builder` requires a configuration YAML file. The file holds the global configuration for the tool and is maintained by the authors.
+Use the `--config` flag to provide a path to the config YAML file.
+
+For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
+
+Here's an example file:
 ```yaml
 registry: eu.gcr.io/kyma-project
 reproducible: true
@@ -37,41 +92,37 @@ cache:
   cache-run-layers: true
 ```
 
-## Build multi-architecture images
+### Environment Variables
 
->**NOTE:** This is an experimental feature that may change in the future.
+Environment variables are mainly used to provide runtime values and configuration set by the CI/CD system.
+They provide details about the context in which the tool is running.
 
-With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
-You can define multiple platforms you want to build an image for.
+Here is the list of environment variables used by Image Builder:
 
-You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
+- **REPO_NAME**: The name of the repository with source code to build an image from.
+- **REPO_OWNER**: The owner of the repository with source code.
+- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request job, and `postsubmit`
+  represents a push job.
+- **PULL_NUMBER**: The number of the pull request.
+- **PULL_BASE_SHA**: The base SHA of the pull request or push commit SHA.
+- **PULL_PULL_SHA**: The pull request head SHA of the pull request.
+- **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the Azure DevOps API.
+- **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set
+  to `true` by default.
+- **CI**: Determines whether the image builder runs in CI mode.
 
-If you want to use experimental features, there is a new image with the tag suffix `-buildkit`.
+### Command Line Flags
 
-## Build multiple variants of the same image
+Command line flags are the main way for developers to configure the tool and provide needed values for the build process.
+Check the list and description of the available flags in the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
 
-With `image-builder`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
-To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
-Use that feature when you need to build an image with different versions of the same binary, for example, for different versions of Kubernetes or Go.
+## Image Signing
 
-The file has a simple structure:
-```yaml
-'main':
-  KUBECTL_VERSION: "1.24.4"
-'1.23':
-  KUBECTL_VERSION: "1.23.9"
-```
+Image Builder supports signing the images with a pre-defined set of signing services.
+Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
+You can enable every supported signing service on repository and global levels.
 
-To use this feature, make sure that:
-* you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
-* your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
-
-## Image signing
-
-image-builder supports signing the images with a pre-defined set of signing services to verify that image comes from a trusted repository and has not been altered in the meantime.
-You can enable every signing service on repository and global levels.
-
-See the following example sign services configuration in `config.yaml` file:
+See the following example of sign services configuration in the `config.yaml` file:
 ```yaml
 sign-config:
   enabled-signers:
@@ -101,50 +152,98 @@ sign-config:
 ```
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
-in the `org/repo` key, image-builder also uses this service to sign the image.
+in the `org/repo` key, Image Builder also uses this service to sign the image.
 If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary
 is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
 
-Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
+Currently, Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
+
+### Sign-Only Mode
+
+Image Builder supports sign-only mode. To enable it, use the `--sign-only` flag.
+It signs the images provided in the `--images-to-sign` flag.
+It supports signing multiple images at once. The flag can be used multiple times.
 
 ## Named Tags
 
-image-builder supports passing the name along with the tag both using the `-tag` option or config for the tag template.
+Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
 You can use `-tag name=value` to pass the name for the tag. 
 
 If the name is not provided, it is evaluated from the value:
  - if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
  - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
-## Usage
+### Parse-Tags-Only Mode
 
+You can use Image Builder to generate tags using pars-tags-only mode. To enable it, use the `--parse-tags-only` flag.
+It parses the tags provided in the `--tag` flag and in `config.yaml`. The generated tags are written as JSON to
+stdout.
+
+## Build Backend
+
+Image Builder supports three build backends:
+
+- kaniko
+- BuildKit
+- Azure DevOps pipelines
+
+kaniko and BuildKit build images locally while the Azure DevOps pipelines backend call ADO API.
+To use the kaniko backend, use the `image-builder` image.
+To use the BuildKit backend, use the `buildkit-image-builder` image.
+The ADO backend is supported by both images. To use it, you need to provide the `--build-in-ado=true` flag.
+The BuildKit and kaniko backends are deprecated and will be removed in the future.
+The preferred way to build images is to use the ADO backend because it's the only SLC-29 compliant backend.
+
+### Azure DevOps Backend (ADO)
+
+The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma GCP artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
+This backend doesn't support the `--env-file`, `--platform`, and `--variant` flags. Building images for platforms other than amd64 is not supported. 
+To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob definition.
+
+When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API. 
+Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and building, pushing, and signing an image.
+
+Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
+Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition. 
+Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add the `--ado-preview-run=true` flag.
+To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
+
+## Deprecated Features
+
+### Build Multi-Architecture Images
+
+> **NOTE:** This is an experimental feature that may change in the future.
+
+With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
+You can define multiple platforms you want to build an image for.
+
+You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
+
+If you want to use experimental features, there is a new image with the tag suffix `-buildkit`.
+
+### Build Multiple Variants of the Same Image
+
+With `image-builder`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
+To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
+Use that feature when you need to build an image with different versions of the same binary, for example, for different
+versions of Kubernetes or Go.
+
+The file has a simple structure:
+
+```yaml
+'main':
+  KUBECTL_VERSION: "1.24.4"
+'1.23':
+  KUBECTL_VERSION: "1.23.9"
 ```
-Usage of image-builder:
-  -config string
-        Path to application config file (default "/config/image-builder-config.yaml")
-  -context string
-        Path to build directory context (default ".")
-  -dockerfile string
-        Path to Dockerfile file relative to context (default "Dockerfile")
-  -env-file string
-        Path to file with environment variables to be loaded in build
-  -log-dir string
-        Path to logs directory where GCB logs will be stored (default "/logs/artifacts")
-  -name string
-        Name of the image to be built
-  -platform value
-        Only supported with BuildKit. Platform of the image that is built
-  -repo string
-        Load repository-specific configuration, for example, signing configuration
-  -silent
-        Do not push build logs to stdout
-  -tag value
-        Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags.
-  -variant string
-        If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
-  -export-tags
-        Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.
-  -build-arg
-        Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag (see: Named Tags section). 
-```
+
+To use this feature, make sure that:
+
+* you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
+* your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
+
+### Environment Variables File
+
+`-env-file` specifies the path to the file with environment variables to be loaded in the build. This flag is deprecated.
+Use `--build-arg` instead.
