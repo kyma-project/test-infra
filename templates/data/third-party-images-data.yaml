@@ -12,6 +12,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: goat
                     description: builds cloudsql-proxy image
@@ -162,7 +163,7 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-kaniko-executer"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: otters
                     description: kaniko-executer tpi build job
@@ -179,7 +180,7 @@ templates:
                     - image-builder-buildkit
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   annotations:
                     owner: otters
                     description: kaniko-executer tpi build job
