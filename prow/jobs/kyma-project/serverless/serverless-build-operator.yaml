@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -34,7 +34,8 @@ presubmits: # runs on PRs
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.dev"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
               - "--build-arg=IMG_DIRECTORY=dev"
               - "--build-arg=IMG_VERSION=PR-$(PULL_NUMBER)"
             env:
@@ -84,7 +85,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -96,7 +97,8 @@ postsubmits: # runs on main
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.dev"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
               - "--build-arg=IMG_DIRECTORY=prod"
               - "--build-arg=IMG_VERSION=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_SHA)"

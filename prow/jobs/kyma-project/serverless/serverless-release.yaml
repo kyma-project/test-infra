@@ -22,7 +22,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -34,7 +34,8 @@ postsubmits: # runs on main
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.release"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=release"
               - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
@@ -79,7 +80,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -130,7 +131,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -181,7 +182,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -232,7 +233,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -283,7 +284,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
@@ -334,7 +335,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: false
               seccompProfile:
