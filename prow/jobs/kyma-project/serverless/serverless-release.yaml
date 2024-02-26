@@ -34,7 +34,8 @@ postsubmits: # runs on main
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.release"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=release"
               - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
