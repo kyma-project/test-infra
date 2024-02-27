@@ -13,6 +13,10 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                  request_memory: 6Gi
+                  request_cpu: 3
+                  limits_memory: 6Gi
+                  limits_cpu: 3
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                   annotations:
                     owner: skydivingtunas
@@ -32,6 +36,10 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
+                  request_memory: 6Gi
+                  request_cpu: 3
+                  limits_memory: 6Gi
+                  limits_cpu: 3
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                   annotations:
                     owner: skydivingtunas
