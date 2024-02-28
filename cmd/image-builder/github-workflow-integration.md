@@ -7,27 +7,30 @@ process is executed in an Azure DevOps pipeline, providing a slc-29 compliant in
 
 ## Process Flow
 
-1. **Obtaining the OIDC Token**: The process begins with GitHub's OIDC identity provider issuing an OIDC token. This token is used to
+1. **Trigger workflow**: User or automation triggers a GitHub workflow.
+
+2. **Obtaining the OIDC Token**: The process begins with GitHub's OIDC identity provider issuing an OIDC token. This token is used to
    securely pass information about the workflow.
 
-2. **Passing the OIDC Token**: The OIDC token is then passed as a parameter to the `oci-image-builder` pipeline in a signed JWT format. This
-   ensures the secure and authorized passing of information about the workflow.
+3. **Trigger oci-image-builder pipeline**: Image builder client call ADO API to trigger `oci-image-buidler` pipeline. The OIDC token, along
+   with additional parameters required by the `oci-image-builder` pipeline, are passed as parameters to the pipeline. These parameters
+   values are collected from data defined by the user and OIDC identity token.
 
-3. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps, validates the OIDC token against the GitHub's
+4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps, validates the OIDC token against the GitHub's
    OIDC identity provider. This step ensures that the token is valid and has not been tampered with.
 
-4. **Using the OIDC Token**: The `oci-image-builder` pipeline uses the information from the OIDC token to clone the appropriate source code
-   for the building of the OCI image. Additionally, it uses the information from the OIDC token to set the appropriate parameters for the
-   build and to decide whether the OCI image should be signed or not.
+5. **OCI Image build preparation**: The `oci-image-builder` pipeline uses the information from the OIDC token to clone the appropriate
+   source code for the building of the OCI image. Additionally, it uses the information from the OIDC token and user defined parameters to
+   set the appropriate parameters for the build and to decide whether the OCI image should be signed or not.
 
-5. **Building the OCI Image**: Once the source code is cloned and the build parameters are set, the `oci-image-builder` pipeline proceeds to
+6. **Building the OCI Image**: Once the source code is cloned and the build parameters are set, the `oci-image-builder` pipeline proceeds to
    build the OCI image. This process involves compiling the source code and packaging it into an OCI image.
 
-6. **Signing the OCI Image**: If the build was triggered by a push event in GitHub and the OIDC token indicates that the image should be
+7. **Signing the OCI Image**: If the build was triggered by a push event in GitHub and the OIDC token indicates that the image should be
    signed, the `oci-image-builder` pipeline uses the `signify` service to sign the OCI image. This step ensures the integrity and
    authenticity of the OCI image.
 
-7. **Pushing the OCI Image**: After the OCI image is built and optionally signed, it is then pushed to a specified OCI registry.
+8. **Pushing the OCI Image**: After the OCI image is built and optionally signed, it is then pushed to a specified OCI registry.
 
 ## GitHub OIDC Identity Token Claims
 
@@ -71,6 +74,35 @@ The OIDC token also contains claims that can be used to clone the appropriate ve
 
 These claims ensure that the `oci-image-builder` pipeline builds the exact version of the code that was provided in the PR or merged to the
 branch, adhering to slc-29 compliance.
+
+## Parameters for the `oci-image-builder` Pipeline
+
+The `oci-image-builder` pipeline requires certain data to be provided in parameters.
+Certain parameters need to be defined by the user and some are taken from OIDC token.
+
+These parameters include:
+
+### User Defined Parameters
+
+- `Context`: The context of the build.
+- `Dockerfile`: The Dockerfile to be used for the build.
+- `Name`: The name of the image.
+- `BuildArgs`: The build arguments to be passed to the build.
+- `Tags`: The tags to be applied to the image.
+- `ExportTags`: Whether to export the tags.
+
+### Parameters from OIDC Token
+
+- `RepoName`: The name of the repository.
+- `RepoOwner`: The owner of the repository. Possible values include "kyma-project" and "kyma-incubator".
+- `JobType`: The type of job. Possible values include "presubmit" and "postsubmit".
+- `PullBaseSHA`: The base SHA of the pull request.
+- `PullPullSHA`: The SHA of the pull request.
+
+### Computed Parameters
+
+- `PullNumber`: The number of the pull request. This data is not available in OIDC token and should not be defined by user. We can extract
+  it from `ref` claim of OIDC token.
 
 ## Block Diagram
 
