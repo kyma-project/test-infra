@@ -32,21 +32,21 @@ module "gh_com_kyma_project_workload_identity_federation" {
 resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = "gcp_terraform_executor_service_account_email"
+  variable_name = "GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL"
   value         = google_service_account.terraform_executor.email
 }
 
 resource "github_actions_variable" "gcp_terraform_planner_service_account_email" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = "gcp_terraform_planner_service_account_email"
+  variable_name = "GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL"
   value         = google_service_account.terraform_planner.email
 }
 
 resource "github_actions_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = "gh_com_kyma_project_gcp_workload_identity_federation_provider"
+  variable_name = "GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER"
   value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
 }
 
