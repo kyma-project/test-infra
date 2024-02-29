@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240219-35c5adeb
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240219-35c5adeb
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240219-35c5adeb
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240219-35c5adeb
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240226-c8e21b7a
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240226-c8e21b7a
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240226-c8e21b7a
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240226-c8e21b7a
         resources:
           clonerefs:
             requests:
@@ -301,6 +301,11 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+        template-operator:
+          required_status_checks:
+            contexts:
+              - "lint"
+              - "Run integration tests"
         lifecycle-manager:
           required_status_checks:
             contexts:

@@ -7,11 +7,16 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-eventing-auth-manager-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   args:
                     - "--name=eventing-auth-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                  request_memory: 6Gi
+                  request_cpu: 3
+                  limits_memory: 6Gi
+                  limits_cpu: 3
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                   annotations:
                     owner: skydivingtunas
@@ -22,6 +27,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-eventing-auth-manager-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -30,6 +36,10 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
+                  request_memory: 6Gi
+                  request_cpu: 3
+                  limits_memory: 6Gi
+                  limits_cpu: 3
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                   annotations:
                     owner: skydivingtunas
