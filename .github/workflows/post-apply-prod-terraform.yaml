@@ -35,7 +35,7 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
           service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
       
-      - name: Retrieve Bot PAT
+      - name: Retrieve Terraform Executor PAT
         id: secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
