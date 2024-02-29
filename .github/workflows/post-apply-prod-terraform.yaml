@@ -40,7 +40,7 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-             bot-token:${{ vars.GCP_KYMA_PROJECT_SECRET_MANAGER_PROJECT_ID }}/${{ vars.KYMA_BOT_TOKEN_SECRET_NAME }}
+             bot-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
           
       # Build tofu CLI from source until setup-opentofu action will become stable
       - name: Download the tofu source
