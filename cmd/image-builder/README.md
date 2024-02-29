@@ -1,6 +1,6 @@
-# image-builder
+# Image Builder
 
-This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
+This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in Kubernetes infrastructure.
 
 Key features:
 * automatically provides a default tag, which is computed based on a template provided in `config.yaml`
@@ -11,17 +11,16 @@ Key features:
 * supports pushing the same images to multiple repositories
 * supports caching of built layers to reduce build times
 
-## Known issues
+## Known Issues
 
 1. Currently, building different variants of the same image is not working. The issue is tracked in https://github.com/kyma-project/test-infra/issues/5975
 2. This tool is still at an early stage of development. It is stable enough as a replacement for `docker build`. However, you can expect bugs and codebase changes.
 
 For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=image-builder:%20).
 
-## Use config.yaml file
+## Use `config.yaml` File
 
-`image-builder` requires a configuration file to be provided with a set of variables, which are used during the
-execution.
+`image-builder` requires a configuration file to be provided with a set of variables, which are used during the execution.
 A `--config` flag is required.
 
 For more information, refer to the [config.go](config.go) file.
@@ -37,18 +36,18 @@ cache:
   cache-run-layers: true
 ```
 
-## Build multi-architecture images
+## Build Multi-Architecture Images
 
 >**NOTE:** This is an experimental feature that may change in the future.
 
-With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
+With the introduction of the experimental BuildKit support, the tool now supports the repeatable `--platform` flag.
 You can define multiple platforms you want to build an image for.
 
 You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
 
-If you want to use experimental features, there is a new image with the tag suffix `-buildkit`.
+If you want to use experimental features, there is a new image with the `-buildkit` tag suffix.
 
-## Build multiple variants of the same image
+## Build Multiple Variants of the Same Image
 
 With `image-builder`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
 To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
@@ -63,15 +62,15 @@ The file has a simple structure:
 ```
 
 To use this feature, make sure that:
-* you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
+* you have the `variants.yaml` file in the _**same directory**_ as the `Dockerfile`
 * your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
 
-## Image signing
+## Image Signing
 
-image-builder supports signing the images with a pre-defined set of signing services to verify that image comes from a trusted repository and has not been altered in the meantime.
+Image Builder supports signing images with a pre-defined set of signing services to verify that an image comes from a trusted repository and has not been altered in the meantime.
 You can enable every signing service on repository and global levels.
 
-See the following example sign services configuration in `config.yaml` file:
+See the following example of sign services configuration in the `config.yaml` file:
 ```yaml
 sign-config:
   enabled-signers:
@@ -101,16 +100,16 @@ sign-config:
 ```
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
-in the `org/repo` key, image-builder also uses this service to sign the image.
-If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary
-is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
+in the `org/repo` key, Image Builder also uses this service to sign the image.
+If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. 
+If binary is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration cannot be used.
 
-Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
+Currently, Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
 
 ## Named Tags
 
-image-builder supports passing the name along with the tag both using the `-tag` option or config for the tag template.
+Image Builder supports passing the name along with the tag both using the `-tag` option or config for the tag template.
 You can use `-tag name=value` to pass the name for the tag. 
 
 If the name is not provided, it is evaluated from the value:

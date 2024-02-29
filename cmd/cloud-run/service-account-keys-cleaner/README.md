@@ -1,4 +1,4 @@
-# Cleanup of service account secrets
+# Cleanup of Service Account Secrets
 
 ## Overview
 
@@ -13,7 +13,7 @@ The Cloud Run service deletes old keys for a GCP service account and updates the
     5. Removes old versions of keys for the service account.
     6. Removes old versions of a secret stored in Secret Manager.
 
-## Cloud Run service deployment
+## Cloud Run Service Deployment
 
 ServiceAccountKeysCleaner is deployed to Cloud Run applying Terraform config stored
 in [`./terraform` directory](../../../configs/terraform). `terraform apply` runs automatically on every PR changing
@@ -23,7 +23,7 @@ Terraform `.tf` files belonging to the application.
 2. Merge your changes to test-infra main branch to trigger Terraform execution.
 
 
-## GET parameters
+## GET Parameters
 
 The Cloud Function accepts the following GET parameters:
 

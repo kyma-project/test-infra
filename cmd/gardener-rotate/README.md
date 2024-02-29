@@ -2,14 +2,14 @@
 
 ## Overview
 
-The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
+The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in Secret Manager.
 
-Rotation process steps:
+The rotation process consists of the following steps:
 1. Connect to the Gardener cluster using the provided kubeconfig file.
-2. For each service account defined in the config file:
-    1. Generate a new Gardener access token.
-    2. Update kubeconfig stored in the Secret Manager secret with the generated access token.
-    3. Disable the old versions of the secret.
+2. For each service account defined in the config file:  
+    i. Generate a new Gardener access token.  
+    ii. Update the kubeconfig stored in the Secret Manager secret with the generated access token.  
+    iii. Disable the old versions of the secret.
 
 ## Usage
 
@@ -23,14 +23,14 @@ go run main.go \
 ```
 
 
-### Configuration file
+### Configuration File
 
-gardener-rotate takes as an input parameter a file having the following structure: 
+As an input parameter, gardener-rotate takes a file with the following structure: 
 
 ```yaml
 serviceAccounts:
   - k8sServiceAccount: "sa-neighbor-robot" # Kubernetes service account name to rotate
-    k8sNamespace: "garden-neighbors" # Kubernetes service account Namespace
+    k8sNamespace: "garden-neighbors" # Kubernetes service account namespace
     k8sDuration: 5184000 # vailidity of the new token in seconds
     gcpSecretManagerSecretName: "trusted_default_gardener-neighbors-kubeconfig" # name of the GCP secret where the kubeconfig is stored
     gcpProjectName: "sap-kyma-prow" # name of the GCP project with Secret Manager
@@ -38,7 +38,7 @@ serviceAccounts:
 ```
 
 
-# Gardener-rotate flags
+# Gardener-Rotate Flags
 
 See the list of flags available for the `promote` command:
 
