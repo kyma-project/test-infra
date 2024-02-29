@@ -114,7 +114,8 @@ We can extract it from `ref` claim of OIDC token.
 ## ProwJob Validation in Image Builder
 
 In the scenario where the `oci-image-builder` pipeline is triggered from a ProwJob instead of a GitHub workflow, the validation process
-differs slightly due to the absence of an OIDC token.
+differs slightly due to the absence of an OIDC token. Triggering the `oci-image-builder` pipeline from a ProwJob is considered a depraecated
+scenario and must be supported only for backward compatibility and migration purposes.
 
 ### Process Flow
 
