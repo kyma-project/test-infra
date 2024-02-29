@@ -40,7 +40,7 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-             bot-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
+             gh-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
           
       # Build tofu CLI from source until setup-opentofu action will become stable
       - name: Download the tofu source
@@ -73,7 +73,7 @@ jobs:
         run: tofu -chdir=./configs/terraform/environments/prod init -input=false
       - name: Terraform Apply
         env:
-          GITHUB_TOKEN: ${{ steps.secrets.outputs.kyma-bot-token }}
+          GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-executor-token }}
         id: terraform_apply
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -sha ${{ github.sha }} apply -- tofu -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve
         
