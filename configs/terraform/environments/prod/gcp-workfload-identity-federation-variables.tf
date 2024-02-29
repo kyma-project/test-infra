@@ -1,7 +1,7 @@
-variable "github_test_infra_repository_full_name" {
+variable "github_test_infra_repository_name" {
   type        = string
-  default     = "kyma-project/test-infra"
-  description = "Full name of the test-infra repository, including owner"
+  default     = "test-infra"
+  description = "Name of the test-infra repository"
 }
 
 variable "github_kyma_project_organization_id" {

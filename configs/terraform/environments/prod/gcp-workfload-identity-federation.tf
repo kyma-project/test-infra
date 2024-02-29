@@ -1,5 +1,6 @@
 data "github_repository" "test_infra" {
-  full_name = var.github_test_infra_repository_full_name
+  provider = github.kyma_project
+  name     = var.github_test_infra_repository_name
 }
 
 module "gh_com_kyma_project_workload_identity_federation" {
