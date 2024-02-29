@@ -1,6 +1,6 @@
 # Image Builder GitHub Workflow Integration
 
-The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to automate the process of building OCI
+The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to run the process of building OCI
 images. It leverages a signed JWT format in which an OIDC token from GitHub's OIDC identity provider is passed. This token is used for
 secure and authorized passing of information about the workflow and the image to build to the `oci-image-builder` pipeline. The build
 process is executed in an Azure DevOps pipeline, providing a slc-29 compliant infrastructure for the building of OCI images.
@@ -9,28 +9,30 @@ process is executed in an Azure DevOps pipeline, providing a slc-29 compliant in
 
 1. **Trigger workflow**: User or automation triggers a GitHub workflow.
 
-2. **Obtaining the OIDC Token**: The process begins with GitHub's OIDC identity provider issuing an OIDC token. This token is used to
-   securely pass information about the workflow.
+2. **Obtaining the OIDC Token**: The workflow uses GitHub action to call GitHub's OIDC identity provider issuing an OIDC token.
+   This token is used to securely pass information about the workflow.
 
-3. **Trigger oci-image-builder pipeline**: Image builder client call ADO API to trigger `oci-image-buidler` pipeline. The OIDC token, along
-   with additional parameters required by the `oci-image-builder` pipeline, are passed as parameters to the pipeline. These parameters
-   values are collected from data defined by the user and OIDC identity token.
+3. **Trigger oci-image-builder pipeline**: Github action running Image builder client call ADO API to trigger `oci-image-buidler` pipeline.
+   The OIDC token, along with additional parameters required by the `oci-image-builder` pipeline, are passed as parameters to the pipeline.
+   These parameters values are collected from data defined by the user and GitHub OIDC identity provider.
 
-4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps, validates the OIDC token against the GitHub's
+4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps detects a call originates from GitHub and
+   validates the OIDC token against the GitHub's
    OIDC identity provider. This step ensures that the token is valid and has not been tampered with.
 
 5. **OCI Image build preparation**: The `oci-image-builder` pipeline uses the information from the OIDC token to clone the appropriate
-   source code for the building of the OCI image. Additionally, it uses the information from the OIDC token and user defined parameters to
-   set the appropriate parameters for the build and to decide whether the OCI image should be signed or not.
+   source code for the building of the OCI image. It uses the information from the OIDC token and user defined parameters to
+   set the appropriate parameters for the image build and signing. The data from OIDC token is used to decide whether the OCI image should
+   be signed or not.
 
 6. **Building the OCI Image**: Once the source code is cloned and the build parameters are set, the `oci-image-builder` pipeline proceeds to
-   build the OCI image. This process involves compiling the source code and packaging it into an OCI image.
+   build the OCI image. The build process uses a kaniko executor as a build engine.
 
-7. **Signing the OCI Image**: If the build was triggered by a push event in GitHub and the OIDC token indicates that the image should be
-   signed, the `oci-image-builder` pipeline uses the `signify` service to sign the OCI image. This step ensures the integrity and
-   authenticity of the OCI image.
+7. **Pushing the OCI Image**: After the OCI image is built, it is then pushed to a specified OCI registry.
 
-8. **Pushing the OCI Image**: After the OCI image is built and optionally signed, it is then pushed to a specified OCI registry.
+8. **Signing the OCI Image**: If the build was triggered by a push event in GitHub, the `oci-image-builder` pipeline uses the `signify`
+   service to sign the OCI image.
+   This step ensures the integrity and authenticity of the OCI image.
 
 ## GitHub OIDC Identity Token Claims
 
@@ -39,9 +41,12 @@ These claims are used to identify the workflow triggering the build pipeline and
 is essential for slc-29 compliance, as it ensures that the exact version of the code that was tested in the PR or for which the push was
 merged is built.
 
+The validity and integrity of OIDC token must be validated in `oci-image-builcer` pipeline and fail pipeline execution if validation fails.
+Because OIDC token uses `JWT` format, it can be validated with a standard validation process against GitHub OIDC identity provider.
+
 ### Workflow Identification Claims
 
-The OIDC token contains claims that can be used to identify the workflow that triggered the build pipeline. These include:
+The OIDC token contains the following claims that can be used to identify the workflow that triggered the build pipeline. These include:
 
 - `iss`: The issuer of the token. This is always `https://token.actions.githubusercontent.com`.
 - `iat`: The time at which the token was issued.
@@ -77,8 +82,8 @@ branch, adhering to slc-29 compliance.
 
 ## Parameters for the `oci-image-builder` Pipeline
 
-The `oci-image-builder` pipeline requires certain data to be provided in parameters.
-Certain parameters need to be defined by the user and some are taken from OIDC token.
+The `oci-image-builder` pipeline requires certain data to be provided in parameters to execute a build process.
+Certain parameters need to be defined by the user additionally to the data taken from OIDC token.
 
 These parameters include:
 
@@ -101,8 +106,38 @@ These parameters include:
 
 ### Computed Parameters
 
-- `PullNumber`: The number of the pull request. This data is not available in OIDC token and should not be defined by user. We can extract
-  it from `ref` claim of OIDC token.
+The data for this parameter is not available in OIDC token and should not be provided by user.
+We can extract it from `ref` claim of OIDC token.
+
+- `PullNumber`: The number of the pull request.
+
+## ProwJob Validation in Image Builder
+
+In the scenario where the `oci-image-builder` pipeline is triggered from a ProwJob instead of a GitHub workflow, the validation process
+differs slightly due to the absence of an OIDC token.
+
+### Process Flow
+
+1. **Trigger ProwJob**: User or automation triggers a ProwJob.
+
+2. **Trigger oci-image-builder pipeline**: The ProwJob running Image builder client calls ADO API to trigger `oci-image-builder` pipeline.
+   The parameters required by the `oci-image-builder` pipeline are passed as parameters to the pipeline. These parameters values are
+   collected from data defined by the user and Prow environment variables. Together with the parameters, parameters hash signed by Prow is
+   also passed to the pipeline as a parameter.
+
+3. **Validating the Parameters**: The `oci-image-builder` pipeline, running in Azure DevOps, detects the call originates from Prow and
+   validates the parameters against a hash signed by Prow. This step ensures that the parameters are valid and have not been tampered with.
+   The absence of an OIDC token is used to detect that the call is coming from a ProwJob.
+
+### Parameters Validation
+
+The parameters passed to the `oci-image-builder` pipeline are validated against a hash signed by Prow. This hash is computed based on the
+names and values of the parameters. The hash value is signed with secret know to the `Prow` and `oci-image-buidler` pipeline only.
+The `oci-image-builder` pipeline verifies this hash to ensure that the parameters have not been tampered with and are indeed coming from the
+ProwJob.
+
+This validation process ensures the secure and authorized passing of information about the ProwJob and the image to build. It provides a
+reliable infrastructure for the building of OCI images when the pipeline is triggered from a ProwJob.
 
 ## Block Diagram
 
