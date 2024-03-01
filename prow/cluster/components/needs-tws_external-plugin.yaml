@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: needs-tws
-        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20240223-c10674d7
+        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20240301-5bfdd46f
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
