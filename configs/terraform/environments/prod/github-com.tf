@@ -1,0 +1,20 @@
+# TODO:
+# These actions variables must exist in github in order to let terraform executor run.
+# They are required for getting terraform executor github personal access token from gcp secret manager.
+# We must develop a solution for creating a minimal initial setup to let terraform executor apply our whole config.
+
+# GCP project id that contains secret manager with secrets
+resource "github_actions_variable" "gcp_kyma_project_project_id" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GCP_KYMA_PROJECT_PROJECT_ID"
+  value         = var.gcp_project_id
+}
+
+# Name of the secret manager's secret holding kyma bot token with github variables write permissions
+resource "github_actions_variable" "github_terraform_executor_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_EXECUTOR_SECRET_NAME"
+  value         = "kyma-bot-gh-com-terraform-executor-token"
+}
