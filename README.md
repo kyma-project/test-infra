@@ -9,7 +9,7 @@
 The purpose of the `test-infra` repository is to store configuration and scripts for the test infrastructure used in the `kyma-project` organization.
 See also the internally available [test-infra onboarding](https://github.tools.sap/kyma/test-infra/blob/main/onboarding.md).
 
-### Project documentation
+### Project Documentation
 
 Please see the [index page](/docs/index.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
 
@@ -23,3 +23,18 @@ For more detailed documentation on installation, configuration, development, and
 ## License
 <!-- markdown-link-check-disable-next-line -->
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_large)
+
+## Contributing
+<!--- mandatory section - do not change this! --->
+
+See the [Contributing Rules](CONTRIBUTING.md).
+
+## Code of Conduct
+<!--- mandatory section - do not change this! --->
+
+See the [Code of Conduct](CODE_OF_CONDUCT.md) document.
+
+## Licensing
+<!--- mandatory section - do not change this! --->
+
+See the [license](./LICENSE) file.
