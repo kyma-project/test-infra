@@ -97,54 +97,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-serverless-runtimes-python39-build-classic
-      annotations:
-        description: "function python3.9 build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-python39-build-classic"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-python39"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/runtimes/python39"
-              - "--dockerfile=components/runtimes/python39/Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pre-serverless-runtimes-python39-build
       annotations:
         description: "function python3.9 build job"
@@ -155,7 +107,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -203,7 +154,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -377,59 +327,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
-              - "--tag=$(PULL_BASE_REF)"
-              - "--tag=$(PULL_BASE_SHA)"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: post-serverless-runtimes-python39-build-classic
-      annotations:
-        description: "function python3.9 build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-python39-build-classic"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-*
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-python39"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/runtimes/python39"
-              - "--dockerfile=components/runtimes/python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
