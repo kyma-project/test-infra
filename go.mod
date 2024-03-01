@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/firestore v1.14.0
 	cloud.google.com/go/logging v1.9.0
 	cloud.google.com/go/pubsub v1.36.2
-	cloud.google.com/go/storage v1.38.0
+	cloud.google.com/go/storage v1.39.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/cenkalti/backoff/v4 v4.2.1
