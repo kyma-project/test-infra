@@ -59,7 +59,7 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
   members = [
     "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform"
   ]
-  role               = "roles/workloadIdentityUser"
+  role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
 }
 
