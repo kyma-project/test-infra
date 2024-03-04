@@ -48,29 +48,33 @@ Because OIDC token uses `JWT` format, it can be validated with a standard valida
 
 The OIDC token contains the following claims that can be used to identify the workflow that triggered the build pipeline. These include:
 
-- `iss`: The issuer of the token. This is always `https://token.actions.githubusercontent.com`.
-- `iat`: The time at which the token was issued.
-- `exp`: The time at which the token expires.
+Sure, here's how you can format the selected text as an unordered list in Markdown, with the words before the colon surrounded by backticks:
+
+- `iss`: The issuer of the token. This is always https://token.actions.githubusercontent.com.
+- `iat`: The time when the token is issued.
+- `exp`: The time when the token expires.
 - `jti`: A unique identifier for the token.
 - `nbf`: The time before which the token must not be accepted for processing.
 - `kid`: The key ID of the key used to sign the token.
 - `alg`: The algorithm used to sign the token.
 - `run_id`: The ID of the workflow run.
 - `run_number`: The number of the workflow run.
-- `actor`: The login of the user who initiated the workflow run.
-- `event_name`: The name of the event that triggered the workflow run.
-- `workflow`: The name of the workflow that triggered the workflow run.
+- `actor`: The login of the user who initiates the workflow run.
+- `event_name`: The name of the event that triggers the workflow run.
+- `workflow`: The name of the workflow that triggers the workflow run.
 - `workflow_ref`: The git ref associated with the workflow file.
-- `repository`: The repository where the workflow run occurred.
-- `repository_owner`: The owner of the repository where the workflow run occurred.
+- `repository`: The repository where the workflow run occurs.
+- `repository_owner`: The owner of the repository where the workflow run occurs.
 
 ### Source Code Cloning Claims
 
 The OIDC token also contains claims that can be used to clone the appropriate version of the source code:
 
-- `repository`: The repository where the workflow run occurred.
-- `repository_owner`: The owner of the repository where the workflow run occurred.
-- `event_name`: The name of the event that triggered the workflow run.
+Sure, here's the selected text rewritten with present tense verbs, while keeping the formatting:
+
+- `repository`: The repository where the workflow run occurs.
+- `repository_owner`: The owner of the repository where the workflow run occurs.
+- `event_name`: The name of the event that triggers the workflow run.
 - `ref`: The git ref associated with the workflow run. This can be used to checkout the correct branch, tag, or commit.
 - `ref_type`: The type of git ref associated with the workflow run. This can be used to determine whether the ref is a branch, tag, or
   commit.
