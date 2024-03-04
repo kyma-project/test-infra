@@ -294,6 +294,10 @@ branch-protection:
               - "run-keb-chart-tests / finish-keb-chart-tests"
               - "markdown-link-check"
               - "validate-labels"
+          exclude:
+            - "^gh-pages$"
+            - "^sec-scanners-config-"
+            - "^bump-keb-"
         btp-manager:
           required_status_checks:
             contexts:
@@ -301,6 +305,8 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+          exclude:
+            - "^sec-scanners-config-"
         template-operator:
           required_status_checks:
             contexts:
