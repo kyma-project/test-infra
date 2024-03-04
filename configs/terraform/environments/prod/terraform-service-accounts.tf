@@ -50,8 +50,12 @@ resource "google_service_account" "terraform_planner" {
 
 # Grant browser role to terraform planner service account
 resource "google_project_iam_member" "terraform_planner_prow_project_browser" {
+  for_each = toset([
+    "roles/viewer",
+    "roles/storage.objectAdmin"
+  ])
   project = var.terraform_planner_gcp_service_account.project_id
-  role    = "roles/browser"
+  role    = each.key
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
@@ -66,7 +70,6 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
 resource "google_project_iam_member" "terraform_planner_workloads_project_browser" {
   for_each = toset([
     "roles/viewer",
-    "roles/storage.objectUser", # Required to set lock on state
   ])
   project = var.workloads_project_id
   role    = each.key
