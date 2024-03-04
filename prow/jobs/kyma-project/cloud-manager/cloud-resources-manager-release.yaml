@@ -9,14 +9,13 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "release-cloud-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: ^.*.go|go.mod
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
-      optional: true
       branches:
-        - ^v?\d+\.\d+\.\d+(?:-.*)?$
+        - ^main$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240117-44b831e4"
@@ -40,6 +39,7 @@ postsubmits:
               - "--dockerfile=Dockerfile"
               - "--build-in-ado=true"
               - "--tag=$(PULL_BASE_REF)"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 500Mi
