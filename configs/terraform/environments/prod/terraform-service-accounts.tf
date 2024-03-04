@@ -65,6 +65,6 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
 
 resource "google_project_iam_member" "terraform_planner_workloads_project_browser" {
   project = var.workloads_project_id
-  role    = "roles/browser"
+  role    = "roles/viewer"
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
