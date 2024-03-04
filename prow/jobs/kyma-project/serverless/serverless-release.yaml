@@ -316,6 +316,108 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: release-serverless-runtimes-nodejs-v20-build
+      annotations:
+        description: "function nodejs20 build for a release."
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-serverless-runtimes-nodejs-v20-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^v?\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=function-runtime-nodejs20"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/runtimes/nodejs"
+              - "--dockerfile=nodejs20/Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: release-serverless-runtimes-nodejs-v22-build
+      annotations:
+        description: "function nodejs22 build for a release."
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-serverless-runtimes-nodejs-v22-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^v?\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=function-runtime-nodejs22"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/runtimes/nodejs"
+              - "--dockerfile=nodejs22/Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: release-serverless-runtimes-python39-build-legacy
       annotations:
         description: "function python3.9 build for a release."
