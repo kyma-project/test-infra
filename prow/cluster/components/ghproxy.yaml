@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: ghproxy
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:v20240226-c8e21b7a
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:v20240304-ef5ac58b
         args:
         - --cache-dir=/cache
         - --cache-sizeGB=99
