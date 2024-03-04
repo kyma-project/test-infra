@@ -176,6 +176,14 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	return cmd.Run()
 }
 
+// prepareADOTemplateParameters is a function that prepares the parameters for the Azure DevOps oci-image-builder pipeline.
+// These parameters are used to trigger the pipeline with API call and build the image in the ADO environment.
+// It takes an options struct as an argument and returns an OCIImageBuilderTemplateParams struct and an error.
+// The function fetches various environment variables such as REPO_NAME, REPO_OWNER, JOB_TYPE, PULL_NUMBER, PULL_BASE_SHA, and PULL_PULL_SHA.
+// It validates these variables are present and sets them in the templateParameters struct.
+// It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, useKanikoConfigFromPR, buildArgs, and imageTags.
+// The function validates the templateParameters and returns it along with any error that occurred during the process.
+// TODO: rename this function to indicate that it's preparing ADO pipeline parameters for oci-image-builder pipeline.
 func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
 	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
@@ -248,30 +256,50 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	return templateParameters, nil
 }
 
+// buildInADO is a function that triggers the Azure DevOps (ADO) pipeline to build an image.
+// It takes an options struct as an argument and returns an error.
+// The function fetches the ADO_PAT environment variable and validates it's present.
+// ADO_PAT holds personal access token and is used to authenticate with the ADO API.
+// The function prepares the ADO pipeline parameters by calling the prepareADOTemplateParameters function.
+// It creates a new ADO client and prepares the ADO pipeline run arguments.
+// The function triggers the ADO build pipeline and waits for the pipeline run to finish.
+// It fetches the ADO pipeline run logs and prints them.
+// The function can trigger the ADO pipeline in preview mode if the adoPreviewRun flag is set to true.
+// In preview mode, the function prints the final yaml of the ADO pipeline run.
+// Running in preview mode requires the adoPreviewRunYamlPath flag to be set to the path of the yaml file with the ADO pipeline definition.
+// This is used for pipeline syntax validation.
+// If the pipeline run fails, the function returns an error.
+// If the pipeline run is successful, the function returns nil.
 // TODO(dekiel): refactor this function to accept clients as parameters to make it testable with mocks.
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
+	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API.
 	adoPAT, present := os.LookupEnv("ADO_PAT")
 	if !present {
 		return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
 	}
 
 	fmt.Println("Preparing ADO template parameters.")
+	// Preparing ADO pipeline parameters.
 	templateParameters, err := prepareADOTemplateParameters(o)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
 	}
 	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
 
+	// Creating a new ADO pipelines client.
 	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
 
 	var opts []adopipelines.RunPipelineArgsOptions
+	// If running in preview mode, add a preview run option to the ADO pipeline run arguments.
 	if o.adoPreviewRun {
 		fmt.Println("Running in preview mode.")
+		// Adding a path to the yaml file with the ADO pipeline definition for parsing it in a preview run.
 		opts = append(opts, adopipelines.PipelinePreviewRun(o.adoPreviewRunYamlPath))
 	}
 
 	fmt.Println("Preparing ADO pipeline run arguments.")
+	// Composing ADO pipeline run arguments.
 	runPipelineArgs, err := adopipelines.NewRunPipelineArgs(templateParameters, o.AdoConfig.GetADOConfig(), opts...)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed creating ADO pipeline run args, err: %s", err)
@@ -279,11 +307,13 @@ func buildInADO(o options) error {
 
 	fmt.Println("Triggering ADO build pipeline")
 	ctx := context.Background()
+	// Triggering ADO build pipeline.
 	pipelineRun, err := adoClient.RunPipeline(ctx, runPipelineArgs)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
 	}
 
+	// If running in preview mode, print the final yaml of ADO pipeline run for provided ADO pipeline definition and return.
 	if o.adoPreviewRun {
 		if pipelineRun.FinalYaml != nil {
 			fmt.Printf("ADO pipeline preview run final yaml\n: %s", *pipelineRun.FinalYaml)
@@ -293,13 +323,18 @@ func buildInADO(o options) error {
 		return nil
 	}
 
+	// Fetch the ADO pipeline run result.
+	// GetRunResult function waits for the pipeline runs to finish and returns the result.
+	// TODO(dekiel) make the timeout configurable instead of hardcoding it.
 	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 	}
 	fmt.Printf("ADO pipeline run finished with status: %s\n", *pipelineRunResult)
 
+	// Fetch the ADO pipeline run logs.
 	fmt.Println("Getting ADO pipeline run logs.")
+	// Creating a new ADO build client.
 	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
 	if err != nil {
 		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
@@ -311,13 +346,27 @@ func buildInADO(o options) error {
 		fmt.Printf("ADO pipeline image build logs:\n%s", logs)
 	}
 
+	// Handle the ADO pipeline run failure.
 	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
 		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
 	return nil
 }
 
+// buildLocally is a function that builds an image locally using either Kaniko or BuildKit.
+// It takes an options struct as an argument and returns an error.
+// The function determines the build tool to use based on the USE_BUILDKIT environment variable.
+// If USE_BUILDKIT is set to "true", BuildKit is used, otherwise Kaniko is used.
+// The function fetches various environment variables such as JOB_TYPE, PULL_NUMBER, and PULL_BASE_SHA.
+// It validates these variables are present and sets them in the appropriate variables.
+// It also sets other variables from the options struct such as context, envFile, name, dockerfile, variant, and tags.
+// The function validates the options and returns an error if any of the required options are not set or are invalid.
+// The function triggers the build process and waits for it to finish.
+// It fetches the build logs and prints them.
+// If the build fails, the function returns an error.
+// If the build is successful, the function returns nil.
 func buildLocally(o options) error {
+	// Determine the build tool to use based on the USE_BUILDKIT environment variable.
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
 		runFunc = runInBuildKit
@@ -327,6 +376,7 @@ func buildLocally(o options) error {
 	var variant Variants
 	var envs map[string]string
 
+	// Get the absolute path to the build context directory.
 	context, err := filepath.Abs(o.context)
 	if err != nil {
 		fmt.Println(err)
@@ -337,6 +387,7 @@ func buildLocally(o options) error {
 	// 		We should call this function before calling image building functions.
 	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
 
+	// Load environment variables from the envFile or variants.yaml file.
 	if len(o.envFile) > 0 {
 		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
 		if err != nil {
@@ -378,6 +429,7 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
+	// Get the tags for the image.
 	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
 	if err != nil {
 		return err
@@ -405,6 +457,7 @@ func buildLocally(o options) error {
 		return fmt.Errorf("build encountered error: %w", err)
 	}
 
+	// Sign the images.
 	err = signImages(&o, destinations)
 	if err != nil {
 		return fmt.Errorf("sign encountered error: %w", err)

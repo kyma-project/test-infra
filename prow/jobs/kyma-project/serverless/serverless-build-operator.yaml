@@ -3,50 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-project/serverless:
-    - name: pre-serverless-module-build
-      annotations:
-        description: "build serverless module"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-module-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-*
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240124-628d6dc7"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "components/operator/hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-              - name: MODULE_SHA
-                value: "PR-${PULL_NUMBER}"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-serverless-operator-build
       annotations:
         description: "serverless operator image build"
@@ -66,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -78,7 +34,8 @@ presubmits: # runs on PRs
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.dev"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
               - "--build-arg=IMG_DIRECTORY=dev"
               - "--build-arg=IMG_VERSION=PR-$(PULL_NUMBER)"
             env:
@@ -108,48 +65,6 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/serverless:
-    - name: post-serverless-module-build
-      annotations:
-        description: "serverless module build"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-module-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-*
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240124-628d6dc7"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "components/operator/hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: post-serverless-operator-build
       annotations:
         description: "build serverless operator"
@@ -170,7 +85,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
             securityContext:
               privileged: true
               seccompProfile:
@@ -182,7 +97,8 @@ postsubmits: # runs on main
               - "--name=serverless-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile.dev"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
               - "--build-arg=IMG_DIRECTORY=prod"
               - "--build-arg=IMG_VERSION=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_SHA)"

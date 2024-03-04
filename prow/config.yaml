@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240129-083480ba
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240129-083480ba
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240129-083480ba
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240129-083480ba
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240226-c8e21b7a
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240226-c8e21b7a
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240226-c8e21b7a
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240226-c8e21b7a
         resources:
           clonerefs:
             requests:
@@ -301,6 +301,11 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+        template-operator:
+          required_status_checks:
+            contexts:
+              - "lint"
+              - "Run integration tests"
         lifecycle-manager:
           required_status_checks:
             contexts:
@@ -338,6 +343,8 @@ branch-protection:
               - "docs validation"
               - "unit tests"
               - "build"
+          exclude:
+            - "^v3$"
         serverless:
           unmanaged: true
         keda-manager:
@@ -489,11 +496,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
       - name: GKE_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.27"
+        value: "1.28"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-kind-volume-mounts: "true"
-      run_if_changed: '^resources/|^lighthouse/|^nginx/'
+      run_if_changed: '^resources/|^lighthouse/|^nginx/|^src/'
       optional: true
       decorate: true
       cluster: untrusted-workload
@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240124-628d6dc7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240301-002a15d1
             securityContext:
               privileged: true
               seccompProfile:

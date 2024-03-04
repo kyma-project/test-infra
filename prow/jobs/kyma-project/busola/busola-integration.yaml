@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^resources/|^tests/|^nginx/"
+      run_if_changed: "^resources/|^tests/|^nginx/|^src/"
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240124-628d6dc7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240301-002a15d1
             securityContext:
               privileged: true
               seccompProfile:
@@ -54,7 +54,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^resources/|^tests/|^nginx/"
+      run_if_changed: "^resources/|^tests/|^nginx/|^src/"
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -62,7 +62,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240124-628d6dc7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240301-002a15d1
             securityContext:
               privileged: true
               seccompProfile:

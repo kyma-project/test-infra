@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 	"os"
 	"path/filepath"
+
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/spf13/cobra"
@@ -25,6 +26,7 @@ func ListCmd() *cobra.Command {
 		Long:    "List all images used in Helm charts by checking values.yaml files",
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 
 			// remove trailing slash to have consistent paths

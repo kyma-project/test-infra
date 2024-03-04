@@ -13,7 +13,7 @@ templates:
               - "^release-*"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -39,57 +39,6 @@ templates:
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
-              - jobConfig:
-                  name: pre-keda-module-build
-                  annotations:
-                    owner: otters
-                    description: keda module build job
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
-                    MODULE_SHA: "PR-${PULL_NUMBER}"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                  local:
-                    - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: post-keda-module-build
-                  annotations:
-                    owner: otters
-                    description: keda module build job
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:

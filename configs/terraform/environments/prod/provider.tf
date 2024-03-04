@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.76.0"
+      version = ">= 5.6.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -11,6 +11,10 @@ terraform {
     kubectl = {
       source  = "alekc/kubectl"
       version = ">= 2.0.0"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
     }
   }
 }
@@ -21,6 +25,16 @@ terraform {
 # data.google_container_cluster gets the k8s cluster details.
 # Cluster details provides the endpoint and cluster certificate to authenticate to the k8s cluster.
 # Cluster details are used to configure the k8s and kubectl providers.
+
+provider "github" {
+  alias = "kyma_project"
+  owner = var.kyma-project-github-org
+}
+
+provider "github" {
+  alias = "kyma_incubator"
+  owner = var.kyma-incubator-github-org
+}
 
 provider "google" {
   project = var.gcp_project_id

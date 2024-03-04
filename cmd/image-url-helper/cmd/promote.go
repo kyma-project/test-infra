@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/promote"
 	"os"
 	"path/filepath"
+
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/promote"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/spf13/cobra"
@@ -27,6 +28,7 @@ func PromoteCmd() *cobra.Command {
 		Long:    "Replace container registry and image version values in values.yaml files with selected ones",
 		Example: "image-url-helper promote --target-container-registry abc --target-tag release-1",
 		Args:    cobra.ExactArgs(0),
+		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
