@@ -12,7 +12,7 @@ process is executed in an Azure DevOps pipeline, providing a slc-29 compliant in
 2. **Obtaining the OIDC Token**: The workflow uses GitHub action to call GitHub's OIDC identity provider issuing an OIDC token.
    This token is used to securely pass information about the workflow.
 
-3. **Trigger oci-image-builder pipeline**: Github action running Image builder client call ADO API to trigger `oci-image-buidler` pipeline.
+3. **Trigger oci-image-builder pipeline**: Github action running Image builder client calls ADO API to trigger `oci-image-buidler` pipeline.
    The OIDC token, along with additional parameters required by the `oci-image-builder` pipeline, are passed as parameters to the pipeline.
    These parameters values are collected from data defined by the user and GitHub OIDC identity provider.
 
@@ -41,7 +41,7 @@ These claims are used to identify the workflow triggering the build pipeline and
 is essential for slc-29 compliance, as it ensures that the exact version of the code that was tested in the PR or for which the push was
 merged is built.
 
-The validity and integrity of OIDC token must be validated in `oci-image-builcer` pipeline and fail pipeline execution if validation fails.
+The validity and integrity of OIDC token must be validated in `oci-image-builder` pipeline and fail pipeline execution if validation fails.
 Because OIDC token uses `JWT` format, it can be validated with a standard validation process against GitHub OIDC identity provider.
 
 ### Workflow Identification Claims
