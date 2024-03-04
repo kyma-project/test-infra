@@ -64,7 +64,11 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
 }
 
 resource "google_project_iam_member" "terraform_planner_workloads_project_browser" {
+  for_each = toset([
+    "roles/viewer",
+    "roles/storage.objectViewer",
+  ])
   project = var.workloads_project_id
-  role    = "roles/viewer"
+  role    = each.key
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
