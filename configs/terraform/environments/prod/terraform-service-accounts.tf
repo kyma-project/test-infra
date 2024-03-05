@@ -67,7 +67,7 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
   service_account_id = google_service_account.terraform_planner.name
 }
 
-resource "google_project_iam_member" "terraform_planner_workloads_project_browser" {
+resource "google_project_iam_member" "terraform_planner_workloads_project_read_access" {
   for_each = toset([
     "roles/viewer",
   ])
