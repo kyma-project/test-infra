@@ -50,7 +50,9 @@ The OIDC token contains the following claims that can be used to identify the wo
 
 Sure, here's how you can format the selected text as an unordered list in Markdown, with the words before the colon surrounded by backticks:
 
-- `iss`: The issuer of the token. This is always https://token.actions.githubusercontent.com.
+<!-- markdown-link-check-disable -->
+
+- `iss`: The issuer of the token. This is always https://token.actions.githubusercontent.com. <!-- markdown-link-check-enable-->
 - `iat`: The time when the token is issued.
 - `exp`: The time when the token expires.
 - `jti`: A unique identifier for the token.
