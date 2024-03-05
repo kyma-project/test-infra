@@ -91,25 +91,6 @@ templates:
                   local:
                     - job_build
               - jobConfig:
-                  name: pre-main-application-connector-manager-verify
-                  annotations:
-                    owner: framefrog
-                    description: runs application-connector manager verity job on k3d VM
-                  always_run: "true"
-                  optional: "false"
-                  args:
-                    - bash
-                    - -c
-                    - make -C hack/ci k3d-integration-test
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_presubmit # TODO: Prepare application-connector Image
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
-              - jobConfig:
                   name: post-main-application-connector-manager-upgrade-latest-to-main
                   annotations:
                     owner: framefrog
