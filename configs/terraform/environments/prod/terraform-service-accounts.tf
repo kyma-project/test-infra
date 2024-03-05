@@ -49,7 +49,7 @@ resource "google_service_account" "terraform_planner" {
 }
 
 # Grant browser role to terraform planner service account
-resource "google_project_iam_member" "terraform_planner_prow_project_browser" {
+resource "google_project_iam_member" "terraform_planner_prow_project_read_access" {
   for_each = toset([
     "roles/viewer",
     "roles/storage.objectAdmin"
