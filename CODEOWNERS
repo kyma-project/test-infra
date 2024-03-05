@@ -27,7 +27,7 @@
 /prow/jobs/cli @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/kubeconfig-service @kyma-project/operations @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/components/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot
+prow/jobs/kyma-project/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/provisioner @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/schema-migrator @kyma-project/gopher @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot
