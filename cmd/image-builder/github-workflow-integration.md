@@ -48,8 +48,6 @@ Because the OIDC token uses the `JWT` format, it can be validated with a standar
 
 The OIDC token contains the following claims that can be used to identify the workflow that triggered the build pipeline. These include:
 
-Sure, here's how you can format the selected text as an unordered list in Markdown, with the words before the colon surrounded by backticks:
-
 <!-- markdown-link-check-disable -->
 
 - `iss`: The issuer of the token. This is always https://token.actions.githubusercontent.com. <!-- markdown-link-check-enable-->
@@ -71,8 +69,6 @@ Sure, here's how you can format the selected text as an unordered list in Markdo
 ### Source Code Cloning Claims
 
 The OIDC token also contains claims that can be used to clone the appropriate version of the source code:
-
-Sure, here's the selected text rewritten with present tense verbs, while keeping the formatting:
 
 - `repository`: The repository where the workflow run occurs.
 - `repository_owner`: The owner of the repository where the workflow run occurs.
