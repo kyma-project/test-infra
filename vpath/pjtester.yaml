@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma:
+      kyma-metrics-collector:
         - pjName: "pull-kyma-metrics-collector-build"
           report: false
 prConfigs: #
