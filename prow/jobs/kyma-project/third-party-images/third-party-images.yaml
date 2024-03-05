@@ -121,6 +121,12 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -129,6 +135,7 @@ presubmits: # runs on PRs
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -137,16 +144,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
         description: "Build tpi/k8s-tools image."
@@ -270,6 +271,12 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -278,6 +285,7 @@ presubmits: # runs on PRs
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 6Gi
@@ -288,16 +296,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/third-party-images:
@@ -428,6 +430,12 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -437,6 +445,7 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -445,16 +454,10 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-main-tpi-k8s-tools
       annotations:
         description: "Build tpi/k8s-tools image."
@@ -586,6 +589,12 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -595,6 +604,7 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 6Gi
@@ -605,14 +615,8 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
