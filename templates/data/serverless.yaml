@@ -15,7 +15,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-controller-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -33,7 +33,7 @@ templates:
                     - branches_legacy
               - jobConfig:
                   name: post-serverless-controller-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -55,7 +55,7 @@ templates:
                     - branches_legacy
               - jobConfig:
                   name: pre-serverless-webhook-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -73,7 +73,7 @@ templates:
                     - branches_legacy
               - jobConfig:
                   name: post-serverless-webhook-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -95,7 +95,7 @@ templates:
                     - branches_legacy
               - jobConfig:
                   name: pre-serverless-jobinit-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -113,7 +113,7 @@ templates:
                     - branches_legacy
               - jobConfig:
                   name: post-serverless-jobinit-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -151,7 +151,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-controller-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -169,7 +169,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-controller-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -191,7 +191,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-webhook-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -209,7 +209,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-webhook-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -231,7 +231,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-jobinit-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -249,7 +249,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-jobinit-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -282,7 +282,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
@@ -299,7 +299,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
@@ -321,7 +321,7 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v18-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
@@ -338,7 +338,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v18-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
@@ -360,7 +360,7 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.9 build job
@@ -377,7 +377,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.9 build job
@@ -399,7 +399,7 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.12 build job
@@ -416,7 +416,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.12 build job
@@ -438,7 +438,7 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-java17-jvm-alpha-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -455,7 +455,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-java17-jvm-alpha-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -567,7 +567,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-controller-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function controller build for a release.
@@ -585,7 +585,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-webhook-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function webhook build for a release.
@@ -603,7 +603,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-jobinit-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function jobinit build for a release.
@@ -621,7 +621,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs16 build for a release.
@@ -639,7 +639,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v18-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs18 build for a release.
@@ -657,7 +657,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-python39-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.9 build for a release.
@@ -675,7 +675,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.9 build for a release.
@@ -693,7 +693,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function python3.12 build for a release.
@@ -715,7 +715,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-gitserver-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: gitserver build job
@@ -732,7 +732,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gitserver-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: gitserver build job
