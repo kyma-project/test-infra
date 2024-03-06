@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-directory-size-exporter-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: huskies
                     description: Pre-submit job to build directory-size-exporter image.
@@ -23,7 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-directory-size-exporter-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build directory-size-exporter image.                  
