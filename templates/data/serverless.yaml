@@ -360,7 +360,7 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   optional: true
                   annotations:
                     owner: otters
@@ -378,7 +378,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   optional: true
                   annotations:
                     owner: otters
@@ -698,7 +698,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240306-3169798c"
                   annotations:
                     owner: otters
                     description: function nodejs20 build for a release.
