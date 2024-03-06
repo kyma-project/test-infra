@@ -47,16 +47,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/directory-size-exporter:
