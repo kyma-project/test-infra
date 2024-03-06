@@ -64,7 +64,7 @@ resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access"
   members = [
     "serviceAccount:${google_service_account.terraform_planner.email}"
   ]
-  role = "roles/storage.objectAdmin"
+  role = "roles/storage.objectUser"
 }
 
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
