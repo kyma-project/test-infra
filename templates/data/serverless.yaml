@@ -359,6 +359,47 @@ templates:
                     - skip_if_only_changed_documentation
                     - post_branches
               - jobConfig:
+                  name: pre-serverless-runtimes-nodejs-v20-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  optional: true
+                  annotations:
+                    owner: otters
+                    description: function nodejs20 build job
+                  args:
+                    - "--name=function-runtime-nodejs20"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/runtimes/nodejs"
+                    - "--dockerfile=nodejs20/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-serverless-runtimes-nodejs-v20-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  optional: true
+                  annotations:
+                    owner: otters
+                    description: function nodej20 build job
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=function-runtime-nodejs20"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/runtimes/nodejs"
+                    - "--dockerfile=nodejs20/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_SHA)"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
+                    - post_branches
+              - jobConfig:
                   name: pre-serverless-runtimes-python39-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
                   annotations:
@@ -648,6 +689,24 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - release_image_build
+              - jobConfig:
+                  name: release-serverless-runtimes-nodejs-v20-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+                  annotations:
+                    owner: otters
+                    description: function nodejs20 build for a release.
+                  args:
+                    - "--name=function-runtime-nodejs20"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/runtimes/nodejs"
+                    - "--dockerfile=nodejs20/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
