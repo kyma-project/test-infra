@@ -25,12 +25,6 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -38,7 +32,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -47,10 +40,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/telemetry-manager:
@@ -83,12 +82,6 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -97,7 +90,6 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
-              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -106,10 +98,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-telemetry-manager-build-release
       annotations:
         description: "Post-submit job to build telemetry-manager image for a release."
@@ -138,12 +136,6 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -152,7 +144,6 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
-              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -161,8 +152,14 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

@@ -12,11 +12,18 @@ templates:
                     owner: huskies
                     description: Pre-submit job to build directory-size-exporter image.
                   always_run: true
+                  env:
+                    - name: "ADO_PAT"
+                      valueFrom:
+                        secretKeyRef:
+                          name: "image-builder-ado-token"
+                          key: "token"
                   args:
                     - "--name=directory-size-exporter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -33,11 +40,18 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   slack_channel: huskies-notifications
+                  env:
+                    - name: "ADO_PAT"
+                      valueFrom:
+                        secretKeyRef:
+                          name: "image-builder-ado-token"
+                          key: "token"
                   args:
                     - "--name=directory-size-exporter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
