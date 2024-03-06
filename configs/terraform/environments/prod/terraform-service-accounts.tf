@@ -37,6 +37,15 @@ resource "google_project_iam_member" "terraform_executor_workloads_project_owner
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
+resource "google_project_iam_custom_role" "planner_read_access_role" {
+  role_id = "terraformPlannerReadAccess"
+  title   = "Terraform Planner Read Access"
+  permissions = [
+    "container.secrets.get",
+    "storage.buckets.getIamPolicy"
+  ]
+}
+
 # Create the terraform planner GCP service account.
 # Grants the browser permissions to refresh state of the resources.
 
@@ -48,7 +57,7 @@ resource "google_service_account" "terraform_planner" {
   description = "Identity of terraform planner"
 }
 
-# Grant browser role to terraform planner service account
+# Grant viewer role to terraform planner service account
 resource "google_project_iam_member" "terraform_planner_prow_project_read_access" {
   for_each = toset([
     "roles/viewer",
@@ -56,6 +65,12 @@ resource "google_project_iam_member" "terraform_planner_prow_project_read_access
   ])
   project = var.terraform_planner_gcp_service_account.project_id
   role    = each.key
+  member  = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+resource "google_project_iam_member" "terraform_planner_prow_project_read_role" {
+  project = var.terraform_planner_gcp_service_account.project_id
+  role    = google_project_iam_custom_role.planner_read_access_role.name
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
