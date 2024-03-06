@@ -113,6 +113,7 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 
 		w.Header().Add("content-type", "application/json")
 		w.Header().Add("Access-Control-Allow-Origin", fmt.Sprintf("https://pages.%s", ghURL))
+		// TODO: The web-application does not define an HSTS header, leaving it vulnerable to attack.
 		w.Write(b)
 	}
 }
