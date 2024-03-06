@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -66,7 +66,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -113,7 +113,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+              - "--dockerfile=python39/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -160,7 +160,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -172,7 +172,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-python312"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+              - "--dockerfile=python312/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -207,7 +207,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -261,7 +261,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -314,7 +314,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -367,7 +367,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -379,7 +379,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+              - "--dockerfile=python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
@@ -420,7 +420,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -432,7 +432,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python312"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+              - "--dockerfile=python312/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
@@ -473,7 +473,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:

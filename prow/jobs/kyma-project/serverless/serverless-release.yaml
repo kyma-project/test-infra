@@ -22,7 +22,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc"
             securityContext:
               privileged: true
               seccompProfile:
@@ -80,7 +80,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -131,7 +131,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -182,7 +182,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -233,7 +233,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -284,7 +284,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -335,7 +335,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -347,7 +347,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python39"
-              - "--dockerfile=components/runtimes/python39/Dockerfile"
+              - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
@@ -386,7 +386,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -398,7 +398,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+              - "--dockerfile=python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
@@ -437,7 +437,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240305-3dfcc8d9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -449,7 +449,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python312"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+              - "--dockerfile=python312/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
