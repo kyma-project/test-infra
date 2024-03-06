@@ -52,11 +52,19 @@ resource "google_service_account" "terraform_planner" {
 resource "google_project_iam_member" "terraform_planner_prow_project_read_access" {
   for_each = toset([
     "roles/viewer",
-    "roles/storage.objectAdmin"
+    "roles/storage.objectViewer"
   ])
   project = var.terraform_planner_gcp_service_account.project_id
   role    = each.key
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access" {
+  bucket = "tf-state-kyma-project"
+  members = [
+    "serviceAccount:${google_service_account.terraform_planner.email}"
+  ]
+  role = "roles/storage.objectAdmin"
 }
 
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
@@ -66,6 +74,7 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
 }
+
 
 resource "google_project_iam_member" "terraform_planner_workloads_project_read_access" {
   for_each = toset([
