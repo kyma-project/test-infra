@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240226-c8e21b7a
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240226-c8e21b7a
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240226-c8e21b7a
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240226-c8e21b7a
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240304-ef5ac58b
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240304-ef5ac58b
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240304-ef5ac58b
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240304-ef5ac58b
         resources:
           clonerefs:
             requests:
@@ -294,6 +294,10 @@ branch-protection:
               - "run-keb-chart-tests / finish-keb-chart-tests"
               - "markdown-link-check"
               - "validate-labels"
+          exclude:
+            - "^gh-pages$"
+            - "^sec-scanners-config-"
+            - "^bump-keb-"
         btp-manager:
           required_status_checks:
             contexts:
@@ -301,6 +305,8 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+          exclude:
+            - "^sec-scanners-config-"
         template-operator:
           required_status_checks:
             contexts:
@@ -333,6 +339,7 @@ branch-protection:
           required_status_checks:
             contexts:
             - "E2E (watcher-enqueue)"
+            - "E2E (watcher-metrics)"
         cli:
           required_status_checks:
             contexts:
@@ -410,6 +417,7 @@ tide:
     kyma-project/serverless: squash
     kyma-project/keda-manager: squash
     kyma-project/telemetry-manager: squash
+    kyma-project/kyma-metrics-collector: squash
     kyma-project/directory-size-exporter: squash
     kyma-project/eventing-publisher-proxy: squash
     kyma-project/eventing-manager: squash

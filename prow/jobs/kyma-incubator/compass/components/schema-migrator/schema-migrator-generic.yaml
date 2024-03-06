@@ -1,12 +1,12 @@
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pull-schema-migrator-build
+    - name: pull-schema-migrator-build-compass
       annotations:
         description: "Building Schema Migrator Compass component"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-schema-migrator-build"
+        prow.k8s.io/pubsub.runID: "pull-schema-migrator-build-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/schema-migrator/'
@@ -68,13 +68,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-schema-migrator-build
+    - name: post-schema-migrator-build-compass
       annotations:
         description: "Building Schema Migrator Compass component after merge"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-schema-migrator-build"
+        prow.k8s.io/pubsub.runID: "post-schema-migrator-build-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
