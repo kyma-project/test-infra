@@ -18,7 +18,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-telemetry-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-12455737"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
                   annotations:
                     owner: huskies
                     description: Pre-submit job to build telemetry-manager image.
@@ -34,7 +34,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-telemetry-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-12455737"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build telemetry-manager image.
@@ -57,7 +57,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: post-telemetry-manager-build-release
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-12455737"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build telemetry-manager image for a release.
