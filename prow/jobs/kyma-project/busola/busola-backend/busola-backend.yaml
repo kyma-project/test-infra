@@ -18,6 +18,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
         - ^ui5$
+        - ^in-page-edit$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc"
