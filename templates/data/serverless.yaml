@@ -281,45 +281,6 @@ templates:
           - repoName: kyma-project/serverless
             jobs:
               - jobConfig:
-                  name: pre-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
-                  annotations:
-                    owner: otters
-                    description: function nodejs16 build job
-                  args:
-                    - "--name=function-runtime-nodejs16"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs16/Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-                  local:
-                    - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: post-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
-                  annotations:
-                    owner: otters
-                    description: function nodejs16 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=function-runtime-nodejs16"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs16/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                    - "--tag=$(PULL_BASE_SHA)"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - skip_if_only_changed_documentation
-                    - post_branches
-              - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v18-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
@@ -653,24 +614,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - release_image_build
-              - jobConfig:
-                  name: release-serverless-runtimes-nodejs-v16-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
-                  annotations:
-                    owner: otters
-                    description: function nodejs16 build for a release.
-                  args:
-                    - "--name=function-runtime-nodejs16"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs16/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:

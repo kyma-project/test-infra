@@ -3,53 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-project/serverless:
-    - name: pre-serverless-runtimes-nodejs-v16-build
-      annotations:
-        description: "function nodejs16 build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v16-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-nodejs16"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/runtimes/nodejs"
-              - "--dockerfile=nodejs16/Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pre-serverless-runtimes-nodejs-v18-build
       annotations:
         description: "function nodejs18 build job"
@@ -289,59 +242,6 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/serverless:
-    - name: post-serverless-runtimes-nodejs-v16-build
-      annotations:
-        description: "function nodejs16 build job"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-nodejs-v16-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-*
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-nodejs16"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/runtimes/nodejs"
-              - "--dockerfile=nodejs16/Dockerfile"
-              - "--tag=$(PULL_BASE_REF)"
-              - "--tag=$(PULL_BASE_SHA)"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-serverless-runtimes-nodejs-v18-build
       annotations:
         description: "function nodejs18 build job"
