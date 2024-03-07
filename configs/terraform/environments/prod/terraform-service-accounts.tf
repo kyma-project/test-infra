@@ -37,12 +37,12 @@ resource "google_project_iam_member" "terraform_executor_workloads_project_owner
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
+# Custom role that allows terraform planner to read kubernetes secrets
 resource "google_project_iam_custom_role" "planner_read_access_role" {
   role_id = "terraformPlannerReadAccess"
   title   = "Terraform Planner Read Access"
   permissions = [
     "container.secrets.get",
-    "storage.buckets.getIamPolicy"
   ]
 }
 
@@ -61,7 +61,8 @@ resource "google_service_account" "terraform_planner" {
 resource "google_project_iam_member" "terraform_planner_prow_project_read_access" {
   for_each = toset([
     "roles/viewer",
-    "roles/storage.objectViewer"
+    "roles/storage.objectViewer",
+    "roles/iam.securityReviewer"
   ])
   project = var.terraform_planner_gcp_service_account.project_id
   role    = each.key
