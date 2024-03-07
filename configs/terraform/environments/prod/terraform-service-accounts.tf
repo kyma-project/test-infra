@@ -61,12 +61,6 @@ resource "google_project_iam_member" "terraform_planner_prow_project_read_access
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
-resource "google_project_iam_member" "terraform_planner_prow_project_read_role" {
-  project = var.terraform_planner_gcp_service_account.project_id
-  role    = google_project_iam_custom_role.planner_read_access_role.name
-  member  = "serviceAccount:${google_service_account.terraform_planner.email}"
-}
-
 resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access" {
   bucket = "tf-state-kyma-project"
   members = [
