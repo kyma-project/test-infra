@@ -18,7 +18,7 @@ templates:
             jobs:
               - jobConfig:
                   name: rel-eventing-webhook-certificates-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: skydivingtunas
                     description: Image to generate certificates for eventing webhooks.
