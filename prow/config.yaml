@@ -339,6 +339,7 @@ branch-protection:
           required_status_checks:
             contexts:
             - "E2E (watcher-enqueue)"
+            - "E2E (watcher-metrics)"
         cli:
           required_status_checks:
             contexts:

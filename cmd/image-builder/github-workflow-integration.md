@@ -12,9 +12,11 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 2. **Obtaining the OIDC Token**: The workflow uses GitHub action to call GitHub's OIDC identity provider issuing an OIDC token.
    This token is used to securely pass information about the workflow.
 
-3. **Trigger oci-image-builder pipeline**: GitHub action running Image Builder client calls ADO API to trigger the `oci-image-builder` pipeline.
-   The OIDC token and additional parameters required by the `oci-image-builder` pipeline are passed as parameters to the pipeline.
-   These parameters' values are collected from data defined by the user and GitHub OIDC identity provider.
+3. **Trigger oci-image-builder pipeline**: GitHub action running Image Builder client uses a Personal Access Token (PAT) to authenticate
+   with the Azure DevOps (ADO) API and trigger the `oci-image-builder` pipeline. The OIDC token and additional parameters required by
+   the `oci-image-builder` pipeline are passed as parameters to the pipeline. These parameters' values are collected from data defined by
+   the user and GitHub OIDC identity provider. The OIDC token is used for secure and authorized passing of information about the workflow
+   and the image to build.
 
 4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps, detects a call originating from GitHub and
    validates the OIDC token against GitHub's

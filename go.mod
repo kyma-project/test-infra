@@ -11,7 +11,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/cenkalti/backoff/v4 v4.2.1
-	github.com/cloudevents/sdk-go/v2 v2.15.1
+	github.com/cloudevents/sdk-go/v2 v2.15.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-playground/validator/v10 v10.19.0
@@ -38,7 +38,7 @@ require (
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/net v0.22.0
 	golang.org/x/oauth2 v0.18.0
-	google.golang.org/api v0.167.0
+	google.golang.org/api v0.168.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
@@ -175,11 +175,11 @@ require (
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/vbatts/tar-split v0.11.3 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.48.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.48.0 // indirect
-	go.opentelemetry.io/otel v1.23.0 // indirect
-	go.opentelemetry.io/otel/metric v1.23.0 // indirect
-	go.opentelemetry.io/otel/trace v1.23.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
+	go.opentelemetry.io/otel v1.24.0 // indirect
+	go.opentelemetry.io/otel/metric v1.24.0 // indirect
+	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go4.org v0.0.0-20201209231011-d4a079459e60 // indirect
