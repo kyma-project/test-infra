@@ -28,10 +28,9 @@ postsubmits: # runs on main
             resources:
               requests:
                 memory: 6Gi
-                cpu: 3
+                cpu: 1
               limits:
                 memory: 6Gi
-                cpu: 3
             volumeMounts:
               - name: config
                 mountPath: /config
