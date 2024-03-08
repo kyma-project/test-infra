@@ -8,11 +8,11 @@ templates:
             limits_memory: 6Gi
         jobConfigs:
           - repoName: "kyma-project/third-party-images"
-            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
             jobs:
               - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: goat
                     description: builds cloudsql-proxy image
@@ -29,7 +29,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-cloudsql-proxy"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: goat
                     description: builds cloudsql-proxy image
@@ -49,7 +49,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "pre-main-tpi-docker-registry"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: otters
                     description: docker-registry tpi build job
@@ -66,7 +66,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-docker-registry"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: otters
                     description: docker-registry tpi build job
@@ -88,7 +88,7 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-fluent-bit"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: huskies
                     description: Pre-submit job to build Fluent Bit image.
@@ -106,7 +106,7 @@ templates:
 
               - jobConfig:
                   name: "post-main-tpi-fluent-bit"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build Fluent Bit image.
@@ -128,7 +128,7 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-k8s-tools"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: neighbors
                     description: "Build tpi/k8s-tools image."
@@ -144,7 +144,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-k8s-tools"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: neighbors
                     description: "Build tpi/k8s-tools image."
@@ -163,7 +163,7 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-kaniko-executer"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: otters
                     description: kaniko-executer tpi build job
@@ -180,7 +180,7 @@ templates:
                     - image-builder-buildkit
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: otters
                     description: kaniko-executer tpi build job
@@ -202,7 +202,7 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-otel-collector"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: huskies
                     description: Pre-submit job to build OpenTelemetry Collector image.
@@ -221,7 +221,7 @@ templates:
                     - "increased_resources"
               - jobConfig:
                   name: "post-main-tpi-otel-collector"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240307-918a3bd8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build OpenTelemetry Collector image.
