@@ -8,7 +8,7 @@ periodics:
     cron: "54 * * * *" # at 54th minute every hour
     decorate: true
     decoration_config:
-      timeout: 5h
+      timeout: 5h 
     cluster: trusted-workload
     annotations:
       owner: neighbors
