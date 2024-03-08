@@ -12,7 +12,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-7578d5a7
+            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240308-078766d1
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240307-dca7892c
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240308-230cf0c1
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
