@@ -20,7 +20,7 @@ resource "github_actions_variable" "github_terraform_executor_secret_name" {
 }
 
 
-# Name of the secret manager's secret holding kyma bot token with github variables read permissions
+# Name of the secret manager's secret holding kyma bot token for plan prod terraform workflow.
 resource "github_actions_variable" "github_terraform_planner_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
