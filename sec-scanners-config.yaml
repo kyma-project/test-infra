@@ -61,7 +61,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240308-661ef9e1
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
-    - maven:3.9.6-eclipse-temurin-17
+    - maven:3.9.6-eclipse-temurin-17-alpine
     - prom/pushgateway:v1.6.0
     - quay.io/prometheus-operator/prometheus-operator:v0.67.1
 whitesource:

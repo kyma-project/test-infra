@@ -80,7 +80,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "maven:3.9.6-eclipse-temurin-17"
+          - image: "maven:3.9.6-eclipse-temurin-17-alpine"
             securityContext:
               privileged: false
               seccompProfile:
@@ -90,7 +90,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/ord-service && ./run.sh --no-start"
+              - "cd components/ord-service && ./run.sh --no-start --install-git"
             resources:
               requests:
                 memory: 6Gi
