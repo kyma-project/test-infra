@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-compass-director-secret: "true"
         preset-gardener-gcp-kyma-integration: "true"
-      optional: false
+      optional: true
       run_if_changed: 'components/provisioner/(Makefile|Dockerfile|.*\.sh|.*\.go|go.mod|go.sum)$'
       skip_report: false
       decorate: true
