@@ -384,7 +384,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240304-ef5ac58b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240311-96753558"
             securityContext:
               privileged: false
               seccompProfile:
