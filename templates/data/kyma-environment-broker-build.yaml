@@ -198,7 +198,7 @@ templates:
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240312-98e002de"
                   annotations:
                     owner: "gopher"
-                    description: "Archives deleted instances, removes operations and runtime states. Job build on PR"
+                    description: "Archives deleted instances, removes operations and runtime states. Job built on PR"
                   run_if_changed: ".+"
                   args:
                     - --name=kyma-environment-archiver-job
@@ -216,7 +216,7 @@ templates:
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240312-98e002de"
                   annotations:
                     owner: "gopher"
-                    description: "Archives deleted instances, removes operations and runtime states. Job build on tag creation"
+                    description: "Archives deleted instances, removes operations and runtime states. Job built on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:

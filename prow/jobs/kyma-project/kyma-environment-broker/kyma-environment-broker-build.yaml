@@ -244,7 +244,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-keb-archiver-job-build
       annotations:
-        description: "Archives deleted instances, removes operations and runtime states. Job build on PR"
+        description: "Archives deleted instances, removes operations and runtime states. Job built on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -599,7 +599,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-keb-archiver-job-release-build
       annotations:
-        description: "Archives deleted instances, removes operations and runtime states. Job build on tag creation"
+        description: "Archives deleted instances, removes operations and runtime states. Job built on tag creation"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
