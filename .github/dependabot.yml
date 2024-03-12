@@ -251,3 +251,4 @@ updates:
       - dependency-name: "gaurav-nelson/github-action-markdown-link-check"
       - dependency-name: "slackapi/slack-github-action"
       - dependency-name: "shmokmt/actions-setup-tfcmt"
+      - dependency-name: "gitleaks/gitleaks-action"
