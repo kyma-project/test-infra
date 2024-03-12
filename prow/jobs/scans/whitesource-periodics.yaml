@@ -25,7 +25,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240308-661ef9e1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240312-381e9aef"
             securityContext:
               privileged: false
               seccompProfile:
@@ -72,7 +72,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240308-661ef9e1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240312-381e9aef"
             securityContext:
               privileged: false
               seccompProfile:
@@ -119,7 +119,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240308-661ef9e1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240312-381e9aef"
             securityContext:
               privileged: false
               seccompProfile:
