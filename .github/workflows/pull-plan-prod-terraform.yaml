@@ -47,12 +47,12 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
           service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-planner@sap-kyma-prow.iam.gserviceaccount.com"
       
-      - name: Retrieve Terraform Executor github PAT
+      - name: Retrieve Terraform Planner github PAT
         id: secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-             gh-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
+             gh-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
 
       # Build tofu CLI from source until setup-opentofu action will become stable
 
@@ -99,7 +99,7 @@ jobs:
 
       - name: Terraform Plan
         env:
-          GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-executor-token }}
+          GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-planner-token }}
         id: terraform_plan
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
 
