@@ -14,7 +14,7 @@ variable "gitleaks_gcp_service_account" {
 
 variable "gitleaks_repositories" {
   type    = set(string)
-  default = ["test-infra", "kyma", "community"]
+  default = ["test-infra"]
 
   description = "List of repositories that can use gitleaks secrets accesor service account"
 }

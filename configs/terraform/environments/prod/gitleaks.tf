@@ -15,8 +15,24 @@ data "github_repository" "gitleaks_repository" {
 resource "google_service_account_iam_binding" "gitleaks_workload_identity_federation_binding" {
   for_each = data.github_repository.gitleaks_repository
   members = [
-    "principal://iam.googleapis.com/projects/${data.google_client_config.gcp.project}/locations/global/workloadIdentityPools/${module.gh_com_kyma_project_workload_identity_federation.provider_name}/subject/repository_id:${each.value.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.gitleaks_workflow_name}"
+    "principal://iam.googleapis.com/projects/${data.google_client_config.gcp.project}/locations/global/workloadIdentityPools/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${each.value.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.gitleaks_workflow_name}"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.gitleaks_secret_accesor.name
+}
+
+resource "github_actions_variable" "gcp_gitleaks_sercet_accesor_service_account_email" {
+  for_each      = data.github_repository.gitleaks_repository
+  provider      = github.kyma_project
+  repository    = each.key
+  variable_name = "GCP_GITLEAKS_SERCET_ACCESOR_SERVICE_ACCOUNT_EMAIL"
+  value         = google_service_account.gitleaks_secret_accesor.email
+}
+
+resource "github_actions_variable" "github_gitleaks_license_secret_name" {
+  for_each      = data.github_repository.gitleaks_repository
+  provider      = github.kyma_project
+  repository    = each.key
+  variable_name = "GH_GITLEAKS_LICENSE_SECRET_NAME"
+  value         = "gitleaks-kyma-license-key"
 }
