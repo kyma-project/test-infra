@@ -6,33 +6,24 @@ resource "google_service_account" "gitleaks_secret_accesor" {
   description  = "Identity of gitleaks. It's used to retrieve secrets from secret manager"
 }
 
-data "github_repository" "gitleaks_repository" {
-  for_each = var.gitleaks_repositories
-  provider = github.kyma_project
-  name     = each.value
-}
-
 resource "google_service_account_iam_binding" "gitleaks_workload_identity_federation_binding" {
-  for_each = data.github_repository.gitleaks_repository
   members = [
-    "principal://iam.googleapis.com/projects/${data.google_client_config.gcp.project}/locations/global/workloadIdentityPools/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${each.value.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.gitleaks_workflow_name}"
+    "principal://iam.googleapis.com/projects/${data.google_client_config.gcp.project}/locations/global/workloadIdentityPools/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.gitleaks_workflow_name}"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.gitleaks_secret_accesor.name
 }
 
-resource "github_actions_variable" "gcp_gitleaks_sercet_accesor_service_account_email" {
-  for_each      = data.github_repository.gitleaks_repository
+resource "github_actions_organization_variable" "github_gitleaks_secret_accesot_service_account_email" {
   provider      = github.kyma_project
-  repository    = each.key
   variable_name = "GCP_GITLEAKS_SERCET_ACCESOR_SERVICE_ACCOUNT_EMAIL"
+  visibility    = "all"
   value         = google_service_account.gitleaks_secret_accesor.email
 }
 
-resource "github_actions_variable" "github_gitleaks_license_secret_name" {
-  for_each      = data.github_repository.gitleaks_repository
+resource "github_actions_organization_variable" "github_gitleaks_license_secret_name" {
   provider      = github.kyma_project
-  repository    = each.key
   variable_name = "GH_GITLEAKS_LICENSE_SECRET_NAME"
+  visibility    = "all"
   value         = "gitleaks-kyma-license-key"
 }
