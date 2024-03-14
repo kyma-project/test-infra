@@ -22,7 +22,8 @@ variable "gitleaks_workflow_name" {
   description = "Name of the gitleaks workflow"
 }
 
-# List of repositories that can run gitleaks workflows with gitleaks service account
+# List of repositories that can run gitleaks workflows with gitleaks service account. 
+# Such list required due to definition of workload identity federation subject and security requirements
 variable "gitleaks_repositories" {
   type    = set(string)
   default = ["test-infra"]
