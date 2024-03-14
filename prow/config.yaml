@@ -335,6 +335,8 @@ branch-protection:
               - "lint"
               - "Kustomize (dry-run)"
               - "Kustomize (dry-run-control-plane)"
+              - "markdown-link-check"
+              - "Diff manifests"
         runtime-watcher:
           required_status_checks:
             contexts:
