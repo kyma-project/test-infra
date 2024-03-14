@@ -14,7 +14,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-          service_account: ${{ vars.GCP_GITLEAKS_SERCET_ACCESOR_SERVICE_ACCOUNT_EMAIL }}
+          service_account: ${{ vars.GCP_GITLEAKS_SECRET_ACCESOR_SERVICE_ACCOUNT_EMAIL }}
       - name: Retrieve Gitleaks License
         id: license
         uses: google-github-actions/get-secretmanager-secrets@v2
