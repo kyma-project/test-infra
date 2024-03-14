@@ -19,9 +19,9 @@ resource "google_service_account_iam_binding" "gitleaks_workload_identity_federa
   service_account_id = google_service_account.gitleaks_secret_accesor.name
 }
 
-resource "github_actions_organization_variable" "github_gitleaks_secret_accesot_service_account_email" {
+resource "github_actions_organization_variable" "github_gitleaks_secret_accesor_service_account_email" {
   provider      = github.kyma_project
-  variable_name = "GCP_GITLEAKS_SERCET_ACCESOR_SERVICE_ACCOUNT_EMAIL"
+  variable_name = "GCP_GITLEAKS_SECRET_ACCESOR_SERVICE_ACCOUNT_EMAIL"
   visibility    = "all"
   value         = google_service_account.gitleaks_secret_accesor.email
 }
