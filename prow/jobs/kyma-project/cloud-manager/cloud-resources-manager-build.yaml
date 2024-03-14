@@ -9,7 +9,6 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pull-cloud-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: ^.*.go|go.mod
       skip_report: false
       decorate: true
       cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
