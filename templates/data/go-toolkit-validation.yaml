@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240315-0dde8981"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240315-980a444e"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
