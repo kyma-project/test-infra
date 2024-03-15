@@ -24,7 +24,7 @@ data "github_repository" "gitleaks_repository" {
 resource "google_service_account_iam_binding" "gitleaks_workload_identity_federation_binding" {
   for_each = data.github_repository.gitleaks_repository
   members = [
-    "principal://iam.googleapis.com/projects/${data.google_client_config.gcp.project}/locations/global/workloadIdentityPools/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${each.value.repo_id}:repository_owner_id:${data.github_organization.kyma-project.id}:workflow:${var.gitleaks_workflow_name}"
+    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${each.value.repo_id}:repository_owner_id:${data.github_organization.kyma-project.id}:workflow:${var.gitleaks_workflow_name}"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.gitleaks_secret_accesor.name
