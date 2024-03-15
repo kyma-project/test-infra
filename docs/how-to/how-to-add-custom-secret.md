@@ -1,16 +1,17 @@
 # Add custom secret to Prow
 
-This tutorial shows how to add a custom secret and use it in the Prow pipeline.
+This tutorial shows how to add and use a custom secret in the Prow pipeline.
 ## Procedure
 
 1. Create a new Secret in the Secret Manager. The Secret name should be in the following format: `<component>-<tool>-<secret-name>`. For example: `security-dashboard-github-bot-token`. The Secret should contain the following fields:
-   - `secret value` - the value of the secret, for example, the GitHub token,
-   - `description` - the description of the secret in the `Annotations description` field. For example: `GitHub token for the Security dashboard Github bot`.
+   - **secret value** - the value of the secret, for example, the GitHub token.
+   - **description** - the description of the secret in the **Annotations description** field. For example: `GitHub token for the Security dashboard Github bot`.
 
-2. Apply `owner` label to the secret in Secret Manager that will help identify the owner of a secret. For example: `owner: neighbors`.
-3. Apply `type` label to the secret in Secret Manager that will help identify the owner of a secret. For example: `type: service-account`.
+2. Apply the `owner` label to the secret in Secret Manager to help identify the secret owner. For example: `owner: neighbors`.
+3. Apply the `type` label to the secret in Secret Manager to help identify the secret owner. For example: `type: service-account`.
+> **NOTE:** Steps 4-7 are required only when you want to use the secret on Prow.
    
-4. Apply the necessary permissions(this step and next steps are only required when you want to use secret on Prow). Add the `secret-manager-trusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the `Secret Manager Secret Accessor` role if the secret will be used only for a postsubmit or release job. If you are creating a Secret for a presubmit job, use `secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the same role. If you want to use the secret in presubmit and postsubmit jobs, apply both principals.
+4. Apply the necessary permissions. Add the `secret-manager-trusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the `Secret Manager Secret Accessor` role if the secret will be used only for a postsubmit or release job. If you are creating a Secret for a presubmit job, use the `secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the same role. If you want to use the secret in presubmit and postsubmit jobs, apply both principals.
 
 ![permissions](./secret-manager-permissions.png)
 
