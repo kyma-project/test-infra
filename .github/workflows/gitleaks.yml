@@ -1,11 +1,15 @@
 name: gitleaks
 on:
   pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 jobs:
   scan:
     name: gitleaks
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
     steps:
       - uses: actions/checkout@v4
         with:
