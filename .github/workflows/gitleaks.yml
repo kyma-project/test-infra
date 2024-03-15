@@ -1,6 +1,7 @@
 name: gitleaks
 on:
-  pull_request:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 jobs:
   scan:
