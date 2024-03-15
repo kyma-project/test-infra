@@ -6,6 +6,9 @@ jobs:
   scan:
     name: gitleaks
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
     steps:
       - uses: actions/checkout@v4
         with:
