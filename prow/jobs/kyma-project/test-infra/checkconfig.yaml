@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -52,7 +52,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -88,7 +88,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -124,7 +124,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -160,7 +160,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -232,7 +232,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -268,7 +268,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -304,7 +304,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -340,7 +340,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -376,7 +376,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -412,7 +412,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -448,7 +448,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -484,7 +484,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -520,7 +520,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -556,7 +556,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -592,7 +592,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -628,7 +628,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -664,7 +664,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -700,7 +700,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -736,7 +736,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -772,7 +772,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -808,7 +808,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -844,7 +844,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -880,7 +880,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -916,7 +916,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -952,7 +952,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -988,7 +988,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1024,7 +1024,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1060,7 +1060,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1096,7 +1096,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1132,7 +1132,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1168,7 +1168,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240311-96753558"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042"
             securityContext:
               privileged: false
               seccompProfile:
