@@ -15,7 +15,7 @@ templates:
                     description: "validates if all charts use correct image definition format"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240315-5c1f84cb
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240318-7c1da83c
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -35,7 +35,7 @@ templates:
                     description: "his tool validates if all images defined in charts exist"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240315-5c1f84cb
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240318-7c1da83c
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
