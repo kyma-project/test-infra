@@ -10,7 +10,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -27,7 +27,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -48,7 +48,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -65,7 +65,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -97,7 +97,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden admission build for a release.
@@ -115,7 +115,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240318-7c1da83c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: otters
                     description: Warden operator build for a release.
