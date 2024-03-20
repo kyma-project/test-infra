@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -66,7 +66,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -114,7 +114,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -162,7 +162,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -210,7 +210,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -223,6 +223,54 @@ presubmits: # runs on PRs
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=deprovisionretrigger"
+              - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: pull-keb-archiver-job-build
+      annotations:
+        description: "Archives deleted instances, removes operations and runtime states. Job built on PR"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-keb-archiver-job-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '.+'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-archiver-job"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=archiver"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -260,7 +308,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -313,7 +361,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -363,7 +411,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -414,7 +462,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -465,7 +513,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -516,7 +564,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
@@ -529,6 +577,57 @@ postsubmits: # runs on main
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=deprovisionretrigger"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-keb-archiver-job-release-build
+      annotations:
+        description: "Archives deleted instances, removes operations and runtime states. Job built on tag creation"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keb-archiver-job-release-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-archiver-job"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=archiver"
               - "--config=/config/kaniko-build-config.yaml"
               - "--tag={{.Env \"PULL_BASE_REF\" }}"
             resources:
@@ -567,7 +666,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:

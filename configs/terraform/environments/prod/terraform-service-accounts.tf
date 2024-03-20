@@ -48,11 +48,25 @@ resource "google_service_account" "terraform_planner" {
   description = "Identity of terraform planner"
 }
 
-# Grant browser role to terraform planner service account
-resource "google_project_iam_member" "terraform_planner_prow_project_browser" {
+# Grant viewer role to terraform planner service account
+resource "google_project_iam_member" "terraform_planner_prow_project_read_access" {
+  for_each = toset([
+    "roles/viewer",
+    "roles/storage.objectViewer",
+    "roles/iam.securityReviewer",
+    "roles/container.developer" # TODO(KacperMalachowski): Remove when Prow will be removed
+  ])
   project = var.terraform_planner_gcp_service_account.project_id
-  role    = "roles/browser"
+  role    = each.key
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access" {
+  bucket = "tf-state-kyma-project"
+  members = [
+    "serviceAccount:${google_service_account.terraform_planner.email}"
+  ]
+  role = "roles/storage.objectUser"
 }
 
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
@@ -63,8 +77,12 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
   service_account_id = google_service_account.terraform_planner.name
 }
 
-resource "google_project_iam_member" "terraform_planner_workloads_project_browser" {
+
+resource "google_project_iam_member" "terraform_planner_workloads_project_read_access" {
+  for_each = toset([
+    "roles/viewer",
+  ])
   project = var.workloads_project_id
-  role    = "roles/browser"
+  role    = each.key
   member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }

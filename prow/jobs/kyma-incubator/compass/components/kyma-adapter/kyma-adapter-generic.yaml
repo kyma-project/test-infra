@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc"
             securityContext:
               privileged: true
               seccompProfile:
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240301-002a15d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240319-86a47690"
             securityContext:
               privileged: false
               seccompProfile:
@@ -160,7 +160,7 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240215-7bbfbc02"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc"
             securityContext:
               privileged: true
               seccompProfile:

@@ -12,7 +12,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240215-7bbfbc02
+            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240301-002a15d1
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240319-86a47690
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -90,25 +90,6 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_build
-              - jobConfig:
-                  name: pre-main-application-connector-manager-verify
-                  annotations:
-                    owner: framefrog
-                    description: runs application-connector manager verity job on k3d VM
-                  always_run: "true"
-                  optional: "false"
-                  args:
-                    - bash
-                    - -c
-                    - make -C hack/ci k3d-integration-test
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_presubmit # TODO: Prepare application-connector Image
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
               - jobConfig:
                   name: post-main-application-connector-manager-upgrade-latest-to-main
                   annotations:

@@ -33,7 +33,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
       - name: statusreconciler
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240304-ef5ac58b
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240318-88217042
         imagePullPolicy: Always
         args:
         - --dry-run=false

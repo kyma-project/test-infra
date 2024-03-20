@@ -69,7 +69,7 @@ updates:
       prefix: "ginkgo"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/tools/cmd/githubrelease"
+    directory: "/cmd/tools/githubrelease"
     labels:
       - "docker"
       - "skip-review"
@@ -153,42 +153,6 @@ updates:
       prefix: "cla-plugin"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/cmd/cloud-run/create-github-issue"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "create-gh-issue"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/cmd/cloud-run/search-github-issue"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "search-gh-issue"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/cmd/cloud-run/scan-logs-for-secrets"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "scan-logs-for-secrets"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/move-gcs-bucket"
     labels:
       - "docker"
@@ -225,6 +189,18 @@ updates:
       prefix: "docker-rotate-sa"
       include: "scope"
   - package-ecosystem: "docker"
+    directory: "/cmd/cloud-run/service-account-keys-cleaner"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "docker-glean-sa"
+      include: "scope"
+  - package-ecosystem: "docker"
     directory: "/cmd/image-detector"
     labels:
       - "docker"
@@ -235,6 +211,30 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "image-detector"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/cmd/image-builder/images/kaniko"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "image-builder"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/cmd/image-builder/images/buildkit"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "buildkit-image-builder"
       include: "scope"
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -251,4 +251,4 @@ updates:
       - dependency-name: "gaurav-nelson/github-action-markdown-link-check"
       - dependency-name: "slackapi/slack-github-action"
       - dependency-name: "shmokmt/actions-setup-tfcmt"
-
+      - dependency-name: "gitleaks/gitleaks-action"

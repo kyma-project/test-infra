@@ -8,14 +8,13 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-validate-kaniko-build-config"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
       run_if_changed: ^configs/kaniko-build-config.yaml
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240118-242312c0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
             securityContext:
               privileged: false
               seccompProfile:
