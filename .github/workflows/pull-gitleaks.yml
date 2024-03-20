@@ -1,4 +1,4 @@
-name: gitleaks
+name: pull-gitleaks
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
@@ -21,7 +21,6 @@ jobs:
           } >> "$GITHUB_OUTPUT"
   scan:
     needs: config
-    name: gitleaks
     runs-on: ubuntu-latest
     permissions:
       contents: "read" # needed for gcp_auth
