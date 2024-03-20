@@ -14,9 +14,9 @@ jobs:
         run: |
           {
             echo 'json<<EOF'
-            cat ./.ci-config.json
+            cat .ci-config.json
             echo EOF
-          } >> $GITHUB_OUTPUT
+          } >> "$GITHUB_OUTPUT"
   scan:
     needs: config
     name: gitleaks
