@@ -327,7 +327,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=env-vars"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 6Gi
@@ -698,7 +698,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=env-vars"
+              - "--env-file=envs"
               - "--tag={{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:

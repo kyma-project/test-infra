@@ -254,7 +254,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=telemetry-self-monitor"
                     - "--dockerfile=Dockerfile"
-                    - "--env-file=env-vars"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -276,7 +276,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=telemetry-self-monitor"
                     - "--dockerfile=Dockerfile"
-                    - "--env-file=env-vars"
+                    - "--env-file=envs"
                     - '--tag={{`{{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
