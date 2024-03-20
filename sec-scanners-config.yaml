@@ -7,7 +7,7 @@ protecode:
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc-buildkit
-    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587
+    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-1620eb02
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240318-88217042
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240318-88217042
@@ -48,7 +48,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240319-0e80dd7d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240307-12455737
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240307-12455737
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240318-7c1da83c
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240320-1620eb02
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240319-86a47690
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240319-86a47690
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240319-86a47690
