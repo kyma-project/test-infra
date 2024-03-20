@@ -250,9 +250,9 @@ templates:
                     description: Pre-submit job to build Telemetry self-monitor image.
                   run_if_changed: "^telemetry-self-monitor/"
                   args:
-                    - "--name=tpi/telemetry-selfmonitor"
+                    - "--name=tpi/telemetry-self-monitor"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=telemetry-selfmonitor"
+                    - "--context=telemetry-self-monitor"
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                 inheritedConfigs:
@@ -272,9 +272,9 @@ templates:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^telemetry-self-monitor/"
                   args:
-                    - "--name=tpi/telemetry-selfmonitor"
+                    - "--name=tpi/telemetry-self-monitor"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=telemetry-selfmonitor"
+                    - "--context=telemetry-self-monitor"
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}`}}'
