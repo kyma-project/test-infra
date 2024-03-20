@@ -29,21 +29,3 @@ resource "google_service_account_iam_binding" "gitleaks_workload_identity_federa
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.gitleaks_secret_accesor.name
 }
-
-# Github organizational wide variables used in gitleaks workflows on kyma-project organization
-# It holds the email address of gitleaks service account
-resource "github_actions_organization_variable" "github_gitleaks_secret_accesor_service_account_email" {
-  provider      = github.kyma_project
-  variable_name = "GCP_GITLEAKS_SECRET_ACCESOR_SERVICE_ACCOUNT_EMAIL"
-  visibility    = "all"
-  value         = google_service_account.gitleaks_secret_accesor.email
-}
-
-# Github organizational wide variables used in gitleaks workflows on kyma-project organization
-# It holds the name of the secret containing gitleaks license key created by neighbors team and required by the gitleaks action
-resource "github_actions_organization_variable" "github_gitleaks_license_secret_name" {
-  provider      = github.kyma_project
-  variable_name = "GH_GITLEAKS_LICENSE_SECRET_NAME"
-  visibility    = "all"
-  value         = "gitleaks-kyma-license-key"
-}

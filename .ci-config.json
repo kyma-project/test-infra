@@ -1,0 +1,5 @@
+{
+  "gh-gitleaks-secret-name": "gitleaks-kyma-license-key",
+  "gh-gitleaks-secret-accesor-email": "gitleaks-secret-accesor@sap-kyma-prow.iam.gserviceaccount.com",
+  "gcp-workload-identity-provider-name": "github-com-kyma-project"
+}
