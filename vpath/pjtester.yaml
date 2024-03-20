@@ -4,7 +4,7 @@ pjConfigs:
       third-party-images:
         - pjName: "pre-main-tpi-telemetry-self-monitor"
           report: true
-  prConfigs:
-    kyma-project:
-      third-party-images:
-        prNumber: 421
+prConfigs:
+  kyma-project:
+    third-party-images:
+      prNumber: 421
