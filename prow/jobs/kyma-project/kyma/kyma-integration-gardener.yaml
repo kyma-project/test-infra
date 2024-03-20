@@ -40,7 +40,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240320-da29c65f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240320-9c790a39"
             securityContext:
               privileged: false
               seccompProfile:
