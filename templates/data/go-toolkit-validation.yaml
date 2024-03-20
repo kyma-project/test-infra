@@ -8,7 +8,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240216-773062a8"
+            image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240320-9c790a39"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240320-da29c65f"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240320-9c790a39"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
