@@ -11,11 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: load
+        # See: https://stackoverflow.com/questions/74282330/invalid-value-matching-delimiter-not-found
         run: |
+          delimiter=$(openssl rand -hex 8)
           {
-            echo 'json<<EOF'
-            cat .ci-config.json
-            echo EOF
+            echo "json<<$delimiter"
+            sed -e '$a\' .ci-config.json
+            echo "$delimiter"
           } >> "$GITHUB_OUTPUT"
   scan:
     needs: config
