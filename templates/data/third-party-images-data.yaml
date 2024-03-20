@@ -243,11 +243,11 @@ templates:
                   local:
                     - "increased_resources"
               - jobConfig:
-                  name: "pre-main-tpi-telemetry-selfmonitor"
+                  name: "pre-main-tpi-telemetry-self-monitor"
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: huskies
-                    description: Pre-submit job to build Telemetry selmonitor image.
+                    description: Pre-submit job to build Telemetry self-monitor image.
                   run_if_changed: "^telemetry-self-monitor/"
                   args:
                     - "--name=tpi/telemetry-selfmonitor"
@@ -262,11 +262,11 @@ templates:
                   local:
                     - "increased_resources"
               - jobConfig:
-                  name: "post-main-tpi-telemetry-selfmonitor"
+                  name: "post-main-tpi-telemetry-self-monitor"
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
                   annotations:
                     owner: huskies
-                    description: Post-submit job to build Telemetry selmonitor image.
+                    description: Post-submit job to build Telemetry self-monitor image.
                   slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"

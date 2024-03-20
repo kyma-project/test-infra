@@ -298,13 +298,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-main-tpi-telemetry-selfmonitor
+    - name: pre-main-tpi-telemetry-self-monitor
       annotations:
-        description: "Pre-submit job to build Telemetry selmonitor image."
+        description: "Pre-submit job to build Telemetry self-monitor image."
         owner: "huskies"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-tpi-telemetry-selfmonitor"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-telemetry-self-monitor"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^telemetry-self-monitor/'
@@ -665,13 +665,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-main-tpi-telemetry-selfmonitor
+    - name: post-main-tpi-telemetry-self-monitor
       annotations:
-        description: "Post-submit job to build Telemetry selmonitor image."
+        description: "Post-submit job to build Telemetry self-monitor image."
         owner: "huskies"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-tpi-telemetry-selfmonitor"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-telemetry-self-monitor"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
