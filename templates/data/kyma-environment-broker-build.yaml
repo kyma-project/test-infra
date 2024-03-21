@@ -274,7 +274,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-subaccount-sync-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
                   annotations:
                     owner: "gopher"
                     description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on PR"
@@ -292,7 +292,7 @@ templates:
 
               - jobConfig:
                   name: post-keb-subaccount-sync-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
                   annotations:
                     owner: "gopher"
                     description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on tag creation"
