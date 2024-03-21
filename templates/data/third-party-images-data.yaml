@@ -244,7 +244,7 @@ templates:
                     - "increased_resources"
               - jobConfig:
                   name: "pre-main-tpi-telemetry-self-monitor"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
                   annotations:
                     owner: huskies
                     description: Pre-submit job to build Telemetry self-monitor image.
@@ -263,7 +263,7 @@ templates:
                     - "increased_resources"
               - jobConfig:
                   name: "post-main-tpi-telemetry-self-monitor"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
                   annotations:
                     owner: huskies
                     description: Post-submit job to build Telemetry self-monitor image.
