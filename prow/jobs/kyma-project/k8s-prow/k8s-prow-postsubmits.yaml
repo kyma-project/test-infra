@@ -15,7 +15,7 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240320-9c790a39
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240321-7c75f6e6
             env:
               - name: PUSH_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/k8s-prow

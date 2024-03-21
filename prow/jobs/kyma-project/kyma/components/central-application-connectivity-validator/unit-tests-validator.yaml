@@ -16,7 +16,7 @@ presubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240320-9c790a39"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240321-7c75f6e6"
             securityContext:
               privileged: false
               seccompProfile:
