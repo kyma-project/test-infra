@@ -1,4 +1,4 @@
-FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240315-c53259ce AS builder
+FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240320-a2016d2a AS builder
 
 WORKDIR /
 COPY . /app/

@@ -327,8 +327,9 @@ branch-protection:
               - "E2E (module-upgrade-channel-switch)"
               - "E2E (module-upgrade-new-version)"
               - "E2E (ca-certificate-rotation)"
-              - "E2E (kyma-deletion-with-foreground-propagation)"
-              - "E2E (kyma-deletion-with-background-propagation)"
+              - "E2E (kyma-deprovision-with-foreground-propagation)"
+              - "E2E (kyma-deprovision-with-background-propagation)"
+              - "E2E (misconfigured-kyma-secret)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
@@ -481,6 +482,10 @@ tide:
       kyma-project:
         repos:
           lifecycle-manager:
+            skip-unknown-contexts: true
+          kyma-environment-broker:
+            skip-unknown-contexts: true
+          btp-manager:
             skip-unknown-contexts: true
 
 presets:
