@@ -340,6 +340,54 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pull-keb-subaccount-sync-build
+      annotations:
+        description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on PR"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-keb-subaccount-sync-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '.+'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-subaccount-sync"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.subaccountsync"
+              - "--build-arg=BIN=subaccount-sync"
+              - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/kyma-environment-broker:
@@ -679,6 +727,57 @@ postsubmits: # runs on main
               - "--context=./"
               - "--dockerfile=Dockerfile.runtimereconciler"
               - "--build-arg=BIN=runtime-reconciler"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-keb-subaccount-sync-release-build
+      annotations:
+        description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on tag creation"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keb-subaccount-sync-release-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-subaccount-sync"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.subaccountsync"
+              - "--build-arg=BIN=subaccount-sync"
               - "--config=/config/kaniko-build-config.yaml"
               - "--tag={{.Env \"PULL_BASE_REF\" }}"
             resources:
