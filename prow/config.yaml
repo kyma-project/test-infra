@@ -483,6 +483,10 @@ tide:
         repos:
           lifecycle-manager:
             skip-unknown-contexts: true
+          kyma-environment-broker:
+            skip-unknown-contexts: true
+          btp-manager:
+            skip-unknown-contexts: true
 
 presets:
   - labels:
