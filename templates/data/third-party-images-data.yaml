@@ -242,3 +242,45 @@ templates:
                     - "kaniko_buildpack"
                   local:
                     - "increased_resources"
+              - jobConfig:
+                  name: "pre-main-tpi-telemetry-self-monitor"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build Telemetry self-monitor image.
+                  run_if_changed: "^telemetry-self-monitor/"
+                  args:
+                    - "--name=tpi/telemetry-self-monitor"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=telemetry-self-monitor"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
+              - jobConfig:
+                  name: "post-main-tpi-telemetry-self-monitor"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build Telemetry self-monitor image.
+                  slack_channel: huskies-notifications
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^telemetry-self-monitor/"
+                  args:
+                    - "--name=tpi/telemetry-self-monitor"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=telemetry-self-monitor"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}`}}'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_postsubmit"
+                    - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
