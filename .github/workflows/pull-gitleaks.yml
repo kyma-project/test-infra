@@ -1,8 +1,9 @@
 name: pull-gitleaks
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+
 jobs:
   config:
     runs-on: ubuntu-latest
@@ -23,11 +24,12 @@ jobs:
     needs: config
     runs-on: ubuntu-latest
     permissions:
-      contents: "read" # needed for gcp_auth
-      id-token: "write" # needed for gcp_auth to create id token
+      contents: read # Required by checkout
+      id-token: write # Required by google auth
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: 0
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
