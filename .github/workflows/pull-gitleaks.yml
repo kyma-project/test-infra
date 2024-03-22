@@ -4,13 +4,7 @@ on:
     types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
-env:
-  ACTIONS_RUNNER_DEBUG: true
-  ACTIONS_STEP_DEBUG: true
-permissions:
-  contents: "read" # needed for gcp_auth
-  id-token: "write" # needed for gcp_auth to create id token
-
+permissions: read-all
 
 jobs:
   config:
@@ -31,6 +25,9 @@ jobs:
   scan:
     needs: config
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
     steps:
       - uses: actions/checkout@v4
         with:
