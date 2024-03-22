@@ -305,6 +305,7 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+              - "run-go-linter"
           exclude:
             - "^sec-scanners-config-"
         template-operator:
