@@ -14,7 +14,7 @@ presubmits:
       decorate: true
       cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
       max_concurrency: 10
-      optional: true
+      optional: false
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
