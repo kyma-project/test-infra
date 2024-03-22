@@ -29,6 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: 0
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
