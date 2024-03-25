@@ -5,7 +5,7 @@ This tutorial describes how to name a secret in the Google Secret Manager.
 ## Naming convention
 
 1. The secret name should be in the following format: `<tool>_<component>_<entity>`. For example: `security-backend_publisher_github-kyma-bot-token`. Where `security-backend` is the tool, component is `publisher` and `github-kyma-bot-token` is the entity. The component part is optional and can be skipped if the tool does not contain multiple components.
-   From the name it should be clear what the secret contains and where is used, a GitHub token for the Kyma bot service account which is used in the Publisher component of the  Security Backend tool.
+   From the name it should be clear what the secret contains and what identity it represent. Example contains a GitHub token for the Kyma bot service account which is used as an identity of Publisher component of the  Security Backend.
    The same secret should not have two entries in the Secret manager with different names. For example, the `prow_default_sap-slack-bot-token` and `workloads_default_sap-slack-bot-token` should be only one entry in the Secret Manager with the name `prow_notifier_slack-bot-token`.
 2. Apply the `owner` label to the secret in Secret Manager to help identify the secret owner. For example: `owner: neighbors`.
 3. Apply the `type` label to the secret in Secret Manager to help identify the secret type. For example: `type: service-account-token`.
