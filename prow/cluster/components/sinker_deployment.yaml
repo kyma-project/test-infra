@@ -22,7 +22,7 @@ spec:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
         - --dry-run=false
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240318-88217042
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240325-dea14c60
         env:
           - name: KUBECONFIG
             value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
