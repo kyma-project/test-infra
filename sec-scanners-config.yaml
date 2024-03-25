@@ -8,19 +8,19 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc-buildkit
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240325-0b166f88
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/deck:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/gcsweb:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/hook:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/horologium:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/prow-controller-manager:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240318-88217042
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240318-88217042
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/deck:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/gcsweb:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/hook:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/horologium:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/prow-controller-manager:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240325-dea14c60
+    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240325-dea14c60
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240306-5757c233
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240320-9c790a39
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240325-0b166f88
