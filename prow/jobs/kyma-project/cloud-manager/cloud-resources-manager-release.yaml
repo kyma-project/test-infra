@@ -19,7 +19,7 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240320-44a9ab38"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240325-0b166f88"
             securityContext:
               privileged: false
               seccompProfile:
