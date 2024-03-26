@@ -3,6 +3,7 @@ on:
   pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
 
+# See: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-google-cloud-platform#updating-your-github-actions-workflow
 permissions:
   contents: read # Required by checkout
   id-token: write # Required by google auth
