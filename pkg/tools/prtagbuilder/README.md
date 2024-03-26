@@ -2,7 +2,7 @@
 
 ## Overview
 
-PR Tag Builder is a tool that finds a pull request number for a commit.
+PR Tag Builder is a tool that finds a pull request (PR) number for a commit.
 
 ## Prerequisites
 
@@ -14,11 +14,11 @@ The tool is a part of the `test-infra` **prow-tools** image. It is copied from t
 
 ## Usage
 
-You can retrieve all data required for the tool to work from the **JOB_SPEC** environment variable. This environment variable is set by Prow for all Prow jobs. In this mode, a tool will find a pull request number for the base SHA of the branch for which the Prow job is running.
+You can retrieve all data required for the tool to work from the **JOB_SPEC** environment variable. This environment variable is set by Prow for all Prow jobs. In this mode, the tool finds a PR number for the base SHA of the branch for which the Prow job is running.
 
-Optionally, prtagbuilder can be run with flags that instruct it to find a pull request number for the head of the provided branch.
+Optionally, PR Tag Builder can be run with flags that instruct it to find a PR number for the head of the provided branch.
 
-Prtagbuilder accepts the following flags:
+PR Tag Builder accepts the following flags:
 
 | Full name | Short name | Required | Description |
 |----------------|------------|----------|-------------|

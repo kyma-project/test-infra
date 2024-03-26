@@ -1,9 +1,9 @@
-# Add custom secret to Prow
+# Add a Custom Secret to Prow
 
 This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 ## Procedure
 
-1. Add a secret to the Google Secret Manager service and apply the necessary permissions. Add the `secret-manager-trusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the `Secret Manager Secret Accessor` role if the secret will be used only for a postsubmit or release job. If you are creating a Secret for a presubmit job, use `secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the same role. If you want to use the secret in presubmit and postsubmit jobs, apply both principals.
+1. Add a secret to the Google Secret Manager service and apply the necessary permissions. Add the `secret-manager-trusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the `Secret Manager Secret Accessor` role if the secret is used only for a postsubmit or release job. If you are creating a Secret for a presubmit job, use `secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com` principal with the same role. If you want to use the secret in presubmit and postsubmit jobs, apply both principals.
 
 ![permissions](./secret-manager-permissions.png)
 
@@ -32,4 +32,4 @@ This tutorial shows how to add a custom secret and use it in the Prow pipeline.
                 key: token
     ```
 
-    Now you can use the Preset in your job definition and refer to the Secret in your pipeline.
+    Now, you can use the Preset in your job definition and refer to the Secret in your pipeline.

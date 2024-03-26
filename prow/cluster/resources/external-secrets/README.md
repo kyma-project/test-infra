@@ -6,9 +6,9 @@ Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secr
 
 ## Installation
 
-Follow these steps to install `external-secrets` on an untrusted cluster in the `external-secrets` Namespace.
+Follow these steps to install `external-secrets` in an untrusted cluster in the `external-secrets` namespace.
 
-1. Create the `external-secrets` Namespace. Run:
+1. Create the `external-secrets` namespace. Run:
 
    ```bash
    kubectl create namespace external-secrets

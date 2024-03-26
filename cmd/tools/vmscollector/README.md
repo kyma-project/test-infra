@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud Platform (GCP) project.
+This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud (GCP) project.
 
 Prow jobs create a VM instance to install and test Kyma.
 Usually, the job also cleans up the instance.
@@ -15,7 +15,7 @@ There are three conditions used to find instances for removal:
 - The value of the `job-name` label the instance is annotated with is not caught by the exclude labels regex.
 - The instance `creationTimestamp` value that is used to find instance existing at least for a preconfigured number of hours.
 
-VM instances that meet these conditions are subject to removal.
+VM instances that meet all these conditions are subject to removal.
 
 ## Usage
 
@@ -45,11 +45,10 @@ See the list of available flags:
 | **--vmNameRegexp**        |    No    | The string value with a valid Golang regex. It is used to exclude VM instances by their name. It defaults to `^gke-nightly-.*\|gke-weekly.*\|shoot--kyma-prow.*`.
 | **--jobLabelRegexp**      |    No    | The string value with a valid Golang regex. It is used to exclude VM instances by the `job-name` label value. It defaults to `^kyma-gke-nightly\|kyma-gke-nightly-.*\|kyma-gke-weekly\|kyma-gke-weekly-.*$`.
 
-### Environment variables
+### Environment Variables
 
 See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `compute.instances.list` and `compute.instances.delete` Google IAM permissions. |
-
