@@ -18,7 +18,7 @@ variable "gitleaks_gcp_service_account" {
 # via workload identity federation
 variable "gitleaks_workflow_name" {
   type        = string
-  default     = "gitleaks"
+  default     = "pull-gitleaks"
   description = "Name of the gitleaks workflow"
 }
 
