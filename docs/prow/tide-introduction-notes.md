@@ -1,11 +1,11 @@
-# Tide introduction
+# Tide Introduction
 
 Along with the Prow upgrade, we want to introduce Tide for merging the PRs automatically.
 Tide is a Prow component that handles merging the PRs once all the requirements are met. 
 
 > **NOTE:** Tide is a mandatory component for Prow and introducing it is needed in the upgrade process.
 
-### How Tide works
+### How Tide Works
 
 Every PR introduced to the watched repository has a new pending context called `tide`. The context stays in the pending state until the PR has passed all the requirements and is in the merge pool.
 
@@ -33,7 +33,7 @@ This is how the workflow looks like from the developer's perspective:
 
 ![Tide workflow](./assets/prow-tide-workflow.png)
 
-### Next steps
+### Next Steps
 
 After upgrading Prow and Tide to the most up-to-date branch, we would like to take further steps in increasing the development workflow quality:
 

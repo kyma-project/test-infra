@@ -13,7 +13,7 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 | **sa-crier**                  | Reports Prow Job statuses to GitHub. | `Service Account User` |
 
 
-## Kubernetes RBAC roles on Prow cluster
+## Kubernetes RBAC Roles on Prow Cluster
 
 ### Cluster Roles
 
@@ -45,19 +45,19 @@ Following roles exist on Prow cluster:
 | **tide** | - `prowjobs.prow.k8s.io` |  create, list  |
 | **crier** | - `prowjobs.prow.k8s.io` | get, watch <br> list, patch |
 
-## User permissions on GitHub
+## User Permissions on GitHub
 
 Prow starts tests when triggered by certain Github events. For security reasons, the `trigger` plugin ensures that the test jobs are run only on pull requests (PR) created or verified by trusted users.
 
-### Trusted users
+### Trusted Users
 All members of the `kyma-project` organization are considered trusted users. The `trigger` plugin starts jobs automatically when a trusted user opens a PR or commits changes to a PR branch. Alternatively, trusted collaborators can start jobs manually through the `/test all`, `/test {JOB_NAME}` and `/retest` commands, even if a particular PR was created by an external user. 
 
-### External contributors
+### External Contributors
 All users that are not members of the `kyma-project` organization are considered external contributors. The `trigger` plugin does not automatically start test jobs on PRs created by external contributors. Furthermore, external contributors are not allowed to manually run tests on their own PRs.
 
 > **NOTE:** External contributors can still trigger tests on PRs created by trusted users.
 
-## Authorization decisions enforced by Prow
+## Authorization Decisions Enforced by Prow
 
 Actions on Prow can be triggered only by webhooks. To configure them you must create two Github Secrets on your Prow cluster:
 - `hmac-token` - used to validate webhook

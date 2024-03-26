@@ -45,22 +45,22 @@ Tide is a Prow component that automatically checks the acceptance criteria again
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
 For more information about installed plugins in the `kyma-project` and `kyma-incubator` organisations, refer to the [plugins.yaml](../../prow/plugins.yaml) file.
 
-## Prow jobs
+## Prow Jobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific Prow job resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.
 
 > **NOTE:** A job cannot access the K8s API.
 
-## Dynamic provisioning using GKE or Google Compute Engine (GCE)
+## Dynamic Provisioning Using GKE or Google Compute Engine (GCE)
 The integration job performs integration tests against real clusters. To achieve this, it creates and deletes either the managed Kubernetes clusters using GKE or Virtual Machines (VM) with k3d installed on them. The integration job uses the Secret configured for a dedicated Google service account.
 
-## Publish images to Google Container Registry (GCR)
+## Publish Images to Google Container Registry (GCR)
 Every job can have a Secret configured to upload Docker images to GCR. That Secret belongs to a dedicated Google service account.
 Prow in Kyma uses the Docker-in-Docker (dind) approach to build a Docker image as part of a job.
 
-## Build logs on GCS
+## Build Logs on GCS
 Build logs are archived by Plank on GCS in a dedicated bucket. The bucket is configured to have a Secret with a dedicated Google service account for GCS.
 
-## Generate development artifacts
+## Generate Development Artifacts
 
 There are two jobs that generate artifacts which allow you to install Kyma on a cluster either from the `main` branch or from a pull request changes:
 - `pre-main-kyma-development-artifacts`

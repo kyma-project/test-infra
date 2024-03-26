@@ -7,10 +7,10 @@ This document describes the standard Terraform configurationuration that is used
 The `test-infra` repository uses [Terraform](https://www.terraform.io/) to manage the infrastructure as code. Terraform is an open-source infrastructure as code (IaC) software tool that enables you to safely and predictably create, change, and improve infrastructure. Terraform can manage existing and popular service providers as well as custom in-house solutions.
 
 We decided to build an infrastructure as code because the IaC approach makes the following operations very easy: 
-- Reproduce the infrastructure and have a single source of truth for the infrastructure. 
-- Test the infrastructure changes before applying them to the production environment.
-- Track the changes in the infrastructure and have a history of the changes.
-- Revert the changes if needed and maintain documentation of the infrastructure along with the code.
+- Reproducing the infrastructure and having a single source of truth for the infrastructure. 
+- Testing the infrastructure changes before applying them to the production environment.
+- Tracking the changes in the infrastructure and having a history of the changes.
+- Reverting the changes if needed and maintaining documentation of the infrastructure along with the code.
 
 ## Terraform Configuration Structure
 
