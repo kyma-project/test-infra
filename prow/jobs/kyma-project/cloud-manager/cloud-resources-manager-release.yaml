@@ -11,6 +11,7 @@ postsubmits:
         preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
+      optional: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
@@ -18,7 +19,7 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240325-eba4fa11"
             securityContext:
               privileged: false
               seccompProfile:

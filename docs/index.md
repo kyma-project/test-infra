@@ -46,9 +46,11 @@
 
 [Documentation Guidelines](/docs/documentation_guidelines.md) - Follow the rules listed in this document to provide high-quality documentation.
 
-[Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
+[Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add and use a custom secret in the Prow pipeline.
 
 [Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
+
+[How to name a secret](/docs/how-to/how-to-name-secret.md) - This tutorial describes how to name a secret in the Google Secret Manager.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 

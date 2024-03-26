@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240318-88217042
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240318-88217042
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240318-88217042
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240318-88217042
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240325-dea14c60
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240325-dea14c60
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240325-dea14c60
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240325-dea14c60
         resources:
           clonerefs:
             requests:
@@ -305,6 +305,7 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+              - "run-go-linter"
           exclude:
             - "^sec-scanners-config-"
         template-operator:
@@ -327,8 +328,9 @@ branch-protection:
               - "E2E (module-upgrade-channel-switch)"
               - "E2E (module-upgrade-new-version)"
               - "E2E (ca-certificate-rotation)"
-              - "E2E (kyma-deletion-with-foreground-propagation)"
-              - "E2E (kyma-deletion-with-background-propagation)"
+              - "E2E (kyma-deprovision-with-foreground-propagation)"
+              - "E2E (kyma-deprovision-with-background-propagation)"
+              - "E2E (misconfigured-kyma-secret)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
@@ -481,6 +483,10 @@ tide:
       kyma-project:
         repos:
           lifecycle-manager:
+            skip-unknown-contexts: true
+          kyma-environment-broker:
+            skip-unknown-contexts: true
+          btp-manager:
             skip-unknown-contexts: true
 
 presets:

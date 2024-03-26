@@ -9,14 +9,15 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pull-cloud-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+      always_run: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
       max_concurrency: 10
-      optional: true
+      optional: false
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240319-28c5c587"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240325-eba4fa11"
             securityContext:
               privileged: false
               seccompProfile:
