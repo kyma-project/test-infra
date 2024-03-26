@@ -666,7 +666,7 @@ templates:
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/python39"
+                    - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
