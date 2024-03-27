@@ -1,50 +1,23 @@
 name: pull-gitleaks
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
-  workflow_dispatch:
+
+env:
+  GITLEAKS_VERSION: 8.18.2
 
 jobs:
-  config:
-    runs-on: ubuntu-latest
-    outputs:
-      json: ${{ steps.load.outputs.json }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: load
-        # See: https://stackoverflow.com/questions/74282330/invalid-value-matching-delimiter-not-found
-        run: |
-          delimiter=$(openssl rand -hex 8)
-          {
-            echo "json<<$delimiter"
-            sed -e '$a\' .ci-config.json
-            echo "$delimiter"
-          } >> "$GITHUB_OUTPUT"
   scan:
-    needs: config
     runs-on: ubuntu-latest
-    permissions:
-      contents: read # Required by checkout
-      id-token: write # Required by google auth
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: 0
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ fromJson(needs.config.outputs.json).gcp-workload-identity-provider-name }}
-          service_account: ${{ fromJson(needs.config.outputs.json).gh-gitleaks-secret-accesor-email }}
-      - name: Retrieve Gitleaks License
-        id: license
-        uses: google-github-actions/get-secretmanager-secrets@v2
-        with:
-          secrets: |-
-            gitleaks-license-key:${{ fromJson(needs.config.outputs.json).gcp-kyma-project-id }}/${{ fromJson(needs.config.outputs.json).gh-gitleaks-secret-name }}
-      - uses: gitleaks/gitleaks-action@e6dab246340401bf53eec993b8f05aebe80ac636 #v2.3.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ steps.license.outputs.gitleaks-license-key }}
-          GITLEAKS_VERSION: 8.18.2
-          GITLEAKS_CONFIG: .gitleaks.toml
+      - name: Fetch gitleaks ${{ env.GITLEAKS_VERSION }}
+        run: curl -Lso gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v${{ env.GITLEAKS_VERSION }}/gitleaks_${{ env.GITLEAKS_VERSION }}_linux_x64.tar.gz && tar -xvzf ./gitleaks.tar.gz
+      - name: Run gitleaks
+        # Scan commits between base and head of the pull request
+        run: ./gitleaks detect --log-opts=${PULL_BASE_SHA}...${PULL_HEAD_SHA} --verbose --redact
+        env: 
+          PULL_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PULL_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
