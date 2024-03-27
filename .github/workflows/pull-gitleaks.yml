@@ -14,6 +14,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Fetch gitleaks ${{ env.GITLEAKS_VERSION }}
-        run: curl -Lso gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/${{ env.GITLEAKS_VERSION }}/gitleaks_8.18.2_linux_x64.tar.gz && tar -xvzf ./gitleaks.tar.gz
+        run: curl -Lso gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v${{ env.GITLEAKS_VERSION }}/gitleaks_${{ env.GITLEAKS_VERSION }}_linux_x64.tar.gz && tar -xvzf ./gitleaks.tar.gz
       - name: Run gitleaks
         run: ./gitleaks detect --log-opts=${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} --verbose --redact
