@@ -4,7 +4,7 @@ on:
     types: [opened, edited, synchronize, reopened, ready_for_review]
 
 env:
-  GITLEAKS_VERSION: v8.18.2
+  GITLEAKS_VERSION: 8.18.2
 
 jobs:
   scan:
