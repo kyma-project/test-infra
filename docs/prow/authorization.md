@@ -1,8 +1,8 @@
 # Authorization
 
-## Required GCP Permissions
+## Required Google Cloud Permissions
 
-To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
+To deploy a Prow cluster, configure the following service accounts in the Google Cloud project you own.
 
 | Service account name          | Usage                                                      | Required roles |
 | :---------------------------- | :----------------------------------------------------------| :------------- |

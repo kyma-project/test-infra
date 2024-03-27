@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud (GCP) project.
+This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud project.
 
 Prow jobs create a VM instance to install and test Kyma.
 Usually, the job also cleans up the instance.
@@ -39,7 +39,7 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
+| **--project**             |   Yes    | Google Cloud project name.
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches VM instances older than `now()-ageInHours`. It defaults to `3`.
 | **--vmNameRegexp**        |    No    | The string value with a valid Golang regex. It is used to exclude VM instances by their name. It defaults to `^gke-nightly-.*\|gke-weekly.*\|shoot--kyma-prow.*`.

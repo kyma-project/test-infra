@@ -2,7 +2,7 @@
 
 ## Overview
 
-Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
+Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
 ## Installation
 
@@ -26,7 +26,7 @@ Follow these steps to install `external-secrets` in an untrusted cluster in the 
    helm install -n external-secrets external-secrets external-secrets/external-secrets -f prow/cluster/resources/external-secrets/values_untrusted.yaml
    ```
 
-4. Map the `external-secrets/secret-manager-untrusted` Kubernetes service account to a GCP service account with permission to access Secrets. Run:
+4. Map the `external-secrets/secret-manager-untrusted` Kubernetes service account to a Google Cloud service account with permission to access Secrets. Run:
 
   ```bash
   gcloud iam service-accounts add-iam-policy-binding --role roles/iam.workloadIdentityUser --member "serviceAccount:sap-kyma-prow.svc.id.goog[external-secrets/secret-manager-untrusted]" secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com
@@ -37,7 +37,7 @@ Follow these steps to install `external-secrets` in an untrusted cluster in the 
   ```
 ## Configuration
 
-Secrets can be stored as text in GCP Secret Manager and be mapped to a Kubernetes Secret with one key. 
+Secrets can be stored as text in Google Cloud Secret Manager and be mapped to a Kubernetes Secret with one key. 
 
 See an example:
 
@@ -60,7 +60,7 @@ spec:
         version: latest # version of the GCP Secret
 ```
 
-Secrets can also be stored as JSON in GCP Secret Manager and be mapped to a Kubernetes Secret with multiple keys. 
+Secrets can also be stored as JSON in Google Cloud Secret Manager and be mapped to a Kubernetes Secret with multiple keys. 
 
 See an example:
 

@@ -2,9 +2,9 @@
 
 ## Overview
 
-This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud (GCP) project.
+This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud project.
 
-When the `kyma-gke-integration` job installs Kyma on the GKE cluster, GCP creates disk resources automatically.
+When the `kyma-gke-integration` job installs Kyma on the GKE cluster, Google Cloud creates disk resources automatically.
 Usually, the job that provisions the cluster cleans all such disks.
 It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
@@ -39,7 +39,7 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
+| **--project**             |   Yes    | Google Cloud project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches disks older than `now()-ageInHours`. It defaults to `2`.
 | **--diskNameRegex**       |    No    | The string value with a valid Golang regexp. It is used to match disks by their name. It defaults to `^gke-gkeint.*[-]pvc[-]`.

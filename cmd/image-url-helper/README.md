@@ -54,7 +54,7 @@ go run main.go \
 
 ### Exclude Images from the Check Command
 
-To exclude image lines from checking, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
+To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
 
 ```yaml
 excludes:

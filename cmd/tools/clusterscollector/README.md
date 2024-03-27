@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud (GCP) project.
+This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud project.
 
 The `kyma-gke-integration` job creates a GKE cluster to install and test Kyma.
 Usually, the job also cleans up the cluster.
@@ -44,7 +44,7 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
+| **--project**             |   Yes    | Google Cloud project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--strategy**            |    No    | The cluster filter strategy. Defaults to `default`, can be switched to `time`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`. [Only honored in `default` strategy]

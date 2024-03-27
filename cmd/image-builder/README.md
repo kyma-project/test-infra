@@ -188,7 +188,7 @@ Image Builder supports three build backends:
 - BuildKit
 - ADO pipelines
 
-kaniko and BuildKit build images locally while the ADO pipelines backend call ADO API.
+kaniko and BuildKit build images locally, while the ADO pipelines backend calls ADO API.
 To use the kaniko backend, use the `image-builder` image.
 To use the BuildKit backend, use the `buildkit-image-builder` image.
 The ADO backend is supported by both images. To use it, you need to provide the `--build-in-ado=true` flag.
@@ -197,7 +197,7 @@ The preferred way to build images is to use the ADO backend because it's the onl
 
 ### Azure DevOps Backend (ADO)
 
-The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma GCP artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
+The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
 This backend doesn't support the `--env-file`, `--platform`, and `--variant` flags. Building images for platforms other than amd64 is not supported. 
 To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob definition.
 

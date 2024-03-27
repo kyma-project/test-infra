@@ -2,9 +2,9 @@
 
 The document outlines Prow architecture and interconnections between different systems and components that are involved in it.
 
-The Prow cluster is a Kubernetes instance managed by Google Kubernetes Engine (GKE) as part of the Google Cloud Platform (GCP) project called `kyma-project`.
+The Prow cluster is a Kubernetes instance managed by Google Kubernetes Engine (GKE) as part of the Google Cloud project called `kyma-project`.
 
-See an overview of the Prow production cluster, its components, and interactions with GitHub repositories and GCP.
+See an overview of the Prow production cluster, its components, and interactions with GitHub repositories and Google Cloud.
 
 ![Prow architecture overview](./assets/prow-architecture.svg)
 

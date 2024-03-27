@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes old GCR images created by Jobs in the Google Cloud (GCP) project.
+This command finds and removes old GCR images created by Jobs in the Google Cloud project.
 
 There are two conditions used to find images for removal:
 - The repository name pattern is not on the ignored list.
