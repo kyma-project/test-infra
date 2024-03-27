@@ -5,7 +5,7 @@ RUN apk add --no-cache curl && \
   | tar xz docker-credential-gcr \
   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
 
-FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240325-b3cf4f97 AS builder
+FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240326-db129efe AS builder
 
 WORKDIR /
 COPY . /app/
