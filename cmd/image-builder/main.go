@@ -735,7 +735,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
-	flagSet.BoolVar(&o.buildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
+	flagSet.BoolVar(&o.buildInADO, "build-in-ado", true, "Build in Azure DevOps pipeline environment")
 	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
