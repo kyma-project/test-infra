@@ -4,12 +4,11 @@ jobs:
   hello_world_job:
     permissions:
       id-token: write # This is required for requesting the JWT token
+      contents: read  # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      - run: |
-          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" -o jwt.txt
-          cat jwt.txt
+      - uses: magic7s/expose-jwt-action@v0.1.1
         name: Get JWT token
       # To use this repository's private action,
       # you must check out the repository
