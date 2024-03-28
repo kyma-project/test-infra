@@ -2,7 +2,7 @@
 
 Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
 
-## Available reporters
+## Available Reporters
 
 Crier supports multiple reporters. Each reporter will become a Crier controller. Reporters that can be used:
 - GitHub reporter
@@ -11,7 +11,7 @@ Crier supports multiple reporters. Each reporter will become a Crier controller.
 
 For any reporter that you want to use, you must mount your Prow configs and specify the `--config-path` and `--job-config-path` flags.
 
-### GitHub reporter
+### GitHub Reporter
 
 You can enable the GitHub reporter in Crier by specifying the `--github-workers=N` flag.
 
@@ -19,7 +19,7 @@ You must also mount a GitHub OAuth token by specifying the `--github-token-path`
 
 If you have a ghproxy deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
 
-### Slack reporter
+### Slack Reporter
 
 > **NOTE:** When you enable Crier for the first time, it will sent to Slack all Prow Jobs matching the configured filtering criteria.
 
@@ -142,7 +142,7 @@ postsubmits:
               - echo
 ```
 
-## Current Slack notification settings
+## Current Slack Notification Settings
 
 Crier does not send any Slack notifications for presubmit jobs.
 
@@ -158,7 +158,7 @@ job_types_to_report:
 If you don't want to configure postsubmit or periodic jobs to report to a Slack channel, use `skip_report:true`.
 If the job is still in the testing phase, you can set `optional: true`.
 
-## Migration from Plank to GitHub reporter
+## Migration from Plank to GitHub Reporter
 
 First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank deployment.
 

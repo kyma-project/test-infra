@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
+This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud project.
 
 The `kyma-gke-integration` job creates a GKE cluster to install and test Kyma.
 Usually, the job also cleans up the cluster.
@@ -20,7 +20,7 @@ In the `time` filter strategy, there are three conditions used to find clusters 
 - The label value of `created-at`, which holds the unix timestamp of when the cluster was created
 - The label value of `ttl`, which specifies the clusters maximum intended runtime in hours
 
-Clusters that meet these conditions in the specified strategy are subject to removal.
+Clusters that meet all these conditions in the specified strategy are subject to removal.
 
 ## Usage
 
@@ -44,14 +44,14 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
+| **--project**             |   Yes    | Google Cloud project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--strategy**            |    No    | The cluster filter strategy. Defaults to `default`, can be switched to `time`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`. [Only honored in `default` strategy]
 | **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`. [Only honored in `default` strategy]
 | **--excluded-clusters**   |    No    | The list of clusters that cannot be removed by the cluster collector.
 
-### Environment variables
+### Environment Variables
 
 See the list of available environment variables:
 

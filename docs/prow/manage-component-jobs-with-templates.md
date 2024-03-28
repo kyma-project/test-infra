@@ -1,4 +1,4 @@
-# Manage component jobs with templates
+# Manage Component Jobs with Templates
 
 This document describes how to define, modify, and remove Prow jobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. Also, this document gives you the steps required to prepare your component for the Prow CI pipeline.
 

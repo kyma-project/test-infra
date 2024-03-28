@@ -1,7 +1,7 @@
-# E2E DinD K3d
+# E2E DinD K3d Image
 
 This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
-K3d runs in docker-in-docker mode. The image is Alpine-based.
+K3d runs in the Docker-in-Docker mode. The image is Alpine-based.
 
 The usage of this image is restricted only to running K3d/kind workloads for testing.
 
@@ -41,4 +41,4 @@ It contains the following binaries:
     preset-dind-enabled: true
     preset-kind-volume-mounts: true
     ```
-5. Docker daemon logs will be stored in the `/var/log/dockerd.log` or in `${ARTIFACTS}/dockerd.log` when running from Prow.
+5. Docker daemon logs are stored in the `/var/log/dockerd.log` or in `${ARTIFACTS}/dockerd.log` when running from Prow.

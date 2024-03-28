@@ -1,4 +1,4 @@
-# HTML lens
+# HTML Lens
 
 Spyglass HTML lens allows to render HTML files in the job results.
 

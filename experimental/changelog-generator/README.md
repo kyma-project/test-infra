@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
+This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests (PRs) with specified labels.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ To set up the project, you need the latest version of [Docker](https://www.docke
 
 Read how to build the Docker image and use it to generate either the full changelog with all released Kyma versions or a changelog only for the latest release.  
 
-### Build the Docker image
+### Build the Docker Image
 
 To build the Docker image, run this command:
 
@@ -20,7 +20,7 @@ To build the Docker image, run this command:
 docker build -t changelog-generator .
 ```
 
-### Generate the full changelog
+### Generate the Full Changelog
 
 To generate a `CHANGELOG.md` file for all released Kyma versions, follow these steps:
 
@@ -36,7 +36,7 @@ Replace values in curly braces with proper details, where:
 - `{githubToken}` is the GitHub API token with the read-only access to the repository.
 - `{sshFilePath}` is the path to the SSH file used for Git to authenticate with the repository.
 - `{configFilePath}` is a path to the `package.json` file used by the `lerna-changelog` tool.
-- `{skipRemovingLatest}` if set to true, removing the `latest` tag functionality is skipped.
+- `{skipRemovingLatest}` if set to `true`, removing the `latest` tag functionality is skipped.
 
 2. Commit and push the `CHANGELOG.md` file. Use this command:
 
@@ -50,9 +50,9 @@ Replace values in curly braces with proper details, where:
 - `{releaseTitle}` is the currently released application title which specifies the release version.
 - `{sshFilePath}` is the path to the SSH file used for Git to authenticate with the repository.
 
-### Generate the latest release changelog
+### Generate the Latest Release Changelog
 
-To generate a changelog for a single release that contains merged pull requests for the latest Kyma version, run this command:
+To generate a changelog for a single release that contains merged PRs for the latest Kyma version, run this command:
 
 ```bash
 docker run --rm -v {absolutePathToRepository}:/repository -w /repository -e FROM_TAG={previousTag} -e TO_TAG={latestTag} -e NEW_RELEASE_TITLE={releaseTitle} -e GITHUB_AUTH={githubToken} -e SSH_FILE={sshFile} -e CONFIG_FILE={configFilePath} -e SKIP_REMOVING_LATEST={skipRemovingLatest} changelog-generator sh /app/generate-release-changelog.sh --configure-git
@@ -74,6 +74,6 @@ The script generates a new `./.changelog/release-changelog.md` file under the sp
 
 This project uses the [`lerna-changelog`](https://github.com/lerna/lerna-changelog) generator and custom shell scripts to create a release changelog in the form of a `CHANGELOG.md` file.
 
-### Configure changelog generation
+### Configure Changelog Generation
 
 To specify the changelog generation settings, modify the `package.json` file under the `app` directory. See the [`lerna-changelog` documentation](https://github.com/lerna/lerna-changelog/blob/master/README.md) for details.

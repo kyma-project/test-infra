@@ -1,4 +1,4 @@
-# Run K3d cluster inside ProwJobs
+# Run K3d Cluster Inside ProwJobs
 
 This document provides simple instructions, with examples, on how to prepare a ProwJob to use a K3d cluster and Docker.
 
@@ -27,7 +27,7 @@ Once the ProwJob contains those required definition configurations, you have to 
 
 > Remember to use an image with Docker already installed. Otherwise, starting the Docker service will not be possible. For more information on which image can be used, see [prow/images](../../prow/images) directory.
 
-## ProwJob configuration example
+## ProwJob Configuration Example
 
 Here's an example of Docker-powered ProwJob.
 
@@ -113,13 +113,13 @@ periodics:
               memory: 4Gi
 ```
 
-## Managing container resources
+## Managing Container Resources
 
 Kubernetes best practices suggest to explicitly define container resource requests and limits.
 To ensure that the workload cluster always has the required resources to run the ProwJob, always remember to define `requests` and `limits`
 under container `resources` object. We strongly suggest starting with a smaller number, like `cpu: 500m` and `memory: 1Gi`, then adding more if the job seems to be unstable.
 
-## Accessing the cluster
+## Accessing the Cluster
 
 It's not possible to access the cluster inside the Pod. It's a completely isolated environment without any inbound access from the outside network.
 Test all changes locally with Docker.

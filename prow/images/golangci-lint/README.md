@@ -1,4 +1,4 @@
-# Golangci-lint image
+# Golangci-Lint Image
 
 ## Overview
 

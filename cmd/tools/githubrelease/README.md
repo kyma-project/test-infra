@@ -1,4 +1,4 @@
-# GitHub release
+# GitHub Release
 
 ## Overview
 
@@ -30,7 +30,7 @@ See the list of available flags:
 | **--githubAccessToken** | Yes | The string value with the name of the GitHub OAuth2 access token.|                                                                                        
 | **--releaseVersionFilePath** | Yes | The string value with the full path to the `RELEASE_VERSION` file.|                                                                                       
 
-### Environment variables
+### Environment Variables
 
 Available environment variables:
 

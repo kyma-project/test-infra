@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
+The Cloud Run service deletes old keys for a Google Cloud service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
 1. Cloud Scheduler calls the service-account-keys-cleaner service.
 2. For each secret stored in Secret Manager, the service executes the following steps:
@@ -29,6 +29,6 @@ The Cloud Function accepts the following GET parameters:
 
 | Name                           | Required | Description                                                           |
 | :----------------------------- | :------: | :-------------------------------------------------------------------- |
-| **project**                    |    Yes   | The name of the GCP project with Secret Manager.|
+| **project**                    |    Yes   | The name of the Google Cloud project with Secret Manager.|
 | **age**                        |    No    | The age in hours that the latest version of a secret has to exist before old versions can be deleted. It defaults to `5`. |
 | **dry_run**                    |    No    | The value controlling the `dry run` mode. It defaults to `false`.|
