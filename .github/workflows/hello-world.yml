@@ -1,0 +1,26 @@
+on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened ]
+
+jobs:
+  hello_world_job:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read  # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - uses: magic7s/expose-jwt-action@v0.1.2
+        name: Get JWT token
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Hello world action step
+        uses: ./ # Uses an action in the root directory
+        id: hello
+        with:
+          who-to-greet: 'Wojtek'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
