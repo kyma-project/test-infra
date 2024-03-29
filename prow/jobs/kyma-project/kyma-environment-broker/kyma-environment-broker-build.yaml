@@ -194,6 +194,54 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pull-keb-expirator-build
+      annotations:
+        description: "Expires instances for given plan and expiration period, build on PR"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-keb-expirator-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: './'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240327-023631f7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-trial-cleanup-job"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=expirator"
+              - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-keb-deprovision-retrigger-job-build
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
@@ -574,6 +622,57 @@ postsubmits: # runs on main
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=trialcleanup"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-keb-expirator-release-build
+      annotations:
+        description: "Expires instances for given plan and expiration period, build on tag creation"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keb-expirator-release-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240327-023631f7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=kyma-environment-trial-cleanup-job"
+              - "--context=./"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=expirator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--tag={{.Env \"PULL_BASE_REF\" }}"
             resources:
