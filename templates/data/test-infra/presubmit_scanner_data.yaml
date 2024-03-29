@@ -17,6 +17,7 @@ templates:
             {{/* Iterate over orgs and repos in config.yaml global field. */}}
           {{- range $org := .Global.orgs }}
           {{- range $repo := .repos }}
+          {{- if $repo.skipGitleaks }} {{- continue }} {{ end }}
               - repoName: "github.com/{{$org.name}}/{{$repo.name}}"
                 jobs:
                   - jobConfig:
