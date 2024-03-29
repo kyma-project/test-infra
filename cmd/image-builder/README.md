@@ -188,7 +188,7 @@ Image Builder supports three build backends:
 - BuildKit
 - ADO pipelines
 
-kaniko and BuildKit build images locally, while the ADO pipelines backend calls ADO API.
+kaniko and BuildKit build images locally, while for the ADO pipelines backend, Image Builder calls ADO API to start the build process.
 To use the kaniko backend, use the `image-builder` image.
 To use the BuildKit backend, use the `buildkit-image-builder` image.
 The ADO backend is supported by both images. To use it, you need to provide the `--build-in-ado=true` flag.

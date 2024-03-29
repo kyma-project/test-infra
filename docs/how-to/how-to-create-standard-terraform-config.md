@@ -1,6 +1,6 @@
 # Standard Terraform Configuration
 
-This document describes the standard Terraform configurationuration that is used in the `test-infra` repository. 
+This document describes the standard Terraform configuration that is used in the `test-infra` repository. 
 
 ## Infrastructure as Code
 
@@ -14,7 +14,7 @@ We decided to build an infrastructure as code because the IaC approach makes the
 
 ## Terraform Configuration Structure
 
-Our standard structure for Terraform configurationuration is based on the [Google Terraform best practices](https://cloud.google.com/docs/terraform/best-practices-for-terraform) and [Hashicorp Creating Terraform Modules](https://developer.hashicorp.com/terraform/language/modules/develop) articles. Thus, we can easily reuse Terraform modules and share them between different projects. We can also easily test the modules on the development environment before applying them to the production environment.
+Our standard structure for Terraform configuration is based on the [Google Terraform best practices](https://cloud.google.com/docs/terraform/best-practices-for-terraform) and [Hashicorp Creating Terraform Modules](https://developer.hashicorp.com/terraform/language/modules/develop) articles. Thus, we can easily reuse Terraform modules and share them between different projects. We can also easily test the modules on the development environment before applying them to the production environment.
 
 The Terraform configuration should be stored in the `terraform` directory in the location specific for a use case. See the directory structure for [open policy agent](https://github.com/kyma-project/test-infra/tree/main/opa) in the `test-infra` repository.
 
