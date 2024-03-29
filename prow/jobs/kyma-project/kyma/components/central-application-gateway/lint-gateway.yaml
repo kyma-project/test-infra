@@ -16,7 +16,7 @@ presubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240320-9c790a39"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240329-5987eaad"
             securityContext:
               privileged: false
               seccompProfile:
