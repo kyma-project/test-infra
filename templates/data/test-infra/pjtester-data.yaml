@@ -23,7 +23,7 @@
                 - 'if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi'
             jobConfig_pjtester:
               command: "/ko-app/pjtester"
-              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240401-4bc1aca2
+              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240401-cfb50e5a
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
