@@ -1,6 +1,6 @@
 FROM local/unified-agent:latest
 
-ENV NODE_VERSION 20.11.0
+ENV NODE_VERSION 20.12.0
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \

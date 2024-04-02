@@ -237,6 +237,42 @@ updates:
       prefix: "buildkit-image-builder"
       include: "scope"
   - package-ecosystem: "docker"
+    directory: "/images/unified-agent/nodejs"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "unified-agent-nodejs"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/unified-agent/go"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "unified-agent-go"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/unified-agent"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "unified-agent"
+      include: "scope"
+  - package-ecosystem: "docker"
     directory: "/images/e2e-dind-gcloud"
     labels:
       - "docker"
