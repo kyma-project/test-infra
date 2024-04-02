@@ -172,7 +172,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240401-4bc1aca2"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240402-b7e8aa8b"
             securityContext:
               privileged: false
               seccompProfile:

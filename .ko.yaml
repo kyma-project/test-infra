@@ -1,9 +1,9 @@
 baseImageOverrides:
-  github.com/kyma-project/test-infra/cmd/tools/pjtester: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240401-4bc1aca2
-  github.com/kyma-project/test-infra/cmd/markdown-index: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240401-4bc1aca2
-  github.com/kyma-project/test-infra/cmd/image-detector: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240401-4bc1aca2
-  github.com/kyma-project/test-infra/cmd/external-plugins/needs-tws: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240401-4bc1aca2
-  github.com/kyma-project/test-infra/cmd/external-plugins/automated-approver: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240401-4bc1aca2
+  github.com/kyma-project/test-infra/cmd/tools/pjtester: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240402-b7e8aa8b
+  github.com/kyma-project/test-infra/cmd/markdown-index: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240402-b7e8aa8b
+  github.com/kyma-project/test-infra/cmd/image-detector: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240402-b7e8aa8b
+  github.com/kyma-project/test-infra/cmd/external-plugins/needs-tws: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240402-b7e8aa8b
+  github.com/kyma-project/test-infra/cmd/external-plugins/automated-approver: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20240402-b7e8aa8b
 defaultPlatforms:
   - linux/arm64
   - linux/amd64
