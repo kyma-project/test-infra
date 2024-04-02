@@ -8,6 +8,7 @@ global:
     - name: "kyma-project"
       repos:
         - name: "test-infra"
+          skipGitleaks: true
         - name: "kyma"
         - name: "busola"
         - name: "control-plane"
