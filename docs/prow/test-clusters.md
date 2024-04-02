@@ -3,17 +3,17 @@
 This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 
 
-## Cluster authorization
+## Cluster Authorization
 
 ### Permissions
 
 Kyma developers are gathered in the `kyma_developers@sap.com` Google Group administrated by the [Neighbors team](https://github.com/orgs/kyma-project/teams/prow/members?utf8=%E2%9C%93&query=role%3Amaintainer). All the group permissions are managed in IAM, where the `kyma_developers@sap.com` group has the **kyma_developer** role assigned so that its members can access test clusters and VMs in read-only mode.
 
-### Custom permissions
+### Custom Permissions
 
 Previously, you could only grant roles to Google Cloud user accounts or Cloud IAM service accounts. Google Groups for GKE (Beta) now allows you to grant roles to the members of a G Suite Google Group. With this mechanism, the users and groups themselves are maintained by your G Suite administrators, completely outside of Kubernetes or Cloud Console.
 
-Google Groups give you the possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, Cluster Roles, Role Bindings, and Cluster Role Bindings to the specific Google Group on your cluster.
+Google Groups give you the possibility to gather Kyma Developers accounts and manage Google Cloud Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, Cluster Roles, Role Bindings, and Cluster Role Bindings to the specific Google Group on your cluster.
 
 For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** Cluster Role on the Kyma release cluster built by the **post-relXX-kyma-release-candidate** Prow job.
 

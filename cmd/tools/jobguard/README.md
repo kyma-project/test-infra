@@ -1,4 +1,4 @@
 # Job Guard
 
-Job Guard was moved [here](/cmd/jobguard).
+Job Guard was moved to the [`cmd`](/cmd/jobguard) directory.
 

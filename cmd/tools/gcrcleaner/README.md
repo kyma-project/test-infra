@@ -1,14 +1,14 @@
-# GCR cleaner
+# GCR Cleaner
 
 ## Overview
 
-This command finds and removes old GCR images created by Jobs in the Google Cloud Platform (GCP) project.
+This command finds and removes old GCR images created by Jobs in the Google Cloud project.
 
 There are two conditions used to find images for removal:
 - The repository name pattern is not on the ignored list.
 - The `creationTimestamp` value of the images, which is used to find addresses, exists at least for a preconfigured number of hours.
 
-GCR images that meet these conditions are subject to removal.
+GCR images that meet all these conditions are subject to removal.
 
 ## Usage
 
@@ -37,7 +37,7 @@ See the list of available flags:
 | **--age-in-hours**         |    No    | The integer value for the number of hours. It only matches images older than `now()-ageInHours`. Defaults to `24`.
 | **--gcr-exclude-name-regex**       |    Yes    | The string value with a valid Go regexp. Used to exclude matched repositories by their name.
 
-### Environment variables
+### Environment Variables
 
 See the list of available environment variables:
 

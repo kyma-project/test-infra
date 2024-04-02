@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
+This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud project.
 
 When an integration job installs Kyma on a GKE cluster, it reserves the required IP addresses and adds necessary DNS records.
 Usually, the job that provisions the cluster cleans up the resources once they are not needed.
@@ -16,7 +16,7 @@ There are three conditions used to find IP address for removal:
 - The status of the IP address shows it is not in use (this value is not configurable by the user)
 - The address `creationTimestamp` value that is used to find addresses existing at least for a preconfigured number of hours
 
-Addresses that meet these conditions are subject to removal.
+Addresses that meet all these conditions are subject to removal.
 Before removal of a matching address, the command finds all DNS records associated with the IP address.
 The command removes all associated DNS records first, then the IP Address.
 
@@ -43,14 +43,14 @@ See the list of available flags:
 
 | Name                    | Required | Description                                                                                          |
 | :---------------------- | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**           |   Yes    | GCP project name.
-| **--regions**           |   Yes    | GCP region name or a comma-separated list of such values.
-| **--dnsZone**           |   Yes    | GCP DNS Managed Zone name used to lookup of DNS records for removal.
+| **--project**           |   Yes    | Google Cloud project name.
+| **--regions**           |   Yes    | Google Cloud region name or a comma-separated list of such values.
+| **--dnsZone**           |   Yes    | Google Cloud DNS Managed Zone name used to look up DNS records for removal.
 | **--dryRun**            |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**        |    No    | The integer value for the number of hours. It only matches addresses older than `now()-ageInHours`. It defaults to `2`.
 | **--addressRegexpList** |    No    | The string value with a Golang regexp or a comma-separated list of such expressions. It is used to match addresses by their name. It defaults to `(remoteenvs-)?gkeint-(pr|commit)-.*,(remoteenvs-)?gke-upgrade-(pr|commit)-.*`.
 
-### Environment variables
+### Environment Variables
 
 See the list of available environment variables:
 

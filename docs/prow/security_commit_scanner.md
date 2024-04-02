@@ -6,7 +6,7 @@ Security Leaks Scanner is a tool that scans a repository for potential security 
 > before merging a pull request. It is essential for ensuring security 
 > and integrity of a repository.
 
-## How Security Leaks Scanner works
+## How Security Leaks Scanner Works
 
 Every PR is examined for security leaks. Only the commits - changes to individual files are tested, not the entire repository or whole files. During the pull request testing process, Gitleaks is executed, performing leak detection operations. The scanner takes into account commits from branch `main` to the last commit on your branch.
 
@@ -16,7 +16,7 @@ Every PR is examined for security leaks. Only the commits - changes to individua
 2. Submit a pull request.
 3. Review the results.
 
-## Failure in test
+## Failure in Test
 
 Identify the origin of the leak. The test result will indicate the location. 
 

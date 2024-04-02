@@ -1,8 +1,8 @@
 # Prow Workload Clusters
 
-This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
+This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` Google Cloud project. We use two workload clusters for trusted and untrusted Prow jobs.
 
-## Clusters design
+## Clusters Design
 
 Workload clusters:
 - Have autoupgrade enabled and follow a stable channel.
@@ -18,7 +18,7 @@ Workload clusters:
    untrusted-workload-kyma-prow  europe-west3    1.14.10-gke.36  _____________   n1-standard-4  1.14.10-gke.36  2          RUNNING
 ```
 
-## Infrastructure design
+## Infrastructure Design
 
 Clusters are located in separate networks for trusted and untrusted components. Each network provides three subnets for cluster nodes, Pods, and services.
 There is no peering between networks, thus clusters are isolated on the network level.
@@ -45,7 +45,7 @@ NAME                          ADDRESS/RANGE   TYPE      PURPOSE  NETWORK  REGION
 trusted-workload-kyma-prow    _____________   EXTERNAL                    europe-west3          IN_USE
 untrusted-workload-kyma-prow  _____________   EXTERNAL                    europe-west3          IN_USE
 ```
-## Prow design
+## Prow Design
 
 Prow accesses workload clusters using X.509 client certificates and the **cluster-admin** role.
 Certificates are combined into a kubeconfig file and stored as a secret on a Prow cluster.

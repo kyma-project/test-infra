@@ -6,7 +6,7 @@
 
 This folder contains a list of images used in Prow jobs.
 
-### Project structure
+### Project Structure
 
 <!-- Update the folder structure each time you modify it. -->
 

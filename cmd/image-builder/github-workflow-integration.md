@@ -52,34 +52,34 @@ The OIDC token contains the following claims that can be used to identify the wo
 
 <!-- markdown-link-check-disable -->
 
-- `iss`: The issuer of the token. This is always https://token.actions.githubusercontent.com. <!-- markdown-link-check-enable-->
-- `iat`: The time when the token is issued.
-- `exp`: The time when the token expires.
-- `jti`: A unique identifier for the token.
-- `nbf`: The time before which the token must not be accepted for processing.
-- `kid`: The key ID of the key used to sign the token.
-- `alg`: The algorithm used to sign the token.
-- `run_id`: The ID of the workflow run.
-- `run_number`: The number of the workflow run.
-- `actor`: The login of the user who initiates the workflow run.
-- `event_name`: The name of the event that triggers the workflow run.
-- `workflow`: The name of the workflow that triggers the workflow run.
-- `workflow_ref`: The git ref associated with the workflow file.
-- `repository`: The repository where the workflow run occurs.
-- `repository_owner`: The owner of the repository where the workflow run occurs.
+- **iss**: The issuer of the token. This is always https://token.actions.githubusercontent.com. <!-- markdown-link-check-enable-->
+- **iat**: The time when the token is issued.
+- **exp**: The time when the token expires.
+- **jti**: A unique identifier for the token.
+- **nbf**: The time before which the token must not be accepted for processing.
+- **kid**: The key ID of the key used to sign the token.
+- **alg**: The algorithm used to sign the token.
+- **run_id**: The ID of the workflow run.
+- **run_number**: The number of the workflow run.
+- **actor**: The login of the user who initiates the workflow run.
+- **event_name**: The name of the event that triggers the workflow run.
+- **workflow**: The name of the workflow that triggers the workflow run.
+- **workflow_ref**: The git ref associated with the workflow file.
+- **repository**: The repository where the workflow run occurs.
+- **repository_owner**: The owner of the repository where the workflow run occurs.
 
 ### Source Code Cloning Claims
 
 The OIDC token also contains claims that can be used to clone the appropriate version of the source code:
 
-- `repository`: The repository where the workflow run occurs.
-- `repository_owner`: The owner of the repository where the workflow run occurs.
-- `event_name`: The name of the event that triggers the workflow run.
-- `ref`: The git ref associated with the workflow run. This can be used to checkout the correct branch, tag, or commit.
-- `ref_type`: The type of git ref associated with the workflow run. This can be used to determine whether the ref is a branch, tag, or
+- **repository**: The repository where the workflow run occurs.
+- **repository_owner**: The owner of the repository where the workflow run occurs.
+- **event_name**: The name of the event that triggers the workflow run.
+- **ref**: The git ref associated with the workflow run. This can be used to checkout the correct branch, tag, or commit.
+- **ref_type**: The type of git ref associated with the workflow run. This can be used to determine whether the ref is a branch, tag, or
   commit.
-- `base_ref`: The base git ref associated with the workflow run. This can be used to determine the base branch for a pull request.
-- `head_ref`: The head git ref associated with the workflow run. This can be used to determine the head branch for a pull request.
+- **base_ref**: The base git ref associated with the workflow run. This can be used to determine the base branch for a pull request.
+- **head_ref**: The head git ref associated with the workflow run. This can be used to determine the head branch for a pull request.
 
 These claims ensure that the `oci-image-builder` pipeline builds the exact version of the code that was provided in the PR or merged to the
 branch, adhering to SLC-29 compliance.

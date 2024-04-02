@@ -52,7 +52,7 @@ go run main.go \
     --dry-run=false
 ```
 
-### Exclude images from the check command
+### Exclude Images from the Check Command
 
 To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
 
@@ -67,7 +67,7 @@ excludes:
       - "{{ .Values.imageRenderer.image.repository }}:{{ .Values.imageRenderer.image.tag }}"
 ```
 
-### Check command flags
+### Check Command Flags
 
 See the list of flags available for the `check` command:
 
@@ -77,7 +77,7 @@ See the list of flags available for the `check` command:
 | **--skip-comments**       |    No    | Skip commented out lines.             |
 | **--excludes-list**       |    No    | Path to the list of excluded images.  |
 
-### List command flags
+### List Command Flags
 
 See the list of flags available for the `list` and `missing` command:
 

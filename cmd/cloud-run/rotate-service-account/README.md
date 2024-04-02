@@ -2,7 +2,7 @@
 
 ## Overview
 
-RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
+RotateServiceAccount creates a new key for a Google Cloud service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
 
 1. Secret Manager sends a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
 3. RotateServiceAccount checks if the value of the **eventType** attribute is set to `SECRET_ROTATE`; if not, it stops its execution.
