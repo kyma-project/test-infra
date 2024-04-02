@@ -1,7 +1,7 @@
 FROM alpine:3.19.1 AS creds
 
 RUN apk add --no-cache curl && \
-  curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.5/docker-credential-gcr_linux_amd64-2.1.5.tar.gz" \
+  curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.22/docker-credential-gcr_linux_amd64-2.1.22.tar.gz" \
   | tar xz docker-credential-gcr \
   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
 

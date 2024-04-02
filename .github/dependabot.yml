@@ -236,6 +236,138 @@ updates:
     commit-message:
       prefix: "buildkit-image-builder"
       include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/e2e-dind-gcloud"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "e2e-dind-gcloud"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/e2e-dind-garden"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "e2e-dind-garden"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/e2e-dind-nodejs"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "e2e-dind-nodejs"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/e2e-dind-k3d"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "e2e-dind-k3d"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/alpine/shellcheck"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "alpine-shellcheck"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/alpine/hadolint"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "alpine-hadolint"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/alpine/git/gke-aws-auth"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "alpine-git-gke-aws-auth"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/alpine/git"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "alpine-git"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/alpine"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "alpine"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/buildpack/go"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "buildpack-go"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/images/buildpack"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "buildpack"
+      include: "scope"
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:

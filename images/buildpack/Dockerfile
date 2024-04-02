@@ -1,6 +1,6 @@
-FROM alpine:3.18.4
+FROM alpine:3.19.1
 
-ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.20
+ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.22
 RUN set -eux; \
     apk upgrade --no-cache && \
     apk add --no-cache \
