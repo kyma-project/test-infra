@@ -67,7 +67,7 @@ resource "google_cloud_run_service" "github_webhook_gateway" {
     spec {
       service_account_name = google_service_account.github_webhook_gateway.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240402-3ec5a057"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240402-6740fadc"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
