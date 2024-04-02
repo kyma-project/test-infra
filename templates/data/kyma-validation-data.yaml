@@ -60,7 +60,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240402-b7e8aa8b
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240402-5a67f2a8
                 inheritedConfigs:
                   local:
                     - "smaller_requests"
