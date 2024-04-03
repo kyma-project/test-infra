@@ -3,13 +3,17 @@ on:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
 jobs:
-  hello_world_job:
+  get_oidc_token_job:
     permissions:
       id-token: write # This is required for requesting the JWT token
       contents: read  # This is required for actions/checkout
     runs-on: ubuntu-latest
-    name: A job to get OIDC token and say hello
+    name: A job to get OIDC token
     steps:
+     # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v4
       # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
       - uses: ./.github/actions/expose-jwt-action
         name: Get JWT token
