@@ -21,17 +21,6 @@ jobs:
       - run: npm init -y
       - run: npm install @actions/core
       - run: npm install @actions/github
-      # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
+      # This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
       - uses: ./.github/actions/expose-jwt-action
-        name: Get JWT token
-      # OIDC debugger action written in Golang for debugging OIDC claims in the logs
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v4
-        with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: ''
+        name: Expose JWT token
