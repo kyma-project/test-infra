@@ -37,7 +37,7 @@ RUN mkdir -p /workspace; \
 
 WORKDIR /workspace
 
-FROM golang:1.21.4 AS go-deps
+FROM golang:1.22.2 AS go-deps
 ENV CGO_ENABLED=0
 ARG K3D_VERSION=v5.6.0
 
