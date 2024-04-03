@@ -1,5 +1,5 @@
 on:
-  pull_request_target:
+  pull_request:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     name: A job to get OIDC token and say hello
     steps:
       # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
-      - uses: Sawthis/expose-jwt-action@v1.0.5
+      - uses: ./.github/actions/expose-jwt-action
         name: Get JWT token
         with:
           audience: 'https://github.com/github'

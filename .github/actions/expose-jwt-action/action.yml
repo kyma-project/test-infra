@@ -1,0 +1,13 @@
+name: 'Expose GitHub JWT'
+description: 'Exposes the JWT Token from GitHub Actions'
+inputs:
+  audience:  # id of input
+    description: 'The audience field in the JWT'
+    required: false
+    default: ''
+outputs:
+  jwt: # id of output
+    description: 'The signed JWT ID Token'
+runs:
+  using: 'node20'
+  main: 'index.js'
