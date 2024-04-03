@@ -1,12 +1,12 @@
 # View GitHub JWT Token
 
-This action takes an optional input for the `audience` value and outputs a GitHub signed JWT. 
+This action takes an optional input for the **audience** value and outputs a GitHub-signed JSON Web Token (JWT). 
 
 ## Inputs
 
-## `audience`
+## **audience**
 
-The audience field in the JWT.
+The **audience** field in the JWT.
 
 Default: ``
 
@@ -14,9 +14,9 @@ Default: ``
 
 ## `jwt`
 
-The JSON Web Token signed by GitHub Action.
+The JWT signed by GitHub Action.
 
-## Example usage
+## Example Usage
 ```yaml
 - name: Checkout
   uses: actions/checkout@v4
