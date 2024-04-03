@@ -1,6 +1,6 @@
 # View GitHub JWT Token
 
-This action takes an optional input for the `aud` value and outputs a GitHub signed JWT. 
+This action takes an optional input for the `audience` value and outputs a GitHub signed JWT. 
 
 ## Inputs
 
@@ -17,7 +17,16 @@ Default: ``
 The JSON Web Token signed by GitHub Actions
 
 ## Example usage
-
-uses: ./.github/actions/expose-jwt-action@v0.1.5
-with:
-  audience: 'sts.amazonaws.com'
+- name: Checkout
+  uses: actions/checkout@v4
+- uses: actions/setup-node@v4
+  with:
+    node-version: 20
+- run: cd .github/actions/expose-jwt-action
+- run: npm init -y
+- run: npm install @actions/core
+- run: npm install @actions/github
+- uses: ./.github/actions/expose-jwt-action
+  name: Get JWT token
+  with:
+    audience: 'https://github.com/github'
