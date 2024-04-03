@@ -1,4 +1,4 @@
-# View GitHub JWT Token
+# Expose GitHub JSON Web Token Action
 
 This action takes an optional input for the **audience** value and outputs a GitHub-signed JSON Web Token (JWT). 
 
