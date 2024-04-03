@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to get OIDC token and say hello
     steps:
+      - uses: Sawthis/expose-jwt-action@main
+        name: Get JWT token
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
         with:
