@@ -156,6 +156,44 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
+                  name: pull-keb-expirator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240327-023631f7"
+                  annotations:
+                    owner: "gopher"
+                    description: "Expires instances for given plan and expiration period, build on PR"
+                  run_if_changed: "./"
+                  args:
+                    - --name=kyma-environment-trial-cleanup-job
+                    - --context=./
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=expirator
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-keb-expirator-release-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240327-023631f7"
+                  annotations:
+                    owner: "gopher"
+                    description: "Expires instances for given plan and expiration period, build on tag creation"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$
+                  args:
+                    - '--name=kyma-environment-trial-cleanup-job'
+                    - '--context=./'
+                    - '--dockerfile=Dockerfile.job'
+                    - '--build-arg=BIN=expirator'
+                    - '--config=/config/kaniko-build-config.yaml'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8"
                   annotations:
