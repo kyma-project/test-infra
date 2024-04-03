@@ -1,6 +1,6 @@
 FROM local/unified-agent:latest
 
-ARG GO_VERSION=1.21.7
+ARG GO_VERSION=1.22.1
 
 # install go
 ENV GOPATH /go
