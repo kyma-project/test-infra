@@ -1,0 +1,28 @@
+{
+  "name": "expose-jwt-action",
+  "version": "0.1.3",
+  "description": "View GitHub JWT Token",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postversion": "git push --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magic7s/expose-jwt-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/magic7s/expose-jwt-action/issues"
+  },
+  "homepage": "https://github.com/magic7s/expose-jwt-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
