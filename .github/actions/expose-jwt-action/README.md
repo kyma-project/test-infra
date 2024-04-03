@@ -6,7 +6,7 @@ This action takes an optional input for the `audience` value and outputs a GitHu
 
 ## `audience`
 
-The audience field in the JWT
+The audience field in the JWT.
 
 Default: ``
 
@@ -14,7 +14,7 @@ Default: ``
 
 ## `jwt`
 
-The JSON Web Token signed by GitHub Actions
+The JSON Web Token signed by GitHub Action.
 
 ## Example usage
 ```yaml
