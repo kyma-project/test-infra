@@ -24,8 +24,6 @@ jobs:
       # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
       - uses: ./.github/actions/expose-jwt-action
         name: Get JWT token
-        with:
-          audience: 'https://github.com/github'
       # OIDC debugger action written in Golang for debugging OIDC claims in the logs
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
