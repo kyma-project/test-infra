@@ -11,10 +11,10 @@ jobs:
     name: A job to get OIDC token and say hello
     steps:
       # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
-      - uses: Sawthis/expose-jwt-action@v1.0.4
+      - uses: Sawthis/expose-jwt-action@v1.0.5
         name: Get JWT token
         with:
-          aud: 'https://github.com/github'
+          audience: 'https://github.com/github'
       # OIDC debugger action written in Golang for debugging OIDC claims in the logs
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
