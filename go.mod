@@ -36,7 +36,7 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.18.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
-	golang.org/x/net v0.22.0
+	golang.org/x/net v0.23.0
 	golang.org/x/oauth2 v0.18.0
 	google.golang.org/api v0.172.0
 	gopkg.in/yaml.v3 v3.0.1
