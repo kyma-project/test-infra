@@ -17,6 +17,7 @@ Default: ``
 The JSON Web Token signed by GitHub Actions
 
 ## Example usage
+```yaml
 - name: Checkout
   uses: actions/checkout@v4
 - uses: actions/setup-node@v4
@@ -30,3 +31,4 @@ The JSON Web Token signed by GitHub Actions
   name: Get JWT token
   with:
     audience: 'https://github.com/github'
+```
