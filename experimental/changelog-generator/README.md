@@ -21,7 +21,7 @@ docker build -t changelog-generator .
 ```
 
 ### Generate the Full Changelog
-
+ssdsd
 To generate a `CHANGELOG.md` file for all released Kyma versions, follow these steps:
 
 1. Create a `CHANGELOG.md` file under the specified absolute path to the repository. Use this command:
