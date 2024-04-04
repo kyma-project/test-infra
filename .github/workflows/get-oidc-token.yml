@@ -35,7 +35,7 @@ jobs:
       - name: Debug OIDC Claims
         uses: ./.github/actions/actions-oidc-debugger
         with:
-          audience: 'https://github.com/'
+          audience: 'https://github.com/github'
       - name: Save OIDC Token to File
         run: echo "${{ steps.get_oidc.outputs.jwt }}" > oidc_token.txt
   
