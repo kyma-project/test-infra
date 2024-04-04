@@ -47,14 +47,7 @@ jobs:
         with:
           name: oidc-token-artifact
           path: oidc_token.txt
-  call_reusable_with_oidc:
-    needs: get_oidc_token_job
-    permissions:
-      id-token: write
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Call Reusable Workflow with OIDC Token
-        uses: ./.github/workflows/reusable_workflow.yml@main
-        with:
-          oidc_token: ${{ needs.get_oidc_token_job.outputs.oidc_token }}
+  reusable_job:
+     uses: ./.github/workflows/reusable_workflow.yml@main
+     with:
+       oidc_token: ${{ needs.call_reusable_with_oidc.outputs.oidc_token }}
