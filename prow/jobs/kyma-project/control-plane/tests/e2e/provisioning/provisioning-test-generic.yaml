@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240404-e36e8136"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240404-979c3d8f"
             securityContext:
               privileged: false
               seccompProfile:
