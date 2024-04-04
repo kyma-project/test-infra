@@ -40,9 +40,13 @@ jobs:
           audience: 'https://github.com/github'
       - name: Save OIDC Token to File
         run: echo "${{ steps.get_oidc.outputs.jwt }}" > oidc_token.txt
-  
       - name: Upload OIDC Token as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: oidc-token-artifact
           path: oidc_token.txt
+      - name: Call Reusable Workflow with OIDC Token
+        uses: ./.github/workflows/reusable_workflow.yml@main
+        with:
+          oidc_token: ${{ steps.get_oidc.outputs.jwt }}
+  
