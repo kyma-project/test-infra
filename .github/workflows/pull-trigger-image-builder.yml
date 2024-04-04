@@ -49,5 +49,7 @@ jobs:
         with:
           oidc-token: ${{ needs.get-oidc-token.outputs.oidcToken }}
           ado-token: ${{ secrets.GITHUB_TOKEN }}
+          name: test-infra/ginkgo
+          dockerfile: prow/images/ginkgo/Dockerfile
 
     
