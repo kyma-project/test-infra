@@ -219,7 +219,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=kyma-environment-trial-cleanup-job"
+              - "--name=kyma-environment-expirator-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=expirator"
@@ -669,7 +669,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=kyma-environment-trial-cleanup-job"
+              - "--name=kyma-environment-expirator-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=expirator"
