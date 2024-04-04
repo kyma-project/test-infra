@@ -163,7 +163,7 @@ templates:
                     description: "Expires instances for given plan and expiration period, build on PR"
                   run_if_changed: "./"
                   args:
-                    - --name=kyma-environment-trial-cleanup-job
+                    - --name=kyma-environment-expirator-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=expirator
@@ -183,7 +183,7 @@ templates:
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
-                    - '--name=kyma-environment-trial-cleanup-job'
+                    - '--name=kyma-environment-expirator-job'
                     - '--context=./'
                     - '--dockerfile=Dockerfile.job'
                     - '--build-arg=BIN=expirator'
