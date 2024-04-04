@@ -1,0 +1,16 @@
+name: 'Trigger ADO Image Builder'
+description: 'Triggers the run of the ADO image builder backend'
+inputs:
+  oidc-token:
+    description: The JWT token to authenticate against Azure DevOps image builder backend
+    required: true
+  ado-token:
+    description: Contains personal access token to authenticate against Azure DevOps API
+    required: true
+  dry-run:
+    description: Prevent actual triggering the image builder
+    required: false
+    default: false
+ runs:
+  using: 'docker'
+  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8
