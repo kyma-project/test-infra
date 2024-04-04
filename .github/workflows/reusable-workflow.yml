@@ -1,0 +1,23 @@
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      oidc_token:
+        required: true
+        type: string
+
+jobs:
+  use_oidc_token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use OIDC Token
+        run: |
+          echo "Received OIDC Token: ${{ inputs.oidc_token }}"
+      - name: Decode OIDC Token
+        run: |
+          const token = '${{ inputs.oidc_token }}';
+          const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+          console.log("Decoded JWT payload:", payload);
+        shell: node {0}
+        

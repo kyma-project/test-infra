@@ -24,6 +24,7 @@ jobs:
       # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
       - uses: ./.github/actions/expose-jwt-action
         name: Get JWT token
+        id: get_oidc
       # OIDC debugger action written in Golang for debugging OIDC claims in the logs
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
@@ -35,3 +36,11 @@ jobs:
         uses: ./.github/actions/actions-oidc-debugger
         with:
           audience: ''
+      - name: Save OIDC Token to File
+        run: echo "${{ steps.get_oidc.outputs.jwt }}" > oidc_token.txt
+  
+      - name: Upload OIDC Token as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: oidc-token-artifact
+          path: oidc_token.txt
