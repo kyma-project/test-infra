@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240402-6740fadc
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240404-627df987
             securityContext:
               privileged: true
               seccompProfile:
