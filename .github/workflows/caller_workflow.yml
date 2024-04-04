@@ -8,6 +8,9 @@ on:
 
 jobs:
   call_reusable_with_oidc:
+    permissions:
+        contents: read
+        actions: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
