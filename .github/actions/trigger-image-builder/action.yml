@@ -5,8 +5,19 @@ inputs:
     description: The JWT token to authenticate against Azure DevOps image builder backend
     required: true
   ado-token:
-    description: Contains personal access token to authenticate against Azure DevOps API
+    description: The personal access token to authenticate against Azure DevOps API
     required: true
+  image-name:
+    description: Name of the build image
+    required: true
+  context:
+    description: Build context to build container from
+    required: false
+    default: .
+  dockerfile:
+    description: Path to the dockerfile used to build docker image
+    required: false
+    default: Dockerfile
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
@@ -14,3 +25,8 @@ inputs:
  runs:
   using: 'docker'
   image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8
+  args:
+    - "--name=${{{ inputs.image-name }}}"
+    - "--context=${{ inputs.context }}"
+    - "--dockerfile=${{ inputs.dockerfile }}"
+    - "--build-in-ado=true"
