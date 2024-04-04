@@ -11,6 +11,8 @@ jobs:
       contents: read  # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: A job to get OIDC token
+    outputs:
+      oidc_token: ${{ steps.get_oidc.outputs.jwt }}
     steps:
      # To use this repository's private action,
       # you must check out the repository
@@ -45,8 +47,14 @@ jobs:
         with:
           name: oidc-token-artifact
           path: oidc_token.txt
+  call_reusable_with_oidc:
+    needs: get_oidc_token_job
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
       - name: Call Reusable Workflow with OIDC Token
         uses: ./.github/workflows/reusable_workflow.yml@main
         with:
-          oidc_token: ${{ steps.get_oidc.outputs.jwt }}
-  
+          oidc_token: ${{ needs.get_oidc_token_job.outputs.oidc_token }}
