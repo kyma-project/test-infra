@@ -20,7 +20,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: oidc-token-artifact
-          path: oidc_token.txt
 
       - name: Read OIDC Token From File
         id: read_oidc_token
