@@ -48,7 +48,7 @@ jobs:
           name: oidc-token-artifact
           path: oidc_token.txt
   reusable_job:
-     uses: ./.github/workflows/reusable_workflow.yml@main
+     uses: ./.github/workflows/reusable-workflow.yml
      needs: get_oidc_token_job
      with:
        oidc_token: ${{ needs.get_oidc_token_job.outputs.jwt }}
