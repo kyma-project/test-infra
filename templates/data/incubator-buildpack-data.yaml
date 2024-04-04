@@ -88,7 +88,7 @@ templates:
           reconciler_publish_pr_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
           reconciler_e2e_image:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240404-2e98369b
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240404-e36e8136
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
               runAsRoot: true
         jobConfigs:
@@ -135,7 +135,7 @@ templates:
                   annotations:
                     owner: jellyfish
                     description: pre publish reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240404-2e98369b"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240404-e36e8136"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -154,7 +154,7 @@ templates:
                     - reconciler_publish_pr_cli_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-mothership-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-627df987"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: jellyfish
                     description: build mothership reconciler
@@ -172,7 +172,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-mothership-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-627df987"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: jellyfish
                     description: build reconciler
@@ -193,7 +193,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: pre-main-kyma-incubator-component-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-627df987"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: jellyfish
                     description: build component reconciler
@@ -211,7 +211,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-627df987"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: jellyfish
                     description: build component reconciler
@@ -256,7 +256,7 @@ templates:
                     - jobConfig_slack_jellyfish
               - jobConfig:
                   name: nightly-main-reconciler
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240404-2e98369b
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240404-e36e8136
                   annotations:
                     owner: jellyfish
                     description: Creates and installs reconciler from main every night.
@@ -277,7 +277,7 @@ templates:
                   annotations:
                     owner: jellyfish
                     description: Executes e2e test periodically on nightly cluster for reconciler.
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240404-2e98369b
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240404-e36e8136
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -313,7 +313,7 @@ templates:
                     - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240404-2e98369b
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240404-e36e8136
                 inheritedConfigs:
                   global:
                     - jobConfig_default
