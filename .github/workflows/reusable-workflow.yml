@@ -26,21 +26,9 @@ jobs:
       - name: expose jwt action
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
-      # OIDC debugger action written in Golang for debugging OIDC claims in the logs
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v4
-        with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: 'https://github.com/github'
       - name: Decode OIDC Token
         run: |
           oidc_token="${{ steps.get_oidc.outputs.jwt }}"
           const token = `${oidc_token}`;
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-          console.log("Decoded JWT payload:", payload);
         shell: node {0}
