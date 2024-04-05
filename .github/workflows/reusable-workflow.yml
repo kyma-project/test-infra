@@ -1,0 +1,28 @@
+name: Reusable Workflow
+
+on: workflow_call
+    
+jobs:
+  get_oidc_token_job:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read  # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    name: A job to get OIDC token
+    steps:
+      - name: Checkout test-infra repository
+        uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+      - name: Install Node.js and needed dependencies
+        uses: ./.github/actions/expose-jwt-action/install
+      - name: Expose JWT Action
+        id: get_oidc
+        uses: ./.github/actions/expose-jwt-action
+      - name: Decode OIDC Token
+        run: |
+          oidc_token="${{ steps.get_oidc.outputs.jwt }}"
+          const token = `${oidc_token}`;
+          const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        shell: node {0}

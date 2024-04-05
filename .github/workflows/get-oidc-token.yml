@@ -1,22 +1,9 @@
+name: Get OIDC Token Workflow
+
 on: workflow_dispatch
 #  pull_request_target:
 #    types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
 jobs:
-  get_oidc_token_job:
-    permissions:
-      id-token: write # This is required for requesting the JWT token
-      contents: read  # This is required for actions/checkout
-    runs-on: ubuntu-latest
-    name: A job to get OIDC token
-    steps:
-      # To use this repository's private action,
-      # you must check out the repository
-      - uses: actions/checkout@v4
-        name: Checkout
-      # Install Node.js and needed dependencies
-      - uses: ./.github/actions/expose-jwt-action/install
-        name: Install expose-jwt-action
-      # This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
-      - uses: ./.github/actions/expose-jwt-action
-        name: Expose JWT token
+  call_reusable_workflow:
+   uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
