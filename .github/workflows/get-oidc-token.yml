@@ -77,4 +77,4 @@ jobs:
   call_reusable_workflow:
     needs: get_oidc_token_job
     secrets: inherit
-    uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
+    uses: akiioto/test-infra/.github/workflows/reusable-workflow-proxy.yml@main
