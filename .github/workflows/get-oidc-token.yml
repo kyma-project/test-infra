@@ -11,8 +11,6 @@ jobs:
       contents: read  # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: A job to get OIDC token
-    outputs:
-      oidc_token: ${{ steps.get_oidc.outputs.jwt }}
     steps:
      # To use this repository's private action,
       # you must check out the repository
@@ -47,7 +45,6 @@ jobs:
         run: |
           echo "Encrypting OIDC token..."
           echo "${{ steps.get_oidc.outputs.jwt }}" | openssl aes-256-cbc -a -salt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
-          echo "::set-output name=encrypted_token_path::./oidc_token.enc"
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
       - name: Upload Encrypted Token as Artifact
