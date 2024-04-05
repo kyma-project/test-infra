@@ -15,16 +15,15 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout
       # Install Node.js and needed dependencies
-      - uses: ./.github/actions/expose-jwt-action/install
-        name: Install expose-jwt-action
+      - name: Checkout expose-jwt-action-install
+        uses: actions/checkout@v4
         with:
           repository: kyma-project/test-infra
           ref: main
-          path: ./.github/actions/expose-jwt-action
+          path: ./.github/actions/expose-jwt-action/install
       # This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
-      - uses: ./.github/actions/expose-jwt-action
-        name: Expose JWT token
-        id: get_oidc
+      - name: Checkout expose-jwt-action
+        uses: actions/checkout@v4
         with:
           repository: akiioto/test-infra
           ref: main
