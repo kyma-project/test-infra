@@ -24,7 +24,7 @@ inputs:
     default: false
  runs:
   using: 'docker'
-  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8
+  image: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8
   args:
     - "--name=${{{ inputs.image-name }}}"
     - "--context=${{ inputs.context }}"
