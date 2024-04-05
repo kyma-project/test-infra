@@ -74,7 +74,8 @@ jobs:
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
 
-      - name: Call Reusable Workflow with Decrypted Token
-        uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
-        with:
-          oidc_token: $oidc_token
+  call_reusable_workflow:
+    needs: get_oidc_token_job
+    uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
+    with:
+      oidc_token: $oidc_token
