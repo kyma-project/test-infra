@@ -10,25 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
-      # To use this repository's private action,
+     # To use this repository's private action,
       # you must check out the repository
-      - uses: actions/checkout@v4
-        name: Checkout
-      # Install Node.js and needed dependencies
-      - name: Checkout expose-jwt-action-install
+      - name: Checkout
         uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          repository: kyma-project/test-infra
-          ref: main
-          path: ./.github/actions/expose-jwt-action/install
-      # This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
-      - name: Checkout expose-jwt-action
+          node-version: 20
+      - run: cd .github/actions/expose-jwt-action
+      - run: npm init -y
+      - run: npm install @actions/core
+      - run: npm install @actions/github
+      # This action is used to get the JWT token from the OIDC provider and set is as an output and an environment variable
+      - uses: ./.github/actions/expose-jwt-action
+        name: Get JWT token
         id: get_oidc
-        uses: actions/checkout@v4
-        with:
-          repository: kyma-project/test-infra
-          ref: main
-          path: ./.github/actions/expose-jwt-action
       # OIDC debugger action written in Golang for debugging OIDC claims in the logs
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
