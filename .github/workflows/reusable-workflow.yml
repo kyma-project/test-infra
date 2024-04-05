@@ -32,14 +32,3 @@ jobs:
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
           console.log("Decoded JWT payload:", payload);
         shell: node {0}
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v4
-        with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          token: ${{ steps.decrypt_oidc_token.outputs.oidc_token }}
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: 'https://github.com/github'

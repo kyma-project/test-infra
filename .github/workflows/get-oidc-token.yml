@@ -57,27 +57,7 @@ jobs:
           path: ${{ steps.encrypt_oidc_token.outputs.encrypted_token_path }}
 
 
-  use_encrypted_oidc_token:
-    needs: get_oidc_token_job
-    runs-on: ubuntu-latest
-    outputs:
-      oidc_token: ${{ steps.decrypt_oidc_token.outputs.oidc_token }}
-    steps:
-      - name: Download Encrypted OIDC Token
-        uses: actions/download-artifact@v4
-        with:
-          name: oidc-token-encrypted
-      - name: Decrypt OIDC Token and Set as Output
-        id: decrypt_oidc_token
-        run: |
-          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET
-          oidc_token=$(cat ./oidc_token.txt)
-          echo "Decrypted OIDC Token: $oidc_token"
-          echo "::set-output name=oidc_token::$oidc_token"
-        env:
-          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
-
   call_reusable_workflow:
-   needs: use_encrypted_oidc_token
+   needs: get_oidc_token_job
    uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
    secrets: inherit
