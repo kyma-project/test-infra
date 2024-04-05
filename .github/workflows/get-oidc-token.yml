@@ -78,5 +78,3 @@ jobs:
     needs: get_oidc_token_job
     secrets: inherit
     uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
-    with:
-      oidc_token: ${{ needs.get_oidc_token_job.outputs.oidc_token }}

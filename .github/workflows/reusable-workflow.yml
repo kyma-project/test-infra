@@ -2,11 +2,7 @@ name: Reusable Workflow
 
 on:
   workflow_call:
-    inputs:
-      oidc_token:
-        required: true
-        type: string
-
+    
 jobs:
   use_oidc_token:
     runs-on: ubuntu-latest
