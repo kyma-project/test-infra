@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
+
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
@@ -25,4 +26,4 @@ jobs:
           oidc_token="${{ steps.get_oidc.outputs.jwt }}"
           const token = `${oidc_token}`;
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-        shell: node
+        shell: node {0}
