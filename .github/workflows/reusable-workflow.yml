@@ -10,20 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
-      - uses: actions/checkout@v4
-        name: Checkout
-      # Install Node.js and needed dependencies
-      - name: Checkout expose-jwt-action
+      # Checkout test-infra repository
+      - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
           repository: kyma-project/test-infra
           ref: main
-      - name: install expose jwt action
+      # Install Node.js and needed dependencies
+      - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
-      #     This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
-      - name: expose jwt action
+      # Install Expose JWT Action
+      - name: Expose JWT Action
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
       - name: Decode OIDC Token
