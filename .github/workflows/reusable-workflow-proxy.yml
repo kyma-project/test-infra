@@ -1,5 +1,13 @@
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      oidc_token:
+        required: true
+        type: string
+
 jobs:
   development:
     uses: "akiioto/test-infra/.github/workflows/reusable-workflow.yml@main"
     secrets: inherit
+    with:
+      oidc_token: ${{ inputs.oidc_token }}
