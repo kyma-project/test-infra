@@ -108,7 +108,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc
+    image: europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"
