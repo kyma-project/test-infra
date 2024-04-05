@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
-
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
