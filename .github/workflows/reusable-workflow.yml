@@ -17,10 +17,18 @@ jobs:
       # Install Node.js and needed dependencies
       - uses: ./.github/actions/expose-jwt-action/install
         name: Install expose-jwt-action
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+          path: ./.github/actions/expose-jwt-action
       # This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
       - uses: ./.github/actions/expose-jwt-action
         name: Expose JWT token
         id: get_oidc
+        with:
+          repository: akiioto/test-infra
+          ref: main
+          path: ./.github/actions/expose-jwt-action
       # OIDC debugger action written in Golang for debugging OIDC claims in the logs
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
