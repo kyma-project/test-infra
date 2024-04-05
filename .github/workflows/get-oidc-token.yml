@@ -42,13 +42,39 @@ jobs:
           audience: 'https://github.com/github'
       - name: Save OIDC Token to File
         run: echo "${{ steps.get_oidc.outputs.jwt }}" > oidc_token.txt
-      - name: Upload OIDC Token as Artifact
+      - name: Encrypt OIDC Token
+        id: encrypt_oidc_token
+        run: |
+          echo "Encrypting OIDC token..."
+          # Szyfrowanie tokenu przy użyciu OpenSSL i zapisanie do pliku
+          echo $jwt | openssl aes-256-cbc -a -salt -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
+          echo "::set-output name=encrypted_token_path::./oidc_token.enc"
+        env:
+          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
+      - name: Upload Encrypted Token as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: oidc-token-artifact
-          path: oidc_token.txt
-  reusable_job:
-     uses: ./.github/workflows/reusable-workflow.yml
-     needs: get_oidc_token_job
-     with:
-       oidc_token: ${{ needs.get_oidc_token_job.outputs.jwt }}
+          name: oidc-token-encrypted
+          path: ${{ steps.encrypt_oidc_token.outputs.encrypted_token_path }}
+
+
+  use_encrypted_oidc_token:
+    needs: get_oidc_token_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Encrypted OIDC Token
+        uses: actions/download-artifact@v4
+        with:
+          name: oidc-token-encrypted
+  
+      - name: Decrypt OIDC Token
+        run: |
+          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pass pass:$ENCRYPTION_SECRET
+          oidc_token=$(cat ./oidc_token.txt)
+        env:
+          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
+
+      - name: Call Reusable Workflow with Decrypted Token
+        uses: ./.github/workflows/reusable-workflow.yml
+        with:
+          oidc_token: $oidc_token
