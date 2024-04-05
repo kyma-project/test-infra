@@ -8,6 +8,23 @@ on:
         type: string
     
 jobs:
+  use_encrypted_oidc_token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Encrypted OIDC Token
+        uses: actions/download-artifact@v4
+        with:
+          name: oidc-token-encrypted
+      - name: Decrypt OIDC Token and Set as Output
+        id: decrypt_oidc_token
+        run: |
+          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pass pass:$ENCRYPTION_SECRET
+          oidc_token=$(cat ./oidc_token.txt)
+          echo "Decrypted OIDC Token: $oidc_token"
+          echo "::set-output name=oidc_token::$oidc_token"
+        env:
+          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
+
   use_oidc_token:
     runs-on: ubuntu-latest
     steps:
