@@ -36,42 +36,9 @@ jobs:
         uses: ./.github/actions/actions-oidc-debugger
         with:
           audience: 'https://github.com/github'
-      - name: Save OIDC Token to File
-        run: echo "${{ steps.get_oidc.outputs.jwt }}" > oidc_token.txt
-      - name: Encrypt OIDC Token
-        id: encrypt_oidc_token
-        run: |
-          echo "Encrypting OIDC token..."
-          echo "${{ steps.get_oidc.outputs.jwt }}" | openssl aes-256-cbc -a -salt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
-          encrypted_token_path="./oidc_token.enc"
-          echo "encrypted_token_path=$encrypted_token_path" >> $GITHUB_OUTPUT
-        env:
-          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
-      - name: Upload Encrypted Token as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: oidc-token-encrypted
-          path: ${{ steps.encrypt_oidc_token.outputs.encrypted_token_path }}
-
-  use_encrypted_oidc_token:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Encrypted OIDC Token
-        uses: actions/download-artifact@v4
-        with:
-          name: oidc-token-encrypted
-      - name: Decrypt OIDC Token and Set as Output
-        id: decrypt_oidc_token
-        run: |
-          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET
-          oidc_token=$(cat ./oidc_token.txt)
-          echo "Decrypted OIDC Token: $oidc_token"
-          echo "oidc_token=$oidc_token" >> $GITHUB_OUTPUT
-        env:
-          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
       - name: Decode OIDC Token
         run: |
-          oidc_token="${{ steps.decrypt_oidc_token.outputs.oidc_token }}"
+          oidc_token="${{ steps.get_oidc.outputs.jwt }}"
           const token = `${oidc_token}`;
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
           console.log("Decoded JWT payload:", payload);
