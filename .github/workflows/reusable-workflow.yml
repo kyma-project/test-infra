@@ -13,7 +13,7 @@ jobs:
       - name: Decrypt OIDC Token and Set as Output
         id: decrypt_oidc_token
         run: |
-          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pass pass:$ENCRYPTION_SECRET
+          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET
           oidc_token=$(cat ./oidc_token.txt)
           echo "Decrypted OIDC Token: $oidc_token"
           echo "::set-output name=oidc_token::$oidc_token"

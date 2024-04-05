@@ -46,8 +46,7 @@ jobs:
         id: encrypt_oidc_token
         run: |
           echo "Encrypting OIDC token..."
-          # Szyfrowanie tokenu przy użyciu OpenSSL i zapisanie do pliku
-          echo $jwt | openssl aes-256-cbc -a -salt -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
+          echo $jwt | openssl aes-256-cbc -a -salt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
           echo "::set-output name=encrypted_token_path::./oidc_token.enc"
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
@@ -71,7 +70,7 @@ jobs:
       - name: Decrypt OIDC Token and Set as Output
         id: decrypt_oidc_token
         run: |
-          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pass pass:$ENCRYPTION_SECRET
+          openssl aes-256-cbc -d -a -in ./oidc_token.enc -out ./oidc_token.txt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET
           oidc_token=$(cat ./oidc_token.txt)
           echo "Decrypted OIDC Token: $oidc_token"
           echo "::set-output name=oidc_token::$oidc_token"
