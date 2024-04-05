@@ -19,12 +19,6 @@ jobs:
           echo "oidc_token=$oidc_token" >> $GITHUB_OUTPUT
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
-      - name: Use OIDC Token
-        run: |
-          echo "Received OIDC Token: $oidc_token"
-      - name: Use OIDC Token
-        run: |
-          echo $oidc_token
       - name: Decode OIDC Token
         run: |
           oidc_token="${{ steps.decrypt_oidc_token.outputs.oidc_token }}"
