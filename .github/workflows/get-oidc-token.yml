@@ -80,7 +80,5 @@ jobs:
 
   call_reusable_workflow:
    needs: use_encrypted_oidc_token
-   uses: akiioto/test-infra/.github/workflows/reusable-workflow-proxy.yml@main
+   uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@main
    secrets: inherit
-   with:
-     oidc_token: ${{ needs.use_encrypted_oidc_token.outputs.oidc_token }}
