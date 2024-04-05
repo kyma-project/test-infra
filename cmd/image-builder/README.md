@@ -24,7 +24,6 @@ Here is an example of a ProwJob for building images with ADO backend:
       annotations:
         description: "build buildkit image-builder image"
         owner: "neighbors"
-      labels:
       run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
       decorate: true
       cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
@@ -208,6 +207,35 @@ Apart from calling ADO API to trigger image build, Image Builder also supports p
 Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition. 
 Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add the `--ado-preview-run=true` flag.
 To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
+
+### Migration from BuildKit and Kaniko to ADO
+
+To migrate from BuildKit or Kaniko to ADO, you need to update the ProwJob definition. If you want use `env` field to add ADO_PAT variable,
+you must not use a rendertemplates for generating your ProwJob definition. Using `preset-image-builder-ado-token` is compatible with
+rendertemplates.
+
+Follow these steps to migrate to ADO backend:
+
+1. Add ADO_PAT environment variable to the ProwJob definition.
+   ```yaml
+   env:
+     - name: "ADO_PAT"
+       valueFrom:
+         secretKeyRef:
+           name: "image-builder-ado-token"
+           key: "token"
+   ```
+   Or use predefined preset `image-builder-ado-token` in the ProwJob definition.
+   ```yaml
+   labels:
+     preset-image-builder-ado-token: "true"
+   ```
+2. Add the `--build-in-ado=true` flag to the Image Builder command.
+   ```yaml
+   args:
+     - "--build-in-ado=true"
+   ```
+3. Remove signify secrets from the ProwJob definition.
 
 ## Deprecated Features
 
