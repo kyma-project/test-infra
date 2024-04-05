@@ -1,0 +1,5 @@
+on: workflow_call
+jobs:
+  development:
+    uses: "akiioto/test-infra/.github/workflows/reusable-workflow.yml@main"
+    secrets: inherit
