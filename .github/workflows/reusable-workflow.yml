@@ -25,4 +25,4 @@ jobs:
           oidc_token="${{ steps.get_oidc.outputs.jwt }}"
           const token = `${oidc_token}`;
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-        shell: node {0}
+        shell: node
