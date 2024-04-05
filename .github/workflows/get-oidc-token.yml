@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "Encrypting OIDC token..."
           echo "${{ steps.get_oidc.outputs.jwt }}" | openssl aes-256-cbc -a -salt -pbkdf2 -iter 10000 -pass pass:$ENCRYPTION_SECRET -out ./oidc_token.enc
-          echo "::set-output name=encrypted_token_path::./oidc_token.enc"
+          encrypted_token_path="./oidc_token.enc"
           echo "encrypted_token_path=$encrypted_token_path" >> $GITHUB_OUTPUT
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
