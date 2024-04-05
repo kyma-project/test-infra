@@ -14,6 +14,9 @@ jobs:
       - name: Use OIDC Token
         run: |
           echo "Received OIDC Token: ${{ inputs.oidc_token }}"
+      - name: Use OIDC Token
+        run: |
+          echo $oidc_token
       - name: Decode OIDC Token
         run: |
           const token = '${{ inputs.oidc_token }}';
