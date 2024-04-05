@@ -188,11 +188,11 @@ Image Builder supports three build backends:
 - ADO pipelines
 
 kaniko and BuildKit build images locally, while for the ADO pipelines backend, Image Builder calls ADO API to start the build process.
-To use the kaniko backend, use the `image-builder` image.
-To use the BuildKit backend, use the `buildkit-image-builder` image.
-The ADO backend is supported by both images. To use it, you need to provide the `--build-in-ado=true` flag.
+To use the kaniko backend, use the `image-builder` image and set the `build-in-ado` flag to `false`.
+To use the BuildKit backend, use the `buildkit-image-builder` image and set `build-in-ado` falg to `false`.
+The ADO backend is supported by both images. This is the default backend.
+The preferred and default way to build images is to use the ADO backend because it's the only SLC-29 compliant backend.
 The BuildKit and kaniko backends are deprecated and will be removed in the future.
-The preferred way to build images is to use the ADO backend because it's the only SLC-29 compliant backend.
 
 ### Azure DevOps Backend (ADO)
 
@@ -236,6 +236,16 @@ Follow these steps to migrate to ADO backend:
      - "--build-in-ado=true"
    ```
 3. Remove signify secrets from the ProwJob definition.
+
+### Opt-out of ADO Backend
+
+The ADO backend is going to be the only SLC-29 compliant backend. To opt out of using the ADO backend in the ProwJob, use
+the `--build-in-ado=false` flag.
+
+```yaml
+args:
+  - "--build-in-ado=false"
+```
 
 ## Deprecated Features
 
