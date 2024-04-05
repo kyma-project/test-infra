@@ -5,7 +5,7 @@ protecode:
     - docker.io/zricethezav/gitleaks:v8.18.2
     - eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
-    - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240104-4259aacc
+    - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240401-86d770fb
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240401-86d770fb
