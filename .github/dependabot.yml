@@ -296,18 +296,20 @@ updates:
     commit-message:
       prefix: "e2e-dind-garden"
       include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/images/e2e-dind-nodejs"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "e2e-dind-nodejs"
-      include: "scope"
+  # Busola must prepare for node update to newest version.
+  # We can enable this once preparation is done.
+  #  - package-ecosystem: "docker"
+  #    directory: "/images/e2e-dind-nodejs"
+  #    labels:
+  #      - "docker"
+  #      - "skip-review"
+  #      - "area/dependency"
+  #      - "kind/chore"
+  #    schedule:
+  #      interval: "daily"
+  #    commit-message:
+  #      prefix: "e2e-dind-nodejs"
+  #      include: "scope"
   - package-ecosystem: "docker"
     directory: "/images/e2e-dind-k3d"
     labels:

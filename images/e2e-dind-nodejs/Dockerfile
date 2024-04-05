@@ -1,4 +1,4 @@
-FROM node:21.7.1-bookworm-slim as base
+FROM node:20.10.0-bookworm-slim as base
 
 
 ENV TERM=xterm

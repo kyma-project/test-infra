@@ -16,7 +16,7 @@ templates:
             jobs:
               - jobConfig: # builds a docker image of the api-gateway-manager tagged with the PR name
                   name: pull-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager image build on PR for "
@@ -35,7 +35,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: post-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager image build"
@@ -58,7 +58,7 @@ templates:
                     - "job_post"
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: rel-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager image build"

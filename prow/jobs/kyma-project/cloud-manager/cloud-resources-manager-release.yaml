@@ -17,9 +17,10 @@ postsubmits:
       max_concurrency: 10
       branches:
         - ^main$
+        - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240404-09b82328"
             securityContext:
               privileged: false
               seccompProfile:

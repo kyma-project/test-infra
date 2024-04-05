@@ -1,6 +1,6 @@
 # Expose GitHub JSON Web Token Action
 
-This action takes an optional input for the **audience** value and outputs a GitHub-signed JSON Web Token (JWT). 
+This action takes an optional input for the **audience** value and outputs a GitHub-signed JSON Web Token (JWT).
 
 ## Inputs
 
@@ -18,17 +18,16 @@ The JWT signed by GitHub Action.
 
 ## Example Usage
 ```yaml
-- name: Checkout
-  uses: actions/checkout@v4
-- uses: actions/setup-node@v4
-  with:
-    node-version: 20
-- run: cd .github/actions/expose-jwt-action
-- run: npm init -y
-- run: npm install @actions/core
-- run: npm install @actions/github
+# To use this repository's private action,
+# you must check out the repository
+- uses: actions/checkout@v4 
+  name: Checkout
+# Install Node.js and needed dependencies
+- uses: ./.github/actions/expose-jwt-action/install
+  name: Install expose-jwt-action
+# This action is used to expose the JWT token from the OIDC provider and set is as an output and an environment variable
 - uses: ./.github/actions/expose-jwt-action
-  name: Get JWT token
+  name: Expose JWT token
   with:
-    audience: 'https://github.com/github'
+    audience: 'sts.amazonaws.com'
 ```
