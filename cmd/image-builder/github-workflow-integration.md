@@ -11,20 +11,20 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
    OCI image. The image-builder reusable workflow is stored in the github.com/kyma-project/test-infra repository in the main branch. The
    reusable workflow defines inputs which are used to pass user-defined parameters to the `oci-image-builder` pipeline.
 
-2. **Obtaining the OIDC Token**: The Image Builder reusable workflow uses GitHub action to call GitHub's OIDC identity provider issuing an
+2. **Obtaining the OIDC Token**: The Image Builder reusable workflow uses GitHub action to call GitHub's OIDC identity provider, issuing an
    OIDC token.
-   This token is used to authenticate workflow in ado backend and pass information about the workflow.
+   This token is used to authenticate workflow in the ADO backend and pass information about the workflow.
 
-3. **Trigger oci-image-builder pipeline**:
-   The image-builder reusable workflow uses Image Builder GitHub action running Image Builder client to trigger oci-image-builder pipeline.
-   Image Builder client uses a Personal Access Token (PAT) to authenticate in the Azure DevOps (ADO) API and trigger the `oci-image-builder`
+3. **Trigger the `oci-image-builder` pipeline**:
+   The image-builder reusable workflow uses Image Builder GitHub action running Image Builder client to trigger the `oci-image-builder` pipeline.
+   Image Builder client uses a Personal Access Token (PAT) to authenticate in the ADO API and trigger the `oci-image-builder`
    pipeline.
    The OIDC token and additional parameters required by the `oci-image-builder` pipeline are passed as parameters to the pipeline.
    These parameters' values are collected from data defined by
    the user in Image Builder reusable workflow inputs, GitHub workflow context variables and GitHub OIDC identity provider.
-   The OIDC token is used to authenticate and authorize the workflow in oci-image-builder pipeline.
+   The OIDC token is used to authenticate and authorize the workflow in the `oci-image-builder` pipeline.
 
-4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in Azure DevOps, detects a call originating from GitHub workflow
+4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in ADO, detects a call originating from the GitHub workflow
    and
    validates the OIDC token against GitHub's OIDC identity provider. This step ensures that the token is valid and has not been tampered
    with.
@@ -50,14 +50,14 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 
 Reusable workflow image-builder is a GitHub workflow
 that is used to collect required data from workflow inputs and GitHub context variables,
-retrieve the OIDC token from GitHub's OIDC identity provider, and trigger the `oci-image-builder` pipeline in Azure DevOps.
-Because the oidc token does not contain all the required data for the `oci-image-builder` pipeline,
+retrieve the OIDC token from GitHub's OIDC identity provider, and trigger the `oci-image-builder` pipeline in ADO.
+Because the OIDC token does not contain all the required data for the `oci-image-builder` pipeline,
 the reusable workflow image-builder collects additional data from GitHub context variables.
-The oidc token alone does not contain enough data to clone the appropriate source code for the build process.
+The OIDC token alone does not contain enough data to clone the appropriate source code for the build process.
 Using the reusable workflow
 we bundle all the steps required to collect the data and trigger the `oci-image-builder` pipeline in a controlled and secure enviornment.
 Using an OIDC token allows us to confirm the version and identity of the workflow that triggered the build process.
-The reusable workflow is stored in the `github.com/kyma-project/test-infra` repository in the main branch and changes to the workflow are
+The reusable workflow is stored in the `github.com/kyma-project/test-infra` repository on the `main` branch, and changes to the workflow are
 versioned
 and provided using pull requests.
 Together with CODEOWNERS file mechanism,
