@@ -7,7 +7,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV UA_VERSION v23.1.2.1
-ENV GO_VERSION 1.20.1
+ENV GO_VERSION 1.22.2
 ENV JAVA_VERSION 8u212-b04
 ENV JAVA_BASE_URL https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_
 ENV JAVA_URL_VERSION 8u212b04
