@@ -132,7 +132,7 @@ These parameters include user-defined parameters, parameters from the OIDC token
 - **RepoOwner**: The owner of the repository. Possible values include `kyma-project` and `kyma-incubator`.
 - **JobType**: The type of job. Possible values include `presubmit` and `postsubmit`.
 
-### Parameters GitHub Context Variables
+### Parameters from GitHub Context Variables
 
 - **PullBaseSHA**: The base SHA of the pull request.
 - **PullPullSHA**: The SHA of the pull request.
