@@ -1,0 +1,13 @@
+name: 'Install dependencies'
+description: 'Install Node.js 20 and @actions/core'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: |
+        cd .github/actions/expose-jwt-action
+        npm init -y
+        npm install @actions/core
+      shell: bash

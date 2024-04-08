@@ -121,15 +121,8 @@ prefixes:
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
     consistentImages: false
-  - name: "test-infra-prod"
+  - name: "image-builder"
     prefix: "europe-docker.pkg.dev/kyma-project/prod/image-builder"
-    refConfigFile: "templates/config.yaml"
-    stagingRefConfigFile: "templates/config.yaml"
-    repo: "https://github.com/kyma-project/test-infra"
-    summarise: true
-    consistentImages: false
-  - name: "test-infra-prod"
-    prefix: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder"
     refConfigFile: "templates/config.yaml"
     stagingRefConfigFile: "templates/config.yaml"
     repo: "https://github.com/kyma-project/test-infra"
