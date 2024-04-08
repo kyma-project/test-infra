@@ -46,15 +46,15 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
     TAG=${K3D_VERSION} ./install.sh &&\
     rm install.sh
 
-ARG KIND_VERSION=v0.20.0
+ARG KIND_VERSION=v0.22.0
 RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-ARG HELM_VERSION=v3.13.2
+ARG HELM_VERSION=v3.14.0
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
-ARG CLUSTER_VERSION=v1.28.6
+ARG CLUSTER_VERSION=v1.28.7
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
