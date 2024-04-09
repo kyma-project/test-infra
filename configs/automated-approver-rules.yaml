@@ -16,4 +16,5 @@ data:
                 - '^docs/index.md$'
                 - '.*\.yaml$'
                 - '.*\.tf$'
+                - '.*\.tfvars$'
                 - 'development/tools/jobs/tester/tester.go'
