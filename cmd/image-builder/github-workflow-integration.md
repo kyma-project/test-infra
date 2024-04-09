@@ -7,13 +7,12 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 
 ## Process Flow
 
-1. **Trigger workflow**: The user or automation triggers a GitHub workflow. The workflow calls reusable workflow image-builder to build the
+1. **Trigger workflow**: The user or automation triggers a GitHub workflow. The workflow calls image-builder reusable workflow to build the
    OCI image. The image-builder reusable workflow is stored in the github.com/kyma-project/test-infra repository in the main branch. The
-   reusable workflow defines inputs which are used to pass user-defined parameters to the `oci-image-builder` pipeline.
+   image-builder reusable workflow defines inputs which are used to pass user-defined parameters to the `oci-image-builder` pipeline.
 
-2. **Obtaining the OIDC Token**: The Image Builder reusable workflow uses GitHub action to call GitHub's OIDC identity provider, issuing an
-   OIDC token.
-   This token is used to authenticate workflow in the ADO backend and pass information about the workflow.
+2. **Obtaining the OIDC Token**: The image-builder reusable workflow uses GitHub action to call GitHub's OIDC identity provider, issuing an
+   OIDC token. This token is used to authenticate workflow in the ADO backend and pass information about the workflow.
 
 3. **Trigger the `oci-image-builder` pipeline**:
    The image-builder reusable workflow uses Image Builder GitHub action running Image Builder client to trigger the `oci-image-builder` pipeline.
@@ -48,16 +47,17 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 
 ## Reusable Workflow Image Builder
 
-Reusable workflow image-builder is a GitHub workflow
+Image-builder reusable workflow is a GitHub workflow
 that is used to collect required data from workflow inputs and GitHub context variables,
 retrieve the OIDC token from GitHub's OIDC identity provider, and trigger the `oci-image-builder` pipeline in ADO.
 Because the OIDC token does not contain all the required data for the `oci-image-builder` pipeline,
-the reusable workflow image-builder collects additional data from GitHub context variables.
+the image-builder reusable workflow collects additional data from GitHub context variables.
 The OIDC token alone does not contain enough data to clone the appropriate source code for the build process.
 Using the reusable workflow
-we bundle all the steps required to collect the data and trigger the `oci-image-builder` pipeline in a controlled and secure enviornment.
+we bundle all the steps required to collect the data and trigger the `oci-image-builder` pipeline in a controlled and secure environment.
 Using an OIDC token allows us to confirm the version and identity of the workflow that triggered the build process.
-The reusable workflow is stored in the `github.com/kyma-project/test-infra` repository on the `main` branch, and changes to the workflow are
+The image-builder reusable workflow is stored in the `github.com/kyma-project/test-infra` repository on the `main` branch, and changes to
+the workflow are
 versioned
 and provided using pull requests.
 Together with CODEOWNERS file mechanism,
