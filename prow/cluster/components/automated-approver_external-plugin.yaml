@@ -22,7 +22,7 @@ spec:
         - --dry-run=false
         - --port=8080
         - --hmac-secret-file=/etc/webhook/hmac
-        - --log-level=info
+        - --log-level=debug
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-token-path=/etc/github/oauth
