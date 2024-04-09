@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-9277fe7f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -71,7 +71,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$ # Watches for new Tag with the format x.y.z where x, y and z are multi-digit integers.
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-9277fe7f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -127,7 +127,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-9277fe7f"
             securityContext:
               privileged: false
               seccompProfile:
