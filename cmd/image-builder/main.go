@@ -814,7 +814,7 @@ func main() {
 		fmt.Printf("%s\n", jsonTags)
 		os.Exit(0)
 	}
-	if o.buildInADO {
+	if o.buildInADO && os.Getenv("USE_BUILDKIT") != "true" {
 		err = buildInADO(o)
 		if err != nil {
 			fmt.Printf("Image build failed with error: %s\n", err)
