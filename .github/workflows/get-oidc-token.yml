@@ -6,4 +6,4 @@ on: workflow_dispatch
 
 jobs:
   call_reusable_workflow:
-   uses: akiioto/test-infra/.github/workflows/reusable-workflow.yml@oidc_verify
+   uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
