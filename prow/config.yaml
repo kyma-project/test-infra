@@ -1281,3 +1281,11 @@ presets:
       - name: compass-director-secret
         mountPath: /compass-director-secret
         readOnly: true
+  - labels:
+      preset-image-builder-ado-token: "true"
+    env:
+      - name: ADO_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: image-builder-ado-token
+            key: token
