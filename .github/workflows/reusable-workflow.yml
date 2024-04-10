@@ -33,12 +33,14 @@ jobs:
         uses: ./.github/actions/expose-jwt-action
       - name: Verify OIDC Token in Node.js
         run: |
+          console.log(`Repository: ${process.env.REPOSITORY}`);
+          console.log(`Ref: ${process.env.REF}`);
           const oidc_token = "${{ steps.get_oidc.outputs.jwt }}";
           const payload = JSON.parse(Buffer.from(oidc_token.split('.')[1], 'base64').toString());
 
           // Define the expected values for issuer and job workflow ref
           const ISS_EXPECTED = "https://token.actions.githubusercontent.com";
-          const JOB_WORKFLOW_REF_EXPECTED = "${{ inputs.repository }}/.github/workflows/reusable-workflow.yml@refs/heads/${{ inputs.ref }}";
+          const JOB_WORKFLOW_REF_EXPECTED = "akiioto/test-infra/.github/workflows/reusable-workflow.yml@refs/heads/main";
 
           // Check if the 'iss' field matches the expected value
           if (payload.iss !== ISS_EXPECTED) {
