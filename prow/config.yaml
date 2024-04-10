@@ -296,8 +296,7 @@ branch-protection:
               - "validate-labels"
           exclude:
             - "^gh-pages$"
-            - "^sec-scanners-config-"
-            - "^bump-keb-"
+            - "^bump-chart-and-images-"
         btp-manager:
           required_status_checks:
             contexts:
