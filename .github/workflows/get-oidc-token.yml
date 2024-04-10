@@ -1,9 +1,15 @@
 name: Get OIDC Token Workflow
 
-on: workflow_dispatch
-#  pull_request_target:
-#    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
 
 jobs:
   call_reusable_workflow:
-   uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Reusable Workflow
+        uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}

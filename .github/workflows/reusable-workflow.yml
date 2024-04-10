@@ -1,7 +1,17 @@
 name: Reusable Workflow
 
-on: workflow_call
-    
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: 'Repository to check out'
+        required: true
+        type: string
+      ref:
+        description: 'Ref to check out'
+        required: true
+        type: string
+
 jobs:
   get_oidc_token_job:
     permissions:
@@ -14,8 +24,8 @@ jobs:
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
-          repository: kyma-project/test-infra
-          ref: main
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
       - name: Expose JWT Action
@@ -25,11 +35,11 @@ jobs:
         run: |
           const oidc_token = "${{ steps.get_oidc.outputs.jwt }}";
           const payload = JSON.parse(Buffer.from(oidc_token.split('.')[1], 'base64').toString());
-      
+
           // Define the expected values for issuer and job workflow ref
           const ISS_EXPECTED = "https://token.actions.githubusercontent.com";
-          const JOB_WORKFLOW_REF_EXPECTED = "kyma-project/test-infra/.github/workflows/reusable-workflow.yml@refs/heads/main";
-      
+          const JOB_WORKFLOW_REF_EXPECTED = "${{ inputs.repository }}/.github/workflows/reusable-workflow.yml@refs/heads/${{ inputs.ref }}";
+
           // Check if the 'iss' field matches the expected value
           if (payload.iss !== ISS_EXPECTED) {
             console.error(`Issuer (iss) does not match the expected value. Found: ${payload.iss}, expected: ${ISS_EXPECTED}`);
@@ -37,7 +47,7 @@ jobs:
           } else {
             console.log("Issuer (iss) matches the expected value.");
           }
-      
+
           // Check if the 'job_workflow_ref' field matches the expected value
           if (payload.job_workflow_ref !== JOB_WORKFLOW_REF_EXPECTED) {
             console.error(`Job workflow ref does not match the expected value. Found: ${payload.job_workflow_ref}, expected: ${JOB_WORKFLOW_REF_EXPECTED}`);
