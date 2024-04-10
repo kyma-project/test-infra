@@ -1,8 +1,8 @@
 name: Get OIDC Token Workflow
 
-on:
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
+on: workflow_dispatch
+#  pull_request_target:
+#    types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
 jobs:
   call_reusable_workflow:
