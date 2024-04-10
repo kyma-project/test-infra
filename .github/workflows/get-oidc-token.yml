@@ -6,4 +6,4 @@ on: workflow_dispatch
 
 jobs:
   call_reusable_workflow:
-   uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@refs/pull/10369/merge
+   uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
