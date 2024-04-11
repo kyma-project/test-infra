@@ -476,6 +476,8 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-project/k8s-prow
+      excludedRepos:
+        - kyma-project/application-connector-manager
   context_options:
     from-branch-protection: true
     orgs:
