@@ -24,8 +24,8 @@ jobs:
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
-          repository: kyma-project/test-infra
-          ref: main
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
       - name: Expose JWT Action
