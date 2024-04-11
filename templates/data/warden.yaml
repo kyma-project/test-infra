@@ -5,6 +5,10 @@ templates:
         localSets:
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'
+          post_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"
             jobs:
@@ -46,6 +50,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: pre-warden-operator-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
@@ -84,6 +89,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
       - to: ../../prow/jobs/kyma-project/warden/warden-release.yaml
         localSets:
           release_image_build:
