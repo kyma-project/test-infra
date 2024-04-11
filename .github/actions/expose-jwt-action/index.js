@@ -6,7 +6,7 @@ async function run() {
     const audience = core.getInput('audience');
     console.log(`audience in the Javascript action: ${audience}`);
     const jwt = await core.getIDToken(audience);
-    core.setOutput("jwt", "jwt");
+    core.setOutput("jwt", jwt);
   } catch (error) {
     core.setFailed(error.message);
   }
