@@ -11,6 +11,11 @@ on:
         description: 'Ref to check out'
         required: true
         type: string
+      test:
+        description: 'Testing configuration'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   get_oidc_token_job:
@@ -21,11 +26,11 @@ jobs:
     name: A job to get OIDC token
     steps:
 
-      - name: Checkout test-infra repository
+      - name: Checkout repository based on test flag
         uses: actions/checkout@v4
         with:
-          repository: ${{ inputs.repository }}
-          ref: ${{ inputs.ref }}
+          repository: ${{ inputs.test == true && inputs.repository || 'kyma-project/test-infra' }}
+          ref: ${{ inputs.test == true && inputs.ref || 'main' }}
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
       - name: Expose JWT Action
