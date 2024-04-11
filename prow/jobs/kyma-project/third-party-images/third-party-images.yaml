@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pre-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
@@ -360,7 +360,7 @@ postsubmits: # runs on main
     - name: post-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-cloudsql-proxy"

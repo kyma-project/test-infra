@@ -80,7 +80,7 @@
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/kyma-project/test-infra @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/goat @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/operations @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
 
 /prow/scripts @kyma-project/prow @neighbors-dev-bot
 
