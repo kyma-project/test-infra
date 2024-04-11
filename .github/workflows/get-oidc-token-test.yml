@@ -2,10 +2,9 @@ name: Get OIDC Token Workflow
 
 on: 
   pull_request_target:
-    types: [ opened, edited, synchronize, ready_for_review ]
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
       - '.github/workflows/get-oidc-token.yml' 
-      - '.github/workflows/get-oidc-token-test.yml' 
       - '.github/workflows/reusable-workflow.yml' 
       - '.github/actions/expose-jwt-action/**' 
 

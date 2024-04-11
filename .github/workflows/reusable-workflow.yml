@@ -43,7 +43,7 @@ jobs:
           const oidc_token = "${{ steps.get_oidc.outputs.jwt }}";
           const payload = JSON.parse(Buffer.from(oidc_token.split('.')[1], 'base64').toString());
 
-          // Define the expected values for issuer and job workflow ref
+          // Define the expected values for issuer and job workflow ref 
           const ISS_EXPECTED = "https://token.actions.githubusercontent.com";
           const JOB_WORKFLOW_REF_EXPECTED = "kyma-project/test-infra/.github/workflows/reusable-workflow.yml@refs/heads/main";
 
