@@ -92,7 +92,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - "--tag=$(PULL_BASE_REF)-experimental"
                     - "--build-arg=VERSION=$(PULL_BASE_REF)"
                     - "--build-arg=GO_BUILD_TAGS=experimental"
                 inheritedConfigs:
@@ -133,7 +133,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--build-arg=VERSION=PR-$(PULL_NUMBER)"
+                    - "--build-arg=VERSION=PR-$(PULL_NUMBER)-experimental"
                     - "--build-arg=GO_BUILD_TAGS=experimental"
                   branches:
                     - ^main$
@@ -182,7 +182,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--tag=$(PULL_BASE_SHA)"
+                    - "--tag=$(PULL_BASE_SHA)-experimental"
                     - "--build-arg=VERSION=$(PULL_BASE_REF)"
                     - "--build-arg=GO_BUILD_TAGS=experimental"
                   branches:
