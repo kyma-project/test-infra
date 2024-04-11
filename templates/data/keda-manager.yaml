@@ -36,6 +36,10 @@ templates:
             limits_cpu: 2
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/|\.md$'
+          post_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
@@ -77,6 +81,7 @@ templates:
                   local:
                     - job_build
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: release-keda-manager-build
                   annotations:
