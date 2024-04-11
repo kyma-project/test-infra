@@ -216,7 +216,8 @@ rendertemplates.
 
 Follow these steps to migrate to the ADO backend:
 
-1. Add the **ADO_PAT** environment variable to the ProwJob definition.
+1. Add the **ADO_PAT** environment variable to the ProwJob definition. Adding `env` to the ProwJob definition is not compatible with
+   rendertemplates.
    ```yaml
    env:
      - name: "ADO_PAT"
@@ -225,7 +226,7 @@ Follow these steps to migrate to the ADO backend:
            name: "image-builder-ado-token"
            key: "token"
    ```
-   Or use the predefined preset `image-builder-ado-token` in the ProwJob definition.
+   Or use the predefined preset `image-builder-ado-token` in the ProwJob definition if you use rendertemplates.
    ```yaml
    labels:
      preset-image-builder-ado-token: "true"
@@ -236,6 +237,7 @@ Follow these steps to migrate to the ADO backend:
      - "--build-in-ado=true"
    ```
 3. Remove signify secrets from the ProwJob definition.
+4. Remove unsupported Image Builder flags from the ProwJob definition. See [Deprecated Features](#deprecated-features) for more information.
 
 ### Opt Out of ADO Backend
 
