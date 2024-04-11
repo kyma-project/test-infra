@@ -32,7 +32,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -81,7 +80,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -130,7 +128,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -227,7 +224,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -281,7 +277,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -332,7 +327,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -387,7 +381,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -438,7 +431,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
@@ -493,7 +485,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -593,7 +584,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
@@ -653,7 +643,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -709,7 +698,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}"
             env:
