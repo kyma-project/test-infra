@@ -6,12 +6,12 @@ import (
 	"github.com/kyma-project/test-infra/pkg/github/client/v2"
 
 	"github.com/kyma-project/test-infra/pkg/logging"
-	"k8s.io/test-infra/prow/config"
-	configflagutil "k8s.io/test-infra/prow/flagutil/config"
-	pluginsflagutil "k8s.io/test-infra/prow/flagutil/plugins"
-	"k8s.io/test-infra/prow/git/v2"
-	"k8s.io/test-infra/prow/plugins"
-	"k8s.io/test-infra/prow/repoowners"
+	"sigs.k8s.io/prow/prow/config"
+	configflagutil "sigs.k8s.io/prow/prow/flagutil/config"
+	pluginsflagutil "sigs.k8s.io/prow/prow/flagutil/plugins"
+	"sigs.k8s.io/prow/prow/git/v2"
+	"sigs.k8s.io/prow/prow/plugins"
+	"sigs.k8s.io/prow/prow/repoowners"
 )
 
 // OwnersClientConfig holds configuration for OwnersClient.

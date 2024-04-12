@@ -18,7 +18,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"k8s.io/test-infra/prow/github"
+	"sigs.k8s.io/prow/prow/github"
 )
 
 type githubClient interface {

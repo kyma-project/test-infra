@@ -20,7 +20,7 @@ import (
 	"strconv"
 	"strings"
 
-	"k8s.io/test-infra/prow/pod-utils/downwardapi"
+	"sigs.k8s.io/prow/prow/pod-utils/downwardapi"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
@@ -28,12 +28,12 @@ import (
 	"gopkg.in/yaml.v3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-	prowclient "k8s.io/test-infra/prow/client/clientset/versioned"
-	"k8s.io/test-infra/prow/config"
-	prowflagutil "k8s.io/test-infra/prow/flagutil"
-	"k8s.io/test-infra/prow/github"
-	"k8s.io/test-infra/prow/pjutil"
+	prowapi "sigs.k8s.io/prow/prow/apis/prowjobs/v1"
+	prowclient "sigs.k8s.io/prow/prow/client/clientset/versioned"
+	"sigs.k8s.io/prow/prow/config"
+	prowflagutil "sigs.k8s.io/prow/prow/flagutil"
+	"sigs.k8s.io/prow/prow/github"
+	"sigs.k8s.io/prow/prow/pjutil"
 )
 
 // Default values for kyma-project/test-infra

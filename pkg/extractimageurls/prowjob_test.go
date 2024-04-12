@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/prow/prow/config"
 )
 
 func TestFromProwJobConfig(t *testing.T) {

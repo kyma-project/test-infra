@@ -14,13 +14,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-	"k8s.io/test-infra/prow/config"
-	prowflagutil "k8s.io/test-infra/prow/flagutil"
-	"k8s.io/test-infra/prow/git/localgit"
-	k8sgit "k8s.io/test-infra/prow/git/v2"
-	"k8s.io/test-infra/prow/github/fakegithub"
-	"k8s.io/test-infra/prow/pjutil"
+	prowapi "sigs.k8s.io/prow/prow/apis/prowjobs/v1"
+	"sigs.k8s.io/prow/prow/config"
+	prowflagutil "sigs.k8s.io/prow/prow/flagutil"
+	"sigs.k8s.io/prow/prow/git/localgit"
+	k8sgit "sigs.k8s.io/prow/prow/git/v2"
+	"sigs.k8s.io/prow/prow/github/fakegithub"
+	"sigs.k8s.io/prow/prow/pjutil"
 )
 
 type FakeGithubClient struct {

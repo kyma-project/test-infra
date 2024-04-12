@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	prowflagutil "k8s.io/test-infra/prow/flagutil"
+	prowflagutil "sigs.k8s.io/prow/prow/flagutil"
 )
 
 var (

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
-	"k8s.io/test-infra/prow/git/v2"
+	"sigs.k8s.io/prow/prow/git/v2"
 )
 
 const (

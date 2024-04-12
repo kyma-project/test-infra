@@ -23,8 +23,8 @@ The applications serve as a CLI extension of Prow's internal functions to let yo
 
 1. Compile mkpj and mkpod.
    ```shell
-   go install k8s.io/test-infra/prow/cmd/mkpj@latest
-   go install k8s.io/test-infra/prow/cmd/mkpod@latest
+   go install sigs.k8s.io/prow/prow/cmd/mkpj@latest
+   go install sigs.k8s.io/prow/prow/cmd/mkpod@latest
    ```
 2. Start your local kind or k3d cluster and wait for it to finish.
    ```shell

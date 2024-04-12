@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v48/github"
-	"k8s.io/test-infra/prow/pod-utils/downwardapi"
+	"sigs.k8s.io/prow/prow/pod-utils/downwardapi"
 )
 
 type githubRepoService interface {
