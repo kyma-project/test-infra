@@ -124,29 +124,6 @@ templates:
                     - job_build
                     - job_skip_config
               - jobConfig:
-                  name: pull-istio-operator-experimental-build
-                  annotations:
-                    owner: goat
-                    description: build istio operator experimental image
-                  args:
-                    - "--name=istio-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - "--tag=PR-$(PULL_NUMBER)-experimental"
-                    - "--build-arg=VERSION=PR-$(PULL_NUMBER)-experimental"
-                    - "--build-arg=GO_BUILD_TAGS=experimental"
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                  local:
-                    - job_default
-                    - job_build
-                    - job_skip_config
-              - jobConfig:
                   name: post-istio-operator-build
                   annotations:
                     owner: goat
