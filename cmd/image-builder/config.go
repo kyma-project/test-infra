@@ -123,10 +123,12 @@ type GitStateConfig struct {
 	BaseCommitSHA string
 	// Commit SHA for head of the pull request
 	PullHeadCommitSHA string
+	// isPullRequest contains information whether event which triggered the job was from pull request
+	isPullRequest bool
 }
 
 func (gitState GitStateConfig) IsPullRequest() bool {
-	return gitState.PullRequestNumber != 0 && gitState.PullHeadCommitSHA != ""
+	return gitState.isPullRequest
 }
 
 func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
@@ -204,6 +206,7 @@ func loadProwJobGitState() (GitStateConfig, error) {
 		PullRequestNumber: pullNumber,
 		BaseCommitSHA:     baseSHA,
 		PullHeadCommitSHA: pullSHA,
+		isPullRequest:     pullNumber > 0 && pullSHA != "",
 	}, nil
 }
 
@@ -239,6 +242,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			PullRequestNumber: *payload.Number,
 			BaseCommitSHA:     *payload.PullRequest.Base.SHA,
 			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
+			isPullRequest:     true,
 		}, nil
 	case "push":
 		var payload github.PushEvent

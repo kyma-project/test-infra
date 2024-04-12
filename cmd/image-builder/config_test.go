@@ -173,6 +173,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				PullRequestNumber: 1234,
 				BaseCommitSHA:     "art654",
 				PullHeadCommitSHA: "qwe456",
+				isPullRequest:     true,
 			},
 		},
 		{
@@ -223,6 +224,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				PullRequestNumber: 5,
 				BaseCommitSHA:     "4b91c74a2aa9aeeb4a265cf1ffe2dd54812b4124",
 				PullHeadCommitSHA: "df7ebcecce2ec1299b5e8ccb22482f901d205abc",
+				isPullRequest:     true,
 			},
 		},
 		{
@@ -240,6 +242,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				RepositoryOwner: "KacperMalachowski",
 				JobType:         "postsubmit",
 				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
+				isPullRequest:   false,
 			},
 		},
 	}
