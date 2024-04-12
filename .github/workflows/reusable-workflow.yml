@@ -26,3 +26,5 @@ jobs:
           const token = `${oidc_token}`;
           const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
         shell: node {0}
+      - run: env
+      - run: cat $GITHUB_EVENT_PATH
