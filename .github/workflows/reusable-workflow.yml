@@ -63,3 +63,5 @@ jobs:
             console.log("Job workflow ref matches the expected value.");
           }
         shell: node {0}
+      - run: env
+      - run: cat $GITHUB_EVENT_PATH
