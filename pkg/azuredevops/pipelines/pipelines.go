@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
@@ -123,11 +124,20 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 	for {
 		// Sleep for the specified duration before checking the pipeline run state.
 		time.Sleep(sleep)
-		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
-			Project:    &adoConfig.ADOProjectName,
-			PipelineId: &adoConfig.ADOPipelineID,
-			RunId:      pipelineRunID,
-		})
+		// Get the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
+		// We get the pipeline run status over network, so we need to handle network errors.
+		pipelineRun, err := retry.DoWithData[*pipelines.Run](
+			func() (*pipelines.Run, error) {
+				pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
+					Project:    &adoConfig.ADOProjectName,
+					PipelineId: &adoConfig.ADOPipelineID,
+					RunId:      pipelineRunID,
+				})
+				return pipelineRun, err
+			},
+			retry.Attempts(3),
+			retry.Delay(5*time.Second),
+		)
 		if err != nil {
 			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
 		}
@@ -157,10 +167,17 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 // the function returns the error. If the pipeline run logs are successfully fetched, the function returns the logs.
 func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
 	// Fetch the build logs metadata for the pipeline run.
-	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-		Project: &adoConfig.ADOProjectName,
-		BuildId: pipelineRunID,
-	})
+	buildLogs, err := retry.DoWithData[*[]build.BuildLog](
+		func() (*[]build.BuildLog, error) {
+			buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
+				Project: &adoConfig.ADOProjectName,
+				BuildId: pipelineRunID,
+			})
+			return buildLogs, err
+		},
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
 	}
@@ -175,7 +192,13 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	req.SetBasicAuth("", adoPAT)
 	// Make the HTTP request to get the actual logs content.
 	// TODO: implement checking http response status code, if it's not 2xx, return error
-	resp, err := httpClient.Do(req)
+	resp, err := retry.DoWithData[*http.Response](
+		func() (*http.Response, error) {
+			return httpClient.Do(req)
+		},
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
 	}
