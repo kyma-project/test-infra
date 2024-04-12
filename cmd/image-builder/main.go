@@ -201,7 +201,7 @@ func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig
 	}
 
 	if gitStateConfig.IsPullRequest() {
-		templateParameters.SetPullNumber(gitStateConfig.PullRequestNumber)
+		templateParameters.SetPullNumber(fmt.Sprint(gitStateConfig.PullRequestNumber))
 	}
 
 	templateParameters.SetBaseSHA(gitStateConfig.BaseCommitSHA)

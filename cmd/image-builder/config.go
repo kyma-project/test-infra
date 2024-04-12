@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strconv"
 
 	"github.com/google/go-github/v48/github"
 	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
@@ -117,7 +118,7 @@ type GitStateConfig struct {
 	// Type of the job, allowed values "presubmit" or "postsubmit"
 	JobType string
 	// Number of the pull request for presubmit job
-	PullRequestNumber string
+	PullRequestNumber int
 	// Commit SHA for base branch
 	BaseCommitSHA string
 	// Commit SHA for head of the pull request
@@ -125,23 +126,27 @@ type GitStateConfig struct {
 }
 
 func (gitState GitStateConfig) IsPullRequest() bool {
-	return gitState.PullRequestNumber != "" && gitState.PullHeadCommitSHA != ""
+	return gitState.PullRequestNumber != 0 && gitState.PullHeadCommitSHA != ""
 }
 
 func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
 
 	var config GitStateConfig
 	var err error
-	// Load from env specific for prow jobs
-	if o.buildInADO {
-		config, err = loadProwJobGitState()
+
+	// Load rom env specific for github actions
+	isGitHubActions := os.Getenv("GITHUB_ACTIONS")
+	if isGitHubActions == "true" {
+		config, err = loadGithubActionsGitState()
 		if err != nil {
 			return config, err
 		}
 	}
-	// Load rom env specific for github actions
-	if o.runInActions {
-		config, err = loadGithubActionsGitState()
+
+	// Load from env specific for prow jobs
+	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
+	if isProwJob {
+		config, err = loadProwJobGitState()
 		if err != nil {
 			return config, err
 		}
@@ -169,9 +174,13 @@ func loadProwJobGitState() (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
 	}
 
-	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
+	pullNumberString, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
 	if jobType == "presubmit" && !isPullNumberSet {
 		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
+	}
+	pullNumber, err := strconv.Atoi(pullNumberString)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable contains invalid value, please set it to correct integer PR number")
 	}
 
 	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
@@ -223,7 +232,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			RepositoryName:    *payload.Repo.Name,
 			RepositoryOwner:   *payload.Repo.Owner.Login,
 			JobType:           "presubmit",
-			PullRequestNumber: fmt.Sprint(*payload.Number),
+			PullRequestNumber: *payload.Number,
 			BaseCommitSHA:     *payload.PullRequest.Base.SHA,
 			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
 		}, nil

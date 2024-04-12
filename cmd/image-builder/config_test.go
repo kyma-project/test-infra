@@ -164,12 +164,13 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				"PULL_NUMBER":   "1234",
 				"PULL_BASE_SHA": "art654",
 				"PULL_PULL_SHA": "qwe456",
+				"PROW_JOB_ID":   "1234",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:    "test-repo",
 				RepositoryOwner:   "test-owner",
 				JobType:           "presubmit",
-				PullRequestNumber: "1234",
+				PullRequestNumber: 1234,
 				BaseCommitSHA:     "art654",
 				PullHeadCommitSHA: "qwe456",
 			},
@@ -186,6 +187,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				"PULL_NUMBER":   "1234",
 				"PULL_BASE_SHA": "art654",
 				"PULL_PULL_SHA": "qwe456",
+				"PROW_JOB_ID":   "1234",
 			},
 			expectError: true,
 		},
@@ -200,6 +202,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				"PULL_NUMBER":   "1234",
 				"PULL_BASE_SHA": "art654",
 				"PULL_PULL_SHA": "qwe456",
+				"PROW_JOB_ID":   "1234",
 			},
 			expectError: true,
 		},
@@ -211,12 +214,13 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
 				"GITHUB_EVENT_NAME": "pull_request_target",
+				"GITHUB_ACTIONS":    "true",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:    "test-infra",
 				RepositoryOwner:   "KacperMalachowski",
 				JobType:           "presubmit",
-				PullRequestNumber: "5",
+				PullRequestNumber: 5,
 				BaseCommitSHA:     "4b91c74a2aa9aeeb4a265cf1ffe2dd54812b4124",
 				PullHeadCommitSHA: "df7ebcecce2ec1299b5e8ccb22482f901d205abc",
 			},
@@ -229,6 +233,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/push_event.json",
 				"GITHUB_EVENT_NAME": "push",
+				"GITHUB_ACTIONS":    "true",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:  "test-infra",
@@ -247,6 +252,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				if err != nil {
 					t.Errorf("failed to set env variable %s with value %s", key, value)
 				}
+				defer os.Unsetenv(key)
 			}
 
 			// Load git state
