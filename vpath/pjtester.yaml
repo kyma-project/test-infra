@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "pull-istio-operator-experimental-build"
+prConfigs: #
+  kyma-project:
+    istio:
+      prNumber: 731
