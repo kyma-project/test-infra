@@ -2,6 +2,7 @@ name: Get OIDC Token Workflow
 
 on: 
   workflow_dispatch:
+  push:
   pull_request_target:
    types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
