@@ -144,11 +144,11 @@ postsubmits: # runs on main
               - '--tag={{ .Env "PULL_BASE_REF" }}'
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 3Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
             volumeMounts:
               - name: config
                 mountPath: /config
