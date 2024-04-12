@@ -50,6 +50,9 @@ type options struct {
 	adoPreviewRunYamlPath string
 	testKanikoBuildConfig bool
 	parseTagsOnly         bool
+	runInActions          bool
+	oidcToken             string
+	azureAccessToken      string
 }
 
 const (
@@ -184,50 +187,27 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 // It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, useKanikoConfigFromPR, buildArgs, and imageTags.
 // The function validates the templateParameters and returns it along with any error that occurred during the process.
 // TODO: rename this function to indicate that it's preparing ADO pipeline parameters for oci-image-builder pipeline.
-func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
+func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig) (adopipelines.OCIImageBuilderTemplateParams, error) {
 	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
-	repo, present := os.LookupEnv("REPO_NAME")
-	if !present {
-		return nil, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
-	}
-	templateParameters.SetRepoName(repo)
+	templateParameters.SetRepoName(gitStateConfig.RepositoryName)
 
-	owner, present := os.LookupEnv("REPO_OWNER")
-	if !present {
-		return nil, fmt.Errorf("REPO_OWNER environment variable is not set, please set it to valid repository owner")
-	}
-	templateParameters.SetRepoOwner(owner)
+	templateParameters.SetRepoOwner(gitStateConfig.RepositoryOwner)
 
-	jobType, present := os.LookupEnv("JOB_TYPE")
-	if !present {
-		return nil, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
-	}
-	if jobType == "presubmit" {
+	if gitStateConfig.JobType == "presubmit" {
 		templateParameters.SetPresubmitJobType()
-	} else if jobType == "postsubmit" {
+	} else if gitStateConfig.JobType == "postsubmit" {
 		templateParameters.SetPostsubmitJobType()
-	} else {
-		return nil, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
 	}
 
-	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
-	if jobType == "presubmit" && !isPullNumberSet {
-		return nil, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
-	}
-	if isPullNumberSet {
-		templateParameters.SetPullNumber(pullNumber)
+	if gitStateConfig.IsPullRequest() {
+		templateParameters.SetPullNumber(gitStateConfig.PullRequestNumber)
 	}
 
-	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
-	if !present {
-		return nil, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
-	}
-	templateParameters.SetBaseSHA(baseSHA)
+	templateParameters.SetBaseSHA(gitStateConfig.BaseCommitSHA)
 
-	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
-	if present {
-		templateParameters.SetPullSHA(pullSHA)
+	if gitStateConfig.IsPullRequest() {
+		templateParameters.SetPullSHA(gitStateConfig.PullHeadCommitSHA)
 	}
 
 	templateParameters.SetImageName(options.name)
@@ -279,9 +259,14 @@ func buildInADO(o options) error {
 		return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
 	}
 
+	gitState, err := LoadGitStateConfigFromEnv(o)
+	if err != nil {
+		return fmt.Errorf("build in ADO failed, failed load git state from environment: %s", err)
+	}
+
 	fmt.Println("Preparing ADO template parameters.")
 	// Preparing ADO pipeline parameters.
-	templateParameters, err := prepareADOTemplateParameters(o)
+	templateParameters, err := prepareADOTemplateParameters(o, gitState)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
 	}
@@ -740,6 +725,9 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
+	flagSet.BoolVar(&o.runInActions, "run-as-gh-action", false, "Run as github action. Ensures GITHUB_OUTPUT variable is available and set as a path to the output file")
+	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
+	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
 
 	return flagSet
 }
@@ -822,6 +810,7 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
 	err = buildLocally(o)
 	if err != nil {
 		fmt.Println(err)

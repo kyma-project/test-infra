@@ -143,3 +143,108 @@ func Test_getVariants(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadGitStateConfigFromEnv(t *testing.T) {
+	tc := []struct {
+		name        string
+		options     options
+		env         map[string]string
+		gitState    GitStateConfig
+		expectError bool
+	}{
+		{
+			name: "Load config from ProwJobEnv for ADO presubmit",
+			options: options{
+				buildInADO: true,
+			},
+			env: map[string]string{
+				"REPO_NAME":     "test-repo",
+				"REPO_OWNER":    "test-owner",
+				"JOB_TYPE":      "presubmit",
+				"PULL_NUMBER":   "1234",
+				"PULL_BASE_SHA": "art654",
+				"PULL_PULL_SHA": "qwe456",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:    "test-repo",
+				RepositoryOwner:   "test-owner",
+				JobType:           "presubmit",
+				PullRequestNumber: "1234",
+				BaseCommitSHA:     "art654",
+				PullHeadCommitSHA: "qwe456",
+			},
+		},
+		{
+			name: "Invalid job type value in prowjob env",
+			options: options{
+				buildInADO: true,
+			},
+			env: map[string]string{
+				"REPO_NAME":     "test-repo",
+				"REPO_OWNER":    "test-owner",
+				"JOB_TYPE":      "periodic",
+				"PULL_NUMBER":   "1234",
+				"PULL_BASE_SHA": "art654",
+				"PULL_PULL_SHA": "qwe456",
+			},
+			expectError: true,
+		},
+		{
+			name: "Missing repo name value in prowjob env",
+			options: options{
+				buildInADO: true,
+			},
+			env: map[string]string{
+				"REPO_OWNER":    "test-owner",
+				"JOB_TYPE":      "periodic",
+				"PULL_NUMBER":   "1234",
+				"PULL_BASE_SHA": "art654",
+				"PULL_PULL_SHA": "qwe456",
+			},
+			expectError: true,
+		},
+		{
+			name: "Load data from event payload for github pull_request_target",
+			options: options{
+				runInActions: true,
+			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
+				"GITHUB_EVENT_NAME": "pull_request_target",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:    "test-infra",
+				RepositoryOwner:   "KacperMalachowski",
+				JobType:           "presubmit",
+				PullRequestNumber: "5",
+				BaseCommitSHA:     "4b91c74a2aa9aeeb4a265cf1ffe2dd54812b4124",
+				PullHeadCommitSHA: "df7ebcecce2ec1299b5e8ccb22482f901d205abc",
+			},
+		},
+	}
+
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			// Prepare env vars
+			for key, value := range c.env {
+				err := os.Setenv(key, value)
+				if err != nil {
+					t.Errorf("failed to set env variable %s with value %s", key, value)
+				}
+			}
+
+			// Load git state
+			state, err := LoadGitStateConfigFromEnv(c.options)
+			if err != nil && !c.expectError {
+				t.Errorf("unexpected error occured %s", err)
+			}
+			if err == nil && c.expectError {
+				t.Error("expected error, but not occured")
+			}
+
+			if !reflect.DeepEqual(state, c.gitState) {
+				t.Errorf("LoadGitStateConfigFromEnv(): Got %v, but expected %v", state, c.gitState)
+			}
+		})
+	}
+}

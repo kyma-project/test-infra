@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 
+	"github.com/google/go-github/v48/github"
 	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -101,4 +104,130 @@ func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
 	}
 	*r = regs
 	return nil
+}
+
+// GitStateConfig holds information about repository and specific commit
+// from which image should be build.
+// It also contains information wheter job is presubmit or postsubmit
+type GitStateConfig struct {
+	// Name of the source repository
+	RepositoryName string
+	// Name of the source repository's owner
+	RepositoryOwner string
+	// Type of the job, allowed values "presubmit" or "postsubmit"
+	JobType string
+	// Number of the pull request for presubmit job
+	PullRequestNumber string
+	// Commit SHA for base branch
+	BaseCommitSHA string
+	// Commit SHA for head of the pull request
+	PullHeadCommitSHA string
+}
+
+func (gitState GitStateConfig) IsPullRequest() bool {
+	return gitState.PullRequestNumber != "" && gitState.PullHeadCommitSHA != ""
+}
+
+func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
+
+	var config GitStateConfig
+	var err error
+	// Load from env specific for prow jobs
+	if o.buildInADO {
+		config, err = loadProwJobGitState()
+		if err != nil {
+			return config, err
+		}
+	}
+	// Load rom env specific for github actions
+	if o.runInActions {
+		config, err = loadGithubActionsGitState()
+		if err != nil {
+			return config, err
+		}
+	}
+
+	return config, nil
+}
+
+func loadProwJobGitState() (GitStateConfig, error) {
+	repoName, present := os.LookupEnv("REPO_NAME")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
+	}
+
+	repoOwner, present := os.LookupEnv("REPO_OWNER")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("REPO_OWNER environment variable is not set, please set it to valid repository owner")
+	}
+
+	jobType, present := os.LookupEnv("JOB_TYPE")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
+	}
+	if !slices.Contains([]string{"presubmit", "postsubmit"}, jobType) {
+		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
+	}
+
+	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
+	if jobType == "presubmit" && !isPullNumberSet {
+		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
+	}
+
+	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
+	}
+
+	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("PULL_PULL_SHA environment variable is not set, please set it to valid pull head SHA")
+	}
+
+	return GitStateConfig{
+		RepositoryName:    repoName,
+		RepositoryOwner:   repoOwner,
+		JobType:           jobType,
+		PullRequestNumber: pullNumber,
+		BaseCommitSHA:     baseSHA,
+		PullHeadCommitSHA: pullSHA,
+	}, nil
+}
+
+func loadGithubActionsGitState() (GitStateConfig, error) {
+	eventName, present := os.LookupEnv("GITHUB_EVENT_NAME")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set, please set it to valid event name")
+	}
+	eventPayloadPath, present := os.LookupEnv("GITHUB_EVENT_PATH")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set, please set it to valid path to event file")
+	}
+
+	// Read event payload file from runner
+	data, err := os.ReadFile(eventPayloadPath)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %s", err)
+	}
+
+	// Handle different events types
+	switch eventName {
+	case "pull_request_target", "pull_request":
+		var payload github.PullRequestEvent
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+
+		return GitStateConfig{
+			RepositoryName:    *payload.Repo.Name,
+			RepositoryOwner:   *payload.Repo.Owner.Login,
+			JobType:           "presubmit",
+			PullRequestNumber: fmt.Sprint(*payload.Number),
+			BaseCommitSHA:     *payload.PullRequest.Base.SHA,
+			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
+		}, nil
+	default:
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
+	}
 }
