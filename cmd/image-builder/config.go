@@ -135,6 +135,8 @@ func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
 	var err error
 
 	// Load rom env specific for github actions
+	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
+	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
 	isGitHubActions := os.Getenv("GITHUB_ACTIONS")
 	if isGitHubActions == "true" {
 		config, err = loadGithubActionsGitState()
@@ -144,6 +146,8 @@ func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
 	}
 
 	// Load from env specific for prow jobs
+	// PROW_JOB_ID environment variables contains ID of prow job
+	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
 	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
 	if isProwJob {
 		config, err = loadProwJobGitState()
