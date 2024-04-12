@@ -90,6 +90,7 @@ presubmits: # runs on PRs
               - "--dockerfile=Dockerfile"
               - "--build-arg=VERSION=PR-$(PULL_NUMBER)-experimental"
               - "--build-arg=GO_BUILD_TAGS=experimental"
+              - "--tag=PR-$(PULL_NUMBER)-experimental"
             resources:
               requests:
                 memory: 1.5Gi

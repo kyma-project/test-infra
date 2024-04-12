@@ -135,6 +135,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--build-arg=VERSION=PR-$(PULL_NUMBER)-experimental"
                     - "--build-arg=GO_BUILD_TAGS=experimental"
+                    - "--tag=PR-$(PULL_NUMBER)-experimental"
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+$
