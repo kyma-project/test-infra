@@ -36,6 +36,8 @@ jobs:
       - name: Expose JWT Action
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
+      - run: env
+      - run: cat $GITHUB_EVENT_PATH
       - name: Verify OIDC Token in Node.js
         run: |
           console.log(`Repository: ${{ inputs.repository }}`);
@@ -63,5 +65,3 @@ jobs:
             console.log("Job workflow ref matches the expected value.");
           }
         shell: node {0}
-      - run: env
-      - run: cat $GITHUB_EVENT_PATH
