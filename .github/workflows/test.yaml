@@ -5,6 +5,9 @@ on:
   pull_request_target:
    types: [ opened, edited, synchronize, reopened, ready_for_review ]
 
+env:
+  GITHUB_EVENT_PATH: "test"
+
 jobs:
   get_env:
     runs-on: ubuntu-latest
