@@ -3,8 +3,8 @@ package client
 import (
 	"fmt"
 
-	prowflagutil "sigs.k8s.io/prow/prow/flagutil"
-	"sigs.k8s.io/prow/prow/github"
+	prowflagutil "k8s.io/test-infra/prow/flagutil"
+	"k8s.io/test-infra/prow/github"
 )
 
 // GithubClientConfig holds configuration for GithubClient.

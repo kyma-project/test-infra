@@ -13,11 +13,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"sigs.k8s.io/prow/prow/config/secret"
-	prowflagutil "sigs.k8s.io/prow/prow/flagutil"
-	"sigs.k8s.io/prow/prow/github"
-	"sigs.k8s.io/prow/prow/pluginhelp/externalplugins"
-	"sigs.k8s.io/prow/prow/plugins"
+	"k8s.io/test-infra/prow/config/secret"
+	prowflagutil "k8s.io/test-infra/prow/flagutil"
+	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/prow/pluginhelp/externalplugins"
+	"k8s.io/test-infra/prow/plugins"
 )
 
 const EventTypeField = "event-type"

@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"sigs.k8s.io/prow/prow/config"
+	"k8s.io/test-infra/prow/config"
 )
 
 type options struct {

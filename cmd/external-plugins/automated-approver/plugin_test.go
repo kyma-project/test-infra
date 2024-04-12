@@ -11,8 +11,8 @@ import (
 	. "github.com/onsi/gomega"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
-	"sigs.k8s.io/prow/prow/github"
-	"sigs.k8s.io/prow/prow/github/fakegithub"
+	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/prow/github/fakegithub"
 )
 
 const (

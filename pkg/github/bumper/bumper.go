@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/robots/pr-creator/updater"
-	"sigs.k8s.io/prow/prow/config/secret"
-	"sigs.k8s.io/prow/prow/github"
 )
 
 // Options is the options for autobumper operations.

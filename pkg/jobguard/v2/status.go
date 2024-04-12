@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	"github.com/pkg/errors"
-	"sigs.k8s.io/prow/prow/github"
+	"k8s.io/test-infra/prow/github"
 )
 
 const (

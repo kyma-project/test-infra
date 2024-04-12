@@ -136,8 +136,6 @@ github.com/charmbracelet/lipgloss v0.5.0/go.mod h1:EZLha/HbzEt7cYqdFPovlqy5FZPj0
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
-github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466 h1:eUjwn08FDjbj8vBM31026tjBraJCu+qpDvo/q0EAvQk=
-github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466/go.mod h1:f7xZ2fRr8CqTp834KCxLW2pOXC/raqwhTbEvtxu/lRo=
 github.com/clarketm/json v1.13.4 h1:0JketcMdLC16WGnRGJiNmTXuQznDEQaiknxSPRBxg+k=
 github.com/clarketm/json v1.13.4/go.mod h1:ynr2LRfb0fQU34l07csRNBTcivjySLLiY1YzQqKVfdo=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
@@ -394,6 +392,8 @@ github.com/gorilla/handlers v1.4.2 h1:0QniY0USkHQ1RGCLfKxeNHK9bkDHGRYGNDFBCS+YAR
 github.com/gorilla/handlers v1.4.2/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc h1:f8eY6cV/x1x+HLjOp4r72s/31/V2aTUtg5oKRRPf8/Q=
+github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc/go.mod h1:FecbI9+v66THATjSRHfNgh1IVFe/9kFxbXtjV0ctIMA=
 github.com/grpc-ecosystem/grpc-gateway v1.8.5/go.mod h1:vNeuVxBJEsws4ogUvrchl83t/GYV9WGTSLVdBhOQFDY=
 github.com/grpc-ecosystem/grpc-gateway v1.9.2/go.mod h1:vNeuVxBJEsws4ogUvrchl83t/GYV9WGTSLVdBhOQFDY=
 github.com/grpc-ecosystem/grpc-gateway v1.14.6/go.mod h1:zdiPV4Yse/1gnckTHtghG4GkDEdKCRJduHpTxT3/jcw=
@@ -1144,8 +1144,8 @@ k8s.io/klog/v2 v2.90.1/go.mod h1:y1WjHnz7Dj687irZUWR/WLkLc5N1YHtjLdmgWjndZn0=
 k8s.io/kube-openapi v0.0.0-20200805222855-6aeccd4b50c6/go.mod h1:UuqjUnNftUyPE5H64/qeyjQoUZhGpeFDVdxjTeEVN2o=
 k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f h1:2kWPakN3i/k81b0gvD5C5FJ2kxm1WrQFanWchyKuqGg=
 k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f/go.mod h1:byini6yhqGC14c3ebc/QwanvYwhuMWF6yz2F8uwW8eg=
-k8s.io/test-infra v0.0.0-20240411133302-a76d536b52a6 h1:DDEpgt70V69hpzjBzhMcPaDJlv2fNc0ccCdeM9Rpk5o=
-k8s.io/test-infra v0.0.0-20240411133302-a76d536b52a6/go.mod h1://e6vQ9/twuv3rHZjFtAOVVtO8I8o0PkT1Cn4ubQwEI=
+k8s.io/test-infra v0.0.0-20230719172213-72ce78578482 h1:TbTu68BRJ8z63/pgbZUDnYWmScJYOuc3Ry1GM2xRQ84=
+k8s.io/test-infra v0.0.0-20230719172213-72ce78578482/go.mod h1:DuTZeR5hCmlTTyTNkyPtItq2lQZjdCcpB0nsxdT57Gw=
 k8s.io/utils v0.0.0-20230726121419-3b25d923346b h1:sgn3ZU783SCgtaSJjpcVVlRqd6GSnlTLKgpAAttJvpI=
 k8s.io/utils v0.0.0-20230726121419-3b25d923346b/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
 knative.dev/pkg v0.0.0-20230221145627-8efb3485adcf h1:TwvZFDpkyqpK2OCAwvNGV2Zjk14FzIh8X8Ci/du3jYI=
@@ -1158,8 +1158,6 @@ sigs.k8s.io/controller-runtime v0.15.0 h1:ML+5Adt3qZnMSYxZ7gAverBLNPSMQEibtzAgp0
 sigs.k8s.io/controller-runtime v0.15.0/go.mod h1:7ngYvp1MLT+9GeZ+6lH3LOlcHkp/+tzA/fmHa4iq9kk=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd h1:EDPBXCAspyGV4jQlpZSudPeMmr1bNJefnuqLsRAsHZo=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd/go.mod h1:B8JuhiUyNFVKdsE8h686QcCxMaH6HrOAZj4vswFpcB0=
-sigs.k8s.io/prow v0.0.0-20240410004112-4be743f3ec63 h1:Mjw0svnqhh/rjkvW5bovtoAuG0zmLlNW/4ZRUbNUrrk=
-sigs.k8s.io/prow v0.0.0-20240410004112-4be743f3ec63/go.mod h1:7rsZ1ej4cIWtv+w/+62mLOaGMONtsG663VD9eJ7UKL4=
 sigs.k8s.io/structured-merge-diff/v4 v4.0.1/go.mod h1:bJZC9H9iH24zzfZ/41RGcq60oK1F7G282QMXDPYydCw=
 sigs.k8s.io/structured-merge-diff/v4 v4.1.2/go.mod h1:j/nl6xW8vLS49O8YvXW1ocPhZawJtm+Yrr7PPRQ0Vg4=
 sigs.k8s.io/structured-merge-diff/v4 v4.2.3 h1:PRbqxJClWWYMNV1dhaG4NsibJbArud9kFxnAMREiWFE=

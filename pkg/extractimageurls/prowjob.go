@@ -6,7 +6,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/github/client"
 
 	"github.com/google/go-github/v48/github"
-	"sigs.k8s.io/prow/prow/config"
+	"k8s.io/test-infra/prow/config"
 	"sigs.k8s.io/yaml"
 )
 

@@ -16,7 +16,7 @@ import (
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
-	"sigs.k8s.io/prow/prow/config/secret"
+	"k8s.io/test-infra/prow/config/secret"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"sigs.k8s.io/prow/prow/config/secret"
-	"sigs.k8s.io/prow/prow/flagutil"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/flagutil"
 )
 
 type options struct {

@@ -9,8 +9,8 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/sets"
 
-	"sigs.k8s.io/prow/prow/github"
-	k8sowners "sigs.k8s.io/prow/prow/repoowners"
+	"k8s.io/test-infra/prow/github"
+	k8sowners "k8s.io/test-infra/prow/repoowners"
 )
 
 // AllOwners holds repository owners as map.

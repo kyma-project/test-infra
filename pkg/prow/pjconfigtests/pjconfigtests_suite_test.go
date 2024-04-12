@@ -8,7 +8,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"sigs.k8s.io/prow/prow/config"
+	"k8s.io/test-infra/prow/config"
 )
 
 var (

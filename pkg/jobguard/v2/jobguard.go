@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"sigs.k8s.io/prow/prow/github"
+	"k8s.io/test-infra/prow/github"
 )
 
 const (

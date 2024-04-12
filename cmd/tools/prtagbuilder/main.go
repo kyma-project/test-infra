@@ -9,8 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	v1 "sigs.k8s.io/prow/prow/apis/prowjobs/v1"
-	"sigs.k8s.io/prow/prow/pod-utils/downwardapi"
+	v1 "k8s.io/test-infra/prow/apis/prowjobs/v1"
+	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
 
 var (

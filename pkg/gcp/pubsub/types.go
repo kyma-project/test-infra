@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	"google.golang.org/api/option"
-	prowapi "sigs.k8s.io/prow/prow/apis/prowjobs/v1"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 // ClientConfig holds configuration for pubsub Client.

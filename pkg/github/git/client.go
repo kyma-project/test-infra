@@ -3,10 +3,10 @@ package git
 import (
 	"fmt"
 
-	"sigs.k8s.io/prow/prow/config/secret"
-	"sigs.k8s.io/prow/prow/flagutil"
-	"sigs.k8s.io/prow/prow/git/v2"
-	"sigs.k8s.io/prow/prow/github"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/flagutil"
+	"k8s.io/test-infra/prow/git/v2"
+	"k8s.io/test-infra/prow/github"
 )
 
 type Client interface {
