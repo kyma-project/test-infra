@@ -221,6 +221,22 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				PullHeadCommitSHA: "df7ebcecce2ec1299b5e8ccb22482f901d205abc",
 			},
 		},
+		{
+			name: "Load data from event payload for github push event",
+			options: options{
+				runInActions: true,
+			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/push_event.json",
+				"GITHUB_EVENT_NAME": "push",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-infra",
+				RepositoryOwner: "KacperMalachowski",
+				JobType:         "postsubmit",
+				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
+			},
+		},
 	}
 
 	for _, c := range tc {

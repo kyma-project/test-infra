@@ -227,6 +227,18 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			BaseCommitSHA:     *payload.PullRequest.Base.SHA,
 			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
 		}, nil
+	case "push":
+		var payload github.PushEvent
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+		return GitStateConfig{
+			RepositoryName:  *payload.Repo.Name,
+			RepositoryOwner: *payload.Repo.Owner.Login,
+			JobType:         "postsubmit",
+			BaseCommitSHA:   *payload.HeadCommit.ID,
+		}, nil
 	default:
 		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
 	}
