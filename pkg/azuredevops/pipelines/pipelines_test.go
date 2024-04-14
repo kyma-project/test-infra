@@ -150,7 +150,7 @@ var _ = Describe("Pipelines", func() {
 			_, err := pipelines.GetRunLogs(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "somePAT")
 
 			Expect(err).To(HaveOccurred())
-			Expect(err).To(MatchError("failed getting build logs metadata, err: build client error"))
+			Expect(err).To(MatchError("failed getting build logs metadata, err: All attempts fail:\n#1: build client error\n#2: build client error\n#3: build client error"))
 			mockBuildClient.AssertCalled(t, "GetBuildLogs", ctx, getBuildLogsArgs)
 			mockBuildClient.AssertNumberOfCalls(t, "GetBuildLogs", 3)
 			mockBuildClient.AssertExpectations(GinkgoT())
