@@ -209,9 +209,6 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 		},
 		{
 			name: "Load data from event payload for github pull_request_target",
-			options: options{
-				runInActions: true,
-			},
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
 				"GITHUB_EVENT_NAME": "pull_request_target",
@@ -229,9 +226,6 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 		},
 		{
 			name: "Load data from event payload for github push event",
-			options: options{
-				runInActions: true,
-			},
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/push_event.json",
 				"GITHUB_EVENT_NAME": "push",

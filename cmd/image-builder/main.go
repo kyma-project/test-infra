@@ -50,7 +50,6 @@ type options struct {
 	adoPreviewRunYamlPath string
 	testKanikoBuildConfig bool
 	parseTagsOnly         bool
-	runInActions          bool
 	oidcToken             string
 	azureAccessToken      string
 }
@@ -733,7 +732,6 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
-	flagSet.BoolVar(&o.runInActions, "run-as-gh-action", false, "Run as github action. Ensures GITHUB_OUTPUT variable is available and set as a path to the output file")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
 
