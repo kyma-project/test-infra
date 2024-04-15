@@ -58,20 +58,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_control_plane"
-              - jobConfig:
-                  repository: "kyma"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
               # Kyma components
               - jobConfig:
                   repository: "reconciler"
