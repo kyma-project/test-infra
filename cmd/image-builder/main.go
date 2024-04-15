@@ -228,6 +228,11 @@ func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig
 		templateParameters.SetImageTags(options.tags.String())
 	}
 
+	isGhAction := os.Getenv("GITHUB_ACTIONS")
+	if isGhAction == "true" {
+		templateParameters.SetAuthorization(options.oidcToken)
+	}
+
 	err := templateParameters.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("failed validating ADO template parameters, err: %w", err)

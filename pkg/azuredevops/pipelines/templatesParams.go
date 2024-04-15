@@ -108,6 +108,12 @@ func (p OCIImageBuilderTemplateParams) SetUseKanikoConfigFromPR(useKanikoFromPR 
 	p["UseKanikoConfigFromPR"] = strconv.FormatBool(useKanikoFromPR)
 }
 
+// SetAuthorization sets Authorization parameter.
+// This parameter is used to provide authorization token when running in github actions
+func (p OCIImageBuilderTemplateParams) SetAuthorization(authorizationToken string) {
+	p["Authorization"] = authorizationToken
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {
