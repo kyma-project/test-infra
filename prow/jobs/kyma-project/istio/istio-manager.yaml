@@ -114,6 +114,63 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: rel-istio-experimental-build
+      annotations:
+        description: "builds istio operator experimental image on release"
+        owner: "goat"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "rel-istio-experimental-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      always_run: true
+      optional: false
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=istio-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_REF)-experimental"
+              - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
+              - "--build-arg=GO_BUILD_TAGS=experimental"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-istio-operator-build
       annotations:
         description: "build istio operator image"
@@ -153,6 +210,64 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_SHA)"
               - "--build-arg=VERSION=$(PULL_BASE_REF)"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-istio-operator-experimental-build
+      annotations:
+        description: "build istio operator experimental image"
+        owner: "goat"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-istio-operator-experimental-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-\d+\.\d+$
+      reporter_config:
+        slack:
+          channel: goat-int
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=istio-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_SHA)-experimental"
+              - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
+              - "--build-arg=GO_BUILD_TAGS=experimental"
             resources:
               requests:
                 memory: 1.5Gi
