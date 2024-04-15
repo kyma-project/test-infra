@@ -259,9 +259,12 @@ func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API.
-	adoPAT, present := os.LookupEnv("ADO_PAT")
-	if !present {
-		return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+	if o.azureAccessToken != "" {
+		adoPAT, present := os.LookupEnv("ADO_PAT")
+		if !present {
+			return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+		}
+		o.azureAccessToken = adoPAT
 	}
 
 	gitState, err := LoadGitStateConfigFromEnv(o)
@@ -278,7 +281,7 @@ func buildInADO(o options) error {
 	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
 
 	// Creating a new ADO pipelines client.
-	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
+	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
 
 	var opts []adopipelines.RunPipelineArgsOptions
 	// If running in preview mode, add a preview run option to the ADO pipeline run arguments.
@@ -325,11 +328,11 @@ func buildInADO(o options) error {
 	// Fetch the ADO pipeline run logs.
 	fmt.Println("Getting ADO pipeline run logs.")
 	// Creating a new ADO build client.
-	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
+	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
 	if err != nil {
 		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 	}
-	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, adoPAT)
+	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.azureAccessToken)
 	if err != nil {
 		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 	} else {
