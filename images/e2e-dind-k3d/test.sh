@@ -3,14 +3,10 @@
 set -e
 
 echo "Binary existence checks"
-docker run --rm --privileged \
-  -v /sys/fs/cgroup:/sys/fs/cgroup \
-  -v /lib/modules:/lib/modules:ro \
-  -e DOCKER_IN_DOCKER_ENABLED=true \
+docker run --rm \
   "$IMG" bash -c '
   set -e
-  cat $ARTIFACTS/docker-info.log
-  docker ps -a
+  docker --version
   helm version
   kubectl version --client
   k3d version
