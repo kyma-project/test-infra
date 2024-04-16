@@ -22,7 +22,7 @@ inputs:
     description: Prevent actual triggering the image builder
     required: false
     default: false
- runs:
+runs:
   using: 'docker'
   image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   args:
