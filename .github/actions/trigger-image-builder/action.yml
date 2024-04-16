@@ -26,7 +26,7 @@ runs:
   using: 'docker'
   image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   args:
-    - "--name=${{{ inputs.image-name }}}"
+    - "--name=${{ inputs.image-name }}"
     - "--context=${{ inputs.context }}"
     - "--dockerfile=${{ inputs.dockerfile }}"
     - "--azure-access-token=${{ inputs.ado-token }}"
