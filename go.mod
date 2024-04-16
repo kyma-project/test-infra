@@ -10,6 +10,7 @@ require (
 	cloud.google.com/go/storage v1.40.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/avast/retry-go/v4 v4.5.1
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cloudevents/sdk-go/v2 v2.15.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c

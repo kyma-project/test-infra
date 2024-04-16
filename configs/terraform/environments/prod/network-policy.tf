@@ -135,7 +135,6 @@ resource "kubernetes_network_policy" "hook_to_plugins" {
       match_labels = {
         "app" = "automated-approver",
         "app" = "cla-assistant",
-        "app" = "needs-tws",
       }
     }
 
