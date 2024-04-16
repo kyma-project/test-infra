@@ -65,3 +65,10 @@ jobs:
             console.log("Job workflow ref matches the expected value.");
           }
         shell: node {0}
+      - uses: ./.github/actions/trigger-image-builder
+        name: Run build in image-builder
+        with:
+          oidc-token: ${{ steps.get_oidc.outputs.jwt }}
+          ado-token: ${{ secrets.ADO_PAT }}
+          name: test-infra/ginkgo
+          dockerfile: prow/images/ginkgo/Dockerfile
