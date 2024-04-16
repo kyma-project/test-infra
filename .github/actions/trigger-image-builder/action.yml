@@ -24,9 +24,12 @@ inputs:
     default: false
  runs:
   using: 'docker'
-  image: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240402-5a67f2a8
+  image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   args:
     - "--name=${{{ inputs.image-name }}}"
     - "--context=${{ inputs.context }}"
     - "--dockerfile=${{ inputs.dockerfile }}"
+    - "--azure-access-token=${{ inputs.ado-token }}"
+    - "--oidc-token=${{ inputs.oidc-token }}"
+    - "--config=./configs/kaniko-build-config.yaml"
     - "--build-in-ado=true"

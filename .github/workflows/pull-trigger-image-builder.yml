@@ -48,7 +48,7 @@ jobs:
         name: Run build in image-builder
         with:
           oidc-token: ${{ needs.get-oidc-token.outputs.oidcToken }}
-          ado-token: ${{ secrets.GITHUB_TOKEN }}
+          ado-token: ${{ secrets.ADO_PAT }}
           name: test-infra/ginkgo
           dockerfile: prow/images/ginkgo/Dockerfile
 
