@@ -43,5 +43,5 @@ jobs:
         with:
           oidc-token: ${{ steps.get_oidc.outputs.jwt }}
           ado-token: ${{ secrets.ADO_PAT }}
-          name: test-infra/ginkgo
+          image-name: test-infra/ginkgo
           dockerfile: prow/images/ginkgo/Dockerfile
