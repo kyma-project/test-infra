@@ -258,7 +258,7 @@ func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API.
-	if o.azureAccessToken != "" {
+	if o.azureAccessToken == "" {
 		adoPAT, present := os.LookupEnv("ADO_PAT")
 		if !present {
 			return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
