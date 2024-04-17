@@ -33,7 +33,7 @@ images:
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
 - source: "postgres@sha256:86c55091a74b9efe95396f65ddd83f0067ff47c3f09993621d6f94c835856445"
   tag: "11.21-alpine3.18"
-- source: "prom/pushgateway:v1.4.3"
+- source: "prom/pushgateway:v1.8.0"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
