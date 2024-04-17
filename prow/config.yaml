@@ -362,15 +362,7 @@ branch-protection:
         warden:
           unmanaged: true
         application-connector-manager:
-          required_status_checks:
-            contexts:
-              - "golangci-lint"
-              - "run-cra-k3d"
-              - "test"
-              - "markdown-link-check"
-              - "integration-tests"
-              - "govuln"
-              - "build"
+          unmanaged: true
 
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
