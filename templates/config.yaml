@@ -185,7 +185,7 @@ globalSets:
   image_image_detector:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240415-3a524bfc
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240415-715c6a28"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240411-7c71bf81"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
