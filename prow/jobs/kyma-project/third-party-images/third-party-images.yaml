@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -163,7 +163,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -211,7 +211,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: true
               seccompProfile:
@@ -264,7 +264,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -314,7 +314,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -368,7 +368,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -418,7 +418,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -472,7 +472,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -522,7 +522,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -571,7 +571,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: true
               seccompProfile:
@@ -630,7 +630,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
@@ -685,7 +685,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240417-ed48c278"
             securityContext:
               privileged: false
               seccompProfile:
