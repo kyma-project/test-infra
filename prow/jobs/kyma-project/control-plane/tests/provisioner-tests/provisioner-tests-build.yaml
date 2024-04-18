@@ -31,10 +31,10 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: false
             resources:
               requests:
-                memory: 4Gi
+                memory: 2Gi
                 cpu: 1
               limits:
-                memory: 8Gi
+                memory: 6Gi
             volumeMounts:
               - name: config
                 mountPath: /config
