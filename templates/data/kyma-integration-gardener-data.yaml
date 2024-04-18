@@ -11,11 +11,11 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240415-715c6a28
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240418-21687981
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240415-715c6a28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240418-21687981"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
