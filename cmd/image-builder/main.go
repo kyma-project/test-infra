@@ -227,10 +227,10 @@ func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig
 		templateParameters.SetImageTags(options.tags.String())
 	}
 
-	isGhAction := os.Getenv("GITHUB_ACTIONS")
-	if isGhAction == "true" {
-		templateParameters.SetAuthorization(options.oidcToken)
-	}
+	// isGhAction := os.Getenv("GITHUB_ACTIONS")
+	// if isGhAction == "true" {
+	// 	templateParameters.SetAuthorization(options.oidcToken)
+	// }
 
 	err := templateParameters.Validate()
 	if err != nil {
