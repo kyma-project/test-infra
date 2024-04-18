@@ -2,8 +2,9 @@ pjConfigs:
   prowJobs:
     kyma-project:
       control-plane:
-        - pjName: "pre-main-provisioner-e2e-tests"
-prConfigs: #
+        - pjName: "pull-provisioner-tests-build"
+prConfigs:
   kyma-project:
     control-plane:
-      prNumber: 3287
+      # prNumber: 3287
+      prNumber: 3424
