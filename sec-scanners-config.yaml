@@ -58,7 +58,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240415-715c6a28
     - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240415-715c6a28
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
-    - gcr.io/k8s-prow/gencred:v20230824-74e8146673
+    - gcr.io/k8s-prow/gencred:v20240409-13cd3acf7e
     - maven:3.9.6-eclipse-temurin-17-alpine
     - prom/pushgateway:v1.8.0
     - quay.io/prometheus-operator/prometheus-operator:v0.67.1
