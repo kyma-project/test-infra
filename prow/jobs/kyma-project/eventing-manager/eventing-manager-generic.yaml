@@ -27,10 +27,17 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=eventing-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -39,16 +46,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
 
 postsubmits: # runs on main
   kyma-project/eventing-manager:
@@ -86,6 +87,14 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - '--tag={{ .Env "PULL_BASE_REF" }}'
+              - "--build-in-ado=true"
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
+
             resources:
               requests:
                 memory: 1.5Gi
@@ -94,16 +103,10 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
 
     - name: release-eventing-manager-build
       annotations:
@@ -138,6 +141,13 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - '--tag={{ .Env "PULL_BASE_REF" }}'
+              - "--build-in-ado=true"
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -149,13 +159,7 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
