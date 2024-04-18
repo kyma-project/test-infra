@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      control-plane:
+        - pjName: "pre-main-provisioner-e2e-tests"
+prConfigs: #
+  kyma-project:
+    control-plane:
+      prNumber: 3287
