@@ -10,11 +10,11 @@ RUN set -eux; \
     bash \
     jq \
     yq \
+    iptables-legacy \
     docker \
     btrfs-progs \
     e2fsprogs \
     e2fsprogs-extra \
-    iptables \
     xfsprogs \
     xz \
     git \
@@ -30,7 +30,14 @@ RUN set -eux; \
     addgroup -S dockremap 	&& \
     adduser -SDHs /sbin/nologin dockremap; \
     echo 'dockremap:165536:65536' >> /etc/subuid && \
-    echo 'dockremap:165536:65536' >> /etc/subgid
+    echo 'dockremap:165536:65536' >> /etc/subgid && \
+    # symlink legacy iptables for dind compatibility
+    ln -sf /sbin/iptables-legacy /sbin/iptables ; \
+    ln -sf /sbin/iptables-legacy-save /sbin/iptables-save ; \
+    ln -sf /sbin/iptables-legacy-restore /sbin/iptables-restore ; \
+    ln -sf /sbin/ip6tables-legacy /sbin/ip6tables ; \
+    ln -sf /sbin/ip6tables-legacy-save /sbin/ip6tables-save ; \
+    ln -sf /sbin/ip6tables-legacy-restore /sbin/ip6tables-restore
 
 RUN mkdir -p /workspace; \
     chmod 1777 /workspace
