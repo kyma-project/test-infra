@@ -645,10 +645,6 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("flag '--sign-only' is missing or has false value, please set it to true when using '--images-to-sign' flag"))
 	}
 
-	if o.envFile != "" && o.buildInADO {
-		errs = append(errs, fmt.Errorf("env-file flag is not supported when running in ADO"))
-	}
-
 	if o.variant != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
 	}
