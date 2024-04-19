@@ -52,6 +52,7 @@ type options struct {
 	parseTagsOnly         bool
 	oidcToken             string
 	azureAccessToken      string
+	ciSystem              CISystem
 }
 
 const (
@@ -747,6 +748,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	// If running inside some CI system, determine which system is used
+	if o.isCI {
+		o.ciSystem = determineUsedCISystem()
+	}
+
 	// validate if options provided by flags and config file are fine
 	if err := validateOptions(o); err != nil {
 		fmt.Println(err)
@@ -773,28 +779,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.parseTagsOnly {
-		var sha, pr string
-		if o.isCI {
-			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
-			if presubmit {
-				if n := os.Getenv("PULL_NUMBER"); n != "" {
-					pr = n
-				}
-			}
-
-			if c := os.Getenv("PULL_BASE_SHA"); c != "" {
-				sha = c
-			}
-		}
-
-		// if sha is still not set, fail the pipeline
-		if sha == "" {
-			fmt.Println("'sha' could not be determined")
-			os.Exit(1)
-		}
-		parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+		parsedTags, err := parseTagsFromEnv(o)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -823,4 +809,28 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func parseTagsFromEnv(o options) ([]tags.Tag, error) {
+	var sha, pr string
+	// Get git state from ci system
+	if o.isCI {
+		gitState, err := LoadGitStateConfigFromEnv(o)
+		if err != nil {
+			return nil, fmt.Errorf("cannot load actual git state from env vars: %s", err)
+		}
+
+		sha = gitState.BaseCommitSHA
+		pr = fmt.Sprint(gitState.PullRequestNumber)
+	}
+
+	if sha == "" {
+		return nil, fmt.Errorf("sha still empty")
+	}
+	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	if err != nil {
+		return nil, err
+	}
+
+	return parsedTags, nil
 }

@@ -14,6 +14,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type CISystem string
+
+// Enum of supported CI/CD systems to read data from
+const (
+	Prow          CISystem = "Prow"
+	GithubActions CISystem = "GithubActions"
+)
+
 type Config struct {
 	AdoConfig adoPipelines.Config `yaml:"ado-config,omitempty" json:"ado-config,omitempty"`
 	// Registry is URL where clean build should land.
@@ -132,26 +140,18 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 }
 
 func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
-
 	var config GitStateConfig
 	var err error
 
-	// Load rom env specific for github actions
-	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
-	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-	isGitHubActions := os.Getenv("GITHUB_ACTIONS")
-	if isGitHubActions == "true" {
+	switch o.ciSystem {
+	// Load from env specific for github actions
+	case GithubActions:
 		config, err = loadGithubActionsGitState()
 		if err != nil {
 			return config, err
 		}
-	}
-
 	// Load from env specific for prow jobs
-	// PROW_JOB_ID environment variables contains ID of prow job
-	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
-	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
-	if isProwJob {
+	case Prow:
 		config, err = loadProwJobGitState()
 		if err != nil {
 			return config, err
@@ -259,4 +259,24 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	default:
 		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
 	}
+}
+
+// determineUsedCISystem return CISystem bind to system in which image builder is running or empty string if unknown
+// It is used to avoid getting env variables in multiple parts of image builder
+func determineUsedCISystem() CISystem {
+	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
+	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+	isGithubActions := os.Getenv("GITHUB_ACTIONS")
+	if isGithubActions == "true" {
+		return GithubActions
+	}
+
+	// PROW_JOB_ID environment variables contains ID of prow job
+	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
+	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
+	if isProwJob {
+		return Prow
+	}
+
+	return ""
 }

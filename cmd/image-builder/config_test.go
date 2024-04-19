@@ -156,6 +156,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			name: "Load config from ProwJobEnv for ADO presubmit",
 			options: options{
 				buildInADO: true,
+				ciSystem:   Prow,
 			},
 			env: map[string]string{
 				"REPO_NAME":     "test-repo",
@@ -180,6 +181,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			name: "Invalid job type value in prowjob env",
 			options: options{
 				buildInADO: true,
+				ciSystem:   Prow,
 			},
 			env: map[string]string{
 				"REPO_NAME":     "test-repo",
@@ -196,6 +198,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			name: "Missing repo name value in prowjob env",
 			options: options{
 				buildInADO: true,
+				ciSystem:   Prow,
 			},
 			env: map[string]string{
 				"REPO_OWNER":    "test-owner",
@@ -209,10 +212,12 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 		},
 		{
 			name: "Load data from event payload for github pull_request_target",
+			options: options{
+				ciSystem: GithubActions,
+			},
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
 				"GITHUB_EVENT_NAME": "pull_request_target",
-				"GITHUB_ACTIONS":    "true",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:    "test-infra",
@@ -226,10 +231,12 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 		},
 		{
 			name: "Load data from event payload for github push event",
+			options: options{
+				ciSystem: GithubActions,
+			},
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/push_event.json",
 				"GITHUB_EVENT_NAME": "push",
-				"GITHUB_ACTIONS":    "true",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:  "test-infra",
@@ -245,11 +252,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			// Prepare env vars
 			for key, value := range c.env {
-				err := os.Setenv(key, value)
-				if err != nil {
-					t.Errorf("failed to set env variable %s with value %s", key, value)
-				}
-				defer os.Unsetenv(key)
+				t.Setenv(key, value)
 			}
 
 			// Load git state
@@ -263,6 +266,44 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 
 			if !reflect.DeepEqual(state, c.gitState) {
 				t.Errorf("LoadGitStateConfigFromEnv(): Got %v, but expected %v", state, c.gitState)
+			}
+		})
+	}
+}
+
+func Test_determineCISystem(t *testing.T) {
+	tc := []struct {
+		name     string
+		env      map[string]string
+		ciSystem CISystem
+	}{
+		{
+			name: "detect running in prow jobs",
+			env: map[string]string{
+				"PROW_JOB_ID": "some-id",
+			},
+			ciSystem: Prow,
+		},
+		{
+			name: "detect running in github actions",
+			env: map[string]string{
+				"GITHUB_ACTIONS": "true",
+			},
+			ciSystem: GithubActions,
+		},
+	}
+
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			// Prepare env vars
+			for key, value := range c.env {
+				t.Setenv(key, value)
+			}
+
+			ciSystem := determineUsedCISystem()
+
+			if ciSystem != c.ciSystem {
+				t.Errorf("determineCISystem(): Got %s, but expected %s", ciSystem, c.ciSystem)
 			}
 		})
 	}

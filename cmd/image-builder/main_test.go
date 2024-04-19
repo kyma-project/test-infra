@@ -559,6 +559,39 @@ func Test_appendMissing(t *testing.T) {
 	}
 }
 
+func Test_parseTagsFromEnv(t *testing.T) {
+	tc := []struct {
+		name      string
+		options   options
+		env       map[string]string
+		tags      []tags.Tag
+		expectErr bool
+	}{
+		{
+			name: "Prow based tags parse",
+			options: options{
+				isCI:     true,
+				ciSystem: Prow,
+			},
+			env: map[string]string{
+				"JOB_TYPE":      "presubmit",
+				"PULL_NUMBER":   "5",
+				"PULL_BASE_SHA": "testShaOfCOmmit",
+			},
+			tags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
+		},
+	}
+
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			// Prepare env vars
+			for key, value := range c.env {
+				t.Setenv(key, value)
+			}
+		})
+	}
+}
+
 type mockSigner struct {
 	signFunc func([]string) error
 }
