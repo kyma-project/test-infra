@@ -234,6 +234,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetDockerfilePath(options.dockerfile)
 
+	templateParameters.SetEnvFilePath(options.envFile)
+
 	templateParameters.SetBuildContext(options.context)
 
 	templateParameters.SetExportTags(options.exportTags)
