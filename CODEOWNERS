@@ -73,6 +73,7 @@
 /prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/serverless @kyma-project/otters @neighbors-dev-bot
+/prow/jobs/kyma-project/docker-registry @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
