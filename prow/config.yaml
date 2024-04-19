@@ -361,6 +361,8 @@ branch-protection:
           unmanaged: true
         warden:
           unmanaged: true
+        docker-registry:
+          unmanaged: true
         application-connector-manager:
           required_status_checks:
             contexts:
