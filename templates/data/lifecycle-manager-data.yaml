@@ -10,7 +10,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-lifecycle-mgr-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240422-9c92d866"
                   annotations:
                     owner: jellyfish
                     description: run lm build
@@ -29,7 +29,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240422-9c92d866"
                   annotations:
                     owner: jellyfish
                     description: build lifecycle manager
@@ -53,7 +53,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: release-lifecycle-mgr-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240422-9c92d866"
                   annotations:
                     owner: jellyfish
                     description: build lifecycle-manager release image by semantic version tag
