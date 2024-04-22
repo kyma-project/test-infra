@@ -439,6 +439,7 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash
     kyma-incubator/migrate: squash
+    kyma-incubator/docker-registry: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr
