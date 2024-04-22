@@ -19,17 +19,13 @@ templates:
             request_cpu: "1"
             labels:
               preset-sa-kyma-push-images: "true"
+              preset-image-builder-ado-token: "true"
             volumes:
               - name: config
                 configMapName: kaniko-build-config
-              - name: signify-secret
-                secretName: signify-dev-secret
             volumeMounts:
               - name: config
                 mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
                 readOnly: true
           limits:
             limits_memory: 3Gi
@@ -53,6 +49,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -65,8 +62,6 @@ templates:
                   annotations:
                     owner: otters
                     description: keda module build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -74,6 +69,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - '--tag=$(PULL_BASE_SHA)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -88,14 +84,13 @@ templates:
                     owner: otters
                     description: Job to build keda module for a release.
                   always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                   branches:
                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
