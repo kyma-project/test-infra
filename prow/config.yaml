@@ -431,6 +431,7 @@ tide:
     kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
     kyma-project/nats-manager: squash
+    kyma-project/docker-registry: squash
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
@@ -439,7 +440,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash
     kyma-incubator/migrate: squash
-    kyma-incubator/docker-registry: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr
