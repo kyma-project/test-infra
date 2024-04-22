@@ -11,8 +11,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -36,6 +36,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=docker/admission/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -62,8 +63,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -87,6 +88,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=docker/operator/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi

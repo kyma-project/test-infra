@@ -18,11 +18,14 @@ templates:
                   annotations:
                     owner: otters
                     description: Warden admission build job
+                  labels:
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -36,7 +39,7 @@ templates:
                     owner: otters
                     description: Warden admission build job
                   labels:
-                    preset-signify-prod-secret: "true"
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -44,6 +47,7 @@ templates:
                     - "--dockerfile=docker/admission/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -57,11 +61,14 @@ templates:
                   annotations:
                     owner: otters
                     description: Warden operator build job
+                  labels:
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -75,7 +82,7 @@ templates:
                     owner: otters
                     description: Warden operator build job
                   labels:
-                    preset-signify-prod-secret: "true"
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -83,6 +90,7 @@ templates:
                     - "--dockerfile=docker/operator/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -94,7 +102,7 @@ templates:
         localSets:
           release_image_build:
             labels:
-              preset-signify-prod-secret: "true"
+              preset-image-builder-ado-token: "true"
             always_run: true
             branches:
               - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
@@ -113,6 +121,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -131,6 +140,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
