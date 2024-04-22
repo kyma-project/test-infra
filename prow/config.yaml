@@ -1287,7 +1287,7 @@ presets:
   - labels:
       preset-image-builder-ado-token: "true"
     env:
-      - name: ADO_TOKEN
+      - name: ADO_PAT
         valueFrom:
           secretKeyRef:
             name: image-builder-ado-token
