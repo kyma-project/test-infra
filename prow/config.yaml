@@ -361,16 +361,10 @@ branch-protection:
           unmanaged: true
         warden:
           unmanaged: true
+        docker-registry:
+          unmanaged: true
         application-connector-manager:
-          required_status_checks:
-            contexts:
-              - "golangci-lint"
-              - "run-cra-k3d"
-              - "test"
-              - "markdown-link-check"
-              - "integration-tests"
-              - "govuln"
-              - "build"
+          unmanaged: true
 
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
@@ -437,6 +431,7 @@ tide:
     kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
     kyma-project/nats-manager: squash
+    kyma-project/docker-registry: squash
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
@@ -1293,7 +1288,7 @@ presets:
   - labels:
       preset-image-builder-ado-token: "true"
     env:
-      - name: ADO_TOKEN
+      - name: ADO_PAT
         valueFrom:
           secretKeyRef:
             name: image-builder-ado-token

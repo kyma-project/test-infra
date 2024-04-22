@@ -1,0 +1,98 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/docker-registry/docker-registry-build-operator.yaml
+        localSets:
+          job_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|^examples/'
+        jobConfigs:
+          - repoName: kyma-project/docker-registry
+            jobs:
+              - jobConfig:
+                  name: pre-docker-registry-operator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  annotations:
+                    owner: otters
+                    description: docker-registry operator image build
+                  labels:
+                    preset-image-builder-ado-token: "true"
+                  command: /image-builder
+                  args:
+                    - --name=dockerregistry-operator
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/operator/Dockerfile
+                    - --build-arg=PURPOSE=dev
+                    - --build-arg=IMG_DIRECTORY=dev
+                    - --build-arg=IMG_VERSION=PR-$(PULL_NUMBER)
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - image-builder-buildkit
+                  local:
+                    - job_branches
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-docker-registry-operator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  annotations:
+                    owner: otters
+                    description: build docker-registry operator
+                  labels:
+                    preset-image-builder-ado-token: "true"
+                  command: /image-builder
+                  args:
+                    - --name=dockerregistry-operator
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/operator/Dockerfile
+                    - --build-arg=PURPOSE=dev
+                    - --build-arg=IMG_DIRECTORY=prod
+                    - --build-arg=IMG_VERSION=$(PULL_BASE_SHA)
+                    - --tag=$(PULL_BASE_SHA)
+                    - --tag=$(PULL_BASE_REF)
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - job_branches
+                    - skip_if_only_changed_documentation
+      - to: ../../prow/jobs/kyma-project/docker-registry/docker-registry-release.yaml
+        localSets:
+          release_image_build:
+            labels:
+              preset-image-builder-ado-token: "true"
+            always_run: true
+            branches:
+              - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+        jobConfigs:
+          - repoName: kyma-project/docker-registry
+            jobs:
+              - jobConfig:
+                  name: release-docker-registry-operator-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+                  annotations:
+                    owner: otters
+                    description: Job to build docker-registry operator for a release.
+                  command: /image-builder
+                  args:
+                    - --name=dockerregistry-operator
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/operator/Dockerfile
+                    - --build-arg=PURPOSE=release
+                    - --tag=$(PULL_BASE_REF)
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - release_image_build

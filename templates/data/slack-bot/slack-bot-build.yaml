@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: merge-slack-bot-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240415-953f1052"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
                   annotations:
                     owner: "gopher"
                     description: "gopher Bot build pipeline"

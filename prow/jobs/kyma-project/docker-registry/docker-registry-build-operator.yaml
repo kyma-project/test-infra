@@ -2,41 +2,54 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/btp-manager:
-    - name: pull-btp-manager-build
+  kyma-project/docker-registry:
+    - name: pre-docker-registry-operator-build
       annotations:
-        description: "BTP Manager image build on PR"
-        owner: "gopher"
+        description: "docker-registry operator image build"
+        owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-btp-manager-build"
+        prow.k8s.io/pubsub.runID: "pre-docker-registry-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
-              - "--name=btp-manager"
+              - "--name=dockerregistry-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
+              - "--build-arg=IMG_DIRECTORY=dev"
+              - "--build-arg=IMG_VERSION=PR-$(PULL_NUMBER)"
+              - "--build-in-ado=true"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
                 readOnly: true
@@ -44,6 +57,7 @@ presubmits: # runs on PRs
                 mountPath: /secret
                 readOnly: true
         volumes:
+          - name: share
           - name: config
             configMap:
               name: kaniko-build-config
@@ -52,45 +66,56 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/btp-manager:
-    - name: post-btp-manager-build
+  kyma-project/docker-registry:
+    - name: post-docker-registry-operator-build
       annotations:
-        description: "BTP Manager image build on main"
-        owner: "gopher"
+        description: "build docker-registry operator"
+        owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-btp-manager-build"
+        prow.k8s.io/pubsub.runID: "post-docker-registry-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
-              - "--name=btp-manager"
-              - "--context=."
-              - "--dockerfile=Dockerfile"
+              - "--name=dockerregistry-operator"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+              - "--context=."
+              - "--dockerfile=components/operator/Dockerfile"
+              - "--build-arg=PURPOSE=dev"
+              - "--build-arg=IMG_DIRECTORY=prod"
+              - "--build-arg=IMG_VERSION=$(PULL_BASE_SHA)"
+              - "--tag=$(PULL_BASE_SHA)"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
                 readOnly: true
@@ -98,6 +123,7 @@ postsubmits: # runs on main
                 mountPath: /secret
                 readOnly: true
         volumes:
+          - name: share
           - name: config
             configMap:
               name: kaniko-build-config
