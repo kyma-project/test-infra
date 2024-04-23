@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"os"
+
 	tioidc "github.com/kyma-project/test-infra/pkg/github/oidc"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -106,7 +109,7 @@ func (opts *options) extractClaims() error {
 		return err
 	}
 
-	tokenProcessor, err := tioidc.NewTokenProcessor(sugaredLogger, opts.token, *verifyConfig)
+	tokenProcessor, err := tioidc.NewTokenProcessor(sugaredLogger, tioidc.TrustedOIDCIssuers, opts.token, *verifyConfig)
 	if err != nil {
 		return err
 	}
@@ -122,9 +125,21 @@ func (opts *options) extractClaims() error {
 		return err
 	}
 
-	if tokenProcessor
-		claims := tioidc.GithubClaims{}
+	claims, err := tokenProcessor.NewClaims()
+	if err != nil {
+		return err
+	}
 	err = tokenProcessor.Claims(&claims)
+	if err != nil {
+		return err
+	}
+	// TODO: verify claims values against expected values
+
+	// write claims to file
+	file, _ := os.Create(opts.outputPath)
+	defer file.Close()
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(&claims)
 	if err != nil {
 		return err
 	}
