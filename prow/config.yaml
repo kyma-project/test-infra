@@ -492,6 +492,16 @@ tide:
             skip-unknown-contexts: true
           btp-manager:
             skip-unknown-contexts: true
+          serverless:
+            skip-unknown-contexts: true
+          keda-manager:
+            skip-unknown-contexts: true
+          cli:
+            skip-unknown-contexts: true
+          warden:
+            skip-unknown-contexts: true
+          docker-registry:
+            skip-unknown-contexts: true
 
 presets:
   - labels:
