@@ -224,6 +224,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		return nil, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
 	}
 	templateParameters.SetBaseSHA(baseSHA)
+	templateParameters.SetShortBaseSHA(baseSHA)
 
 	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
 	if present {

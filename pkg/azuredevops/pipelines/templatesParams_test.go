@@ -44,6 +44,31 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["PullBaseSHA"]).To(Equal("abc"))
 	})
 
+	It("sets the correct ShortBaseSHA", func() {
+		sha := "abc"
+		params.SetBaseSHA(sha)
+		params.SetShortBaseSHA(sha)
+		Expect(params["PullBaseSHA"]).To(Equal(sha))
+		Expect(params["ShortBaseSHA"]).To(Equal(sha))
+	})
+
+	It("sets the correct ShortBaseSHA", func() {
+		sha := "abcdef"
+		params.SetBaseSHA(sha)
+		params.SetShortBaseSHA(sha)
+		Expect(params["PullBaseSHA"]).To(Equal(sha))
+		Expect(params["ShortBaseSHA"]).To(Equal(sha))
+	})
+
+	It("sets the correct ShortBaseSHA", func() {
+		sha := "abcdefghi"
+		shortSHA := "abcdef"
+		params.SetBaseSHA(sha)
+		params.SetShortBaseSHA(sha)
+		Expect(params["PullBaseSHA"]).To(Equal(sha))
+		Expect(params["ShortBaseSHA"]).To(Equal(shortSHA))
+	})
+
 	It("sets the correct PullSHA", func() {
 		params.SetPullSHA("def")
 		Expect(params["PullPullSHA"]).To(Equal("def"))

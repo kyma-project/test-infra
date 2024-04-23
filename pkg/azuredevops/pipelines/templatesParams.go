@@ -54,6 +54,19 @@ func (p OCIImageBuilderTemplateParams) SetBaseSHA(sha string) {
 	p["PullBaseSHA"] = sha
 }
 
+// SetShortBaseSHA sets a shortened version of BaseSHA.
+// It only takes the first 6 characters of the SHA string.
+// This shortened SHA can be used for more concise identifiers in the pipeline.
+func (p OCIImageBuilderTemplateParams) SetShortBaseSHA(sha string) {
+	// Check if the SHA length is at least 6 characters.
+	if len(sha) >= 6 {
+		p["ShortBaseSHA"] = sha[:6]
+	} else {
+		// If the SHA is shorter than 6 characters, use the entire SHA.
+		p["ShortBaseSHA"] = sha
+	}
+}
+
 // SetPullSHA sets optional parameter PullSHA.
 // This is the pull request head commit SHA with source code for building image for tests.
 func (p OCIImageBuilderTemplateParams) SetPullSHA(sha string) {
