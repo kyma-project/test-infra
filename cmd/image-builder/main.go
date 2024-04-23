@@ -52,11 +52,6 @@ type options struct {
 	parseTagsOnly         bool
 }
 
-const (
-	PlatformLinuxAmd64 = "linux/amd64"
-	PlatformLinuxArm64 = "linux/arm64"
-)
-
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
 func parseVariable(key, value string) string {
@@ -378,17 +373,12 @@ func buildLocally(o options) error {
 	var variant Variants
 	var envs map[string]string
 
-	// Get the absolute path to the build context directory.
-	context, err := filepath.Abs(o.context)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
 	// 		We should call this function before calling image building functions.
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
-
+	dockerfilePath, err := getDockerfilePath(o)
+	if err != nil {
+		return fmt.Errorf("get dockerfile path failed, error: %w", err)
+	}
 	// Load environment variables from the envFile or variants.yaml file.
 	if len(o.envFile) > 0 {
 		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
@@ -779,6 +769,19 @@ func main() {
 
 	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.parseTagsOnly {
+		dockerfilePath, err := getDockerfilePath(o)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		// Load environment variables from the envFile.
+		if len(o.envFile) > 0 {
+			_, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 		var sha, pr string
 		if o.isCI {
 			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
@@ -826,4 +829,15 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func getDockerfilePath(o options) (string, error) {
+	// Get the absolute path to the build context directory.
+	context, err := filepath.Abs(o.context)
+	if err != nil {
+		return "", fmt.Errorf("could not get absolute path to build context directory: %w", err)
+	}
+	// Get the absolute path to the dockerfile.
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
+	return dockerfilePath, err
 }
