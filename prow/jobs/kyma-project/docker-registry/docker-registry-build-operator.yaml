@@ -36,9 +36,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/operator/Dockerfile"
-              - "--build-arg=PURPOSE=dev"
-              - "--build-arg=IMG_DIRECTORY=dev"
-              - "--build-arg=IMG_VERSION=PR-$(PULL_NUMBER)"
               - "--build-in-ado=true"
             env:
               - name: BUILDKITD_FLAGS
@@ -100,9 +97,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/operator/Dockerfile"
-              - "--build-arg=PURPOSE=dev"
-              - "--build-arg=IMG_DIRECTORY=prod"
-              - "--build-arg=IMG_VERSION=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_REF)"
               - "--build-in-ado=true"

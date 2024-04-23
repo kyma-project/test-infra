@@ -26,9 +26,6 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile
-                    - --build-arg=PURPOSE=dev
-                    - --build-arg=IMG_DIRECTORY=dev
-                    - --build-arg=IMG_VERSION=PR-$(PULL_NUMBER)
                     - --build-in-ado=true
                 inheritedConfigs:
                   global:
@@ -51,9 +48,6 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile
-                    - --build-arg=PURPOSE=dev
-                    - --build-arg=IMG_DIRECTORY=prod
-                    - --build-arg=IMG_VERSION=$(PULL_BASE_SHA)
                     - --tag=$(PULL_BASE_SHA)
                     - --tag=$(PULL_BASE_REF)
                     - --build-in-ado=true
@@ -87,7 +81,6 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile
-                    - --build-arg=PURPOSE=release
                     - --tag=$(PULL_BASE_REF)
                     - --build-in-ado=true
                 inheritedConfigs:
