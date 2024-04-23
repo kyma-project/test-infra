@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pre-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -32,7 +32,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -68,7 +67,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -81,7 +80,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -117,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -130,7 +128,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -166,7 +163,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -214,7 +211,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: true
               seccompProfile:
@@ -227,7 +224,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -268,7 +264,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -281,7 +277,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -319,7 +314,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -332,7 +327,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
             env:
               - name: "ADO_PAT"
@@ -360,7 +354,7 @@ postsubmits: # runs on main
     - name: post-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-cloudsql-proxy"
@@ -374,7 +368,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -387,7 +381,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -425,7 +418,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -438,7 +431,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
@@ -480,7 +472,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -493,7 +485,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -531,7 +522,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -580,7 +571,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: true
               seccompProfile:
@@ -593,7 +584,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
@@ -640,7 +630,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -653,7 +643,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
             env:
@@ -696,7 +685,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             securityContext:
               privileged: false
               seccompProfile:
@@ -709,7 +698,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
               - "--build-in-ado=true"
               - "--tag={{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}"
             env:

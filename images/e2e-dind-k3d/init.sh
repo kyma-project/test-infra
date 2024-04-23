@@ -28,7 +28,7 @@ if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
   dockerd --data-root=/docker-graph > "${LOG_DIR}/dockerd.log" 2>&1 &
   DOCKER_PID=$!
   echo "⏳  Waiting for Docker to be up..."
-  while [[ $(curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1) != "OK" ]]; do
+  while ! curl -s --unix-socket /var/run/docker.sock http/_ping >/dev/null 2>&1; do
     sleep 1
   done
   echo "✅  Docker is up! Docker info available in ${ARTIFACTS}/docker-info.log"

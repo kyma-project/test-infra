@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
       - name: hook
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/hook:v20240408-838d843f
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/hook:v20240415-84bac99b
         imagePullPolicy: Always
         args:
         - --dry-run=false

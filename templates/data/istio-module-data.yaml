@@ -15,7 +15,7 @@ templates:
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240409-55d111d1"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -43,13 +43,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240410-8ea62511"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240418-a140d225"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240410-8ea62511"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240418-a140d225"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -70,6 +70,31 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=$(PULL_BASE_REF)"
                     - "--build-arg=VERSION=$(PULL_BASE_REF)"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_slack_goat
+                  local:
+                    - job_default
+                    - job_build
+              - jobConfig:
+                  name: rel-istio-experimental-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds istio operator experimental image on release
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=istio-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)-experimental"
+                    - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
+                    - "--build-arg=GO_BUILD_TAGS=experimental"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -112,6 +137,32 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-arg=VERSION=$(PULL_BASE_REF)"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_slack_goat
+                  local:
+                    - job_default
+                    - job_build
+                    - job_skip_config
+              - jobConfig:
+                  name: post-istio-operator-experimental-build
+                  annotations:
+                    owner: goat
+                    description: build istio operator experimental image
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=istio-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=$(PULL_BASE_SHA)-experimental"
+                    - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
+                    - "--build-arg=GO_BUILD_TAGS=experimental"
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+$

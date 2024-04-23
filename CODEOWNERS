@@ -73,6 +73,7 @@
 /prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/serverless @kyma-project/otters @neighbors-dev-bot
+/prow/jobs/kyma-project/docker-registry @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
@@ -80,7 +81,7 @@
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/kyma-project/test-infra @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/goat @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/operations @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
 
 /prow/scripts @kyma-project/prow @neighbors-dev-bot
 
