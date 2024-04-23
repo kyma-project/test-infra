@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240418-a140d225
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240422-e056c652
             securityContext:
               privileged: true
               seccompProfile:
