@@ -18,6 +18,7 @@ import (
 	"time"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
+	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -337,6 +338,11 @@ func buildInADO(o options) error {
 		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 	} else {
 		fmt.Printf("ADO pipeline image build logs:\n%s", logs)
+	}
+
+	// if run in github actions, set output parameters
+	if o.ciSystem == GithubActions {
+		actions.SetOutput("adoResult", string(*pipelineRunResult))
 	}
 
 	// Handle the ADO pipeline run failure.
