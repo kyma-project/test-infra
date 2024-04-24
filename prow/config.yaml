@@ -307,6 +307,7 @@ branch-protection:
               - "run-go-linter"
           exclude:
             - "^sec-scanners-config-"
+            - "^sm-integration$"
         template-operator:
           required_status_checks:
             contexts:

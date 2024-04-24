@@ -14,15 +14,18 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden admission build job
+                  labels:
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -31,12 +34,12 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden admission build job
                   labels:
-                    preset-signify-prod-secret: "true"
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -44,6 +47,7 @@ templates:
                     - "--dockerfile=docker/admission/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -53,15 +57,18 @@ templates:
                     - post_branches
               - jobConfig:
                   name: pre-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden operator build job
+                  labels:
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -70,12 +77,12 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden operator build job
                   labels:
-                    preset-signify-prod-secret: "true"
+                    preset-image-builder-ado-token: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -83,6 +90,7 @@ templates:
                     - "--dockerfile=docker/operator/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -94,7 +102,7 @@ templates:
         localSets:
           release_image_build:
             labels:
-              preset-signify-prod-secret: "true"
+              preset-image-builder-ado-token: "true"
             always_run: true
             branches:
               - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
@@ -103,7 +111,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-warden-admission-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden admission build for a release.
@@ -113,6 +121,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -121,7 +130,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-warden-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Warden operator build for a release.
@@ -131,6 +140,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
