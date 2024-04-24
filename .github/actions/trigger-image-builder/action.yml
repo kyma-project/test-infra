@@ -1,5 +1,5 @@
-name: 'Trigger ADO Image Builder'
-description: 'Triggers the run of the ADO image builder backend'
+name: "Trigger ADO Image Builder"
+description: "Triggers the run of the ADO image builder backend"
 inputs:
   oidc-token:
     description: The JWT token to authenticate against Azure DevOps image builder backend
@@ -22,8 +22,11 @@ inputs:
     description: Prevent actual triggering the image builder
     required: false
     default: false
+outputs:
+  adoResult:
+    description: The result of the ADO pipeline execution
 runs:
-  using: 'docker'
+  using: "docker"
   image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   args:
     - "--name=${{ inputs.image-name }}"
