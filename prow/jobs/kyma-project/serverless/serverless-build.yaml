@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
@@ -19,11 +20,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -39,6 +36,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -65,6 +63,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
@@ -73,11 +72,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -93,6 +88,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -119,6 +115,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
@@ -127,11 +124,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -147,6 +140,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -176,8 +170,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
@@ -185,11 +179,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -207,6 +197,7 @@ postsubmits: # runs on main
               - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -233,8 +224,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
@@ -242,11 +233,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -264,6 +251,7 @@ postsubmits: # runs on main
               - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -290,8 +278,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
@@ -299,11 +287,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
@@ -321,6 +305,7 @@ postsubmits: # runs on main
               - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
