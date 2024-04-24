@@ -4,15 +4,15 @@ on:
   workflow_call:
     inputs:
       repository:
-        description: 'Repository to check out'
+        description: "Repository to check out"
         required: true
         type: string
       ref:
-        description: 'Ref to check out'
+        description: "Ref to check out"
         required: true
         type: string
       test:
-        description: 'Testing configuration'
+        description: "Testing configuration"
         required: false
         type: boolean
         default: false
@@ -21,11 +21,10 @@ jobs:
   get_oidc_token_job:
     permissions:
       id-token: write # This is required for requesting the JWT token
-      contents: read  # This is required for actions/checkout
+      contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
-
       - name: Checkout repository based on test flag
         uses: actions/checkout@v4
         with:
@@ -39,9 +38,16 @@ jobs:
       - run: env
       - run: cat $GITHUB_EVENT_PATH
       - uses: ./.github/actions/trigger-image-builder
+        id: build
         name: Run build in image-builder
         with:
           oidc-token: ${{ steps.get_oidc.outputs.jwt }}
           ado-token: ${{ secrets.ADO_PAT }}
           image-name: test-infra/ginkgo
           dockerfile: prow/images/ginkgo/Dockerfile
+      - run: echo ${{ steps.build.outputs }}
+        name: Show outputs
+      - run: echo ${{ steps.build.conclusion }}
+        name: Show conclusion
+      - run: echo ${{ steps.build.outcome }}
+        name: Show outcome
