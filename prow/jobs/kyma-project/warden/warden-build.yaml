@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|\.md$'
       skip_report: false
@@ -32,6 +33,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/admission/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -58,6 +60,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|\.md$'
       skip_report: false
@@ -79,6 +82,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/operator/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -108,8 +112,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|\.md$'
       skip_report: false
       decorate: true
@@ -135,6 +139,7 @@ postsubmits: # runs on main
               - "--dockerfile=docker/admission/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -161,8 +166,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|\.md$'
       skip_report: false
       decorate: true
@@ -188,6 +193,7 @@ postsubmits: # runs on main
               - "--dockerfile=docker/operator/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
