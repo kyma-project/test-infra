@@ -106,6 +106,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-ginkgo"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^prow/images/ginkgo/'
       skip_report: false
       decorate: true
@@ -257,6 +258,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-build-ginkgo"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^prow/images/ginkgo/'
       skip_report: false
       decorate: true
