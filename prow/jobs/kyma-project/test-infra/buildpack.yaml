@@ -134,7 +134,8 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/ginkgo/Dockerfile"
-              - "--build-in-ado=true"
+              - "--env-file=.env"
+              - "--build-in-ado=false"
             resources:
               requests:
                 memory: 1.5Gi
@@ -284,7 +285,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/ginkgo/Dockerfile"
-              - "--build-in-ado=true"
+              - "--env-file=.env"
+              - "--build-in-ado=false"
             resources:
               requests:
                 memory: 1.5Gi
