@@ -1,0 +1,14 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      runtime-watcher:
+        prNumber: 260
+  prowJobs:
+    kyma-project:
+      runtime-watcher:
+        - pjName: "pull-runtime-watcher-img-build"
+        - pjName: "main-runtime-watcher-build"
+prConfigs: #
+  kyma-project:
+    runtime-watcher:
+      prNumber: 260
