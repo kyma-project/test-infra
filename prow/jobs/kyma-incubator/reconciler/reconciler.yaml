@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240424-c7490147"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240424-733411c3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240424-c7490147"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240424-733411c3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -227,7 +227,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240424-c7490147"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240424-733411c3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -425,7 +425,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240424-c7490147"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240424-733411c3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -481,7 +481,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240424-c7490147"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240424-733411c3"
             securityContext:
               privileged: false
               seccompProfile:
