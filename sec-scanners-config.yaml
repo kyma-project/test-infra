@@ -5,7 +5,7 @@ protecode:
     - europe-docker.pkg.dev/gardener-project/releases/ci-infra/cla-assistant:v20240412-d22f4bf
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
-    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240423-031a88bf
+    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240415-84bac99b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240415-84bac99b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240415-84bac99b
@@ -19,7 +19,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240415-84bac99b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240415-84bac99b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240409-6f069a82
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240424-dd7bc06c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240402-b7e8aa8b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240423-0efa1b1d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240423-0efa1b1d
