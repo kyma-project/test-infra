@@ -259,6 +259,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-build-ginkgo"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/ginkgo/'
       skip_report: false
       decorate: true
@@ -289,6 +290,7 @@ postsubmits: # runs on main
               - "--dockerfile=prow/images/ginkgo/Dockerfile"
               - "--env-file=.env"
               - "--build-in-ado=false"
+              - "--tag={{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
                 memory: 1.5Gi
