@@ -341,8 +341,8 @@ branch-protection:
         runtime-watcher:
           required_status_checks:
             contexts:
-              - "E2E (watcher-enqueue)"
-              - "E2E (watcher-metrics)"
+            - "E2E (watcher-enqueue)"
+            - "E2E (watcher-metrics)"
         cli:
           required_status_checks:
             contexts:
@@ -382,6 +382,9 @@ branch-protection:
           branches:
             main:
               protect: true
+              required_status_checks:
+                # Require PR branch to be up-to-date with main
+                strict: true
         compass-console:
           protect: false
           branches:
@@ -392,6 +395,9 @@ branch-protection:
           branches:
             main:
               protect: true
+              required_status_checks:
+                # Require PR branch to be up-to-date with main
+                strict: true
         reconciler:
           protect: false
           branches:
@@ -472,8 +478,20 @@ tide:
         - do-not-merge/invalid-owners-file
         - do-not-merge/invalid-commit-message
       repos:
-        - kyma-incubator/compass
         - kyma-project/k8s-prow
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+        - approved
+        - ok-tested
+      missingLabels:
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-incubator/compass
+        - kyma-incubator/ord-service
       reviewApprovedRequired: true
     # special query for automations
     - labels:
