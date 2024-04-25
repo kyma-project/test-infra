@@ -123,11 +123,10 @@ label:
     - Epic
 
 size:
-  s: 10
-  m: 30
-  l: 100
-  xl: 500
-  xxl: 1000
+  s:   10
+  m:   30
+  l:   100
+  xl:  500
 
 blunderbuss:
   max_request_count: 2
