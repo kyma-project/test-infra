@@ -341,8 +341,8 @@ branch-protection:
         runtime-watcher:
           required_status_checks:
             contexts:
-            - "E2E (watcher-enqueue)"
-            - "E2E (watcher-metrics)"
+              - "E2E (watcher-enqueue)"
+              - "E2E (watcher-metrics)"
         cli:
           required_status_checks:
             contexts:
@@ -383,7 +383,7 @@ branch-protection:
             main:
               protect: true
               required_status_checks:
-                # Require PR branch to be up-to-date
+                # Require PR branch to be up-to-date with main
                 strict: true
         compass-console:
           protect: false
@@ -395,6 +395,9 @@ branch-protection:
           branches:
             main:
               protect: true
+              required_status_checks:
+                # Require PR branch to be up-to-date with main
+                strict: true
         reconciler:
           protect: false
           branches:
@@ -488,6 +491,7 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-incubator/compass
+        - kyma-incubator/ord-service
       reviewApprovedRequired: true
     # special query for automations
     - labels:
