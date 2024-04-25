@@ -237,7 +237,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetUseKanikoConfigFromPR(options.testKanikoBuildConfig)
 
-	// TODO(Sawthis): Add build args from env file
 	dockerfilePath, err := getDockerfilePath(options)
 	if err != nil {
 		fmt.Println(err)
