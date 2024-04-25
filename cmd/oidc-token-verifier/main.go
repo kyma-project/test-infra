@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"os"
 
-	tioidc "github.com/kyma-project/test-infra/pkg/github/oidc"
+	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"golang.org/x/net/context"
 )
 
 // Cobra root command for the OIDC claim extractor
-// Path: cmd/oidc/main.go
+// Path: cmd/oidc-token-verifier/main.go
 
 type options struct {
 	token                string
@@ -54,7 +54,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-public-keys-var-name", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
+	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-public-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
 	err = rootCmd.MarkPersistentFlagRequired("new-public-keys-var-name")
 	if err != nil {
 		panic(err)
@@ -129,7 +129,7 @@ func (opts *options) extractClaims() error {
 	if err != nil {
 		return err
 	}
-	err = tokenProcessor.Claims(&claims)
+	err = tokenProcessor.Claims(claims)
 	if err != nil {
 		return err
 	}

@@ -64,7 +64,7 @@ type GithubClaims struct {
 	RunID           string `json:"run_id,omitempty" yaml:"run_id,omitempty"`
 }
 
-type VerifierConfigOptions func(config *oidc.Config) error
+type VerifierConfigOption func(config *oidc.Config) error
 
 func NewTokenProcessor(logger loggerInterface, trustedIssuers map[string]Issuer, rawToken string, config oidc.Config, options ...TokenProcessorOption) (*TokenProcessor, error) {
 	logger.Infow("Creating token processor")
@@ -86,10 +86,10 @@ func NewTokenProcessor(logger loggerInterface, trustedIssuers map[string]Issuer,
 		return nil, fmt.Errorf("failed to get issuer from token: %w", err)
 	}
 	if !tokenProcessor.isTrustedIssuer(issuer, trustedIssuers) {
-		return nil, fmt.Errorf("issuer is not trusted")
+		return nil, fmt.Errorf("%s issuer is not trusted", issuer)
 	}
 	tokenProcessor.issuer = issuer
-	tokenProcessor.logger.Infow("Added issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
+	logger.Infow("Added issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
 	logger.Debugw("Added issuer to token processor", "issuer", tokenProcessor.issuer)
 	for _, option := range options {
 		err := option(tokenProcessor)
@@ -118,7 +118,7 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 		return "", fmt.Errorf("failed to parse oidc token: %w", err)
 	}
 	logger.Debugw("Parsed oidc token")
-	err = parsedJWT.UnsafeClaimsWithoutVerification(claims)
+	err = parsedJWT.UnsafeClaimsWithoutVerification(&claims)
 	if err != nil {
 		return "", fmt.Errorf("failed to get claims from unverified token: %w", err)
 	}
@@ -129,6 +129,8 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 // isTrustedIssuer checks if the issuer is trusted.
 func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssuers map[string]Issuer) bool {
 	logger := tokenProcessor.logger
+	logger.Debugw("Checking if issuer is trusted", "issuer", issuer)
+	logger.Debugw("Trusted issuers", "trustedIssuers", trustedIssuers)
 	if _, exists := trustedIssuers[issuer]; exists {
 		logger.Debugw("Issuer is trusted", "issuer", issuer)
 		return true
@@ -143,7 +145,7 @@ func (tokenProcessor *TokenProcessor) NewClaims() (ClaimsInterface, error) {
 	switch issuer := tokenProcessor.issuer; issuer {
 	case GithubOIDCIssuer.IssuerURL:
 		logger.Debugw("Creating new GithubClaims", "issuer", tokenProcessor.issuer)
-		return GithubClaims{}, nil
+		return &GithubClaims{}, nil
 	default:
 		return nil, fmt.Errorf("unknown issuer: %s", issuer)
 	}
@@ -162,7 +164,7 @@ func (tokenProcessor *TokenProcessor) VerifyToken(ctx context.Context, verifier 
 }
 
 // TODO: rename this function
-func (tokenProcessor *TokenProcessor) Claims(claims *ClaimsInterface) error {
+func (tokenProcessor *TokenProcessor) Claims(claims ClaimsInterface) error {
 	err := tokenProcessor.token.Claims(claims)
 	if err != nil {
 		return fmt.Errorf("failed to get claims from token: %w", err)
@@ -170,7 +172,10 @@ func (tokenProcessor *TokenProcessor) Claims(claims *ClaimsInterface) error {
 	return nil
 }
 
-func NewVerifierConfig(logger loggerInterface, clientID string, options ...VerifierConfigOptions) (*oidc.Config, error) {
+func NewVerifierConfig(logger loggerInterface, clientID string, options ...VerifierConfigOption) (*oidc.Config, error) {
+	if clientID == "" {
+		return nil, fmt.Errorf("clientID is empty")
+	}
 	verifierConfig := &oidc.Config{
 		ClientID:                   clientID,
 		SkipClientIDCheck:          false,
