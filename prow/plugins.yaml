@@ -29,6 +29,10 @@ plugins:
     plugins:
       - approve
       - blunderbuss
+  kyma-incubator/ord-service:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-project/k8s-prow:
     plugins:
       - approve
@@ -123,6 +127,7 @@ size:
   m:   30
   l:   100
   xl:  500
+  xxl: 1000
 
 blunderbuss:
   max_request_count: 2
