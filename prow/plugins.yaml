@@ -29,10 +29,6 @@ plugins:
     plugins:
       - approve
       - blunderbuss
-  kyma-incubator/ord-service:
-    plugins:
-      - approve
-      - blunderbuss
   kyma-project/k8s-prow:
     plugins:
       - approve
