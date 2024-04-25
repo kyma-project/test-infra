@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
@@ -23,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
             securityContext:
               privileged: true
               seccompProfile:
@@ -39,7 +38,6 @@ presubmits: # runs on PRs
               - "--build-arg=PURPOSE=dev"
               - "--build-arg=IMG_DIRECTORY=dev"
               - "--build-arg=IMG_VERSION=PR-$(PULL_NUMBER)"
-              - "--build-in-ado=true"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -75,8 +73,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
@@ -87,7 +85,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
             securityContext:
               privileged: true
               seccompProfile:
@@ -105,7 +103,6 @@ postsubmits: # runs on main
               - "--build-arg=IMG_VERSION=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_REF)"
-              - "--build-in-ado=true"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
