@@ -2,7 +2,7 @@ pjConfigs:
   prConfig:
     kyma-project:
       lifecycle-manager:
-        prNumber: 1495
+        prNumber: 1504
   prowJobs:
     kyma-project:
       lifecycle-manager:
@@ -10,4 +10,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     lifecycle-manager:
-      prNumber: 1495
+      prNumber: 1504

@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -87,7 +87,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240418-1acf61bf"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
             securityContext:
               privileged: true
               seccompProfile:

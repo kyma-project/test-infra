@@ -19,7 +19,7 @@ templates:
                     description: "Validate scripts."
                   run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
                   command: "prow/scripts/validate-scripts.sh"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240423-27608dd7
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240425-81f8e21b
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
@@ -52,7 +52,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240423-27608dd7
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240425-81f8e21b
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
