@@ -6,6 +6,8 @@ templates:
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/'
           default:
+            labels:
+              preset-image-builder-ado-token: "true"
             branches:
               - main
               - release-*
@@ -23,6 +25,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -36,8 +39,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function controller build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -45,6 +46,7 @@ templates:
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -63,6 +65,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -76,8 +79,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function webhook build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-webhook"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -85,6 +86,7 @@ templates:
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -103,6 +105,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -116,8 +119,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function jobinit build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-build-init"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -125,6 +126,7 @@ templates:
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -134,6 +136,9 @@ templates:
                     - default
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
         localSets:
+          default:
+            labels:
+              preset-image-builder-ado-token: "true"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/'
           post_branches:
@@ -154,20 +159,20 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v18-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -175,6 +180,7 @@ templates:
                     - "--dockerfile=nodejs18/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -182,6 +188,7 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
                     - post_branches
+                    - default
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v20-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -194,12 +201,14 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs20/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v20-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -207,8 +216,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function nodej20 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-runtime-nodejs20"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -216,6 +223,7 @@ templates:
                     - "--dockerfile=nodejs20/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -223,6 +231,7 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
                     - post_branches
+                    - default
               - jobConfig:
                   name: pre-serverless-runtimes-python39-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -234,20 +243,20 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-runtimes-python39-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: function python3.9 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -255,6 +264,7 @@ templates:
                     - "--dockerfile=python39/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -262,6 +272,7 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
                     - post_branches
+                    - default
               - jobConfig:
                   name: pre-serverless-runtimes-python312-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -273,20 +284,20 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python312/Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-runtimes-python312-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: function python3.12 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-runtime-python312"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -294,6 +305,7 @@ templates:
                     - "--dockerfile=python312/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -301,6 +313,7 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
                     - post_branches
+                    - default
               - jobConfig:
                   name: pre-serverless-runtimes-java17-jvm-alpha-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -312,20 +325,20 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-runtimes-java17-jvm-alpha-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: function java 17 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -333,6 +346,7 @@ templates:
                     - "--dockerfile=Dockerfile-jvm-runtime"
                     - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -340,8 +354,12 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
                     - post_branches
+                    - default
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
         localSets:
+          default:
+            labels:
+              preset-image-builder-ado-token: "true"
           job_branches:
             branches:
               - "^main$"
@@ -353,7 +371,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: serverless operator image build
@@ -366,6 +384,7 @@ templates:
                     - --build-arg=PURPOSE=dev
                     - --build-arg=IMG_DIRECTORY=dev
                     - --build-arg=IMG_VERSION=PR-$(PULL_NUMBER)
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -373,14 +392,13 @@ templates:
                   local:
                     - job_branches
                     - skip_if_only_changed_documentation
+                    - default
               - jobConfig:
                   name: post-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: build serverless operator
-                  labels:
-                    preset-signify-prod-secret: "true"
                   command: /image-builder
                   args:
                     - --name=serverless-operator
@@ -392,6 +410,7 @@ templates:
                     - --build-arg=IMG_VERSION=$(PULL_BASE_SHA)
                     - --tag=$(PULL_BASE_SHA)
                     - --tag=$(PULL_BASE_REF)
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -399,8 +418,12 @@ templates:
                   local:
                     - job_branches
                     - skip_if_only_changed_documentation
+                    - default
       - to: ../../prow/jobs/kyma-project/serverless/serverless-release.yaml
         localSets:
+          default:
+            labels:
+              preset-image-builder-ado-token: "true"
           release_image_build:
             labels:
               preset-signify-prod-secret: "true"
@@ -412,7 +435,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
                   annotations:
                     owner: otters
                     description: Job to build serverless operator for a release.
@@ -424,12 +447,14 @@ templates:
                     - --dockerfile=components/operator/Dockerfile
                     - --build-arg=PURPOSE=release
                     - --tag=$(PULL_BASE_REF)
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-controller-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -442,12 +467,14 @@ templates:
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-webhook-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -460,12 +487,14 @@ templates:
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-jobinit-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -478,12 +507,14 @@ templates:
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v18-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -496,12 +527,14 @@ templates:
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v20-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -514,12 +547,14 @@ templates:
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs20/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-runtimes-python39-build-legacy
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -532,12 +567,14 @@ templates:
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-runtimes-python39-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -550,12 +587,14 @@ templates:
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
               - jobConfig:
                   name: release-serverless-runtimes-python312-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
@@ -568,13 +607,19 @@ templates:
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python312/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+                    - default
       - to: ../../prow/jobs/kyma-project/serverless/serverless-gitserver.yaml
+        localSets:
+          default:
+            labels:
+              preset-image-builder-ado-token: "true"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -589,20 +634,21 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
                     - "--dockerfile=tests/gitserver/Dockerfile"
+                    - "--build-in-ado=true"
                   run_if_changed: "^tests/gitserver/"
                   optional: "true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - default
               - jobConfig:
                   name: post-gitserver-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: gitserver build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/gitserver/"
                   args:
                     - "--name=gitserver"
@@ -611,7 +657,10 @@ templates:
                     - "--dockerfile=tests/gitserver/Dockerfile"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--tag=$(PULL_BASE_REF)"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - default
