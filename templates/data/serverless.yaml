@@ -371,7 +371,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: serverless operator image build
@@ -395,7 +395,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: build serverless operator
@@ -435,7 +435,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed"
                   annotations:
                     owner: otters
                     description: Job to build serverless operator for a release.
