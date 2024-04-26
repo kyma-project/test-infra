@@ -32,13 +32,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -47,10 +40,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-docker-registry
       annotations:
         description: "docker-registry tpi build job"
@@ -80,13 +79,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -95,10 +87,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-fluent-bit
       annotations:
         description: "Pre-submit job to build Fluent Bit image."
@@ -128,13 +126,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -143,10 +134,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
         description: "Build tpi/k8s-tools image."
@@ -176,13 +173,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=k8s-tools"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -191,10 +181,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-kaniko-executer
       annotations:
         description: "kaniko-executer tpi build job"
@@ -224,13 +220,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
             env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
             resources:
@@ -243,11 +233,17 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: share
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-otel-collector
       annotations:
         description: "Pre-submit job to build OpenTelemetry Collector image."
@@ -277,13 +273,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 6Gi
@@ -294,10 +283,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-telemetry-self-monitor
       annotations:
         description: "Pre-submit job to build Telemetry self-monitor image."
@@ -327,13 +322,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 6Gi
@@ -344,11 +332,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-  
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
 postsubmits: # runs on main
   kyma-project/third-party-images:
     - name: post-main-tpi-cloudsql-proxy
@@ -381,14 +374,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -397,10 +383,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-docker-registry
       annotations:
         description: "docker-registry tpi build job"
@@ -431,15 +423,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -448,10 +433,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-fluent-bit
       annotations:
         description: "Post-submit job to build Fluent Bit image."
@@ -485,14 +476,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -501,10 +485,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-k8s-tools
       annotations:
         description: "Build tpi/k8s-tools image."
@@ -535,13 +525,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=k8s-tools"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
@@ -550,10 +533,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-kaniko-executer
       annotations:
         description: "kaniko-executer tpi build job"
@@ -584,15 +573,9 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
             env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
             resources:
@@ -605,11 +588,17 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: share
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-otel-collector
       annotations:
         description: "Post-submit job to build OpenTelemetry Collector image."
@@ -643,14 +632,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 6Gi
@@ -661,10 +643,16 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-telemetry-self-monitor
       annotations:
         description: "Post-submit job to build Telemetry self-monitor image."
@@ -698,14 +686,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
-              - "--build-in-ado=true"
               - "--tag={{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 6Gi
@@ -716,8 +697,14 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
