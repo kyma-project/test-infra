@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      template-operator:
+        prNumber: 184
+  prowJobs:
+    kyma-project:
+      template-operator:
+        - pjName: "main-template-op-build"
+prConfigs: #
+  kyma-project:
+    template-operator:
+      prNumber: 184
