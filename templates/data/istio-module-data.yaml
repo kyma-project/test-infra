@@ -60,7 +60,7 @@ templates:
                     owner: goat
                     description: builds istio operator image on release
                   branches:
-                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+$'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -84,7 +84,7 @@ templates:
                     owner: goat
                     description: builds istio operator experimental image on release
                   branches:
-                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+-experimental$'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:

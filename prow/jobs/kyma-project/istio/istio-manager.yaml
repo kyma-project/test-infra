@@ -75,7 +75,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
@@ -131,7 +131,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+-experimental$
       reporter_config:
         slack:
           channel: goat-int
