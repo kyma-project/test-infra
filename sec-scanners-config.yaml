@@ -5,7 +5,6 @@ protecode:
     - europe-docker.pkg.dev/gardener-project/releases/ci-infra/cla-assistant:v20240412-d22f4bf
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
-    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240415-84bac99b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240415-84bac99b
