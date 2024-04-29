@@ -14,7 +14,7 @@ excludedConfigPaths:
 targetVersion: "latest"
 prefixes:
   - name: "Prow"
-    prefix: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/"
+    prefix: "gcr.io/k8s-prow/"
     repo: "https://github.com/kyma-project/k8s-prow"
     summarise: true
     consistentImages: true

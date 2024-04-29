@@ -6,19 +6,19 @@ protecode:
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240425-84f71fed
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/deck:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/gcsweb:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/hook:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/horologium:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/prow-controller-manager:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sinker:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240415-84bac99b
-    - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240415-84bac99b
+    - gcr.io/k8s-prow/branchprotector:v20240424-0a3188200
+    - gcr.io/k8s-prow/checkconfig:v20240424-0a3188200
+    - gcr.io/k8s-prow/crier:v20240424-0a3188200
+    - gcr.io/k8s-prow/deck:v20240424-0a3188200
+    - gcr.io/k8s-prow/gcsweb:v20240424-0a3188200
+    - gcr.io/k8s-prow/generic-autobumper:v20240424-0a3188200
+    - gcr.io/k8s-prow/ghproxy:v20240424-0a3188200
+    - gcr.io/k8s-prow/hook:v20240424-0a3188200
+    - gcr.io/k8s-prow/horologium:v20240424-0a3188200
+    - gcr.io/k8s-prow/prow-controller-manager:v20240424-0a3188200
+    - gcr.io/k8s-prow/sinker:v20240424-0a3188200
+    - gcr.io/k8s-prow/status-reconciler:v20240424-0a3188200
+    - gcr.io/k8s-prow/tide:v20240424-0a3188200
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240402-b7e8aa8b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240429-2b962f9e
