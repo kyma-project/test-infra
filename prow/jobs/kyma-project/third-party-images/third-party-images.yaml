@@ -229,8 +229,10 @@ presubmits: # runs on PRs
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -590,8 +592,10 @@ postsubmits: # runs on main
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
