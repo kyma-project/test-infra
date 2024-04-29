@@ -45,15 +45,15 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240403-aedd6af6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240409-6f069a82
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240429-6cc87544
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240429-6be5d736
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240429-6be5d736
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240429-2d7a39be
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240429-2d7a39be
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20240409-13cd3acf7e
     - maven:3.9.6-eclipse-temurin-17-alpine
