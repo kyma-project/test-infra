@@ -32,6 +32,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 1.5Gi
@@ -79,6 +80,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 1.5Gi
@@ -126,6 +128,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 1.5Gi
@@ -220,6 +223,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -273,6 +277,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 6Gi
@@ -322,6 +327,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
             resources:
               requests:
                 memory: 6Gi
@@ -374,6 +380,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
@@ -423,6 +430,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=docker-registry"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
             resources:
@@ -476,6 +484,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
@@ -573,6 +582,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
               - "--tag=$(PULL_BASE_REF)"
             env:
@@ -632,6 +642,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
@@ -686,6 +697,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=telemetry-self-monitor"
               - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
               - "--tag={{ .Env \"PROMETHEUS_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
