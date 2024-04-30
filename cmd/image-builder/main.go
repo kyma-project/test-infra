@@ -237,7 +237,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetUseKanikoConfigFromPR(options.testKanikoBuildConfig)
 
-	dockerfilePath, err := getDockerfilePath(options)
+	dockerfilePath, err := getDockerfileDirPath(options)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -389,7 +389,7 @@ func buildLocally(o options) error {
 
 	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
 	// 		We should call this function before calling image building functions.
-	dockerfilePath, err := getDockerfilePath(o)
+	dockerfilePath, err := getDockerfileDirPath(o)
 	if err != nil {
 		return fmt.Errorf("get dockerfile path failed, error: %w", err)
 	}
@@ -792,7 +792,7 @@ func main() {
 
 	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.parseTagsOnly {
-		dockerfilePath, err := getDockerfilePath(o)
+		dockerfilePath, err := getDockerfileDirPath(o)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -854,14 +854,22 @@ func main() {
 	fmt.Println("Job's done.")
 }
 
-func getDockerfilePath(o options) (string, error) {
+func getDockerfileDirPath(o options) (string, error) {
 	// Get the absolute path to the build context directory.
 	context, err := filepath.Abs(o.context)
 	if err != nil {
 		return "", fmt.Errorf("could not get absolute path to build context directory: %w", err)
 	}
 	// Get the absolute path to the dockerfile.
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
-	fmt.Printf("Dockerfile path: %s \n", dockerfilePath)
-	return dockerfilePath, err
+	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
+	fmt.Printf("Dockerfile path: %s \n", dockerfileDirPath)
+	// Print all files in the dockerfile directory.
+	entries, err := os.ReadDir(dockerfileDirPath)
+	if err != nil {
+		return "", fmt.Errorf("could not read dir: %w", err)
+	}
+	for _, e := range entries {
+		fmt.Println(e.Name())
+	}
+	return dockerfileDirPath, err
 }
