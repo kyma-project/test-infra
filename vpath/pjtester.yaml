@@ -8,6 +8,6 @@ pjConfigs:
       lifecycle-manager:
         - pjName: pull-lifecycle-mgr-build
 prConfigs:
-  lifecycle-manager:
-    kyma:
+  kyma-project:
+    lifecycle-manager:
       prNumber: 1504

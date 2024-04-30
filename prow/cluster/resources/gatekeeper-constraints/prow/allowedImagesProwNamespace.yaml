@@ -22,3 +22,4 @@ spec:
       - "europe-docker.pkg.dev/kyma-project"
       - "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev"
       - "europe-docker.pkg.dev/gardener-project/releases/ci-infra"
+      - "gcr.io/k8s-prow"

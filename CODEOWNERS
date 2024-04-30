@@ -65,7 +65,6 @@
 /prow/jobs/kyma-project/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot
 /prow/jobs/kyma-project/compass-manager @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/k8s-prow @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-project/warden @kyma-project/otters @neighbors-dev-bot
