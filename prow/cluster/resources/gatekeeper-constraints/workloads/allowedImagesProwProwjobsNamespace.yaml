@@ -23,3 +23,4 @@ spec:
       - "europe-docker.pkg.dev/kyma-project"
       - "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev"
       - "europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli"
+      - "gcr.io/k8s-prow"
