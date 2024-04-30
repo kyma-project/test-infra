@@ -88,7 +88,7 @@ templates:
           reconciler_publish_pr_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
           reconciler_e2e_image:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240429-2d7a39be
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240430-69fd3ee7
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
               runAsRoot: true
         jobConfigs:
@@ -135,7 +135,7 @@ templates:
                   annotations:
                     owner: jellyfish
                     description: pre publish reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240429-2d7a39be"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240430-69fd3ee7"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -256,7 +256,7 @@ templates:
                     - jobConfig_slack_jellyfish
               - jobConfig:
                   name: nightly-main-reconciler
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240429-2d7a39be
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240430-69fd3ee7
                   annotations:
                     owner: jellyfish
                     description: Creates and installs reconciler from main every night.
@@ -277,7 +277,7 @@ templates:
                   annotations:
                     owner: jellyfish
                     description: Executes e2e test periodically on nightly cluster for reconciler.
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240429-2d7a39be
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240430-69fd3ee7
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -313,7 +313,7 @@ templates:
                     - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240429-2d7a39be
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240430-69fd3ee7
                 inheritedConfigs:
                   global:
                     - jobConfig_default
