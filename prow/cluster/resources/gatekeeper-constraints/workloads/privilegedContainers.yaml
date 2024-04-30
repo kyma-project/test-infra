@@ -12,10 +12,10 @@ spec:
       - "default"
   parameters:
     exemptImages:
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:*"
+      - "gcr.io/k8s-prow/entrypoint:*"
+      - "gcr.io/k8s-prow/initupload:*"
+      - "gcr.io/k8s-prow/clonerefs:*"
+      - "gcr.io/k8s-prow/sidecar:*"
       - "aquasec/trivy:*"
       - "eu.gcr.io/kyma-project/test-infra/gardener-rotate:*"
       - "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
