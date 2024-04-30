@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      lifecycle-manager:
+        prNumber: 1504
+  prowJobs:
+    kyma-project:
+      lifecycle-manager:
+        - pjName: pull-lifecycle-mgr-build
+prConfigs:
+  lifecycle-manager:
+    kyma:
+      prNumber: 1504
