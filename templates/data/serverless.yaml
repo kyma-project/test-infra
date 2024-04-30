@@ -447,6 +447,7 @@ templates:
                     - --dockerfile=components/operator/Dockerfile
                     - --build-arg=PURPOSE=release
                     - --tag=$(PULL_BASE_REF)
+                    - --tag=$(PULL_BASE_SHA)
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
