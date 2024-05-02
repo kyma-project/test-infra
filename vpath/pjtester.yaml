@@ -1,13 +1,13 @@
 pjConfigs:
   prConfig:
     kyma-project:
-      lifecycle-manager:
-        prNumber: 1504
+      template-operator:
+        prNumber: 188
   prowJobs:
     kyma-project:
-      lifecycle-manager:
-        - pjName: pull-lifecycle-mgr-build
+      template-operator:
+        - pjName: pull-build-template-operator
 prConfigs:
   kyma-project:
-    lifecycle-manager:
-      prNumber: 1504
+    template-operator:
+      prNumber: 188
