@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240429-6cc87544"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
             securityContext:
               privileged: false
               seccompProfile:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240430-69fd3ee7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240501-a54a7cc0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -107,7 +107,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240430-69fd3ee7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240501-a54a7cc0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -152,7 +152,7 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240429-6cc87544"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
             securityContext:
               privileged: false
               seccompProfile:

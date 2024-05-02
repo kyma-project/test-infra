@@ -17,7 +17,7 @@ presubmits: # runs on PRs
         - ^release-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240430-69fd3ee7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240501-a54a7cc0"
             securityContext:
               privileged: false
               seccompProfile:
