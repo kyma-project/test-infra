@@ -143,7 +143,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240402-b7e8aa8b"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240503-13fb03d1"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
