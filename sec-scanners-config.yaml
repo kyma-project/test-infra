@@ -7,7 +7,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240402-b7e8aa8b
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240503-13fb03d1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240501-06c57925
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240501-06c57925
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240501-06c57925
