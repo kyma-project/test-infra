@@ -150,8 +150,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag=$(PULL_BASE_REF)-experimental"
-              - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--build-arg=VERSION=$(PULL_BASE_REF)"
               - "--build-arg=GO_BUILD_TAGS=experimental"
             resources:
               requests:
