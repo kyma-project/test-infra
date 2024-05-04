@@ -5,7 +5,7 @@ package oidcmocks
 import (
 	context "context"
 
-	oidc "github.com/coreos/go-oidc/v3/oidc"
+	oidc "github.com/kyma-project/test-infra/pkg/oidc"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -23,24 +23,22 @@ func (_m *MockTokenVerifierInterface) EXPECT() *MockTokenVerifierInterface_Expec
 }
 
 // Verify provides a mock function with given fields: _a0, _a1
-func (_m *MockTokenVerifierInterface) Verify(_a0 context.Context, _a1 string) (*oidc.IDToken, error) {
+func (_m *MockTokenVerifierInterface) Verify(_a0 context.Context, _a1 string) (oidc.Token, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Verify")
 	}
 
-	var r0 *oidc.IDToken
+	var r0 oidc.Token
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*oidc.IDToken, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (oidc.Token, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *oidc.IDToken); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) oidc.Token); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*oidc.IDToken)
-		}
+		r0 = ret.Get(0).(oidc.Token)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
@@ -71,12 +69,12 @@ func (_c *MockTokenVerifierInterface_Verify_Call) Run(run func(_a0 context.Conte
 	return _c
 }
 
-func (_c *MockTokenVerifierInterface_Verify_Call) Return(_a0 *oidc.IDToken, _a1 error) *MockTokenVerifierInterface_Verify_Call {
+func (_c *MockTokenVerifierInterface_Verify_Call) Return(_a0 oidc.Token, _a1 error) *MockTokenVerifierInterface_Verify_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokenVerifierInterface_Verify_Call) RunAndReturn(run func(context.Context, string) (*oidc.IDToken, error)) *MockTokenVerifierInterface_Verify_Call {
+func (_c *MockTokenVerifierInterface_Verify_Call) RunAndReturn(run func(context.Context, string) (oidc.Token, error)) *MockTokenVerifierInterface_Verify_Call {
 	_c.Call.Return(run)
 	return _c
 }

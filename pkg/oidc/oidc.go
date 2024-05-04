@@ -21,6 +21,10 @@ var (
 )
 
 type TokenVerifierInterface interface {
+	Verify(context.Context, string) (Token, error)
+}
+
+type Verifier interface {
 	Verify(context.Context, string) (*oidc.IDToken, error)
 }
 
@@ -28,11 +32,23 @@ type TokenInterface interface {
 	Claims(interface{}) error
 }
 
+type ClaimsReader interface {
+	Claims(interface{}) error
+}
+
+type ProviderInterface interface {
+	NewVerifier(VerifierConfig) TokenVerifier
+}
+
+type NewVerifier interface {
+	Verifier(*oidc.Config) *oidc.IDTokenVerifier
+}
+
 type ClaimsInterface interface {
 	Validate(e jwt.Expected) error
 }
 
-type loggerInterface interface {
+type LoggerInterface interface {
 	logging.StructuredLoggerInterface
 	logging.WithLoggerInterface
 }
@@ -43,18 +59,26 @@ type Issuer struct {
 	JWKSURL   string `json:"jwks_url" yaml:"jwks_url"`
 }
 
+type VerifierConfig struct {
+	oidc.Config
+}
+
 type TokenProcessor struct {
 	rawToken       string
-	token          TokenInterface
+	trustedIssuers map[string]Issuer
 	issuer         string
-	verifierConfig oidc.Config
-	logger         logging.StructuredLoggerInterface
+	verifierConfig VerifierConfig
+	logger         LoggerInterface
 }
 
 type TokenProcessorOption func(*TokenProcessor) error
 
-type GithubClaims struct {
+type Claims struct {
 	jwt.Claims
+	GithubClaims
+}
+
+type GithubClaims struct {
 	JobWorkflowRef  string `json:"job_workflow_ref,omitempty" yaml:"job_workflow_ref,omitempty"`
 	JobWorkflowSHA  string `json:"job_workflow_sha,omitempty" yaml:"job_workflow_sha,omitempty"`
 	Actor           string `json:"actor,omitempty" yaml:"actor,omitempty"`
@@ -64,16 +88,120 @@ type GithubClaims struct {
 	RunID           string `json:"run_id,omitempty" yaml:"run_id,omitempty"`
 }
 
-type VerifierConfigOption func(config *oidc.Config) error
+type VerifierConfigOption func(*VerifierConfig) error
 
-func NewTokenProcessor(logger loggerInterface, trustedIssuers map[string]Issuer, rawToken string, config oidc.Config, options ...TokenProcessorOption) (*TokenProcessor, error) {
+type Provider struct {
+	Provider NewVerifier
+	logger   LoggerInterface
+}
+
+type Token struct {
+	Token ClaimsReader
+}
+
+type TokenVerifier struct {
+	Verifier Verifier
+	Logger   LoggerInterface
+}
+
+func NewVerifierConfig(logger LoggerInterface, clientID string, options ...VerifierConfigOption) (VerifierConfig, error) {
+	if clientID == "" {
+		return VerifierConfig{}, fmt.Errorf("clientID is empty")
+	}
+
+	verifierConfig := VerifierConfig{}
+	verifierConfig.ClientID = clientID
+	verifierConfig.SkipClientIDCheck = false
+	verifierConfig.SkipExpiryCheck = false
+	verifierConfig.SkipIssuerCheck = false
+	verifierConfig.InsecureSkipSignatureCheck = false
+	verifierConfig.SupportedSigningAlgs = SupportedSigningAlgorithms
+
+	logger.Debugw("Created Verifier config with default values",
+		"clientID", clientID,
+		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
+		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
+		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
+		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
+		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+	)
+	logger.Debugw("Applying VerifierConfigOptions")
+	for _, option := range options {
+		err := option(&verifierConfig)
+		if err != nil {
+			return VerifierConfig{}, fmt.Errorf("failed to apply VerifierConfigOption: %w", err)
+		}
+	}
+	logger.Debugw("Applied all VerifierConfigOptions",
+		"clientID", clientID,
+		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
+		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
+		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
+		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
+		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+	)
+	return verifierConfig, nil
+}
+
+func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string) (Token, error) {
+	logger := tokenVerifier.Logger
+	logger.Infow("Verifying token")
+	logger.Debugw("Got raw token value", "rawToken", rawToken)
+	idToken, err := tokenVerifier.Verifier.Verify(ctx, rawToken)
+	if err != nil {
+		token := Token{}
+		return token, fmt.Errorf("failed to verify token: %w", err)
+	}
+	logger.Infow("Token verified successfully")
+	token := Token{
+		Token: idToken,
+	}
+	return token, nil
+}
+
+func (token *Token) Claims(claims interface{}) error {
+	return token.Token.Claims(claims)
+}
+
+func NewProviderFromDiscovery(ctx context.Context, logger LoggerInterface, issuer string) (Provider, error) {
+	logger.Debugw("Creating Provider using discovery",
+		"issuer", issuer,
+	)
+	provider, err := oidc.NewProvider(ctx, issuer)
+	if err != nil {
+		return Provider{}, fmt.Errorf("failed to create Provider using oidc discovery: %w", err)
+	}
+	newProvider := Provider{
+		Provider: provider,
+		logger:   logger,
+	}
+	logger.Debugw("Created Provider using oidc discovery")
+	return newProvider, nil
+}
+
+func (provider *Provider) NewVerifier(verifierConfig VerifierConfig) TokenVerifier {
+	logger := provider.logger
+	verifier := provider.Provider.Verifier(&verifierConfig.Config)
+	return TokenVerifier{
+		Verifier: verifier,
+		Logger:   logger,
+	}
+}
+
+func NewTokenProcessor(
+	logger LoggerInterface,
+	trustedIssuers map[string]Issuer,
+	rawToken string,
+	config VerifierConfig,
+	options ...TokenProcessorOption,
+) (TokenProcessor, error) {
 	logger.Infow("Creating token processor")
-	tokenProcessor := &TokenProcessor{}
+	tokenProcessor := TokenProcessor{}
 	tokenProcessor.logger = logger
 	tokenProcessor.rawToken = rawToken
 	logger.Debugw("Added raw token to token processor", "rawToken", rawToken)
 	tokenProcessor.verifierConfig = config
-	logger.Debugw("Added verifier config to token processor",
+	logger.Debugw("Added Verifier config to token processor",
 		"clientID", config.ClientID,
 		"SkipClientIDCheck", config.SkipClientIDCheck,
 		"SkipExpiryCheck", config.SkipExpiryCheck,
@@ -81,20 +209,23 @@ func NewTokenProcessor(logger loggerInterface, trustedIssuers map[string]Issuer,
 		"InsecureSkipSignatureCheck", config.InsecureSkipSignatureCheck,
 		"SupportedSigningAlgs", config.SupportedSigningAlgs,
 	)
+	tokenProcessor.trustedIssuers = trustedIssuers
 	issuer, err := tokenProcessor.tokenIssuer(SupportedSigningAlgorithms)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get issuer from token: %w", err)
+		return TokenProcessor{}, fmt.Errorf("failed to get issuer from token: %w", err)
 	}
-	if !tokenProcessor.isTrustedIssuer(issuer, trustedIssuers) {
-		return nil, fmt.Errorf("%s issuer is not trusted", issuer)
+	logger.Debugw("Got issuer from token", "issuer", issuer)
+	if !tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers) {
+		return TokenProcessor{}, fmt.Errorf("%s issuer is not trusted", issuer)
 	}
 	tokenProcessor.issuer = issuer
-	logger.Infow("Added issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
-	logger.Debugw("Added issuer to token processor", "issuer", tokenProcessor.issuer)
+	logger.Infow("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
+	// tokenProcessor.Provider = Provider
+	// logger.Debugw("Added Provider to token processor")
 	for _, option := range options {
-		err := option(tokenProcessor)
+		err := option(&tokenProcessor)
 		if err != nil {
-			return nil, fmt.Errorf("failed to apply TokenProcessorOption: %w", err)
+			return TokenProcessor{}, fmt.Errorf("failed to apply TokenProcessorOption: %w", err)
 		}
 	}
 	logger.Infow("Created token processor", "issuer", tokenProcessor.issuer)
@@ -139,93 +270,22 @@ func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssu
 	return false
 }
 
-// NewClaims creates a new Claims struct with the expected custom claims for the token issuer.
-func (tokenProcessor *TokenProcessor) NewClaims() (ClaimsInterface, error) {
-	logger := tokenProcessor.logger
-	switch issuer := tokenProcessor.issuer; issuer {
-	case GithubOIDCIssuer.IssuerURL:
-		logger.Debugw("Creating new GithubClaims", "issuer", tokenProcessor.issuer)
-		return &GithubClaims{}, nil
-	default:
-		return nil, fmt.Errorf("unknown issuer: %s", issuer)
-	}
+// Issuer returns the issuer of the token.
+func (tokenProcessor *TokenProcessor) Issuer() string {
+	return tokenProcessor.issuer
 }
 
-func (tokenProcessor *TokenProcessor) VerifyToken(ctx context.Context, verifier TokenVerifierInterface) error {
+func (tokenProcessor *TokenProcessor) Claims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
-	logger.Infow("Verifying oidc token")
-	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
+	idToken, err := verifier.Verify(ctx, tokenProcessor.rawToken)
 	if err != nil {
-		return fmt.Errorf("failed to verify oidc token: %w", err)
+		return fmt.Errorf("failed to verify token: %w", err)
 	}
-	tokenProcessor.token = token
-	logger.Infow("OIDC token verified successfully")
-	return nil
-}
-
-// TODO: rename this function
-func (tokenProcessor *TokenProcessor) Claims(claims ClaimsInterface) error {
-	err := tokenProcessor.token.Claims(claims)
+	logger.Debugw("Getting claims from token")
+	err = idToken.Claims(claims)
 	if err != nil {
 		return fmt.Errorf("failed to get claims from token: %w", err)
 	}
+	logger.Debugw("Got claims from token", "claims", fmt.Sprintf("%+v", claims))
 	return nil
-}
-
-func NewVerifierConfig(logger loggerInterface, clientID string, options ...VerifierConfigOption) (*oidc.Config, error) {
-	if clientID == "" {
-		return nil, fmt.Errorf("clientID is empty")
-	}
-	verifierConfig := &oidc.Config{
-		ClientID:                   clientID,
-		SkipClientIDCheck:          false,
-		SkipExpiryCheck:            false,
-		SkipIssuerCheck:            false,
-		InsecureSkipSignatureCheck: false,
-		SupportedSigningAlgs:       SupportedSigningAlgorithms,
-	}
-	logger.Debugw("Created verifier config with default values",
-		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
-	)
-	logger.Debugw("Applying VerifierConfigOptions")
-	for _, option := range options {
-		err := option(verifierConfig)
-		if err != nil {
-			return nil, fmt.Errorf("failed to apply VerifierConfigOption: %w", err)
-		}
-	}
-	logger.Debugw("Applied all VerifierConfigOptions",
-		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
-	)
-	return verifierConfig, nil
-}
-
-// newVerifierFromDiscovery verifies the OIDC token using the public keys fetched from OIDC discovery.
-// It supports issuers defined in OIDCIssuers variable.
-// It writes the public keys to the file specified by the --public-key-path flag.
-// It sets the environment variable specified by --new-public-keys-var-name to true.
-func (tokenProcessor *TokenProcessor) NewVerifierFromDiscovery(ctx context.Context) (*oidc.IDTokenVerifier, error) {
-	logger := tokenProcessor.logger
-	if tokenProcessor.issuer == "" {
-		return nil, fmt.Errorf("TokenProcessor issuer is empty")
-	}
-	logger.Debugw("Creating provider using oidc discovery",
-		"issuer", tokenProcessor.issuer,
-	)
-	provider, err := oidc.NewProvider(ctx, tokenProcessor.issuer)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create provider using oidc discovery: %w", err)
-	}
-	logger.Debugw("Created provider using oidc discovery")
-	return provider.Verifier(&tokenProcessor.verifierConfig), nil
 }

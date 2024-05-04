@@ -109,27 +109,21 @@ func (opts *options) extractClaims() error {
 		return err
 	}
 
-	tokenProcessor, err := tioidc.NewTokenProcessor(sugaredLogger, tioidc.TrustedOIDCIssuers, opts.token, *verifyConfig)
+	tokenProcessor, err := tioidc.NewTokenProcessor(sugaredLogger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
 	if err != nil {
 		return err
 	}
 
 	ctx := context.Background()
-	verifier, err := tokenProcessor.NewVerifierFromDiscovery(ctx)
+	provider, err := tioidc.NewProviderFromDiscovery(ctx, sugaredLogger, tokenProcessor.Issuer())
 	if err != nil {
 		return err
 	}
 
-	err = tokenProcessor.VerifyToken(ctx, verifier)
-	if err != nil {
-		return err
-	}
+	verifier := provider.NewVerifier(verifyConfig)
 
-	claims, err := tokenProcessor.NewClaims()
-	if err != nil {
-		return err
-	}
-	err = tokenProcessor.Claims(claims)
+	claims := tioidc.Claims{}
+	err = tokenProcessor.Claims(ctx, &verifier, claims)
 	if err != nil {
 		return err
 	}
