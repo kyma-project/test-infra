@@ -28,29 +28,21 @@ var _ = Describe("OIDC", func() {
 		trustedIssuers map[string]tioidc.Issuer
 		rawToken       []byte
 		verifierConfig tioidc.VerifierConfig
-		// Verifier       *oidcmocks.MockTokenVerifierInterface
 		tokenProcessor tioidc.TokenProcessor
 		clientID       string
 	)
 
 	BeforeEach(func() {
-		// ctx = context.Background()
 		l, err := zap.NewDevelopment()
 		Expect(err).NotTo(HaveOccurred())
 		logger = l.Sugar()
 		clientID = "testClientID"
-
-		// Verifier = new(oidcmocks.MockTokenVerifierInterface)
 	})
 
 	Describe("NewVerifierConfig", func() {
 		var (
-			// clientID             string
 			verifierConfigOption tioidc.VerifierConfigOption
 		)
-		// BeforeEach(func() {
-		// 	clientID = "testClientID"
-		// })
 		It("should return a new oidc.Config", func() {
 			verifierConfig, err := tioidc.NewVerifierConfig(logger, clientID)
 			Expect(err).NotTo(HaveOccurred())
@@ -80,8 +72,6 @@ var _ = Describe("OIDC", func() {
 	Describe("NewTokenProcessor", func() {
 		var (
 			invalidTokenProcessorOption tioidc.TokenProcessorOption
-			// ctx                         context.Context
-			// Provider                    tioidc.Provider
 		)
 
 		BeforeEach(func() {
@@ -89,7 +79,7 @@ var _ = Describe("OIDC", func() {
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
 
-			verifierConfig, err = tioidc.NewVerifierConfig(logger, "testClientID")
+			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
 			Expect(err).NotTo(HaveOccurred())
 
 			trustedIssuers = map[string]tioidc.Issuer{
@@ -99,9 +89,7 @@ var _ = Describe("OIDC", func() {
 					JWKSURL:   "https://fakedings.dev-gcp.nais.io/fake/jwks",
 				},
 			}
-			// issuerURL := "https://fakedings.dev-gcp.nais.io/fake"
 			ctx = context.Background()
-			// Provider, err = tioidc.NewProviderFromDiscovery(ctx, logger, issuerURL)
 		})
 		When("issuer is trusted", func() {
 			It("should return a new TokenProcessor", func() {
@@ -111,15 +99,18 @@ var _ = Describe("OIDC", func() {
 			})
 		})
 		When("empty verifierConfig is provided", func() {
-			It("should return a new TokenProcessor", func() {
+			It("should return an error", func() {
+				// Empty verifierConfig
 				verifierConfig = tioidc.VerifierConfig{}
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(tokenProcessor).To(BeAssignableToTypeOf(tioidc.TokenProcessor{}))
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("verifierConfig clientID is empty"))
+				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
 		When("issuer is not trusted", func() {
 			It("should return an error", func() {
+				// Untrusted issuer
 				trustedIssuers = map[string]tioidc.Issuer{
 					"https://untrusted.fakedings.dev-gcp.nais.io/fake": {
 						Name:      "github",
@@ -145,12 +136,12 @@ var _ = Describe("OIDC", func() {
 		When("invalid TokenProcessorOption is provided", func() {
 			It("should return an error", func() {
 				invalidTokenProcessorOption = func(tp *tioidc.TokenProcessor) error {
-					return errors.New("invalid TokenProcessorOoption")
+					return errors.New("invalid TokenProcessorOption")
 				}
 
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig, invalidTokenProcessorOption)
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to apply TokenProcessorOption: invalid TokenProcessorOoption"))
+				Expect(err).To(MatchError("failed to apply TokenProcessorOption: invalid TokenProcessorOption"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -174,7 +165,7 @@ var _ = Describe("OIDC", func() {
 			tokenProcessor tioidc.TokenProcessor
 		)
 		BeforeEach(func() {
-			verifierConfig, err = tioidc.NewVerifierConfig(logger, "testClientID")
+			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
 			Expect(err).NotTo(HaveOccurred())
 
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
@@ -192,7 +183,6 @@ var _ = Describe("OIDC", func() {
 			token = tioidc.Token{}
 			mockToken = oidcmocks.MockClaimsReader{}
 			verifier = &oidcmocks.MockTokenVerifierInterface{}
-			// Token = oidcmocks.MockTokenInterface{}
 			tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(tokenProcessor).NotTo(BeNil())
@@ -204,10 +194,12 @@ var _ = Describe("OIDC", func() {
 			})
 		})
 		Describe("Claims", func() {
-			It("should return no error when the token is valid", func() {
+			BeforeEach(func() {
 				claims = tioidc.Claims{}
 				token = tioidc.Token{}
 				mockToken = oidcmocks.MockClaimsReader{}
+			})
+			It("should return no error when the token is valid", func() {
 				mockToken.On(
 					"Claims", &claims).Run(
 					func(args mock.Arguments) {
@@ -227,20 +219,16 @@ var _ = Describe("OIDC", func() {
 				Expect(claims.Audience).To(Equal(jwt.Audience{"myaudience"}))
 			})
 			It("should return an error when token was not verified", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(tioidc.Token{}, fmt.Errorf("token validation failed"))
-				claims = tioidc.Claims{}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
 				err = tokenProcessor.Claims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to verify token: token validation failed"))
 				Expect(claims).To(Equal(tioidc.Claims{}))
 			})
 			It("should return an error when claims are not set", func() {
-				token = tioidc.Token{}
-				mockToken = oidcmocks.MockClaimsReader{}
 				mockToken.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 				token.Token = &mockToken
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
-				claims = tioidc.Claims{}
 				Token.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 				err = tokenProcessor.Claims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
@@ -280,13 +268,13 @@ var _ = Describe("OIDC", func() {
 	Describe("Provider", func() {
 		var (
 			provider       tioidc.Provider
-			oidcProvider   *oidcmocks.MockNewVerifier
+			oidcProvider   *oidcmocks.MockVerifierProvider
 			verifierConfig tioidc.VerifierConfig
 		)
 		BeforeEach(func() {
-			oidcProvider = &oidcmocks.MockNewVerifier{}
+			oidcProvider = &oidcmocks.MockVerifierProvider{}
 			provider = tioidc.Provider{
-				Provider: oidcProvider,
+				VerifierProvider: oidcProvider,
 			}
 			ctx = context.Background()
 			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
@@ -294,57 +282,11 @@ var _ = Describe("OIDC", func() {
 		})
 		Describe("NewVerifier", func() {
 			It("should return a new TokenVerifier", func() {
-				oidcProvider.EXPECT().Verifier(&verifierConfig.Config).Return(&oidc.IDTokenVerifier{})
-				verifier := provider.NewVerifier(verifierConfig)
+				oidcProvider.On("Verifier", &verifierConfig.Config).Return(&oidc.IDTokenVerifier{})
+				verifier := provider.NewVerifier(logger, verifierConfig)
 				Expect(verifier).NotTo(BeNil())
 				Expect(verifier).To(BeAssignableToTypeOf(tioidc.TokenVerifier{}))
 			})
 		})
 	})
-
-	// Describe("NewProviderFromDiscovery", func() {
-	// 	var (
-	// 	)
-	// 	BeforeEach(func() {
-	// 		// Read the token from the file in test-fixtures directory.
-	// 		rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
-	// 		Expect(err).NotTo(HaveOccurred())
-	//
-	// 		verifierConfig, err = tioidc.NewVerifierConfig(logger, "testClientID")
-	// 		Expect(err).NotTo(HaveOccurred())
-	//
-	// 		ctx = context.Background()
-	//
-	// 		trustedIssuers = map[string]tioidc.Issuer{
-	// 			"https://fakedings.dev-gcp.nais.io/fake": {
-	// 				Name:      "github",
-	// 				IssuerURL: "https://fakedings.dev-gcp.nais.io/fake",
-	// 				JWKSURL:   "https://fakedings.dev-gcp.nais.io/fake/jwks",
-	// 			},
-	// 		}
-	//
-	// 		oidc.ClientContext(ctx, nil)
-	// 		// Verifier = &oidcmocks.MockTokenVerifierInterface{}
-	// 	})
-	// 	It("should return no error when the Verifier is created", func() {
-	// 		// Verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, nil)
-	// 		tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
-	// 		Expect(err).NotTo(HaveOccurred())
-	// 		Expect(tokenProcessor).NotTo(BeNil())
-	// 		verifier, err := tokenProcessor.NewVerifierFromDiscovery(ctx)
-	// 		Expect(err).NotTo(HaveOccurred())
-	// 		Expect(verifier).NotTo(BeNil())
-	// 	})
-	// 	It("should return an error when the Verifier is not created", func() {
-	// 		tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
-	// 		Expect(err).NotTo(HaveOccurred())
-	// 		Expect(tokenProcessor).NotTo(BeNil())
-	// 		verifier, err := tokenProcessor.NewVerifierFromDiscovery(ctx)
-	// 		if err != nil {
-	// 			logger.Errorw("Expected error", "test", "Verifier is not created",
-	// 				"error", err)
-	// 		}
-	// 		Expect(err).To(HaveOccurred())
-	// 	})
-	// })
 })

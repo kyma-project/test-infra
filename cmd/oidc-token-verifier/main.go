@@ -25,7 +25,6 @@ type options struct {
 }
 
 var (
-	// TrustedOIDCIssuers = map[string]string{"https://token.actions.githubusercontent.com": "https://token.actions.githubusercontent.com/.well-known/jwks"}
 	rootCmd    *cobra.Command
 	claimsCmd  *cobra.Command
 	extractCmd *cobra.Command
@@ -81,33 +80,6 @@ func NewExtractCmd() *cobra.Command {
 }
 
 func init() {
-	// rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token")
-	// err := rootCmd.MarkPersistentFlagRequired("token")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
-	// err := rootCmd.MarkPersistentFlagRequired("new-keys-var")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
-	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID")
-	// err = rootCmd.MarkPersistentFlagRequired("client-id")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
-	// rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
-	// extractCmd.PersistentFlags().StringVarP(&opts.outputPath, "claims-output-path", "o", "", "Path to write the extracted claims too")
-	// err = extractCmd.MarkPersistentFlagRequired("claims-output-path")
-	// if err != nil {
-	// 	panic(err)
-	// }
 	rootCmd = NewRootCmd()
 	claimsCmd = NewClaimsCmd()
 	extractCmd = NewExtractCmd()
@@ -116,15 +88,11 @@ func init() {
 }
 
 // extractClaims verifies the OIDC token and extracts the claims from it.
-// The OIDC token is read from the file specified by the --token flag.
+// The OIDC token is read from the file specified by the --token flag or the AUTHORIZATION environment variable.
 // It returns an error if the token is invalid or the claims cannot be extracted.
-// It uses cached public keys to verify the token.
-// If the public keys are not cached or expired, it uses OIDC discovery to get the public keys.
-// New public keys are written to the file specified by the --public-key-path flag.
-// If new public keys are fetched, it sets ado environment variable to true.
+// It uses OIDC discovery to get the public keys.
 // Extracted claims are written to the file specified by the --claims-output-path flag.
 func (opts *options) extractClaims() error {
-	// https://stackoverflow.com/questions/25609734/testing-stdout-with-go-and-ginkgo
 	var (
 		zapLogger *zap.Logger
 		err       error
@@ -139,8 +107,8 @@ func (opts *options) extractClaims() error {
 	}
 	logger := zapLogger.Sugar()
 
-	// Check if token flag is set.
-	// If not check if AUTHORIZATION environment variable is set.
+	// Check if a token flag is set.
+	// If not, check if AUTHORIZATION environment variable is set.
 	// If neither is set, return an error.
 	if opts.token == "" {
 		logger.Infow("Token flag not provided, checking for AUTHORIZATION environment variable")
@@ -149,10 +117,12 @@ func (opts *options) extractClaims() error {
 			return fmt.Errorf("token not provided, set the --token flag or the AUTHORIZATION environment variable with the OIDC token")
 		}
 		logger.Infow("Token found in AUTHORIZATION environment variable, using the token")
+	} else {
+		logger.Infow("Token flag provided, using the token from the flag")
 	}
-	logger.Infow("Token flag provided, using the token from the flag")
 	logger.Debugw("Token value", "token", opts.token)
 
+	// Print used options values.
 	logger.Infow("Using the following trusted workflows", "trusted-workflows", opts.trustedWorkflows)
 	logger.Infow("Using the following client ID", "client-id", opts.clientID)
 	logger.Infow("Using the following public key path", "public-key-path", opts.publicKeyPath)
@@ -165,6 +135,7 @@ func (opts *options) extractClaims() error {
 	}
 	logger.Infow("Verifier config created", "config", verifyConfig)
 
+	// TODO(dekiel): add support for providing trusted issuers instead of using the value from the package.
 	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
 	if err != nil {
 		return err
@@ -178,7 +149,7 @@ func (opts *options) extractClaims() error {
 	}
 	logger.Infow("Provider created using OIDC discovery", "issuer", tokenProcessor.Issuer())
 
-	verifier := provider.NewVerifier(verifyConfig)
+	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
 	claims := tioidc.Claims{}
@@ -200,18 +171,9 @@ func (opts *options) extractClaims() error {
 	return nil
 }
 
-// verifyToken verifies the OIDC token.
-// It uses public keys loaded from the file specified by the --public-key-path flag.
-// If the public keys are not available or expired, it fetches the public keys from the OIDC discovery endpoint.
-// It writes the public keys to the file specified by the --public-key-path flag.
-// It sets the environment variable specified by the --new-public-keys-var-name flag to true to indicate that new public keys are fetched.
-// It returns an error if the token is invalid or the public keys are not available.
-// func (opts *options) verifyToken() (*oidc.IDToken, error) {
-// }
-//
-// func (opts *options) newVerifierFromStaticKeys() (*oidc.IDTokenVerifier, error) {
-//
-// }
+// If the public keys are not cached or expired, it uses OIDC discovery to get the public keys.
+// New public keys are written to the file specified by the --public-key-path flag.
+// If new public keys are fetched, it sets ado environment variable to true.
 
 // loadPublicKeysFromLocal loads the public keys from the file specified by the --public-key-path flag.
 // example implementation https://gist.github.com/nilsmagnus/199d56ce849b83bdd7df165b25cb2f56
@@ -219,9 +181,6 @@ func (opts *options) extractClaims() error {
 //
 // }
 //
-// func (opts *options) loadPublicKeysFromRemote(issuer string) error {
-//
-// }
 
 // savePublicKeysFromRemote fetches the public keys from the OIDC discovery endpoint.
 // It writes the public keys to the file specified by the --public-key-path flag.
