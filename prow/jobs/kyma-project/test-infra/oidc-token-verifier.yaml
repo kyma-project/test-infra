@@ -4,6 +4,10 @@ presubmits: # runs on PRs
       annotations:
         description: "Build test-infra/cmd/oidc-token-verifier image for image-builder application."
         owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-oidc-token-verifier"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^cmd/oidc-token-verifier/'
       skip_report: false
       decorate: true
@@ -52,6 +56,10 @@ postsubmits: # runs on main
       annotations:
         description: "Build test-infra/cmd/oidc-token-verifier image for image-builder application."
         owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-build-oidc-token-verifier"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^cmd/oidc-token-verifier/|^go\.mod$|^go\.sum$'
       skip_report: false
       decorate: true
