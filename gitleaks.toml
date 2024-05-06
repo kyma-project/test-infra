@@ -14,7 +14,7 @@ paths = [
     '''node_modules''',
     '''vendor''',
     '''notary_test.go''',
-    '''pkg/oidc/test-fixtures/raw-oidc-token''',
+    '''raw-oidc-token''',
 ]
 regexTarget = "line"
 regexes = ["#nosec"]
