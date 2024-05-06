@@ -192,7 +192,6 @@ templates:
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v20-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
-                  optional: true
                   annotations:
                     owner: otters
                     description: function nodejs20 build job
@@ -212,7 +211,6 @@ templates:
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v20-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
-                  optional: true
                   annotations:
                     owner: otters
                     description: function nodej20 build job
