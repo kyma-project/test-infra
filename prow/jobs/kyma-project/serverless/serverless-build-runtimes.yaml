@@ -63,7 +63,6 @@ presubmits: # runs on PRs
         preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -317,7 +316,6 @@ postsubmits: # runs on main
         preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
-      optional: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
