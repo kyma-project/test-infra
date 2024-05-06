@@ -89,7 +89,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=dockerregistry-operator"
+              - "--name=registry-init"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/registry-init/Dockerfile"
