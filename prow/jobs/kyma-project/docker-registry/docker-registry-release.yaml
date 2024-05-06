@@ -61,4 +61,62 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: release-registry-init-build
+      annotations:
+        description: "Job to build registry-init for a release."
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-registry-init-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
+        preset-sa-kyma-push-images: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^v?\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/image-builder"
+            args:
+              - "--name=dockerregistry-operator"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=components/registry-init/Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: share
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
