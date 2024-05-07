@@ -15,7 +15,7 @@ templates:
                     description: "validates if all charts use correct image definition format"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240506-0fcc37b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240507-896e4e36
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -35,7 +35,7 @@ templates:
                     description: "his tool validates if all images defined in charts exist"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240506-0fcc37b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240507-896e4e36
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -60,7 +60,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240506-948d197f
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240507-896e4e36
                 inheritedConfigs:
                   local:
                     - "smaller_requests"
