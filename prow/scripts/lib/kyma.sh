@@ -207,20 +207,6 @@ function kyma::get_previous_release_version {
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].tag_name')
 }
 
-kyma::provision_k3d() {
-  k3d version
-
-  if [[ -v K8S_VERSION ]]; then
-    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
-    kyma provision k3d --ci -k "${K8S_VERSION}"
-  else
-    kyma provision k3d --ci
-  fi
-
-  echo "Printing client and server version info"
-  kubectl version
-}
-
 kyma::install_unstable_cli() {
     local settings
     local kyma_version

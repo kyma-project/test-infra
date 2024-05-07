@@ -19,9 +19,9 @@ images:
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
   amd64Only: true
-- source: "istio/pilot:1.21.1-distroless"
-- source: "istio/proxyv2:1.21.1-distroless"
-- source: "istio/install-cni:1.21.1-distroless"
+- source: "istio/pilot:1.21.2-distroless"
+- source: "istio/proxyv2:1.21.2-distroless"
+- source: "istio/install-cni:1.21.2-distroless"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
@@ -61,4 +61,5 @@ images:
 - source: "gcr.io/istio-testing/ext-authz@sha256:8ffad059c8ad951102e5421562ac5b7cca129881903be8cbfdc5e910e49fd78e"
   tag: "1.22-dev"
   amd64Only: true
-- source: "registry:2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release
+- source: "registry@sha256:fb9c9aef62af3955f6014613456551c92e88a67dcf1fc51f5f91bcbd1832813f"
+  tag: "2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release

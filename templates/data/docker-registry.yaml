@@ -14,7 +14,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
                   annotations:
                     owner: otters
                     description: docker-registry operator image build
@@ -36,7 +36,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
                   annotations:
                     owner: otters
                     description: build docker-registry operator
@@ -48,6 +48,52 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile
+                    - --tag=$(PULL_BASE_SHA)
+                    - --tag=$(PULL_BASE_REF)
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - job_branches
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: pre-registry-init-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
+                  annotations:
+                    owner: otters
+                    description: registry-init image build
+                  labels:
+                    preset-image-builder-ado-token: "true"
+                  command: /image-builder
+                  args:
+                    - --name=registry-init
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/registry-init/Dockerfile
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - image-builder-buildkit
+                  local:
+                    - job_branches
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-registry-init-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
+                  annotations:
+                    owner: otters
+                    description: registry-init image build
+                  labels:
+                    preset-image-builder-ado-token: "true"
+                  command: /image-builder
+                  args:
+                    - --name=registry-init
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/registry-init/Dockerfile
                     - --tag=$(PULL_BASE_SHA)
                     - --tag=$(PULL_BASE_REF)
                     - --build-in-ado=true
@@ -71,7 +117,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240501-56518861"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
                   annotations:
                     owner: otters
                     description: Job to build docker-registry operator for a release.
@@ -81,6 +127,26 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile
+                    - --tag=$(PULL_BASE_REF)
+                    - --build-in-ado=true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - release_image_build
+              - jobConfig:
+                  name: release-registry-init-build
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240506-8cad8caf"
+                  annotations:
+                    owner: otters
+                    description: Job to build registry-init for a release.
+                  command: /image-builder
+                  args:
+                    - --name=registry-init
+                    - --config=/config/kaniko-build-config.yaml
+                    - --context=.
+                    - --dockerfile=components/registry-init/Dockerfile
                     - --tag=$(PULL_BASE_REF)
                     - --build-in-ado=true
                 inheritedConfigs:
