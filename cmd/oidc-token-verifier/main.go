@@ -69,7 +69,7 @@ func NewExtractCmd() *cobra.Command {
 	extractCmd := &cobra.Command{
 		Use:   "extract",
 		Short: "Verify token and extract claims from an OIDC token",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			if err := opts.extractClaims(); err != nil {
 				return err
 			}
