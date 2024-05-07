@@ -36,7 +36,7 @@ func NewRootCmd() *cobra.Command {
 		Use:   "token",
 		Short: "OIDC token verifier and claim extractor",
 		Long: `oidc is a CLI tool to verify OIDC tokens and extract claims from them. It can use cached public keys to verify tokens.
-	It use OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
+	It uses OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
 	}
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token")
 	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
