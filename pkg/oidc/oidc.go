@@ -335,7 +335,7 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 
 // Claims verify and parse the token to get the token claims.
 // It unmarshal the claims into the provided claims struct.
-func (tokenProcessor *TokenProcessor) Claims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
+func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
 	idToken, err := verifier.Verify(ctx, tokenProcessor.rawToken)
 	if err != nil {

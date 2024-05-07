@@ -193,7 +193,7 @@ var _ = Describe("OIDC", func() {
 				Expect(issuer).To(Equal("https://fakedings.dev-gcp.nais.io/fake"))
 			})
 		})
-		Describe("Claims", func() {
+		Describe("VerifyAndExtractClaims", func() {
 			BeforeEach(func() {
 				claims = tioidc.Claims{}
 				token = tioidc.Token{}
@@ -212,7 +212,7 @@ var _ = Describe("OIDC", func() {
 				token.Token = &mockToken
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
-				err = tokenProcessor.Claims(ctx, verifier, &claims)
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(claims.Issuer).To(Equal("https://fakedings.dev-gcp.nais.io/fake"))
 				Expect(claims.Subject).To(Equal("mysub"))
@@ -220,7 +220,7 @@ var _ = Describe("OIDC", func() {
 			})
 			It("should return an error when token was not verified", func() {
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
-				err = tokenProcessor.Claims(ctx, verifier, &claims)
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to verify token: token validation failed"))
 				Expect(claims).To(Equal(tioidc.Claims{}))
@@ -230,7 +230,7 @@ var _ = Describe("OIDC", func() {
 				token.Token = &mockToken
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 				Token.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
-				err = tokenProcessor.Claims(ctx, verifier, &claims)
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to get claims from token: claims are not set"))
 				Expect(claims).To(Equal(tioidc.Claims{}))
