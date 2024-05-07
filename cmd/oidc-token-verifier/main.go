@@ -60,7 +60,7 @@ func NewRootCmd() *cobra.Command {
 func NewClaimsCmd() *cobra.Command {
 	claimsCmd := &cobra.Command{
 		Use:   "claims",
-		Short: "Work with OIDC claims",
+		Short: "OIDC claims related commands",
 	}
 	return claimsCmd
 }
