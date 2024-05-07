@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/kyma-project/test-infra/pkg/logging"
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -13,6 +14,11 @@ import (
 
 // Cobra root command for the OIDC claim extractor
 // Path: cmd/oidc-token-verifier/main.go
+
+type Logger interface {
+	logging.StructuredLoggerInterface
+	logging.WithLoggerInterface
+}
 
 type options struct {
 	token                string
@@ -87,6 +93,24 @@ func init() {
 	rootCmd.AddCommand(claimsCmd)
 }
 
+func isTokenProvided(logger Logger, opts *options) error {
+	// Check if a token flag is set.
+	// If not, check if AUTHORIZATION environment variable is set.
+	// If neither is set, return an error.
+	if opts.token == "" {
+		logger.Infow("Token flag not provided, checking for AUTHORIZATION environment variable")
+		opts.token = os.Getenv("AUTHORIZATION")
+		if opts.token == "" {
+			return fmt.Errorf("token not provided, set the --token flag or the AUTHORIZATION environment variable with the OIDC token")
+		}
+		logger.Infow("Token found in AUTHORIZATION environment variable, using the token")
+	} else {
+		logger.Infow("Token flag provided, using the token from the flag")
+	}
+	logger.Debugw("Token value", "token", opts.token)
+	return nil
+}
+
 // extractClaims verifies the OIDC token and extracts the claims from it.
 // The OIDC token is read from the file specified by the --token flag or the AUTHORIZATION environment variable.
 // It returns an error if the token is invalid or the claims cannot be extracted.
@@ -107,20 +131,10 @@ func (opts *options) extractClaims() error {
 	}
 	logger := zapLogger.Sugar()
 
-	// Check if a token flag is set.
-	// If not, check if AUTHORIZATION environment variable is set.
-	// If neither is set, return an error.
-	if opts.token == "" {
-		logger.Infow("Token flag not provided, checking for AUTHORIZATION environment variable")
-		opts.token = os.Getenv("AUTHORIZATION")
-		if opts.token == "" {
-			return fmt.Errorf("token not provided, set the --token flag or the AUTHORIZATION environment variable with the OIDC token")
-		}
-		logger.Infow("Token found in AUTHORIZATION environment variable, using the token")
-	} else {
-		logger.Infow("Token flag provided, using the token from the flag")
+	err = isTokenProvided(logger, opts)
+	if err != nil {
+		return err
 	}
-	logger.Debugw("Token value", "token", opts.token)
 
 	// Print used options values.
 	logger.Infow("Using the following trusted workflows", "trusted-workflows", opts.trustedWorkflows)
@@ -153,7 +167,7 @@ func (opts *options) extractClaims() error {
 	logger.Infow("New verifier created")
 
 	claims := tioidc.Claims{}
-	err = tokenProcessor.Claims(ctx, &verifier, claims)
+	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, claims)
 	if err != nil {
 		return err
 	}
