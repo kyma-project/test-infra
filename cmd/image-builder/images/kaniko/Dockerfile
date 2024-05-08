@@ -5,8 +5,11 @@ COPY . /app/
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
 
-FROM gcr.io/kaniko-project/executor:v1.22.0
+FROM ubuntu:latest
 
 COPY --from=builder /app/image-builder /image-builder
+
+RUN apt-get update && apt-get install -y tree
+RUN tree
 
 ENTRYPOINT ["/image-builder"]
