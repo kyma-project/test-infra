@@ -1,4 +1,4 @@
-FROM golangci/golangci-lint:v1.58.0
+FROM golangci/golangci-lint:v1.58.1
 
 
 # Commit details
