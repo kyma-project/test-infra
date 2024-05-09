@@ -23,7 +23,7 @@ postsubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240507-61a3a22a
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240509-7efe3c8a
             command: [ "bash" ]
             securityContext:
               privileged: false
