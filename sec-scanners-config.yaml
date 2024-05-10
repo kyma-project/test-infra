@@ -33,15 +33,15 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240507-116278d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240507-c78f8932
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240510-581352f0
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240509-7efe3c8a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240509-7efe3c8a
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240510-460cb9f9
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240510-460cb9f9
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/branchprotector:v20240424-0a3188200
     - gcr.io/k8s-prow/crier:v20240424-0a3188200
