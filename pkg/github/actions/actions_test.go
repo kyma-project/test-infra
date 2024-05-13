@@ -9,24 +9,24 @@ import (
 
 func TestSetOutput(t *testing.T) {
 	tc := []struct {
-		name             string
-		predefinedOutput string
-		output           string
-		key              string
-		value            string
-		expectErr        bool
+		name           string
+		existingOutput string
+		output         string
+		key            string
+		value          string
+		expectErr      bool
 	}{
 		{
-			name:             "set output with empty output",
-			predefinedOutput: "",
-			key:              "test",
-			value:            "test",
+			name:           "set output with empty output",
+			existingOutput: "",
+			key:            "test",
+			value:          "test",
 			output: `test=test
 `,
 		},
 		{
 			name: "append new output to exisitng one",
-			predefinedOutput: `some=output
+			existingOutput: `some=output
 `,
 			key:   "test",
 			value: "test",
@@ -42,7 +42,7 @@ test=test
 			// Create output file
 			tempDir := t.TempDir()
 			outputFilePath := fmt.Sprintf("%s/out_file", tempDir)
-			err := os.WriteFile(outputFilePath, []byte(c.predefinedOutput), fs.ModePerm)
+			err := os.WriteFile(outputFilePath, []byte(c.existingOutput), fs.ModePerm)
 			if err != nil {
 				t.Errorf("failed to write output file with predefined output: %s", err)
 			}
