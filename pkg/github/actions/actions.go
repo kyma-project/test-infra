@@ -5,6 +5,9 @@ import (
 	"os"
 )
 
+// SetOutput sets the github actions output
+// It get output file name from GITHUB_OUTPUT env variable
+// and writes the key=value pair to the file in the format required by github.
 func SetOutput(key string, value string) error {
 	// Get file path from github variable
 	filePath := os.Getenv("GITHUB_OUTPUT")
