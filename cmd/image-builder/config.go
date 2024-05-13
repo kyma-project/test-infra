@@ -169,7 +169,7 @@ func loadProwJobGitState() (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
 	}
 	if !slices.Contains([]string{"presubmit", "postsubmit"}, jobType) {
-		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
+		return GitStateConfig{}, fmt.Errorf("image builder is running for unsupported event %s", jobType)
 	}
 
 	pullNumberString, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
