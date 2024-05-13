@@ -192,7 +192,7 @@ func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes
 			return matched
 		})
 		if !matched {
-			logger.Debugf("File %s not matched", change.Filename)
+			logger.Infof("File %s not matched", change.Filename)
 			return false
 		}
 	}

@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -77,7 +77,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -124,13 +124,13 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:

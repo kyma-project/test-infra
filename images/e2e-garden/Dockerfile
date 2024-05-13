@@ -1,4 +1,4 @@
-FROM golang:1.21.4-alpine AS base
+FROM golang:1.22.2-alpine AS base
 
 RUN set -eux; \
     apk add --no-cache \

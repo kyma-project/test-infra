@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240405-3f51019b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -48,7 +48,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240402-b7e8aa8b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240509-7efe3c8a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240405-3f51019b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -174,7 +174,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -227,7 +227,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240405-3f51019b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -267,7 +267,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -318,7 +318,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -384,7 +384,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240408-838d843f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20240424-0a3188200"
             securityContext:
               privileged: false
               seccompProfile:
@@ -425,7 +425,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240405-3f51019b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -481,7 +481,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240405-3f51019b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:

@@ -1,28 +1,53 @@
 name: Reusable Workflow
 
-on: workflow_call
-    
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: "Repository to check out"
+        required: true
+        type: string
+      ref:
+        description: "Ref to check out"
+        required: true
+        type: string
+      test:
+        description: "Testing configuration"
+        required: false
+        type: boolean
+        default: false
+
 jobs:
   get_oidc_token_job:
     permissions:
       id-token: write # This is required for requesting the JWT token
-      contents: read  # This is required for actions/checkout
+      contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: A job to get OIDC token
     steps:
-      - name: Checkout test-infra repository
+      - name: Checkout repository based on test flag
         uses: actions/checkout@v4
         with:
-          repository: kyma-project/test-infra
-          ref: main
+          repository: ${{ inputs.test == true && inputs.repository || 'kyma-project/test-infra' }}
+          ref: ${{ inputs.test == true && inputs.ref || 'main' }}
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
       - name: Expose JWT Action
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
-      - name: Decode OIDC Token
-        run: |
-          oidc_token="${{ steps.get_oidc.outputs.jwt }}"
-          const token = `${oidc_token}`;
-          const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-        shell: node {0}
+      - run: env
+      - run: cat $GITHUB_EVENT_PATH
+      - uses: ./.github/actions/trigger-image-builder
+        id: build
+        name: Run build in image-builder
+        with:
+          oidc-token: ${{ steps.get_oidc.outputs.jwt }}
+          ado-token: ${{ secrets.ADO_PAT }}
+          image-name: test-infra/ginkgo
+          dockerfile: prow/images/ginkgo/Dockerfile
+      - run: echo ${{ steps.build.outputs }}
+        name: Show outputs
+      - run: echo ${{ steps.build.conclusion }}
+        name: Show conclusion
+      - run: echo ${{ steps.build.outcome }}
+        name: Show outcome

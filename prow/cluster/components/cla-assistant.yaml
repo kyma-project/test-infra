@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cla-assistant
-        image: eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
+        image: europe-docker.pkg.dev/gardener-project/releases/ci-infra/cla-assistant:v20240412-d22f4bf
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy

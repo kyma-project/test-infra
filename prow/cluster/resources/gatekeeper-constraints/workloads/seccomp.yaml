@@ -15,10 +15,10 @@ spec:
       - runtime/default
       - docker/default
     exemptImages:
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:*"
+      - "gcr.io/k8s-prow/entrypoint:*"
+      - "gcr.io/k8s-prow/initupload:*"
+      - "gcr.io/k8s-prow/clonerefs:*"
+      - "gcr.io/k8s-prow/sidecar:*"
       - "aquasec/trivy:*"
       - "eu.gcr.io/kyma-project/prow/cleaner:*"
       - "eu.gcr.io/kyma-project/test-infra/bootstrap:*"
@@ -32,6 +32,6 @@ spec:
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:*"
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:*"
       - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/ghproxy:*"
+      - "gcr.io/k8s-prow/generic-autobumper:*"
+      - "gcr.io/k8s-prow/ghproxy:*"
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:*"

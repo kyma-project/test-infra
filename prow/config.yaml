@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240408-838d843f
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240408-838d843f
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240408-838d843f
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240408-838d843f
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20240424-0a3188200
+          initupload: gcr.io/k8s-prow/initupload:v20240424-0a3188200
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20240424-0a3188200
+          sidecar: gcr.io/k8s-prow/sidecar:v20240424-0a3188200
         resources:
           clonerefs:
             requests:
@@ -296,8 +296,7 @@ branch-protection:
               - "validate-labels"
           exclude:
             - "^gh-pages$"
-            - "^sec-scanners-config-"
-            - "^bump-keb-"
+            - "^bump-chart-and-images-"
         btp-manager:
           required_status_checks:
             contexts:
@@ -308,6 +307,7 @@ branch-protection:
               - "run-go-linter"
           exclude:
             - "^sec-scanners-config-"
+            - "^sm-integration$"
         template-operator:
           required_status_checks:
             contexts:
@@ -361,6 +361,10 @@ branch-protection:
         keda-manager:
           unmanaged: true
         warden:
+          unmanaged: true
+        docker-registry:
+          unmanaged: true
+        application-connector-manager:
           unmanaged: true
 
     kyma-incubator:
@@ -428,6 +432,7 @@ tide:
     kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
     kyma-project/nats-manager: squash
+    kyma-project/docker-registry: squash
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
@@ -487,6 +492,16 @@ tide:
           kyma-environment-broker:
             skip-unknown-contexts: true
           btp-manager:
+            skip-unknown-contexts: true
+          serverless:
+            skip-unknown-contexts: true
+          keda-manager:
+            skip-unknown-contexts: true
+          cli:
+            skip-unknown-contexts: true
+          warden:
+            skip-unknown-contexts: true
+          docker-registry:
             skip-unknown-contexts: true
 
 presets:
@@ -1281,3 +1296,11 @@ presets:
       - name: compass-director-secret
         mountPath: /compass-director-secret
         readOnly: true
+  - labels:
+      preset-image-builder-ado-token: "true"
+    env:
+      - name: ADO_PAT
+        valueFrom:
+          secretKeyRef:
+            name: image-builder-ado-token
+            key: token

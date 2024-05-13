@@ -11,6 +11,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -22,7 +23,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240404-09b82328"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -37,6 +38,8 @@ postsubmits: # runs on main
               - "--dockerfile=components/operator/Dockerfile"
               - "--build-arg=PURPOSE=release"
               - "--tag=$(PULL_BASE_REF)"
+              - "--tag=$(PULL_BASE_SHA)"
+              - "--build-in-ado=true"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -69,6 +72,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -80,7 +84,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -94,6 +98,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -120,6 +125,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -131,7 +137,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -145,6 +151,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -171,6 +178,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -182,7 +190,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -196,6 +204,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -222,6 +231,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-runtimes-nodejs-v18-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -233,7 +243,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -247,6 +257,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -273,6 +284,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-runtimes-nodejs-v20-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -284,7 +296,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -298,6 +310,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs20/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -324,6 +337,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-runtimes-python39-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -335,7 +349,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -349,6 +363,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/python"
               - "--dockerfile=python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -375,6 +390,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -386,7 +402,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -400,6 +416,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/python"
               - "--dockerfile=python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -426,6 +443,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-serverless-runtimes-python312-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
       always_run: true
@@ -437,7 +455,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -451,6 +469,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/python"
               - "--dockerfile=python312/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
