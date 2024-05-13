@@ -250,7 +250,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 			os.Exit(1)
 		}
 		appendToSetsOfTags(&options.buildArgs, envs)
-		fmt.Printf("Resulting buildArgs %v\n", options.buildArgs)
 	}
 	if len(options.buildArgs) > 0 {
 		templateParameters.SetBuildArgs(options.buildArgs.String())
@@ -486,24 +485,20 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 
 // appendMissing appends key, values pairs from source array to target map
 func appendToTags(target *[]tags.Tag, source map[string]string) {
-	fmt.Printf("Appending envs %v to tags %v\n", source, target)
 	if len(source) > 0 {
 		for key, value := range source {
 			*target = append(*target, tags.Tag{Name: key, Value: value})
 		}
 	}
-	fmt.Printf("Resulting tags %v\n", target)
 }
 
 // appendMissing appends key, values pairs from source array to target map
 func appendToSetsOfTags(target *sets.Tags, source map[string]string) {
-	fmt.Printf("Appending envs %v to tags %v\n", source, target)
 	if len(source) > 0 {
 		for key, value := range source {
 			*target = append(*target, tags.Tag{Name: key, Value: value})
 		}
 	}
-	fmt.Printf("Resulting tags %v\n", target)
 }
 
 // TODO: write tests for this function
@@ -845,7 +840,6 @@ func main() {
 			os.Exit(1)
 		}
 		appendToTags(&parsedTags, envs)
-		fmt.Printf("Resulting tags %v\n", parsedTags)
 		// Print parsed tags to stdout as json
 		jsonTags, err := json.Marshal(parsedTags)
 		if err != nil {
