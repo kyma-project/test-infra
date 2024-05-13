@@ -229,7 +229,9 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetDockerfilePath(options.dockerfile)
 
-	templateParameters.SetEnvFilePath(options.envFile)
+	if len(options.envFile) > 0 {
+		templateParameters.SetEnvFilePath(options.envFile)
+	}
 
 	templateParameters.SetBuildContext(options.context)
 
