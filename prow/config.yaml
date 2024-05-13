@@ -456,6 +456,19 @@ tide:
   queries:
     - labels:
         - lgtm
+        - approved
+        - ok-tested
+      missingLabels:
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-incubator/compass
+        - kyma-incubator/ord-service
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
       missingLabels:
         - do-not-merge/hold
         - do-not-merge/work-in-progress
@@ -464,6 +477,9 @@ tide:
       orgs:
         - kyma-project
         - kyma-incubator
+      excludedRepos:
+        - kyma-incubator/compass
+        - kyma-incubator/ord-service
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -475,19 +491,6 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-project/k8s-prow
-      reviewApprovedRequired: true
-    - labels:
-        - lgtm
-        - approved
-        - ok-tested
-      missingLabels:
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      repos:
-        - kyma-incubator/compass
-        - kyma-incubator/ord-service
       reviewApprovedRequired: true
     # special query for automations
     - labels:
