@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -855,6 +856,15 @@ func main() {
 }
 
 func getDockerfileDirPath(o options) (string, error) {
+	cmd := exec.Command("tree")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Err:", err)
+	}
+	fmt.Println("Command result 'tree':", out.String())
+
 	// Get the absolute path to the build context directory.
 	context, err := filepath.Abs(o.context)
 	if err != nil {
@@ -863,5 +873,13 @@ func getDockerfileDirPath(o options) (string, error) {
 	// Get the absolute path to the dockerfile.
 	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
 	fmt.Printf("Dockerfile path: %s \n", dockerfileDirPath)
+	// Print all files in the dockerfile directory.
+	entries, err := os.ReadDir(dockerfileDirPath)
+	if err != nil {
+		return "", fmt.Errorf("could not read dir: %w", err)
+	}
+	for _, e := range entries {
+		fmt.Println(e.Name())
+	}
 	return dockerfileDirPath, err
 }
