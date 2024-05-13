@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -268,7 +269,7 @@ func buildInADO(o options) error {
 		o.azureAccessToken = adoPAT
 	}
 
-	gitState, err := LoadGitStateConfigFromEnv(o)
+	gitState, err := LoadGitStateConfig(o)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed load git state from environment: %s", err)
 	}
@@ -756,7 +757,11 @@ func main() {
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
-		o.ciSystem = determineUsedCISystem()
+		ciSystem, err := determineUsedCISystem()
+		if err != nil {
+			log.Fatalf("Failed to determine current ci system: %s", err)
+		}
+		o.ciSystem = ciSystem
 	}
 
 	// validate if options provided by flags and config file are fine
@@ -786,7 +791,7 @@ func main() {
 	}
 
 	if o.parseTagsOnly {
-		parsedTags, err := parseTagsFromEnv(o)
+		parsedTags, err := parseTags(o)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -817,11 +822,11 @@ func main() {
 	fmt.Println("Job's done.")
 }
 
-func parseTagsFromEnv(o options) ([]tags.Tag, error) {
+func parseTags(o options) ([]tags.Tag, error) {
 	var sha, pr string
 	// Get git state from ci system
 	if o.isCI {
-		gitState, err := LoadGitStateConfigFromEnv(o)
+		gitState, err := LoadGitStateConfig(o)
 		if err != nil {
 			return nil, fmt.Errorf("cannot load actual git state from env vars: %s", err)
 		}

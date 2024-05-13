@@ -215,7 +215,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	// Read event payload file from runner
 	data, err := os.ReadFile(eventPayloadPath)
 	if err != nil {
-	return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %w", err)
+		return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %w", err)
 	}
 
 	// Handle different events types
@@ -253,22 +253,22 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
-// determineUsedCISystem return CISystem bind to system in which image builder is running or empty string if unknown
+// determineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
 // It is used to avoid getting env variables in multiple parts of image builder
-func determineUsedCISystem() CISystem {
+func determineUsedCISystem() (CISystem, error) {
 	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
 	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
 	isGithubActions := os.Getenv("GITHUB_ACTIONS")
 	if isGithubActions == "true" {
-		return GithubActions
+		return GithubActions, nil
 	}
 
 	// PROW_JOB_ID environment variables contains ID of prow job
 	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
 	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
 	if isProwJob {
-		return Prow
+		return Prow, nil
 	}
 
-	return ""
+	return "", fmt.Errorf("cannot determine ci system: unknown system")
 }

@@ -144,7 +144,7 @@ func Test_getVariants(t *testing.T) {
 	}
 }
 
-func TestLoadGitStateConfigFromEnv(t *testing.T) {
+func TestLoadGitStateConfig(t *testing.T) {
 	tc := []struct {
 		name        string
 		options     options
@@ -264,7 +264,7 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 			}
 
 			// Load git state
-			state, err := LoadGitStateConfigFromEnv(c.options)
+			state, err := LoadGitStateConfig(c.options)
 			if err != nil && !c.expectError {
 				t.Errorf("unexpected error occured %s", err)
 			}
@@ -281,9 +281,10 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 
 func Test_determineCISystem(t *testing.T) {
 	tc := []struct {
-		name     string
-		env      map[string]string
-		ciSystem CISystem
+		name      string
+		env       map[string]string
+		ciSystem  CISystem
+		expectErr bool
 	}{
 		{
 			name: "detect running in prow jobs",
@@ -299,6 +300,12 @@ func Test_determineCISystem(t *testing.T) {
 			},
 			ciSystem: GithubActions,
 		},
+		{
+			name:      "unknown ci system",
+			env:       map[string]string{},
+			ciSystem:  "",
+			expectErr: true,
+		},
 	}
 
 	for _, c := range tc {
@@ -308,7 +315,13 @@ func Test_determineCISystem(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
-			ciSystem := determineUsedCISystem()
+			ciSystem, err := determineUsedCISystem()
+			if err != nil && !c.expectErr {
+				t.Errorf("got unexpected error: %s", err)
+			}
+			if err == nil && c.expectErr {
+				t.Error("error expected, but no one occured")
+			}
 
 			if ciSystem != c.ciSystem {
 				t.Errorf("determineCISystem(): Got %s, but expected %s", ciSystem, c.ciSystem)
