@@ -862,6 +862,5 @@ func getDockerfileDirPath(o options) (string, error) {
 	}
 	// Get the absolute path to the dockerfile.
 	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
-	fmt.Printf("Dockerfile path: %s \n", dockerfileDirPath)
 	return dockerfileDirPath, err
 }
