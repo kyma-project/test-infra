@@ -9,6 +9,7 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-img-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -16,7 +17,7 @@ presubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -25,6 +26,7 @@ presubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=runtime-watcher"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"
@@ -40,16 +42,10 @@ presubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
 postsubmits:
   kyma-project/runtime-watcher:
     - name: main-runtime-watcher-build
@@ -61,7 +57,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "watcher-build-latest"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -71,7 +67,7 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -80,6 +76,7 @@ postsubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=runtime-watcher-skr"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"
@@ -96,16 +93,10 @@ postsubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: release-runtime-watcher-build
       annotations:
         description: "build runtime watcher release image by semantic version tag"
@@ -115,7 +106,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "watcher-build-release"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -125,7 +116,7 @@ postsubmits:
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -134,6 +125,7 @@ postsubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=runtime-watcher-skr"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"

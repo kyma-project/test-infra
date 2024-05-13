@@ -5,13 +5,13 @@ RUN apk add --no-cache curl && \
   | tar xz docker-credential-gcr \
   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
 
-FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240404-de49794e AS builder
+FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240409-9277fe7f AS builder
 
 WORKDIR /
 COPY . /app/
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
-FROM moby/buildkit:v0.13.1-rootless
+FROM moby/buildkit:v0.13.2-rootless
 
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev

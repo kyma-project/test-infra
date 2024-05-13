@@ -50,7 +50,7 @@
 
 [Standard Terraform Configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in the `test-infra` repository. 
 
-[How to Name a Secret](/docs/how-to/how-to-name-secret.md) - This tutorial describes how to name a secret in Google Secret Manager.
+[Name a Secret](/docs/how-to/how-to-name-secret.md) - This tutorial describes how to name a secret in Google Secret Manager.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
@@ -79,8 +79,6 @@
 [Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
 
 [Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
-
-[Security Leaks Scanner](/docs/prow/security_commit_scanner.md) - Security Leaks Scanner is a tool that scans a repository for potential security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient examination of your repository. 
 
 [Prow Test Clusters](/docs/prow/test-clusters.md) - This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 

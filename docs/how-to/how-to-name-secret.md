@@ -1,4 +1,4 @@
-# How to Name a Secret
+# Name a Secret
 
 This tutorial describes how to name a secret in Google Secret Manager.
 

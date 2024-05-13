@@ -10,7 +10,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-infrastructure-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
                   annotations:
                     owner: framefrog
                     description: run infrastructure-manager build
@@ -25,7 +25,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-infrastructure-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
                   annotations:
                     owner: framefrog
                     description: build infrastructure-manager

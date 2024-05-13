@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS build
+FROM golang:1.22.3-alpine AS build
 
 WORKDIR /build
 
@@ -7,7 +7,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o ./githubrelease ./cmd/tools/githubrelease && \
     chmod +x ./githubrelease
 
-FROM node:21.7.2-alpine
+FROM node:22.1.0-alpine
 
 LABEL source git@github.com:kyma-project/test-infra.git
 

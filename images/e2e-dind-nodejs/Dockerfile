@@ -1,4 +1,4 @@
-FROM node:20.10.0-bookworm-slim as base
+FROM node:20.12.2-bookworm-slim as base
 
 
 ENV TERM=xterm
@@ -52,11 +52,11 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
 #ARG KIND_VERSION=v0.18.0
 #RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-ARG CLUSTER_VERSION=v1.28.6
+ARG CLUSTER_VERSION=v1.28.9
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
-ARG HELM_VERSION=v3.13.2
+ARG HELM_VERSION=v3.14.4
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm

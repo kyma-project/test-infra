@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pre-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -163,7 +163,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -210,7 +210,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -229,8 +229,10 @@ presubmits: # runs on PRs
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -264,7 +266,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -314,7 +316,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -348,13 +350,12 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
 postsubmits: # runs on main
   kyma-project/third-party-images:
     - name: post-main-tpi-cloudsql-proxy
       annotations:
         description: "builds cloudsql-proxy image"
-        owner: "goat"
+        owner: "operations"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-cloudsql-proxy"
@@ -368,7 +369,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -418,7 +419,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -472,7 +473,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -522,7 +523,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -570,7 +571,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -591,8 +592,10 @@ postsubmits: # runs on main
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -630,7 +633,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -685,7 +688,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:

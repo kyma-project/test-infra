@@ -13,29 +13,29 @@ templates:
               - "^release-*"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240408-a9b4b1b4
+            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
             labels:
               preset-sa-kyma-push-images: "true"
+              preset-image-builder-ado-token: "true"
             volumes:
               - name: config
                 configMapName: kaniko-build-config
-              - name: signify-secret
-                secretName: signify-dev-secret
             volumeMounts:
               - name: config
                 mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
                 readOnly: true
           limits:
             limits_memory: 3Gi
             limits_cpu: 2
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/|\.md$'
+          post_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
@@ -49,6 +49,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -61,8 +62,6 @@ templates:
                   annotations:
                     owner: otters
                     description: keda module build job
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -70,6 +69,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                     - '--tag=$(PULL_BASE_SHA)'
+                    - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -77,20 +77,20 @@ templates:
                   local:
                     - job_build
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: release-keda-manager-build
                   annotations:
                     owner: otters
                     description: Job to build keda module for a release.
                   always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--build-in-ado=true"
                   branches:
                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
