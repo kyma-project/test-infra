@@ -41,9 +41,11 @@ jobs:
           console.log(`Ref: ${{ inputs.ref }}`);
           const oidc_token = "${{ steps.get_oidc.outputs.jwt }}";
           const payload = JSON.parse(Buffer.from(oidc_token.split('.')[1], 'base64').toString());
+
           // Define the expected values for issuer and job workflow ref
           const ISS_EXPECTED = "https://token.actions.githubusercontent.com";
           const JOB_WORKFLOW_REF_EXPECTED = "kyma-project/test-infra/.github/workflows/reusable-workflow.yml@refs/heads/main";
+
           // Check if the 'iss' field matches the expected value
           if (payload.iss !== ISS_EXPECTED) {
             console.error(`Issuer (iss) does not match the expected value. Found: ${payload.iss}, expected: ${ISS_EXPECTED}`);
@@ -51,6 +53,7 @@ jobs:
           } else {
             console.log("Issuer (iss) matches the expected value.");
           }
+
           // Check if the 'job_workflow_ref' field matches the expected value
           if (payload.job_workflow_ref !== JOB_WORKFLOW_REF_EXPECTED) {
             console.error(`Job workflow ref does not match the expected value. Found: ${payload.job_workflow_ref}, expected: ${JOB_WORKFLOW_REF_EXPECTED}`);
