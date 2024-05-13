@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -856,15 +855,6 @@ func main() {
 }
 
 func getDockerfileDirPath(o options) (string, error) {
-	cmd := exec.Command("tree")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println("Err:", err)
-	}
-	fmt.Println("Command result 'tree':", out.String())
-
 	// Get the absolute path to the build context directory.
 	context, err := filepath.Abs(o.context)
 	if err != nil {
