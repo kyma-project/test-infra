@@ -139,7 +139,7 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 	return gitState.isPullRequest
 }
 
-func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
+func LoadGitStateConfig(o options) (GitStateConfig, error) {
 	switch o.ciSystem {
 	// Load from env specific for github actions
 	case GithubActions:
@@ -215,12 +215,12 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	// Read event payload file from runner
 	data, err := os.ReadFile(eventPayloadPath)
 	if err != nil {
-		return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %s", err)
+	return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %w", err)
 	}
 
 	// Handle different events types
 	switch eventName {
-	case "pull_request_target", "pull_request":
+	case "pull_request_target":
 		var payload github.PullRequestEvent
 		err = json.Unmarshal(data, &payload)
 		if err != nil {
