@@ -237,20 +237,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetUseKanikoConfigFromPR(options.testKanikoBuildConfig)
 
-	dockerfilePath, err := getDockerfileDirPath(options)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	// Load environment variables from the envFile.
-	if len(options.envFile) > 0 {
-		envs, err := loadEnv(os.DirFS(dockerfilePath), options.envFile)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		appendToSetsOfTags(&options.buildArgs, envs)
-	}
 	if len(options.buildArgs) > 0 {
 		templateParameters.SetBuildArgs(options.buildArgs.String())
 	}
@@ -259,7 +245,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetImageTags(options.tags.String())
 	}
 
-	err = templateParameters.Validate()
+	err := templateParameters.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("failed validating ADO template parameters, err: %w", err)
 	}
@@ -485,15 +471,6 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 
 // appendMissing appends key, values pairs from source array to target map
 func appendToTags(target *[]tags.Tag, source map[string]string) {
-	if len(source) > 0 {
-		for key, value := range source {
-			*target = append(*target, tags.Tag{Name: key, Value: value})
-		}
-	}
-}
-
-// appendMissing appends key, values pairs from source array to target map
-func appendToSetsOfTags(target *sets.Tags, source map[string]string) {
 	if len(source) > 0 {
 		for key, value := range source {
 			*target = append(*target, tags.Tag{Name: key, Value: value})
