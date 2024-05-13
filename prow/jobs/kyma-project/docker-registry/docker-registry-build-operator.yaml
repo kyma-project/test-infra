@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -36,6 +36,64 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/operator/Dockerfile"
+              - "--build-in-ado=true"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: share
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: pre-registry-init-build
+      annotations:
+        description: "registry-init image build"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-registry-init-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
+        preset-sa-kyma-push-images: "true"
+      skip_if_only_changed: '^docs/|^examples/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/image-builder"
+            args:
+              - "--name=registry-init"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=components/registry-init/Dockerfile"
               - "--build-in-ado=true"
             env:
               - name: BUILDKITD_FLAGS
@@ -84,7 +142,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -97,6 +155,66 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/operator/Dockerfile"
+              - "--tag=$(PULL_BASE_SHA)"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--build-in-ado=true"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: share
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-registry-init-build
+      annotations:
+        description: "registry-init image build"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-registry-init-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-image-builder-ado-token: "true"
+        preset-sa-kyma-push-images: "true"
+      skip_if_only_changed: '^docs/|^examples/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/image-builder"
+            args:
+              - "--name=registry-init"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=components/registry-init/Dockerfile"
               - "--tag=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_REF)"
               - "--build-in-ado=true"

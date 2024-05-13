@@ -18,7 +18,7 @@
               #request_memory: 1Gi
             jobConfig_pjconfigtest:
               run_if_changed: '^.prow/|^.prow.yaml'
-              image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240425-d2414951"
+              image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
               command: "/ginkgo"
               args:
                 - "-r"

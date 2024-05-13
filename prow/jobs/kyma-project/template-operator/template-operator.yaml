@@ -9,6 +9,7 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pull-build-template-operator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -16,7 +17,7 @@ presubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -25,6 +26,7 @@ presubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
@@ -36,16 +38,10 @@ presubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
 postsubmits:
   kyma-project/template-operator:
     - name: main-template-op-build
@@ -57,7 +53,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "main-template-op-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -65,7 +61,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240424-ba8cae9d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -74,6 +70,7 @@ postsubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
@@ -86,16 +83,10 @@ postsubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: release-template-operator-build
       annotations:
         description: "Job to build template-operator for a release."
@@ -105,7 +96,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "release-template-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
+        preset-image-builder-ado-token: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -124,6 +115,7 @@ postsubmits:
             command:
               - "/image-builder"
             args:
+              - "--build-in-ado=true"
               - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
@@ -142,17 +134,11 @@ postsubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: share
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: release-template-operator-assets
       annotations:
         description: "Job to upload remaining template-operator assets to a release."
@@ -172,7 +158,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240425-d2414951"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240510-460cb9f9"
             securityContext:
               privileged: false
               seccompProfile:
