@@ -26,24 +26,24 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml","--inrepo-config=prow\/image-detector\/inrepo-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=configs\/autobump-config\/prow-cluster-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump-jobs
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=configs\/autobump-config\/test-infra-autobump-config\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
       # ci-k8s-prow-autobump-testimages
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=config\/prow\/autobump-config\/kyma-testimages-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow,skip-review"\],"container_name":"test",.*}$'
       # sidecar
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:*"
+      - image: "gcr.io/k8s-prow/sidecar:*"
         command: []
         args: []

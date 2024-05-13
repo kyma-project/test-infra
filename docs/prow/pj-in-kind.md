@@ -5,8 +5,10 @@ This document provides brief instructions on how to run ProwJobs in local kind (
 On a workload cluster, each ProwJob runs as a Pod. Prow toolbox contains the following 2 CLI applications that let you generate
 a 1:1 representation of a Pod that would be applied on the workload cluster:
 
-* [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) - generates a ProwJob custom resource (CR) from a Prow config with an interactive shell
-* [mkpod](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpod) - generates a Pod spec from ProwJob custom resource with an interactive shell
+* [mkpj](https://github.com/kubernetes-sigs/prow/tree/main/cmd/mkpj) - generates a ProwJob custom resource (CR) from a Prow config with an
+  interactive shell
+* [mkpod](https://github.com/kubernetes-sigs/prow/tree/main/cmd/mkpod) - generates a Pod spec from ProwJob custom resource with an
+  interactive shell
 
 The applications serve as a CLI extension of Prow's internal functions to let you generate, run, and debug any ProwJob.
 
