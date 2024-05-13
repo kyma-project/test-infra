@@ -798,8 +798,9 @@ func main() {
 			os.Exit(1)
 		}
 		// Load environment variables from the envFile.
+		var envs map[string]string
 		if len(o.envFile) > 0 {
-			_, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+			envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -829,6 +830,7 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		appendToTags(parsedTags, envs)
 		// Print parsed tags to stdout as json
 		jsonTags, err := json.Marshal(parsedTags)
 		if err != nil {
