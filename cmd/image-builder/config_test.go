@@ -246,6 +246,14 @@ func TestLoadGitStateConfigFromEnv(t *testing.T) {
 				isPullRequest:   false,
 			},
 		},
+		{
+			name: "Unknown ci system, return err",
+			options: options{
+				ciSystem: "",
+			},
+			expectError: true,
+			gitState:    GitStateConfig{},
+		},
 	}
 
 	for _, c := range tc {

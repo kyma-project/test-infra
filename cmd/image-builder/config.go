@@ -140,25 +140,17 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 }
 
 func LoadGitStateConfigFromEnv(o options) (GitStateConfig, error) {
-	var config GitStateConfig
-	var err error
-
 	switch o.ciSystem {
 	// Load from env specific for github actions
 	case GithubActions:
-		config, err = loadGithubActionsGitState()
-		if err != nil {
-			return config, err
-		}
+		return loadGithubActionsGitState()
 	// Load from env specific for prow jobs
 	case Prow:
-		config, err = loadProwJobGitState()
-		if err != nil {
-			return config, err
-		}
+		return loadProwJobGitState()
+	default:
+		// Unknown CI System, return error and empty git state
+		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", o.ciSystem)
 	}
-
-	return config, nil
 }
 
 func loadProwJobGitState() (GitStateConfig, error) {
