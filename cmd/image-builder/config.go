@@ -117,7 +117,7 @@ func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
 
 // GitStateConfig holds information about repository and specific commit
 // from which image should be build.
-// It also contains information wheter job is presubmit or postsubmit
+// It also contains information whether job is presubmit or postsubmit
 type GitStateConfig struct {
 	// Name of the source repository
 	RepositoryName string
