@@ -49,16 +49,26 @@ runs:
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --build-arg $entry"
+            result+=" --build-arg=$entry"
           fi
         done
         echo "build-args=$result" >> $GITHUB_OUTPUT
-        echo "build_args=$result" >> $GITHUB_ENV
       id: prepare-build-args
       shell: bash
     - run: |
+        readarray -t lines <<<"${{ inputs.tags }}"
+        result=""
+        for entry in "${lines[@]}"; do
+          if [[ -n "$entry" ]]; then
+            result+=" --tag=$entry"
+          fi
+        done
+        echo "tags=$result" >> $GITHUB_OUTPUT
+      id: prepare-tags
+      shell: bash
+    - run: |
         echo "${{ steps.prepare-build-args.outputs.build-args }}"
-        echo "${build_args}"
+        echo "${{ steps.prepare-tags.outputs.tags }}"
       shell: bash
   # using: "docker"
   # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
