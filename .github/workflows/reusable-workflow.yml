@@ -16,7 +16,36 @@ on:
         required: false
         type: boolean
         default: false
-
+      name:
+        description: Name of the build image
+        required: false
+        type: string
+        default: test-infra/ginkgo
+      dockerfile:
+        description: Path to the dockerfile used to build docker image
+        required: false
+        type: string
+        default: "prow/images/ginkgo/Dockerfile"
+      context:
+        description: Build context to build container from
+        required: false
+        type: string
+        default: .
+      build-args:
+        description: "Additional arguments to build dockerfile, one per line. It can be used in the name=value format."
+        required: false
+        type: string
+        default: ""
+      tags:
+        description: "Additional tags, one per line, that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags"
+        required: false
+        type: string
+        default: ""
+      export-tags:
+        description: Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag
+        required: false
+        type: boolean
+        default: false
 jobs:
   get_oidc_token_job:
     permissions:
@@ -68,10 +97,11 @@ jobs:
         with:
           oidc-token: ${{ steps.get_oidc.outputs.jwt }}
           ado-token: ${{ secrets.ADO_PAT }}
-          build-args: |
-            test1=val2
-            test2=val1
-          image-name: test-infra/ginkgo
-          dockerfile: prow/images/ginkgo/Dockerfile
-      - run: echo ${{ steps.build.outputs }} # TODO(kacpermalachowski): Remove after implementation of output handling
+          context: ${{ inputs.context }}
+          build-args: ${{ inputs.build-args }}
+          tags: ${{ inputs.tags }}
+          export-tags: ${{ inputs.export-tags }}
+          image-name: ${{ inputs.name }}
+          dockerfile: ${{ inputs.dockerfile }}
+      - run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
         name: Show outputs
