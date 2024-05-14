@@ -68,6 +68,9 @@ jobs:
         with:
           oidc-token: ${{ steps.get_oidc.outputs.jwt }}
           ado-token: ${{ secrets.ADO_PAT }}
+          build-args: |
+            test1=val2
+            test2=val1
           image-name: test-infra/ginkgo
           dockerfile: prow/images/ginkgo/Dockerfile
       - run: echo ${{ steps.build.outputs }} # TODO(kacpermalachowski): Remove after implementation of output handling

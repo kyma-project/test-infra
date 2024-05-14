@@ -32,7 +32,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "Hello world!"
+    - run: echo "${{ inputs.build-args}}"
       shell: bash
   # using: "docker"
   # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
