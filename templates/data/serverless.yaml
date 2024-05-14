@@ -417,6 +417,21 @@ templates:
                     - job_branches
                     - skip_if_only_changed_documentation
                     - default
+              - jobConfig:
+                  name: pull-serverless-operator-lint
+                  annotations:
+                    owner: otters
+                    description: serverless operator lint
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/operator/(.*\.go$|.golangcilint.yaml)'
+                  inheritedConfigs:
+                    global:
+                      - jobConfig_presubmit
+                      - linting
+                      - unprivileged
       - to: ../../prow/jobs/kyma-project/serverless/serverless-release.yaml
         localSets:
           default:

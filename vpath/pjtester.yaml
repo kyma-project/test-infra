@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      serverless:
+        prNumber: 983
+  prowJobs:
+    kyma-project:
+      serverless:
+        - pjName: "pull-serverless-operator-lint"
+prConfigs: #
+  kyma-project:
+    serverless:
+      prNumber: 983
