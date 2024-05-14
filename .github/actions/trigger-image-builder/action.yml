@@ -44,6 +44,20 @@ runs:
       shell: bash
     - run: echo "${{ inputs.tags}}"
       shell: bash
+    - run: |
+        string="${{ inputs.build-args }}"
+        IFS=$'\n' read -r -d '' -a entries <<<"$string"
+        result=""
+
+        for entry in "${entries[@]}"; do
+          result+=" --build-arg=$entry"
+        done
+
+        echo "build-args=$result" >> $GITHUB_OUTPUT
+      id: prepare-build-args
+      shell: bash
+    - run: echo "${{ steps.prepare-build-args.outputs.build-args }}"
+      shell: bash
   # using: "docker"
   # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   # args:
