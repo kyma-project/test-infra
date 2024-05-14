@@ -45,7 +45,7 @@ runs:
     - run: echo "${{ inputs.tags}}"
       shell: bash
     - run: |
-        readarray -t lines <<<"${{ input.build-args }}"
+        readarray -t lines <<<"${{ inputs.build-args }}"
         result=""
         for entry in "${lines[@]}"; do
           result+=" --build-arg $entry"
