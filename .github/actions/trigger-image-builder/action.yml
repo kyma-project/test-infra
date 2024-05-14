@@ -47,7 +47,7 @@ runs:
     - run: |
         string=$(cat<<-EOM
         ${{ inputs.build-args }}
-        EOM
+      EOM
 
         )
 
