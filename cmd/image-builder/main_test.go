@@ -559,7 +559,7 @@ func Test_appendMissing(t *testing.T) {
 	}
 }
 
-func Test_parseTagsFromEnv(t *testing.T) {
+func Test_parseTags(t *testing.T) {
 	tc := []struct {
 		name      string
 		options   options

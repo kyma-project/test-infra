@@ -251,6 +251,18 @@ func TestLoadGitStateConfig(t *testing.T) {
 			options: options{
 				ciSystem: "",
 			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
+				"GITHUB_EVENT_NAME": "pull_request",
+			},
+			expectError: true,
+			gitState:    GitStateConfig{},
+		},
+		{
+			name: "Unsupported github event, err",
+			options: options{
+				ciSystem: GithubActions,
+			},
 			expectError: true,
 			gitState:    GitStateConfig{},
 		},
