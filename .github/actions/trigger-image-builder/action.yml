@@ -22,6 +22,14 @@ inputs:
     description: "Additional arguments to build dockerfile. It can be used in the name=value format."
     required: false
     default: ""
+  tags:
+    description: "Additional tags that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags"
+    required: false
+    default: ""
+  export-tags:
+    description: Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag
+    required: false
+    default: false
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
