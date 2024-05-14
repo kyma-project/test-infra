@@ -18,6 +18,10 @@ inputs:
     description: Path to the dockerfile used to build docker image
     required: false
     default: Dockerfile
+  build-args:
+    description: "Additional arguments to build dockerfile. It can be used in the name=value format."
+    required: false
+    default: ""
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
@@ -26,13 +30,18 @@ outputs:
   adoResult:
     description: The result of the ADO pipeline execution
 runs:
-  using: "docker"
-  image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
-  args:
-    - "--name=${{ inputs.image-name }}"
-    - "--context=${{ inputs.context }}"
-    - "--dockerfile=${{ inputs.dockerfile }}"
-    - "--azure-access-token=${{ inputs.ado-token }}"
-    - "--oidc-token=${{ inputs.oidc-token }}"
-    - "--config=./configs/kaniko-build-config.yaml"
-    - "--build-in-ado=true"
+  using: "composite"
+  steps:
+    - run: echo "Hello world!"
+
+  # using: "docker"
+  # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
+  # args:
+  #   - "--name=${{ inputs.image-name }}"
+  #   - "--context=${{ inputs.context }}"
+  #   - "--dockerfile=${{ inputs.dockerfile }}"
+  #   - "--azure-access-token=${{ inputs.ado-token }}"
+  #   - "--oidc-token=${{ inputs.oidc-token }}"
+  #   - "--build-arg"
+  #   - "--config=./configs/kaniko-build-config.yaml"
+  #   - "--build-in-ado=true"
