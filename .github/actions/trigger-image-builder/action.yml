@@ -45,21 +45,12 @@ runs:
     - run: echo "${{ inputs.tags}}"
       shell: bash
     - run: |
-        string=$(cat<<-EOM
-        ${{ inputs.build-args }}
-        EOM
-
-        )
-
-        echo "Results $string"
-        IFS=$'\n' read -r -d '' -a entries <<<"$string"
+        readarray -t lines <<<"${{ input.build-args }}"
         result=""
-
-        echo "Entries $entries"
-        for entry in "${entries[@]}"; do
-          result+=" --build-arg=$entry"
+        for entry in "${lines[@]}"; do
+          result+=" --build-arg $entry"
         done
-
+        echo "Result: $result"
         echo "build-args=$result" >> $GITHUB_OUTPUT
       id: prepare-build-args
       shell: bash
