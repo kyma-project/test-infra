@@ -49,7 +49,7 @@ runs:
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --build-arg=$entry"
+            result+=" --build-arg=\"$entry\""
           fi
         done
         echo "build-args=$result" >> $GITHUB_OUTPUT
