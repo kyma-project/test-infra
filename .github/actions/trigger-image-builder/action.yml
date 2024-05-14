@@ -47,13 +47,15 @@ runs:
     - run: |
         string=$(cat<<-EOM
         ${{ inputs.build-args }}
-      EOM
+        EOM
 
         )
 
+        echo "Results $string"
         IFS=$'\n' read -r -d '' -a entries <<<"$string"
         result=""
 
+        echo "Entries $entries"
         for entry in "${entries[@]}"; do
           result+=" --build-arg=$entry"
         done
