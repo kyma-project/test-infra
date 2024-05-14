@@ -55,9 +55,7 @@ runs:
         echo "build-args=$result" >> $GITHUB_ENV
       id: prepare-build-args
       shell: bash
-    - run: |
-        echo "${{ steps.prepare-build-args.outputs.build-args }}"
-        echo "${BUILD_ARGS} ${build-args}"
+    - run: echo "${build-args}"
       shell: bash
   # using: "docker"
   # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
