@@ -40,10 +40,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "${{ inputs.build-args}}"
-      shell: bash
-    - run: echo "${{ inputs.tags}}"
-      shell: bash
     - run: |
         readarray -t lines <<<"${{ inputs.build-args }}"
         result=""
@@ -65,10 +61,6 @@ runs:
         done
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
-      shell: bash
-    - run: |
-        echo "${{ steps.prepare-build-args.outputs.build-args }}"
-        echo "${{ steps.prepare-tags.outputs.tags }}"
       shell: bash
     - uses: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
       with:
