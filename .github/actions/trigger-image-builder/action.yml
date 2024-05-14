@@ -42,6 +42,8 @@ runs:
   steps:
     - run: echo "${{ inputs.build-args}}"
       shell: bash
+    - run: echo "${{ inputs.tags}}"
+      shell: bash
   # using: "docker"
   # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
   # args:
