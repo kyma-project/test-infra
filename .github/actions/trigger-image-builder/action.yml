@@ -45,7 +45,12 @@ runs:
     - run: echo "${{ inputs.tags}}"
       shell: bash
     - run: |
-        string="${{ inputs.build-args }}"
+        string=$(cat<<-EOM
+        ${{ inputs.build-args }}
+        EOM
+
+        )
+
         IFS=$'\n' read -r -d '' -a entries <<<"$string"
         result=""
 
