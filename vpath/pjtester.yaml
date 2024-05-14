@@ -1,0 +1,12 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless:
+        - pjName: "operator-lint"
+        - pjName: "pre-serverless-operator-tests"
+        - pjName: "pre-main-serverless-operator-verify"
+        - pjName: "post-main-serverless-operator-verify"
+prConfigs: #
+  kyma-project:
+    serverless:
+      prNumber: 983

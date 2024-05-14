@@ -670,15 +670,15 @@ templates:
                     - testing
                     - unprivileged
               - jobConfig:
-                  name: "pull-function-controller-lint"
+                  name: "operator-lint"
                   annotations:
                     owner: otters
                     description: function controller linting job
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/serverless/(.*\.go$|.golangcilint.yaml)'
+                    - "cd components/operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/operator/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -823,7 +823,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "make test"
+                    - "make -C components/operator test"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -925,7 +925,7 @@ templates:
                   global:
                     - jobConfig_default
                     - privileged
-                    - jobConfig_postsubmit
+                    - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
