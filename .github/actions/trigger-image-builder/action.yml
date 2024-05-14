@@ -48,7 +48,9 @@ runs:
         readarray -t lines <<<"${{ inputs.build-args }}"
         result=""
         for entry in "${lines[@]}"; do
-          result+=" --build-arg $entry"
+          if [[ -n "$entry" ]]; then
+            result+=" --build-arg $entry"
+          fi
         done
         echo "Result: $result"
         echo "build-args=$result" >> $GITHUB_OUTPUT
