@@ -60,7 +60,7 @@ runs:
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --tag=$entry"
+            result+=" --tag=\"$entry\""
           fi
         done
         echo "tags=$result" >> $GITHUB_OUTPUT
