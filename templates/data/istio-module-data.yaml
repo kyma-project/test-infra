@@ -15,7 +15,7 @@ templates:
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
