@@ -14,7 +14,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: docker-registry operator image build
@@ -36,7 +36,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: build docker-registry operator
@@ -60,7 +60,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-registry-init-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: registry-init image build
@@ -82,7 +82,7 @@ templates:
                     - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-registry-init-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: registry-init image build
@@ -117,7 +117,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-docker-registry-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: Job to build docker-registry operator for a release.
@@ -137,7 +137,7 @@ templates:
                     - release_image_build
               - jobConfig:
                   name: release-registry-init-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-81a4bd3f"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-cb3809ec"
                   annotations:
                     owner: otters
                     description: Job to build registry-init for a release.
