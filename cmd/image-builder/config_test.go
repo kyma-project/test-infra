@@ -328,8 +328,12 @@ func Test_determineCISystem(t *testing.T) {
 			ciSystem: GithubActions,
 		},
 		{
-			name:      "unknown ci system",
-			env:       map[string]string{},
+			name: "unknown ci system",
+			env: map[string]string{
+				// Prevent false positivie detection of CI system running test
+				"GITHUB_ACTIONS": "false",
+				"PROW_JOB_ID":    "",
+			},
 			ciSystem:  "",
 			expectErr: true,
 		},
