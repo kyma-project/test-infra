@@ -20,7 +20,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240510-460cb9f9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240515-4b89c97e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -54,7 +54,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240510-460cb9f9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240515-4b89c97e"
             securityContext:
               privileged: false
               seccompProfile:
