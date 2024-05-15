@@ -266,6 +266,14 @@ func TestLoadGitStateConfig(t *testing.T) {
 			expectError: true,
 			gitState:    GitStateConfig{},
 		},
+		{
+			name: "Unsupported prow event, err",
+			options: options{
+				ciSystem: Prow,
+			},
+			expectError: true,
+			gitState:    GitStateConfig{},
+		},
 	}
 
 	for _, c := range tc {
