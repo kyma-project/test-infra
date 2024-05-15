@@ -52,11 +52,6 @@ type options struct {
 	parseTagsOnly         bool
 }
 
-const (
-	PlatformLinuxAmd64 = "linux/amd64"
-	PlatformLinuxArm64 = "linux/arm64"
-)
-
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
 func parseVariable(key, value string) string {
@@ -234,6 +229,10 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetDockerfilePath(options.dockerfile)
 
+	if len(options.envFile) > 0 {
+		templateParameters.SetEnvFilePath(options.envFile)
+	}
+
 	templateParameters.SetBuildContext(options.context)
 
 	templateParameters.SetExportTags(options.exportTags)
@@ -376,17 +375,12 @@ func buildLocally(o options) error {
 	var variant Variants
 	var envs map[string]string
 
-	// Get the absolute path to the build context directory.
-	context, err := filepath.Abs(o.context)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
 	// 		We should call this function before calling image building functions.
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
-
+	dockerfilePath, err := getDockerfileDirPath(o)
+	if err != nil {
+		return fmt.Errorf("get dockerfile path failed, error: %w", err)
+	}
 	// Load environment variables from the envFile or variants.yaml file.
 	if len(o.envFile) > 0 {
 		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
@@ -468,12 +462,17 @@ func buildLocally(o options) error {
 
 // appendMissing appends key, values pairs from source array to target map
 func appendMissing(target *map[string]string, source []tags.Tag) {
-	if len(source) > 0 {
-		for _, arg := range source {
-			if _, exists := (*target)[arg.Name]; !exists {
-				(*target)[arg.Name] = arg.Value
-			}
+	for _, arg := range source {
+		if _, exists := (*target)[arg.Name]; !exists {
+			(*target)[arg.Name] = arg.Value
 		}
+	}
+}
+
+// appendToTags appends key-value pairs from source map to target slice and returns the result
+func appendToTags(target *[]tags.Tag, source map[string]string) {
+	for key, value := range source {
+		*target = append(*target, tags.Tag{Name: key, Value: value})
 	}
 }
 
@@ -645,10 +644,6 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("flag '--sign-only' is missing or has false value, please set it to true when using '--images-to-sign' flag"))
 	}
 
-	if o.envFile != "" && o.buildInADO {
-		errs = append(errs, fmt.Errorf("env-file flag is not supported when running in ADO"))
-	}
-
 	if o.variant != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
 	}
@@ -781,6 +776,20 @@ func main() {
 
 	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.parseTagsOnly {
+		dockerfilePath, err := getDockerfileDirPath(o)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		// Load environment variables from the envFile.
+		var envs map[string]string
+		if len(o.envFile) > 0 {
+			envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 		var sha, pr string
 		if o.isCI {
 			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
@@ -805,6 +814,7 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		appendToTags(&parsedTags, envs)
 		// Print parsed tags to stdout as json
 		jsonTags, err := json.Marshal(parsedTags)
 		if err != nil {
@@ -828,4 +838,15 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func getDockerfileDirPath(o options) (string, error) {
+	// Get the absolute path to the build context directory.
+	context, err := filepath.Abs(o.context)
+	if err != nil {
+		return "", fmt.Errorf("could not get absolute path to build context directory: %w", err)
+	}
+	// Get the absolute path to the dockerfile.
+	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
+	return dockerfileDirPath, err
 }

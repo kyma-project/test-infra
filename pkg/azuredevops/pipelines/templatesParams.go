@@ -75,6 +75,12 @@ func (p OCIImageBuilderTemplateParams) SetDockerfilePath(path string) {
 	p["Dockerfile"] = path
 }
 
+// SetEnvFilePath sets required parameter EnvFile.
+// This is a path relative to the context directory path.
+func (p OCIImageBuilderTemplateParams) SetEnvFilePath(path string) {
+	p["EnvFile"] = path
+}
+
 // SetBuildContext sets required parameter BuildContext.
 // This is the path to the build context directory.
 func (p OCIImageBuilderTemplateParams) SetBuildContext(context string) {
