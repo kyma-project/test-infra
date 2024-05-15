@@ -427,11 +427,11 @@ templates:
                     - "-c"
                     - "cd components/operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
                   run_if_changed: '^components/operator/(.*\.go$|.golangcilint.yaml)'
-                  inheritedConfigs:
-                    global:
-                      - jobConfig_presubmit
-                      - linting
-                      - unprivileged
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - unprivileged
       - to: ../../prow/jobs/kyma-project/serverless/serverless-release.yaml
         localSets:
           default:

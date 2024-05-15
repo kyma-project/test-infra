@@ -29,6 +29,7 @@ global:
         - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "compass-manager"
+        - name: "serverless"
     - name: "kyma-incubator"
       repos:
         - name: "compass"

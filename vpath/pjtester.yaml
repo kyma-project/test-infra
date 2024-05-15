@@ -1,8 +1,4 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      serverless:
-        prNumber: 983
   prowJobs:
     kyma-project:
       serverless:
