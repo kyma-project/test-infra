@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-keb-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on PR"
@@ -23,7 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig: # builds a docker image of the KEB tagged with the branch name
                   name: post-keb-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on tag creation"
@@ -43,7 +43,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-cleanup-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Clean up DEV from Kyma runtimes older than day job build on PR"
@@ -60,7 +60,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-cleanup-job-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Clean up DEV from Kyma runtimes older than day job build on tag creation"
@@ -81,7 +81,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Removes SKRs when BTP subaccount is deleted job build on PR"
@@ -98,7 +98,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Removes SKRs when BTP subaccount is deleted job build on tag creation"
@@ -119,7 +119,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-expirator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Expires instances for given plan and expiration period, build on PR"
@@ -136,7 +136,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-expirator-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Expires instances for given plan and expiration period, build on tag creation"
@@ -157,7 +157,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
@@ -174,7 +174,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Retries deprovisioned SKRs where some steps have failed job build on tag creation"
@@ -195,7 +195,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-archiver-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Archives deleted instances, removes operations and runtime states. Job built on PR"
@@ -213,7 +213,7 @@ templates:
 
               - jobConfig:
                   name: post-keb-archiver-job-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Archives deleted instances, removes operations and runtime states. Job built on tag creation"
@@ -234,7 +234,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-runtime-reconciler-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Job to build runtime-reconciler image on PR submit"
@@ -253,7 +253,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-runtime-reconciler-job-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Job to build runtime-reconciler image after PR merge"
@@ -274,7 +274,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-subaccount-sync-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on PR"
@@ -292,7 +292,7 @@ templates:
 
               - jobConfig:
                   name: post-keb-subaccount-sync-release-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622"
                   annotations:
                     owner: "gopher"
                     description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on tag creation"
