@@ -139,8 +139,8 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 	return gitState.isPullRequest
 }
 
-func LoadGitStateConfig(o options) (GitStateConfig, error) {
-	switch o.ciSystem {
+func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
+	switch ciSystem {
 	// Load from env specific for github actions
 	case GithubActions:
 		return loadGithubActionsGitState()
@@ -149,7 +149,7 @@ func LoadGitStateConfig(o options) (GitStateConfig, error) {
 		return loadProwJobGitState()
 	default:
 		// Unknown CI System, return error and empty git state
-		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", o.ciSystem)
+		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
 	}
 }
 

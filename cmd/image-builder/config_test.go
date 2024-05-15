@@ -276,7 +276,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 			}
 
 			// Load git state
-			state, err := LoadGitStateConfig(c.options)
+			state, err := LoadGitStateConfig(c.options.ciSystem)
 			if err != nil && !c.expectError {
 				t.Errorf("unexpected error occured %s", err)
 			}

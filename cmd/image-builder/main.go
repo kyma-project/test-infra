@@ -55,6 +55,7 @@ type options struct {
 	oidcToken             string
 	azureAccessToken      string
 	ciSystem              CISystem
+	gitState              GitStateConfig
 }
 
 const (
@@ -189,27 +190,27 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 // It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, useKanikoConfigFromPR, buildArgs, and imageTags.
 // The function validates the templateParameters and returns it along with any error that occurred during the process.
 // TODO: rename this function to indicate that it's preparing ADO pipeline parameters for oci-image-builder pipeline.
-func prepareADOTemplateParameters(options options, gitStateConfig GitStateConfig) (adopipelines.OCIImageBuilderTemplateParams, error) {
+func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
 	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
-	templateParameters.SetRepoName(gitStateConfig.RepositoryName)
+	templateParameters.SetRepoName(options.gitState.RepositoryName)
 
-	templateParameters.SetRepoOwner(gitStateConfig.RepositoryOwner)
+	templateParameters.SetRepoOwner(options.gitState.RepositoryOwner)
 
-	if gitStateConfig.JobType == "presubmit" {
+	if options.gitState.JobType == "presubmit" {
 		templateParameters.SetPresubmitJobType()
-	} else if gitStateConfig.JobType == "postsubmit" {
+	} else if options.gitState.JobType == "postsubmit" {
 		templateParameters.SetPostsubmitJobType()
 	}
 
-	if gitStateConfig.IsPullRequest() {
-		templateParameters.SetPullNumber(fmt.Sprint(gitStateConfig.PullRequestNumber))
+	if options.gitState.IsPullRequest() {
+		templateParameters.SetPullNumber(fmt.Sprint(options.gitState.PullRequestNumber))
 	}
 
-	templateParameters.SetBaseSHA(gitStateConfig.BaseCommitSHA)
+	templateParameters.SetBaseSHA(options.gitState.BaseCommitSHA)
 
-	if gitStateConfig.IsPullRequest() {
-		templateParameters.SetPullSHA(gitStateConfig.PullHeadCommitSHA)
+	if options.gitState.IsPullRequest() {
+		templateParameters.SetPullSHA(options.gitState.PullHeadCommitSHA)
 	}
 
 	templateParameters.SetImageName(options.name)
@@ -269,14 +270,9 @@ func buildInADO(o options) error {
 		o.azureAccessToken = adoPAT
 	}
 
-	gitState, err := LoadGitStateConfig(o)
-	if err != nil {
-		return fmt.Errorf("build in ADO failed, failed load git state from environment: %s", err)
-	}
-
 	fmt.Println("Preparing ADO template parameters.")
 	// Preparing ADO pipeline parameters.
-	templateParameters, err := prepareADOTemplateParameters(o, gitState)
+	templateParameters, err := prepareADOTemplateParameters(o)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
 	}
@@ -762,6 +758,10 @@ func main() {
 			log.Fatalf("Failed to determine current ci system: %s", err)
 		}
 		o.ciSystem = ciSystem
+		o.gitState, err = LoadGitStateConfig(ciSystem)
+		if err != nil {
+			log.Fatalf("Failed to load current git state: %s", err)
+		}
 	}
 
 	// validate if options provided by flags and config file are fine
@@ -823,16 +823,10 @@ func main() {
 }
 
 func parseTags(o options) ([]tags.Tag, error) {
-	var sha, pr string
-	// Get git state from ci system
-	if o.isCI {
-		gitState, err := LoadGitStateConfig(o)
-		if err != nil {
-			return nil, fmt.Errorf("cannot load actual git state from env vars: %s", err)
-		}
-
-		sha = gitState.BaseCommitSHA
-		pr = fmt.Sprint(gitState.PullRequestNumber)
+	var pr string
+	sha := o.gitState.BaseCommitSHA
+	if o.gitState.isPullRequest {
+		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 	}
 
 	if sha == "" {

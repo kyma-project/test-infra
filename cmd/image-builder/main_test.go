@@ -563,30 +563,56 @@ func Test_parseTags(t *testing.T) {
 	tc := []struct {
 		name      string
 		options   options
-		env       map[string]string
 		tags      []tags.Tag
 		expectErr bool
 	}{
 		{
-			name: "Prow based tags parse",
+			name: "PR tag parse",
 			options: options{
-				isCI:     true,
-				ciSystem: Prow,
-			},
-			env: map[string]string{
-				"JOB_TYPE":      "presubmit",
-				"PULL_NUMBER":   "5",
-				"PULL_BASE_SHA": "testShaOfCOmmit",
+				gitState: GitStateConfig{
+					BaseCommitSHA:     "some-sha",
+					PullRequestNumber: 5,
+					isPullRequest:     true,
+				},
+				tags: sets.Tags{
+					{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+				},
 			},
 			tags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
+		},
+		{
+			name: "Tags from commit sha",
+			options: options{
+				gitState: GitStateConfig{
+					BaseCommitSHA: "some-sha",
+				},
+				Config: Config{
+					TagTemplate: tags.Tag{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+				},
+			},
+			tags: []tags.Tag{{Name: "AnotherTest", Value: "some-sha"}},
+		},
+		{
+			name: "empty commit sha",
+			options: options{
+				gitState: GitStateConfig{},
+			},
+			expectErr: true,
 		},
 	}
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			// Prepare env vars
-			for key, value := range c.env {
-				t.Setenv(key, value)
+			tags, err := parseTags(c.options)
+			if err != nil && !c.expectErr {
+				t.Errorf("Got unexpected error: %s", err)
+			}
+			if err == nil && c.expectErr {
+				t.Error("Expected error, but no one occured")
+			}
+
+			if !reflect.DeepEqual(tags, c.tags) {
+				t.Errorf("Got %v, but expected %v", tags, c.tags)
 			}
 		})
 	}
