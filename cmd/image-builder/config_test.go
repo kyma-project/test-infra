@@ -253,7 +253,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 			},
 			env: map[string]string{
 				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
-				"GITHUB_EVENT_NAME": "pull_request",
+				"GITHUB_EVENT_NAME": "pull_request_target",
 			},
 			expectError: true,
 			gitState:    GitStateConfig{},
@@ -263,6 +263,10 @@ func TestLoadGitStateConfig(t *testing.T) {
 			options: options{
 				ciSystem: GithubActions,
 			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/pull_request_target_reopened.json",
+				"GITHUB_EVENT_NAME": "pull_request",
+			},
 			expectError: true,
 			gitState:    GitStateConfig{},
 		},
@@ -270,6 +274,9 @@ func TestLoadGitStateConfig(t *testing.T) {
 			name: "Unsupported prow event, err",
 			options: options{
 				ciSystem: Prow,
+			},
+			env: map[string]string{
+				"JOB_TYPE": "periodic",
 			},
 			expectError: true,
 			gitState:    GitStateConfig{},
