@@ -462,21 +462,17 @@ func buildLocally(o options) error {
 
 // appendMissing appends key, values pairs from source array to target map
 func appendMissing(target *map[string]string, source []tags.Tag) {
-	if len(source) > 0 {
-		for _, arg := range source {
-			if _, exists := (*target)[arg.Name]; !exists {
-				(*target)[arg.Name] = arg.Value
-			}
+	for _, arg := range source {
+		if _, exists := (*target)[arg.Name]; !exists {
+			(*target)[arg.Name] = arg.Value
 		}
 	}
 }
 
 // appendToTags appends key-value pairs from source map to target slice and returns the result
 func appendToTags(target *[]tags.Tag, source map[string]string) {
-	if len(source) > 0 {
-		for key, value := range source {
-			*target = append(*target, tags.Tag{Name: key, Value: value})
-		}
+	for key, value := range source {
+		*target = append(*target, tags.Tag{Name: key, Value: value})
 	}
 }
 
