@@ -15,6 +15,8 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240510-581352f0"
