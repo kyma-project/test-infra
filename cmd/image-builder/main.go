@@ -471,7 +471,7 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 	}
 }
 
-// appendMissing appends key, values pairs from source array to target map
+// appendToTags appends key-value pairs from source map to target slice and returns the result
 func appendToTags(target *[]tags.Tag, source map[string]string) {
 	if len(source) > 0 {
 		for key, value := range source {
