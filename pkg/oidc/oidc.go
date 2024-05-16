@@ -61,7 +61,7 @@ type VerifierProvider interface {
 }
 
 type ClaimsInterface interface {
-	Validate(jwt.Expected) error
+	// Validate(jwt.Expected) error
 	ValidateExpectations(Issuer) error
 }
 
@@ -219,12 +219,6 @@ func NewClaims(logger LoggerInterface) Claims {
 // It checks audience, issuer, and job_workflow_ref claims.
 func (claims *Claims) ValidateExpectations(issuer Issuer) error {
 	logger := claims.LoggerInterface
-	logger.Debugw("Validating standard claims against expected values ", "claims", fmt.Sprintf("%+v", claims))
-	logger.Debugw("Validating against expected standard claims", "expected", fmt.Sprintf("%+v", issuer.ExpectedStandardClaims))
-	err := claims.Validate(issuer.ExpectedStandardClaims)
-	if err != nil {
-		return fmt.Errorf("standard claims expected values validation failed: %w", err)
-	}
 	logger.Debugw("Validating job_workflow_ref claim against expected value", "job_workflow_ref", claims.JobWorkflowRef, "expected", issuer.ExpectedJobWorkflowRef)
 	if claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
 		return fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: %s, provided: %s", claims.JobWorkflowRef, issuer.ExpectedJobWorkflowRef)

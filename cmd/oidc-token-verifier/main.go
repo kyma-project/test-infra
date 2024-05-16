@@ -44,7 +44,8 @@ func NewRootCmd() *cobra.Command {
 	}
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token")
 	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
-	rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
+	// This flag should be enabled once we add support for it in the code.
+	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
 	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
 	// if err != nil {
 	// 	panic(err)

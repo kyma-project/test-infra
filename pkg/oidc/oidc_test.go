@@ -249,50 +249,6 @@ var _ = Describe("OIDC", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to validate claims: job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
 			})
-			It("should return an error when unexpected audience is provided", func() {
-				mockToken.On(
-					"Claims", &claims).Run(
-					func(args mock.Arguments) {
-						arg := args.Get(0).(*tioidc.Claims)
-						arg.Issuer = "https://fakedings.dev-gcp.nais.io/fake"
-						arg.Subject = "mysub"
-						// Unexpected audience
-						arg.Audience = jwt.Audience{"unexpected-audience"}
-						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"
-					},
-				).Return(nil)
-				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
-
-				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
-
-				// Verify
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to validate claims: standard claims expected values validation failed: go-jose/go-jose/jwt: validation failed, invalid audience claim (aud)"))
-			})
-			It("should return an error when unexpected issuer is provided", func() {
-				mockToken.On(
-					"Claims", &claims).Run(
-					func(args mock.Arguments) {
-						arg := args.Get(0).(*tioidc.Claims)
-						// Unexpected issuer
-						arg.Issuer = "https://unexpected.issuer.dev-gcp.nais.io/fake"
-						arg.Subject = "mysub"
-						arg.Audience = jwt.Audience{"myaudience"}
-						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/verify-oidc-toekn.yml@refs/heads/main"
-					},
-				).Return(nil)
-				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
-
-				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
-
-				// Verify
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to validate claims: standard claims expected values validation failed: go-jose/go-jose/jwt: validation failed, invalid issuer claim (iss)"))
-			})
 			It("should return an error when token was not verified", func() {
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
 
