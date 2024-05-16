@@ -154,6 +154,8 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 }
 
 func loadProwJobGitState() (GitStateConfig, error) {
+	var pullNumber int
+
 	repoName, present := os.LookupEnv("REPO_NAME")
 	if !present {
 		return GitStateConfig{}, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
@@ -173,12 +175,16 @@ func loadProwJobGitState() (GitStateConfig, error) {
 	}
 
 	pullNumberString, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
-	if jobType == "presubmit" && !isPullNumberSet {
-		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
-	}
-	pullNumber, err := strconv.Atoi(pullNumberString)
-	if err != nil {
-		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable contains invalid value, please set it to correct integer PR number")
+	if jobType == "presubmit" {
+		if !isPullNumberSet {
+			return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
+		}
+
+		pullRequest, err := strconv.Atoi(pullNumberString)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable contains invalid value, please set it to correct integer PR number: %w", err)
+		}
+		pullNumber = pullRequest
 	}
 
 	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
