@@ -180,13 +180,9 @@ var _ = Describe("OIDC", func() {
 
 			trustedIssuers = map[string]tioidc.Issuer{
 				"https://fakedings.dev-gcp.nais.io/fake": {
-					Name:      "github",
-					IssuerURL: "https://fakedings.dev-gcp.nais.io/fake",
-					JWKSURL:   "https://fakedings.dev-gcp.nais.io/fake/jwks",
-					ExpectedStandardClaims: jwt.Expected{
-						Issuer:      "https://fakedings.dev-gcp.nais.io/fake",
-						AnyAudience: jwt.Audience{"myaudience"},
-					},
+					Name:                   "github",
+					IssuerURL:              "https://fakedings.dev-gcp.nais.io/fake",
+					JWKSURL:                "https://fakedings.dev-gcp.nais.io/fake/jwks",
 					ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main",
 				},
 			}

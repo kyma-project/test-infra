@@ -20,15 +20,9 @@ var (
 	SupportedSigningAlgorithms = []string{"RS256"}
 	// GithubOIDCIssuer is the known GitHub OIDC issuer.
 	GithubOIDCIssuer = Issuer{
-		Name:      "github",
-		IssuerURL: "https://token.actions.githubusercontent.com",
-		JWKSURL:   "https://token.actions.githubusercontent.com/.well-known/jwks",
-		ExpectedStandardClaims: jwt.Expected{
-			Issuer: "https://token.actions.githubusercontent.com",
-			AnyAudience: jwt.Audience{
-				"image-builder",
-			},
-		},
+		Name:                   "github",
+		IssuerURL:              "https://token.actions.githubusercontent.com",
+		JWKSURL:                "https://token.actions.githubusercontent.com/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
 	}
 	TrustedOIDCIssuers = map[string]Issuer{GithubOIDCIssuer.IssuerURL: GithubOIDCIssuer}
@@ -75,12 +69,10 @@ type LoggerInterface interface {
 // IssuerURL is the OIDC discovery issuer endpoint.
 // JWKSURL is the OIDC issuer public keys endpoint.
 type Issuer struct {
-	Name                   string       `json:"name" yaml:"name"`
-	IssuerURL              string       `json:"issuer_url" yaml:"issuer_url"`
-	JWKSURL                string       `json:"jwks_url" yaml:"jwks_url"`
-	ExpectedStandardClaims jwt.Expected `json:"expected_standard_claims" yaml:"expected_standard_claims"`
-	ExpectedJobWorkflowRef string       `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
-	ExpectedJobWorkflowSHA string       `json:"expected_job_workflow_sha" yaml:"expected_job_workflow_sha"`
+	Name                   string `json:"name" yaml:"name"`
+	IssuerURL              string `json:"issuer_url" yaml:"issuer_url"`
+	JWKSURL                string `json:"jwks_url" yaml:"jwks_url"`
+	ExpectedJobWorkflowRef string `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
 }
 
 // VerifierConfig is the configuration for a verifier.
