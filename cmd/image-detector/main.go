@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"sort"
@@ -135,21 +134,6 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("failed to run command: %s", err)
 	}
-}
-
-// loadGithubToken read github token from given file
-func loadGithubToken(path string) (string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-
-	data, err := io.ReadAll(f)
-	if err != nil {
-		return "", err
-	}
-
-	return string(data), nil
 }
 
 // client is bumper client
