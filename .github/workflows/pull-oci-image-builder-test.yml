@@ -12,6 +12,6 @@ jobs:
   call_reusable_workflow:
     uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
     with:
-      repository: ${{ github.event.pull_request.head.repo.full_name }}
-      ref: ${{ github.event.pull_request.head.ref }}
-      test: true
+      name: test-infra/ginkgo
+      dockerfile: prow/images/ginkgo/Dockerfile
+      context: .
