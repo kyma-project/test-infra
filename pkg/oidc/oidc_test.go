@@ -121,7 +121,7 @@ var _ = Describe("OIDC", func() {
 
 				tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("https://fakedings.dev-gcp.nais.io/fake issuer is not trusted"))
+				Expect(err).To(MatchError("issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -129,7 +129,7 @@ var _ = Describe("OIDC", func() {
 			It("should return an error", func() {
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, nil, string(rawToken), verifierConfig)
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("https://fakedings.dev-gcp.nais.io/fake issuer is not trusted"))
+				Expect(err).To(MatchError("issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -178,6 +178,11 @@ var _ = Describe("OIDC", func() {
 					Name:      "github",
 					IssuerURL: "https://fakedings.dev-gcp.nais.io/fake",
 					JWKSURL:   "https://fakedings.dev-gcp.nais.io/fake/jwks",
+					ExpectedStandardClaims: jwt.Expected{
+						Issuer:      "https://fakedings.dev-gcp.nais.io/fake",
+						AnyAudience: jwt.Audience{"myaudience"},
+					},
+					ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main",
 				},
 			}
 			token = tioidc.Token{}
@@ -195,7 +200,8 @@ var _ = Describe("OIDC", func() {
 		})
 		Describe("VerifyAndExtractClaims", func() {
 			BeforeEach(func() {
-				claims = tioidc.Claims{}
+				// claims = tioidc.Claims{}
+				claims = tioidc.NewClaims(logger)
 				token = tioidc.Token{}
 				mockToken = oidcmocks.MockClaimsReader{}
 			})
@@ -207,6 +213,7 @@ var _ = Describe("OIDC", func() {
 						arg.Issuer = "https://fakedings.dev-gcp.nais.io/fake"
 						arg.Subject = "mysub"
 						arg.Audience = jwt.Audience{"myaudience"}
+						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"
 					},
 				).Return(nil)
 				token.Token = &mockToken
@@ -218,12 +225,69 @@ var _ = Describe("OIDC", func() {
 				Expect(claims.Subject).To(Equal("mysub"))
 				Expect(claims.Audience).To(Equal(jwt.Audience{"myaudience"}))
 			})
+			It("should return an error when unexpected job workflow reference is provided", func() {
+				mockToken.On(
+					"Claims", &claims).Run(
+					func(args mock.Arguments) {
+						arg := args.Get(0).(*tioidc.Claims)
+						arg.Issuer = "https://fakedings.dev-gcp.nais.io/fake"
+						arg.Subject = "mysub"
+						arg.Audience = jwt.Audience{"myaudience"}
+						// Unexpected job workflow reference
+						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main"
+					},
+				).Return(nil)
+				token.Token = &mockToken
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
+
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				fmt.Println(err)
+				Expect(err).To(HaveOccurred())
+			})
+			It("should return an error when unexpected audience is provided", func() {
+				mockToken.On(
+					"Claims", &claims).Run(
+					func(args mock.Arguments) {
+						arg := args.Get(0).(*tioidc.Claims)
+						arg.Issuer = "https://fakedings.dev-gcp.nais.io/fake"
+						arg.Subject = "mysub"
+						// Unexpected audience
+						arg.Audience = jwt.Audience{"unexpected-audience"}
+						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"
+					},
+				).Return(nil)
+				token.Token = &mockToken
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
+
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				fmt.Println(err)
+				Expect(err).To(HaveOccurred())
+			})
+			It("should return an error when unexpected issuer is provided", func() {
+				mockToken.On(
+					"Claims", &claims).Run(
+					func(args mock.Arguments) {
+						arg := args.Get(0).(*tioidc.Claims)
+						// Unexpected issuer
+						arg.Issuer = "https://unexpected.issuer.dev-gcp.nais.io/fake"
+						arg.Subject = "mysub"
+						arg.Audience = jwt.Audience{"myaudience"}
+						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/verify-oidc-toekn.yml@refs/heads/main"
+					},
+				).Return(nil)
+				token.Token = &mockToken
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
+
+				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				fmt.Println(err)
+				Expect(err).To(HaveOccurred())
+			})
 			It("should return an error when token was not verified", func() {
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
 				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to verify token: token validation failed"))
-				Expect(claims).To(Equal(tioidc.Claims{}))
+				Expect(claims).To(Equal(tioidc.NewClaims(logger)))
 			})
 			It("should return an error when claims are not set", func() {
 				mockToken.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
@@ -233,7 +297,7 @@ var _ = Describe("OIDC", func() {
 				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("failed to get claims from token: claims are not set"))
-				Expect(claims).To(Equal(tioidc.Claims{}))
+				Expect(claims).To(Equal(tioidc.NewClaims(logger)))
 			})
 		})
 	})

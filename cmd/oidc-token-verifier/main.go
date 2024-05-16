@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -31,10 +30,9 @@ type options struct {
 }
 
 var (
-	rootCmd    *cobra.Command
-	claimsCmd  *cobra.Command
-	extractCmd *cobra.Command
-	opts       = options{}
+	rootCmd   *cobra.Command
+	verifyCmd *cobra.Command
+	opts      = options{}
 )
 
 func NewRootCmd() *cobra.Command {
@@ -47,28 +45,20 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token")
 	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
 	rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
-	err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
-	if err != nil {
-		panic(err)
-	}
+	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
+	// if err != nil {
+	// 	panic(err)
+	// }
 	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID")
 	rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	return rootCmd
 }
 
-func NewClaimsCmd() *cobra.Command {
-	claimsCmd := &cobra.Command{
-		Use:   "claims",
-		Short: "OIDC claims related commands",
-	}
-	return claimsCmd
-}
-
-func NewExtractCmd() *cobra.Command {
-	extractCmd := &cobra.Command{
-		Use:   "extract",
-		Short: "Verify token and extract claims from an OIDC token",
+func NewVerifyCmd() *cobra.Command {
+	verifyCmd := &cobra.Command{
+		Use:   "verify",
+		Short: "Verify token and expected claims values",
 		RunE: func(_ *cobra.Command, _ []string) error {
 			if err := opts.extractClaims(); err != nil {
 				return err
@@ -76,21 +66,14 @@ func NewExtractCmd() *cobra.Command {
 			return nil
 		},
 	}
-	extractCmd.PersistentFlags().StringVarP(&opts.outputPath, "claims-output-path", "o", "", "Path to write the extracted claims too")
-	err := extractCmd.MarkPersistentFlagRequired("claims-output-path")
-	if err != nil {
-		panic(err)
-	}
-	return extractCmd
+	return verifyCmd
 
 }
 
 func init() {
 	rootCmd = NewRootCmd()
-	claimsCmd = NewClaimsCmd()
-	extractCmd = NewExtractCmd()
-	claimsCmd.AddCommand(extractCmd)
-	rootCmd.AddCommand(claimsCmd)
+	verifyCmd = NewVerifyCmd()
+	rootCmd.AddCommand(verifyCmd)
 }
 
 func isTokenProvided(logger Logger, opts *options) error {
@@ -111,11 +94,12 @@ func isTokenProvided(logger Logger, opts *options) error {
 	return nil
 }
 
-// extractClaims verifies the OIDC token and extracts the claims from it.
+// extractClaims verifies the OIDC token.
 // The OIDC token is read from the file specified by the --token flag or the AUTHORIZATION environment variable.
-// It returns an error if the token is invalid or the claims cannot be extracted.
+// It returns an error if the token is validation failed.
+// It verifies the token signature and expiration time, verifies if the token is issued by a trusted issuer,
+// and the claims have expected values.
 // It uses OIDC discovery to get the public keys.
-// Extracted claims are written to the file specified by the --claims-output-path flag.
 func (opts *options) extractClaims() error {
 	var (
 		zapLogger *zap.Logger
@@ -166,22 +150,13 @@ func (opts *options) extractClaims() error {
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
-	claims := tioidc.Claims{}
-	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, claims)
+	claims := tioidc.NewClaims(logger)
+	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, &claims)
 	if err != nil {
 		return err
 	}
-	logger.Infow("Token verified, extracted claims", "claims", claims)
-	// TODO: verify claims values against expected values
+	logger.Infow("Token verified successfully")
 
-	// write claims to file
-	file, _ := os.Create(opts.outputPath)
-	defer file.Close()
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(&claims)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
