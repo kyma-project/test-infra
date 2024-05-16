@@ -165,7 +165,7 @@ func Test_validateOptions(t *testing.T) {
 		},
 		{
 			name:      "envFile with buildInADO",
-			expectErr: true,
+			expectErr: false,
 			opts: options{
 				context:    "directory/",
 				name:       "test-image",

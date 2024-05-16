@@ -197,7 +197,7 @@ The BuildKit and kaniko backends are deprecated and will be removed in the futur
 ### Azure DevOps Backend (ADO)
 
 The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
-This backend doesn't support the `--env-file`, `--platform`, and `--variant` flags. Building images for platforms other than amd64 is not supported. 
+This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported. 
 To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob definition.
 
 When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API. 
@@ -287,5 +287,4 @@ To use this feature, make sure that:
 
 ### Environment Variables File
 
-The `-env-file` specifies the path to the file with environment variables to be loaded in the build. This flag is deprecated.
-Use `--build-arg` instead.
+The `--env-file` specifies the path to the file with environment variables to be loaded in the build.

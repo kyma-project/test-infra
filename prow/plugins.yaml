@@ -29,6 +29,10 @@ plugins:
     plugins:
       - approve
       - blunderbuss
+  kyma-incubator/ord-service:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-project/k8s-prow:
     plugins:
       - approve
@@ -133,6 +137,7 @@ blunderbuss:
 approve:
   - repos:
       - kyma-incubator/compass
+      - kyma-incubator/ord-service
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
     ignore_review_state: false
   - repos:
