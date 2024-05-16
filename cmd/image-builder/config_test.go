@@ -281,6 +281,27 @@ func TestLoadGitStateConfig(t *testing.T) {
 			expectError: true,
 			gitState:    GitStateConfig{},
 		},
+		{
+			name: "postsubmit prowjob",
+			options: options{
+				buildInADO: true,
+				ciSystem:   Prow,
+			},
+			env: map[string]string{
+				"REPO_NAME":     "test-repo",
+				"REPO_OWNER":    "test-owner",
+				"JOB_TYPE":      "postsubmit",
+				"PULL_BASE_SHA": "art654",
+				"PULL_PULL_SHA": "", // TODO(kacpermalachowski): Use mockEnv instead
+				"PROW_JOB_ID":   "1234",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-repo",
+				RepositoryOwner: "test-owner",
+				JobType:         "postsubmit",
+				BaseCommitSHA:   "art654",
+			},
+		},
 	}
 
 	for _, c := range tc {
