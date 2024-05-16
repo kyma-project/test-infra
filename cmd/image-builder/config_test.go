@@ -292,6 +292,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "postsubmit",
 				"PULL_BASE_SHA": "art654",
+				"PULL_PULL_SHA": "",
 				"PROW_JOB_ID":   "1234",
 			},
 			gitState: GitStateConfig{
