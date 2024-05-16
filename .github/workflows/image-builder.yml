@@ -1,4 +1,4 @@
-name: Reusable Workflow
+name: image-builder
 
 on:
   workflow_call:
