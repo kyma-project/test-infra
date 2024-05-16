@@ -253,19 +253,27 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
-// determineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
+// DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
 // It is used to avoid getting env variables in multiple parts of image builder
-func determineUsedCISystem() (CISystem, error) {
+func DetermineUsedCISystem() (CISystem, error) {
+	// Use system functions in production implementation
+	return determineUsedCISystem(os.Getenv, os.LookupEnv)
+}
+
+// Additional private function for testing purposes.
+// It allows us to mock os.Getenv and os.LookupEnv during tests, keeping logic valid
+// Reason to introduce that is lack of possibility to override variables in CI systems
+func determineUsedCISystem(envGetter func(key string) string, envLookup func(key string) (string, bool)) (CISystem, error) {
 	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
 	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-	isGithubActions := os.Getenv("GITHUB_ACTIONS")
+	isGithubActions := envGetter("GITHUB_ACTIONS")
 	if isGithubActions == "true" {
 		return GithubActions, nil
 	}
 
 	// PROW_JOB_ID environment variables contains ID of prow job
 	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
-	_, isProwJob := os.LookupEnv("PROW_JOB_ID")
+	_, isProwJob := envLookup("PROW_JOB_ID")
 	if isProwJob {
 		return Prow, nil
 	}

@@ -753,7 +753,7 @@ func main() {
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
-		ciSystem, err := determineUsedCISystem()
+		ciSystem, err := DetermineUsedCISystem()
 		if err != nil {
 			log.Fatalf("Failed to determine current ci system: %s", err)
 		}

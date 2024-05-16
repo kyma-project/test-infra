@@ -306,30 +306,41 @@ func TestLoadGitStateConfig(t *testing.T) {
 	}
 }
 
+type mockEnv map[string]string
+
+func (e mockEnv) mockGetenv(key string) string {
+	return e[key]
+}
+
+func (e mockEnv) mockLookupEnv(key string) (string, bool) {
+	env := e.mockGetenv(key)
+	return env, env != ""
+}
+
 func Test_determineCISystem(t *testing.T) {
 	tc := []struct {
 		name      string
-		env       map[string]string
+		env       mockEnv
 		ciSystem  CISystem
 		expectErr bool
 	}{
 		{
 			name: "detect running in prow jobs",
-			env: map[string]string{
+			env: mockEnv{
 				"PROW_JOB_ID": "some-id",
 			},
 			ciSystem: Prow,
 		},
 		{
 			name: "detect running in github actions",
-			env: map[string]string{
+			env: mockEnv{
 				"GITHUB_ACTIONS": "true",
 			},
 			ciSystem: GithubActions,
 		},
 		{
 			name: "unknown ci system",
-			env: map[string]string{
+			env: mockEnv{
 				// Prevent false positivie detection of CI system running test
 				"GITHUB_ACTIONS": "false",
 				"PROW_JOB_ID":    "",
@@ -341,12 +352,7 @@ func Test_determineCISystem(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			// Prepare env vars
-			for key, value := range c.env {
-				t.Setenv(key, value)
-			}
-
-			ciSystem, err := determineUsedCISystem()
+			ciSystem, err := determineUsedCISystem(c.env.mockGetenv, c.env.mockLookupEnv)
 			if err != nil && !c.expectErr {
 				t.Errorf("got unexpected error: %s", err)
 			}
