@@ -1,13 +1,25 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
+	"strconv"
 
+	"github.com/google/go-github/v48/github"
 	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"gopkg.in/yaml.v3"
+)
+
+type CISystem string
+
+// Enum of supported CI/CD systems to read data from
+const (
+	Prow          CISystem = "Prow"
+	GithubActions CISystem = "GithubActions"
 )
 
 type Config struct {
@@ -101,4 +113,170 @@ func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
 	}
 	*r = regs
 	return nil
+}
+
+// GitStateConfig holds information about repository and specific commit
+// from which image should be build.
+// It also contains information whether job is presubmit or postsubmit
+type GitStateConfig struct {
+	// Name of the source repository
+	RepositoryName string
+	// Name of the source repository's owner
+	RepositoryOwner string
+	// Type of the job, allowed values "presubmit" or "postsubmit"
+	JobType string
+	// Number of the pull request for presubmit job
+	PullRequestNumber int
+	// Commit SHA for base branch
+	BaseCommitSHA string
+	// Commit SHA for head of the pull request
+	PullHeadCommitSHA string
+	// isPullRequest contains information whether event which triggered the job was from pull request
+	isPullRequest bool
+}
+
+func (gitState GitStateConfig) IsPullRequest() bool {
+	return gitState.isPullRequest
+}
+
+func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
+	switch ciSystem {
+	// Load from env specific for github actions
+	case GithubActions:
+		return loadGithubActionsGitState()
+	// Load from env specific for prow jobs
+	case Prow:
+		return loadProwJobGitState()
+	default:
+		// Unknown CI System, return error and empty git state
+		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
+	}
+}
+
+func loadProwJobGitState() (GitStateConfig, error) {
+	repoName, present := os.LookupEnv("REPO_NAME")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
+	}
+
+	repoOwner, present := os.LookupEnv("REPO_OWNER")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("REPO_OWNER environment variable is not set, please set it to valid repository owner")
+	}
+
+	jobType, present := os.LookupEnv("JOB_TYPE")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
+	}
+	if !slices.Contains([]string{"presubmit", "postsubmit"}, jobType) {
+		return GitStateConfig{}, fmt.Errorf("image builder is running for unsupported event %s", jobType)
+	}
+
+	pullNumberString, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
+	if jobType == "presubmit" && !isPullNumberSet {
+		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
+	}
+	pullNumber, err := strconv.Atoi(pullNumberString)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("PULL_NUMBER environment variable contains invalid value, please set it to correct integer PR number")
+	}
+
+	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
+	}
+
+	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("PULL_PULL_SHA environment variable is not set, please set it to valid pull head SHA")
+	}
+
+	return GitStateConfig{
+		RepositoryName:    repoName,
+		RepositoryOwner:   repoOwner,
+		JobType:           jobType,
+		PullRequestNumber: pullNumber,
+		BaseCommitSHA:     baseSHA,
+		PullHeadCommitSHA: pullSHA,
+		isPullRequest:     pullNumber > 0 && pullSHA != "",
+	}, nil
+}
+
+func loadGithubActionsGitState() (GitStateConfig, error) {
+	eventName, present := os.LookupEnv("GITHUB_EVENT_NAME")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set, please set it to valid event name")
+	}
+	eventPayloadPath, present := os.LookupEnv("GITHUB_EVENT_PATH")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set, please set it to valid path to event file")
+	}
+
+	// Read event payload file from runner
+	data, err := os.ReadFile(eventPayloadPath)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("failed to read content of event payload file: %w", err)
+	}
+
+	// Handle different events types
+	switch eventName {
+	case "pull_request_target":
+		var payload github.PullRequestEvent
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+
+		return GitStateConfig{
+			RepositoryName:    *payload.Repo.Name,
+			RepositoryOwner:   *payload.Repo.Owner.Login,
+			JobType:           "presubmit",
+			PullRequestNumber: *payload.Number,
+			BaseCommitSHA:     *payload.PullRequest.Base.SHA,
+			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
+			isPullRequest:     true,
+		}, nil
+	case "push":
+		var payload github.PushEvent
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+		return GitStateConfig{
+			RepositoryName:  *payload.Repo.Name,
+			RepositoryOwner: *payload.Repo.Owner.Login,
+			JobType:         "postsubmit",
+			BaseCommitSHA:   *payload.HeadCommit.ID,
+		}, nil
+	default:
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
+	}
+}
+
+// DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
+// It is used to avoid getting env variables in multiple parts of image builder
+func DetermineUsedCISystem() (CISystem, error) {
+	// Use system functions in production implementation
+	return determineUsedCISystem(os.Getenv, os.LookupEnv)
+}
+
+// Additional private function for testing purposes.
+// It allows us to mock os.Getenv and os.LookupEnv during tests, keeping logic valid
+// Reason to introduce that is lack of possibility to override variables in CI systems
+func determineUsedCISystem(envGetter func(key string) string, envLookup func(key string) (string, bool)) (CISystem, error) {
+	// GITHUB_ACTIONS environment variable is always set to true in github actions workflow
+	// See: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+	isGithubActions := envGetter("GITHUB_ACTIONS")
+	if isGithubActions == "true" {
+		return GithubActions, nil
+	}
+
+	// PROW_JOB_ID environment variables contains ID of prow job
+	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
+	_, isProwJob := envLookup("PROW_JOB_ID")
+	if isProwJob {
+		return Prow, nil
+	}
+
+	return "", fmt.Errorf("cannot determine ci system: unknown system")
 }

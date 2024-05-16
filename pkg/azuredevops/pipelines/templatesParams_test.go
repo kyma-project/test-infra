@@ -83,6 +83,10 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		params.SetUseKanikoConfigFromPR(true)
 		Expect(params["UseKanikoConfigFromPR"]).To(Equal("true"))
 	})
+	It("sets the correct Authorization", func() {
+		params.SetAuthorization("some-token")
+		Expect(params["Authorization"]).To(Equal("some-token"))
+	})
 
 	// TODO: Improve assertions with more specific matchers and values.
 	It("validates the params correctly", func() {

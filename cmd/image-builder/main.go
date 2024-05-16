@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -18,6 +19,7 @@ import (
 	"time"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
+	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -50,6 +52,10 @@ type options struct {
 	adoPreviewRunYamlPath string
 	testKanikoBuildConfig bool
 	parseTagsOnly         bool
+	oidcToken             string
+	azureAccessToken      string
+	ciSystem              CISystem
+	gitState              GitStateConfig
 }
 
 // parseVariable returns a build-arg.
@@ -182,47 +188,24 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
 	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
-	repo, present := os.LookupEnv("REPO_NAME")
-	if !present {
-		return nil, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
-	}
-	templateParameters.SetRepoName(repo)
+	templateParameters.SetRepoName(options.gitState.RepositoryName)
 
-	owner, present := os.LookupEnv("REPO_OWNER")
-	if !present {
-		return nil, fmt.Errorf("REPO_OWNER environment variable is not set, please set it to valid repository owner")
-	}
-	templateParameters.SetRepoOwner(owner)
+	templateParameters.SetRepoOwner(options.gitState.RepositoryOwner)
 
-	jobType, present := os.LookupEnv("JOB_TYPE")
-	if !present {
-		return nil, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
-	}
-	if jobType == "presubmit" {
+	if options.gitState.JobType == "presubmit" {
 		templateParameters.SetPresubmitJobType()
-	} else if jobType == "postsubmit" {
+	} else if options.gitState.JobType == "postsubmit" {
 		templateParameters.SetPostsubmitJobType()
-	} else {
-		return nil, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
 	}
 
-	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
-	if jobType == "presubmit" && !isPullNumberSet {
-		return nil, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
-	}
-	if isPullNumberSet {
-		templateParameters.SetPullNumber(pullNumber)
+	if options.gitState.IsPullRequest() {
+		templateParameters.SetPullNumber(fmt.Sprint(options.gitState.PullRequestNumber))
 	}
 
-	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
-	if !present {
-		return nil, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
-	}
-	templateParameters.SetBaseSHA(baseSHA)
+	templateParameters.SetBaseSHA(options.gitState.BaseCommitSHA)
 
-	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
-	if present {
-		templateParameters.SetPullSHA(pullSHA)
+	if options.gitState.IsPullRequest() {
+		templateParameters.SetPullSHA(options.gitState.PullHeadCommitSHA)
 	}
 
 	templateParameters.SetImageName(options.name)
@@ -245,6 +228,10 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	if len(options.tags) > 0 {
 		templateParameters.SetImageTags(options.tags.String())
+	}
+
+	if options.ciSystem == GithubActions {
+		templateParameters.SetAuthorization(options.oidcToken)
 	}
 
 	err := templateParameters.Validate()
@@ -272,10 +259,13 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 // TODO(dekiel): refactor this function to accept clients as parameters to make it testable with mocks.
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
-	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API.
-	adoPAT, present := os.LookupEnv("ADO_PAT")
-	if !present {
-		return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API when it's not set via flag.
+	if o.azureAccessToken == "" {
+		adoPAT, present := os.LookupEnv("ADO_PAT")
+		if !present {
+			return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+		}
+		o.azureAccessToken = adoPAT
 	}
 
 	fmt.Println("Preparing ADO template parameters.")
@@ -287,7 +277,7 @@ func buildInADO(o options) error {
 	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
 
 	// Creating a new ADO pipelines client.
-	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
+	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
 
 	var opts []adopipelines.RunPipelineArgsOptions
 	// If running in preview mode, add a preview run option to the ADO pipeline run arguments.
@@ -334,15 +324,20 @@ func buildInADO(o options) error {
 	// Fetch the ADO pipeline run logs.
 	fmt.Println("Getting ADO pipeline run logs.")
 	// Creating a new ADO build client.
-	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
+	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
 	if err != nil {
 		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 	}
-	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, adoPAT)
+	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.azureAccessToken)
 	if err != nil {
 		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 	} else {
 		fmt.Printf("ADO pipeline image build logs:\n%s", logs)
+	}
+
+	// if run in github actions, set output parameters
+	if o.ciSystem == GithubActions {
+		actions.SetOutput("adoResult", string(*pipelineRunResult))
 	}
 
 	// Handle the ADO pipeline run failure.
@@ -735,6 +730,8 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
+	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
+	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
 
 	return flagSet
 }
@@ -746,6 +743,19 @@ func main() {
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+
+	// If running inside some CI system, determine which system is used
+	if o.isCI {
+		ciSystem, err := DetermineUsedCISystem()
+		if err != nil {
+			log.Fatalf("Failed to determine current ci system: %s", err)
+		}
+		o.ciSystem = ciSystem
+		o.gitState, err = LoadGitStateConfig(ciSystem)
+		if err != nil {
+			log.Fatalf("Failed to load current git state: %s", err)
+		}
 	}
 
 	// validate if options provided by flags and config file are fine
@@ -774,7 +784,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.parseTagsOnly {
 		dockerfilePath, err := getDockerfileDirPath(o)
 		if err != nil {
@@ -790,26 +799,8 @@ func main() {
 				os.Exit(1)
 			}
 		}
-		var sha, pr string
-		if o.isCI {
-			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
-			if presubmit {
-				if n := os.Getenv("PULL_NUMBER"); n != "" {
-					pr = n
-				}
-			}
 
-			if c := os.Getenv("PULL_BASE_SHA"); c != "" {
-				sha = c
-			}
-		}
-
-		// if sha is still not set, fail the pipeline
-		if sha == "" {
-			fmt.Println("'sha' could not be determined")
-			os.Exit(1)
-		}
-		parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+		parsedTags, err := parseTags(o)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -832,12 +823,31 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
 	err = buildLocally(o)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func parseTags(o options) ([]tags.Tag, error) {
+	var pr string
+	sha := o.gitState.BaseCommitSHA
+	if o.gitState.isPullRequest {
+		pr = fmt.Sprint(o.gitState.PullRequestNumber)
+	}
+
+	if sha == "" {
+		return nil, fmt.Errorf("sha still empty")
+	}
+	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	if err != nil {
+		return nil, err
+	}
+
+	return parsedTags, nil
 }
 
 func getDockerfileDirPath(o options) (string, error) {
