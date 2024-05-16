@@ -114,21 +114,21 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240515-bfb6c1da
-            command: ["/init.sh"]
-            args: ["make", "-C", "images", "build"]
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 500m
-              limits:
-                memory: 1.5Gi
-                cpu: 1
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240516-e8a36d25
+          command: ["/init.sh"]
+          args: ["make", "-C", "images", "build"]
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 500m
+            limits:
+              memory: 1.5Gi
+              cpu: 1
+          securityContext:
+            privileged: true
+            seccompProfile:
+              type: Unconfined
+            allowPrivilegeEscalation: true
 postsubmits:
   kyma-project/test-infra:
     - name: post-build-image-builder
@@ -245,18 +245,18 @@ postsubmits:
       cluster: trusted-workload
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240515-bfb6c1da
-            command: ["/init.sh"]
-            args: ["make", "-C", "images", "push"]
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 500m
-              limits:
-                memory: 1.5Gi
-                cpu: 1
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240516-e8a36d25
+          command: ["/init.sh"]
+          args: ["make", "-C", "images", "push"]
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 500m
+            limits:
+              memory: 1.5Gi
+              cpu: 1
+          securityContext:
+            privileged: true
+            seccompProfile:
+              type: Unconfined
+            allowPrivilegeEscalation: true
