@@ -1,12 +1,13 @@
-name: Get OIDC Token Workflow
+name: pull-oci-image-builder-test
 
 on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
-      - ".github/workflows/get-oidc-token.yml"
+      - ".github/workflows/pull-oci-image-builder-test.yml"
       - ".github/workflows/reusable-workflow.yml"
       - ".github/actions/expose-jwt-action/**"
+      - ".github/actions/trigger-image-builder/**"
 
 jobs:
   call_reusable_workflow:
