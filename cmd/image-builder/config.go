@@ -193,7 +193,7 @@ func loadProwJobGitState() (GitStateConfig, error) {
 	}
 
 	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
-	if !present {
+	if !present && jobType == "presubmit" {
 		return GitStateConfig{}, fmt.Errorf("PULL_PULL_SHA environment variable is not set, please set it to valid pull head SHA")
 	}
 
