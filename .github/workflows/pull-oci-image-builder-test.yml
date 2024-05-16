@@ -10,7 +10,7 @@ on:
 
 jobs:
   call_reusable_workflow:
-    uses: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
+    uses: ./.github/workflows/reusable-workflow.yml # Usage: kyma-project/test-infra/.github/workflows/reusable-workflow.yml@main
     with:
       name: test-infra/ginkgo
       dockerfile: prow/images/ginkgo/Dockerfile
