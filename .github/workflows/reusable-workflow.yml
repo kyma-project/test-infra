@@ -63,5 +63,6 @@ jobs:
           export-tags: ${{ inputs.export-tags }}
           image-name: ${{ inputs.name }}
           dockerfile: ${{ inputs.dockerfile }}
+          config: "./configs/kaniko-build-config.yaml"
       - run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
         name: Show outputs
