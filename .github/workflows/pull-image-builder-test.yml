@@ -4,7 +4,7 @@ on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
-      - ".github/workflows/pull-oci-image-builder-test.yml"
+      - ".github/workflows/pull-image-builder-test.yml"
       - ".github/workflows/image-builder.yml"
       - ".github/actions/expose-jwt-action/**"
       - ".github/actions/image-builder/**"
