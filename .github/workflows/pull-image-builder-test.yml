@@ -10,7 +10,7 @@ on:
       - ".github/actions/trigger-image-builder/**"
 
 jobs:
-  call_reusable_workflow:
+  test_image_builder:
     uses: ./.github/workflows/image-builder.yml # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: test-infra/ginkgo
