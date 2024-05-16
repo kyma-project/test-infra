@@ -230,8 +230,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetImageTags(options.tags.String())
 	}
 
-	isGhAction := os.Getenv("GITHUB_ACTIONS")
-	if isGhAction == "true" {
+	if options.ciSystem == GithubActions {
 		templateParameters.SetAuthorization(options.oidcToken)
 	}
 
