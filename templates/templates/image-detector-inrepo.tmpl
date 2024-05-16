@@ -1,6 +1,0 @@
-{{- range $org := .Global.orgs }}
-{{- range $repo := .repos }}
-- name: {{ $repo.name }}
-  owner: {{ $org.name }}
-{{- end }}
-{{- end }}
