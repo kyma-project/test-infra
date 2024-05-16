@@ -30,6 +30,10 @@ inputs:
     description: Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag
     required: false
     default: false
+  config:
+    description: Path to the config file
+    required: false
+    default: "./configs/kaniko-build-config.yaml"
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
@@ -64,4 +68,4 @@ runs:
       shell: bash
     - uses: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=./configs/kaniko-build-config.yaml --build-in-ado=true
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --build-in-ado=true
