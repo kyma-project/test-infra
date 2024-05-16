@@ -1,4 +1,4 @@
-name: "Trigger ADO Image Builder"
+name: image-builder
 description: "Triggers the run of the ADO image builder backend"
 inputs:
   oidc-token:

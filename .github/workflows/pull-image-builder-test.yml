@@ -1,11 +1,11 @@
-name: pull-oci-image-builder-test
+name: pull-image-builder-test
 
 on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/pull-oci-image-builder-test.yml"
-      - ".github/workflows/reusable-workflow.yml"
+      - ".github/workflows/image-builder.yml"
       - ".github/actions/expose-jwt-action/**"
       - ".github/actions/trigger-image-builder/**"
 
