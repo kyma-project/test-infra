@@ -7,7 +7,7 @@ on:
       - ".github/workflows/pull-oci-image-builder-test.yml"
       - ".github/workflows/image-builder.yml"
       - ".github/actions/expose-jwt-action/**"
-      - ".github/actions/trigger-image-builder/**"
+      - ".github/actions/image-builder/**"
 
 jobs:
   test_image_builder:
