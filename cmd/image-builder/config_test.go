@@ -292,7 +292,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "postsubmit",
 				"PULL_BASE_SHA": "art654",
-				"PULL_PULL_SHA": "",
+				"PULL_PULL_SHA": "", // TODO(kacpermalachowski): Use mockEnv instead
 				"PROW_JOB_ID":   "1234",
 			},
 			gitState: GitStateConfig{
