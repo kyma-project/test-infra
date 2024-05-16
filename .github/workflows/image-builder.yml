@@ -57,7 +57,7 @@ jobs:
     needs: get_oidc_token
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/trigger-image-builder
+      - uses: ./.github/actions/image-builder
         id: build
         name: Run build in image-builder
         with:
