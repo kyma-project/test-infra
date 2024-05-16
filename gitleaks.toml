@@ -16,8 +16,7 @@ paths = [
     '''notary_test.go''',
     '''raw-oidc-token''',
 ]
-regexTarget = "line"
-regexes = ["#nosec"]
+
 
 [[rules]]
 description = "Bearer Authorization Token"

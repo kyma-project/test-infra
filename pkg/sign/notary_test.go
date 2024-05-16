@@ -178,7 +178,7 @@ func TestNotarySigner_SignImages(t *testing.T) {
 }
 
 func TestAuthToken(t *testing.T) {
-	token := "abcd12345678" // #nosec
+	token := "abcd12345678" // gitleaks:allow
 	expected := "Token abcd12345678"
 	fc := AuthToken(token)
 	req := httptest.NewRequest("POST", "http://localhost", nil)
@@ -193,7 +193,7 @@ func TestSignifyAuth(t *testing.T) {
 	expected := "Bearer abcd1234"
 	jwts := SignifySecret{
 		Endpoint: srv.URL,
-		Payload:  `{"role_id":"CD0EA3F3-C86C-4852-8092-87920F56D2D4","secret_id":"70ACA8AE-81F4-48D5-BFC6-4693604DD868"}`, // #nosec
+		Payload:  `{"role_id":"CD0EA3F3-C86C-4852-8092-87920F56D2D4","secret_id":"70ACA8AE-81F4-48D5-BFC6-4693604DD868"}`, // gitleaks:allow
 	}
 	a, err := SignifyAuth(jwts)
 	if err != nil {
