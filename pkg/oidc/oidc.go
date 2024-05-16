@@ -65,10 +65,6 @@ type ClaimsInterface interface {
 	ValidateExpectations(Issuer) error
 }
 
-// type StandardClaims interface {
-// 	Validate(e jwt.Expected) error
-// }
-
 type LoggerInterface interface {
 	logging.StructuredLoggerInterface
 	logging.WithLoggerInterface
