@@ -15,6 +15,7 @@ paths = [
     '''vendor''',
     '''notary_test.go''',
     '''raw-oidc-token''',
+    '''sec-scanners-config.yaml''',
 ]
 
 
