@@ -65,14 +65,3 @@ runs:
     - uses: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=./configs/kaniko-build-config.yaml --build-in-ado=true
-  # using: "docker"
-  # image: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
-  # args:
-  #   - "--name=${{ inputs.image-name }}"
-  #   - "--context=${{ inputs.context }}"
-  #   - "--dockerfile=${{ inputs.dockerfile }}"
-  #   - "--azure-access-token=${{ inputs.ado-token }}"
-  #   - "--oidc-token=${{ inputs.oidc-token }}"
-  #   - "--build-arg"
-  #   - "--config=./configs/kaniko-build-config.yaml"
-  #   - "--build-in-ado=true"
