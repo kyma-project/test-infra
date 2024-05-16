@@ -66,6 +66,6 @@ runs:
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
       shell: bash
-    - uses: docker://europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10410
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-f00d14e6
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --build-in-ado=true
