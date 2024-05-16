@@ -33,6 +33,12 @@ on:
         required: false
         type: boolean
         default: false
+      env-file:
+        description: Path to file with environment variables to be loaded in build
+        required: false
+        type: string
+        default: ""
+
 jobs:
   get_oidc_token:
     permissions:
@@ -48,11 +54,14 @@ jobs:
         with:
           repository: kyma-project/test-infra
           ref: main
+
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
+
       - name: Expose JWT Action
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
+
   build:
     needs: get_oidc_token
     runs-on: ubuntu-latest
@@ -69,6 +78,8 @@ jobs:
           export-tags: ${{ inputs.export-tags }}
           image-name: ${{ inputs.name }}
           dockerfile: ${{ inputs.dockerfile }}
+          env-file: ${{ inputs.env-file }}
           config: "./configs/kaniko-build-config.yaml"
+
       - run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
         name: Show outputs

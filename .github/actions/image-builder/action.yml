@@ -34,13 +34,19 @@ inputs:
     description: Path to the config file
     required: false
     default: "./configs/kaniko-build-config.yaml"
+  env-file:
+    description: Path to file with environment variables to be loaded in build
+    required: false
+    default: ""
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
     default: false
+
 outputs:
   adoResult:
     description: The result of the ADO pipeline execution
+
 runs:
   using: "composite"
   steps:
@@ -55,6 +61,7 @@ runs:
         echo "build-args=$result" >> $GITHUB_OUTPUT
       id: prepare-build-args
       shell: bash
+
     - run: |
         readarray -t lines <<<"${{ inputs.tags }}"
         result=""
@@ -66,6 +73,7 @@ runs:
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
       shell: bash
+
     - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-f00d14e6
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --build-in-ado=true
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true
