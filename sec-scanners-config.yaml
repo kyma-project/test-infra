@@ -41,12 +41,12 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240516-d002e6ca
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240516-d002e6ca
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240516-d002e6ca
-    - gcr.io/k8s-prow/analyze:v20240515-dd5d0eeaa
+    - gcr.io/k8s-prow/analyze:v20240513-a9bd71bf01
     - gcr.io/k8s-prow/branchprotector:v20240515-dd5d0eeaa
     - gcr.io/k8s-prow/crier:v20240515-dd5d0eeaa
     - gcr.io/k8s-prow/deck:v20240515-dd5d0eeaa
     - gcr.io/k8s-prow/gcsweb:v20240513-a9bd71bf01
-    - gcr.io/k8s-prow/gencred:v20240515-dd5d0eeaa
+    - gcr.io/k8s-prow/gencred:v20240513-a9bd71bf01
     - gcr.io/k8s-prow/generic-autobumper:v20240515-dd5d0eeaa
     - gcr.io/k8s-prow/ghproxy:v20240515-dd5d0eeaa
     - gcr.io/k8s-prow/hook:v20240515-dd5d0eeaa
