@@ -24,7 +24,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240516-d002e6ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240517-daad947d"
             securityContext:
               privileged: false
               seccompProfile:
