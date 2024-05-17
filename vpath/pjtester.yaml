@@ -9,4 +9,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     serverless:
-      prNumber: 985
+      prNumber: 983
