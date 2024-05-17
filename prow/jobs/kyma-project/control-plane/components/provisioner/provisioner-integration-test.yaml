@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240516-d002e6ca
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240517-daad947d
             command: ["/init.sh"]
             args:
               - components/provisioner/e2e_test/test.sh
