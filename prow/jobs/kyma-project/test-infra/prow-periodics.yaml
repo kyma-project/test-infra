@@ -119,7 +119,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240517-1d0ea98c9"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20240517-14144c079"
             securityContext:
               privileged: false
               seccompProfile:
@@ -189,7 +189,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240517-1d0ea98c9"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20240517-14144c079"
             securityContext:
               privileged: false
               seccompProfile:
