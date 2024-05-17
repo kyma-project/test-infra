@@ -1,0 +1,79 @@
+name: image-builder
+description: "Triggers the run of the ADO image builder backend"
+inputs:
+  oidc-token:
+    description: The JWT token to authenticate against Azure DevOps image builder backend
+    required: true
+  ado-token:
+    description: The personal access token to authenticate against Azure DevOps API
+    required: true
+  image-name:
+    description: Name of the build image
+    required: true
+  context:
+    description: Build context to build container from
+    required: false
+    default: .
+  dockerfile:
+    description: Path to the dockerfile used to build docker image
+    required: false
+    default: Dockerfile
+  build-args:
+    description: "Additional arguments to build dockerfile. It can be used in the name=value format."
+    required: false
+    default: ""
+  tags:
+    description: "Additional tags that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags"
+    required: false
+    default: ""
+  export-tags:
+    description: Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag
+    required: false
+    default: false
+  config:
+    description: Path to the config file
+    required: false
+    default: "./configs/kaniko-build-config.yaml"
+  env-file:
+    description: Path to file with environment variables to be loaded in the build
+    required: false
+    default: ""
+  dry-run:
+    description: Prevent actual triggering the image builder
+    required: false
+    default: false
+
+outputs:
+  adoResult:
+    description: The result of the ADO pipeline execution
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        readarray -t lines <<<"${{ inputs.build-args }}"
+        result=""
+        for entry in "${lines[@]}"; do
+          if [[ -n "$entry" ]]; then
+            result+=" --build-arg=\"$entry\""
+          fi
+        done
+        echo "build-args=$result" >> $GITHUB_OUTPUT
+      id: prepare-build-args
+      shell: bash
+
+    - run: |
+        readarray -t lines <<<"${{ inputs.tags }}"
+        result=""
+        for entry in "${lines[@]}"; do
+          if [[ -n "$entry" ]]; then
+            result+=" --tag=\"$entry\""
+          fi
+        done
+        echo "tags=$result" >> $GITHUB_OUTPUT
+      id: prepare-tags
+      shell: bash
+
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-f00d14e6
+      with:
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true

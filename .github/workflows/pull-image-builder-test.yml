@@ -1,0 +1,19 @@
+name: pull-image-builder-test
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/pull-image-builder-test.yml"
+      - ".github/workflows/image-builder.yml"
+      - ".github/actions/expose-jwt-action/**"
+      - ".github/actions/image-builder/**"
+
+jobs:
+  test_image_builder:
+    uses: ./.github/workflows/image-builder.yml # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: test-infra/ginkgo
+      dockerfile: prow/images/ginkgo/Dockerfile
+      context: .
+      env-file: "envs"

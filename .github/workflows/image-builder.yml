@@ -1,0 +1,85 @@
+name: image-builder
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Name of the build image
+        required: false
+        type: string
+        default: test-infra/ginkgo
+      dockerfile:
+        description: Path to the dockerfile used to build docker image
+        required: false
+        type: string
+        default: "prow/images/ginkgo/Dockerfile"
+      context:
+        description: Build context to build container from
+        required: false
+        type: string
+        default: .
+      build-args:
+        description: "Additional arguments to build dockerfile, one per line. It can be used in the name=value format."
+        required: false
+        type: string
+        default: ""
+      tags:
+        description: "Additional tags, one per line, that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags"
+        required: false
+        type: string
+        default: ""
+      export-tags:
+        description: Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag
+        required: false
+        type: boolean
+        default: false
+      env-file:
+        description: Path to file with environment variables to be loaded in build
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  get_oidc_token:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    name: A job to get OIDC token
+    outputs:
+      token: ${{ steps.get_oidc.outputs.jwt }}
+    steps:
+      - name: Checkout repository based on test flag
+        uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+
+      - name: Install Node.js and needed dependencies
+        uses: ./.github/actions/expose-jwt-action/install
+
+      - name: Expose JWT Action
+        id: get_oidc
+        uses: ./.github/actions/expose-jwt-action
+
+  build:
+    needs: get_oidc_token
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/image-builder
+        id: build
+        name: Run build in image-builder
+        with:
+          oidc-token: ${{ needs.get_oidc_token.outputs.token }}
+          ado-token: ${{ secrets.ADO_PAT }}
+          context: ${{ inputs.context }}
+          build-args: ${{ inputs.build-args }}
+          tags: ${{ inputs.tags }}
+          export-tags: ${{ inputs.export-tags }}
+          image-name: ${{ inputs.name }}
+          dockerfile: ${{ inputs.dockerfile }}
+          env-file: ${{ inputs.env-file }}
+          config: "./configs/kaniko-build-config.yaml"
+
+      - run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
+        name: Show outputs
