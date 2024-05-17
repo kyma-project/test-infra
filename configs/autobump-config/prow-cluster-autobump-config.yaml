@@ -11,6 +11,7 @@ includedConfigPaths:
   - "."
 excludedConfigPaths:
   - "prow/staging"
+  - "sec-scanners-config.yaml"
 targetVersion: "latest"
 prefixes:
   - name: "Prow"
