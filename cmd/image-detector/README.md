@@ -28,8 +28,6 @@ Usage of image-detector:
     path to the Tekton catalog directory
   --autobump-config
     path to the config for autobumper for security scanner config
-  --inrepo-config
-    path to the configuration of repositories with Prow inrepo config enabled
   --github-token-path
     path to github token for fetching inrepo config (default: "/etc/github/token")
 ```

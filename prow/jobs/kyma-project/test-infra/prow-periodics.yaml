@@ -66,7 +66,6 @@ postsubmits: # runs on main
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
-              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
         description: "Deploy prow components"
@@ -168,7 +167,6 @@ periodics: # runs on schedule
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
-              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
         description: "Autobump image versions in prow jobs"

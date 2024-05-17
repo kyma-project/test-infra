@@ -24,7 +24,7 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml","--inrepo-config=prow\/image-detector\/inrepo-config\.yaml"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump
       - image: "gcr.io/k8s-prow/generic-autobumper:*"
         command:
