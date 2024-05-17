@@ -377,19 +377,19 @@ templates:
               - "^release-*"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/'
-#          dind_job_k3d:
-#            annotations:
-#              pipeline.platform: k3d
-#              pipeline.installer: kyma deploy
-#              pipeline.test: k3d-test
-#            labels:
-#              preset-kyma-guard-bot-github-token: "true"
-#              preset-kind-volume-mounts: "true"
-#              preset-dind-enabled: "true"
-#            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9
-#            command: "/init.sh"
-#            request_memory: "4Gi"
-#            request_cpu: "3"
+          dind_job_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: k3d-test
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -458,31 +458,31 @@ templates:
                     - jobConfig_presubmit
                     - linting
                     - unprivileged
-#              - jobConfig:
-#                  name: upgrade-test-operator
-#                  annotations:
-#                    owner: otters
-#                    description: upgrade serverless operator test
-#                  always_run: "true"
-#                  optional: "true"
-#                  args:
-#                    - bash
-#                    - -c
-#                    - |
-#                      make -C components/operator deploy-release
-#                      make -C tests/operator test
-#                      make -C components/operator deploy
-#                      make -C tests/operator test
-#                  env:
-#                    IMG: europe-docker.pkg.dev/kyma-project/prod/serverless-operator:0db84d0ac46cd47331cb21b60f66e448001e2595
-#                inheritedConfigs:
-#                  global:
-#                    - jobConfig_default
-#                    - privileged
-#                    - jobConfig_presubmit
-#                    - extra_refs_test-infra
-#                  local:
-#                    - dind_job_k3d
+              - jobConfig:
+                  name: upgrade-test-operator
+                  annotations:
+                    owner: otters
+                    description: upgrade serverless operator test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C components/operator deploy-release
+                      make -C tests/operator test
+                      make -C components/operator deploy
+                      make -C tests/operator test
+                  env:
+                    IMG: europe-docker.pkg.dev/kyma-project/prod/serverless-operator:0db84d0ac46cd47331cb21b60f66e448001e2595
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
 #              - jobConfig:
 #                  name: unit-test-operator
 #                  annotations:
@@ -502,29 +502,29 @@ templates:
 #                    - jobConfig_presubmit
 #                    - build_labels # default labels
 #                    - unprivileged
-#              - jobConfig:
-#                  name: integration-test-operator
-#                  annotations:
-#                    owner: otters
-#                    description: integration serverless operator test
-#                  always_run: "true"
-#                  optional: "true"
-#                  args:
-#                    - bash
-#                    - -c
-#                    - |
-#                      make -C components/operator deploy
-#                      make -C tests/operator test
-#                  env:
-#                    IMG: europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-985
-#                inheritedConfigs:
-#                  global:
-#                    - jobConfig_default
-#                    - privileged
-#                    - jobConfig_presubmit
-#                    - extra_refs_test-infra
-#                  local:
-#                    - dind_job_k3d
+              - jobConfig:
+                  name: integration-test-operator
+                  annotations:
+                    owner: otters
+                    description: integration serverless operator test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C components/operator deploy
+                      make -C tests/operator test
+                  env:
+                    IMG: europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-985
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
       - to: ../../prow/jobs/kyma-project/serverless/serverless-release.yaml
         localSets:
           default:

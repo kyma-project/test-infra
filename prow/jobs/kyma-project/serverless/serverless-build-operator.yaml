@@ -95,6 +95,108 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+    - name: upgrade-test-operator
+      annotations:
+        description: "upgrade serverless operator test"
+        owner: "otters"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "k3d-test"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "upgrade-test-operator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-kyma-guard-bot-github-token: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C components/operator deploy-release
+make -C tests/operator test
+make -C components/operator deploy
+make -C tests/operator test
+"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:0db84d0ac46cd47331cb21b60f66e448001e2595"
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 3
+    - name: integration-test-operator
+      annotations:
+        description: "integration serverless operator test"
+        owner: "otters"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "k3d-test"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "integration-test-operator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-kyma-guard-bot-github-token: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C components/operator deploy
+make -C tests/operator test
+"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-985"
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/serverless:

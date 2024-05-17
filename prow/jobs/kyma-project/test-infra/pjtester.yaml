@@ -1868,7 +1868,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240510-4675c00f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240517-12a6f015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1917,7 +1917,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240510-460cb9f9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240517-daad947d"
             imagePullPolicy: Always
             securityContext:
               privileged: false
