@@ -15,9 +15,9 @@ paths = [
     '''vendor''',
     '''notary_test.go''',
     '''raw-oidc-token''',
+    '''sec-scanners-config.yaml''',
 ]
-regexTarget = "line"
-regexes = ["#nosec"]
+
 
 [[rules]]
 description = "Bearer Authorization Token"
