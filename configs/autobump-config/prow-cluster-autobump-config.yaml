@@ -19,3 +19,14 @@ prefixes:
     repo: "https://github.com/kyma-project/k8s-prow"
     summarise: true
     consistentImages: true
+    consistentImageExceptions:
+      - "gcr.io/k8s-prow/alpine"
+      - "gcr.io/k8s-prow/analyze"
+      - "gcr.io/k8s-prow/commenter"
+      - "gcr.io/k8s-prow/configurator"
+      - "gcr.io/k8s-prow/gcsweb"
+      - "gcr.io/k8s-prow/gencred"
+      - "gcr.io/k8s-prow/git"
+      - "gcr.io/k8s-prow/issue-creator"
+      - "gcr.io/k8s-prow/label_sync"
+      - "gcr.io/k8s-prow/pr-creator"
