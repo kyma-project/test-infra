@@ -16,4 +16,4 @@ jobs:
       name: test-infra/ginkgo
       dockerfile: prow/images/ginkgo/Dockerfile
       context: .
-      env-file: ".env"
+      env-file: "envs"
