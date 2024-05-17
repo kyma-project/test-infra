@@ -143,7 +143,7 @@ make -C tests/operator test
             resources:
               requests:
                 memory: 4Gi
-                cpu: 3
+                cpu: 2500m
     - name: integration-test-operator
       annotations:
         description: "integration serverless operator test"
@@ -190,7 +190,7 @@ make -C tests/operator test
             resources:
               requests:
                 memory: 4Gi
-                cpu: 3
+                cpu: 2500m
   
 postsubmits: # runs on main
   kyma-project/serverless:

@@ -389,7 +389,7 @@ templates:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9
             command: "/init.sh"
             request_memory: "4Gi"
-            request_cpu: "3"
+            request_cpu: "2500m"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
