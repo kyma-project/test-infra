@@ -99,9 +99,6 @@ presubmits: # runs on PRs
       annotations:
         description: "upgrade serverless operator test"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "upgrade-test-operator"
@@ -151,9 +148,6 @@ make -C tests/operator test
       annotations:
         description: "integration serverless operator test"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "integration-test-operator"
