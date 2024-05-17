@@ -132,9 +132,9 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "ls
+              - "ls . 
 make -C components/operator deploy-release
-ls
+ls .
 make -C tests/operator test
 make -C components/operator deploy
 make -C tests/operator test
