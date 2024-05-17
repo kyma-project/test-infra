@@ -379,9 +379,9 @@ templates:
             skip_if_only_changed: '^docs/|^examples/'
           dind_job_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: k3d-test
+#              pipeline.platform: k3d
+#              pipeline.installer: kyma deploy
+#              pipeline.test: k3d-test
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
