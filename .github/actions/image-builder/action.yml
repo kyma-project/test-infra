@@ -35,7 +35,7 @@ inputs:
     required: false
     default: "./configs/kaniko-build-config.yaml"
   env-file:
-    description: Path to file with environment variables to be loaded in build
+    description: Path to file with environment variables to be loaded in the build
     required: false
     default: ""
   dry-run:
