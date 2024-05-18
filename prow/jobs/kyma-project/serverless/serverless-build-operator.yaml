@@ -135,8 +135,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
-ls /etc/kubernetes && ls $HOME/.kube &&
+              - "ls $HOME/.kube &&
 kubectl config view &&
 ls -la && pwd && 
 make -C components/operator deploy-release &&
