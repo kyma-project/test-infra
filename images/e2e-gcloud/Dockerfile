@@ -33,7 +33,9 @@ ARG GCLOUD_CLI_VERSION=455.0.0
 RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_CLI_VERSION}-linux-$(uname -m).tar.gz" && \
     tar xzf gc-sdk.tar.gz -C / && \
     rm gc-sdk.tar.gz && \
-    gcloud components install alpha beta kubectl docker-credential-gcr gke-gcloud-auth-plugin && \
+    # Users should use gcloud auth configure-docker to authenticate with GCR instead of docker-credential-gcr, see https://github.com/GoogleCloudPlatform/docker-credential-gcr?tab=readme-ov-file#introduction
+    # gcloud components install alpha beta kubectl docker-credential-gcr gke-gcloud-auth-plugin && \
+    gcloud components install alpha beta kubectl gke-gcloud-auth-plugin && \
     gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true && \
     gcloud config set metrics/environment github_docker_image && \
