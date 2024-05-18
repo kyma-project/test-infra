@@ -469,6 +469,7 @@ templates:
                     - bash
                     - -c
                     - |
+                      export KUBECONFIG=$(k3d kubeconfig write k3d) &&
                       echo $KUBECONFIG &&
                       kubectl config view &&
                       ls -la && pwd && 

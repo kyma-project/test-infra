@@ -135,7 +135,8 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "echo $KUBECONFIG &&
+              - "export KUBECONFIG=$(k3d kubeconfig write k3d) &&
+echo $KUBECONFIG &&
 kubectl config view &&
 ls -la && pwd && 
 make -C components/operator deploy-release &&
