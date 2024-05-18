@@ -107,6 +107,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "upgrade-test-operator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
+        preset-k3d-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
@@ -163,6 +164,7 @@ make -C tests/operator test
         prow.k8s.io/pubsub.runID: "integration-test-operator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
+        preset-k3d-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
