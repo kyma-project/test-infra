@@ -132,7 +132,8 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
+              - "kubectl config view &&
+echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
 ls -la && pwd && 
 make -C components/operator deploy-release &&
 make -C tests/operator test &&
@@ -183,7 +184,8 @@ make -C tests/operator test
             args:
               - "bash"
               - "-c"
-              - "echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
+              - "kubectl config view &&
+echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
 ls -la && pwd && make --version &&
 make -C components/operator deploy &&
 make -C tests/operator test

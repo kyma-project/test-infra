@@ -469,6 +469,7 @@ templates:
                     - bash
                     - -c
                     - |
+                      kubectl config view &&
                       echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
                       ls -la && pwd && 
                       make -C components/operator deploy-release &&
@@ -515,6 +516,7 @@ templates:
                     - bash
                     - -c
                     - |
+                      kubectl config view &&
                       echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
                       ls -la && pwd && make --version &&
                       make -C components/operator deploy &&
