@@ -469,7 +469,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      ls $HOME/.kube &&
+                      echo $KUBECONFIG &&
                       kubectl config view &&
                       ls -la && pwd && 
                       make -C components/operator deploy-release &&
