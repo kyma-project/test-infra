@@ -136,11 +136,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "export KUBECONFIG=$(k3d kubeconfig write k3d) &&
-echo $KUBECONFIG &&
-kubectl config view &&
-ls -la && pwd && 
-make -C components/operator deploy-release &&
+              - "make -C components/operator deploy-release &&
 make -C tests/operator test &&
 make -C components/operator deploy &&
 make -C tests/operator test
@@ -152,6 +148,36 @@ make -C tests/operator test
               requests:
                 memory: 4Gi
                 cpu: 2500m
+    - name: unit-test-operator
+      annotations:
+        description: "unit serverless operator test"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "unit-test-operator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240509-7efe3c8a"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "make -C components/operator test"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
     - name: integration-test-operator
       annotations:
         description: "integration serverless operator test"
@@ -193,11 +219,7 @@ make -C tests/operator test
             args:
               - "bash"
               - "-c"
-              - "apk add ntp && apk add install ntpdate && ntpdate ntp.ubuntu.com &&
-kubectl config view &&
-echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
-ls -la && pwd && make --version &&
-make -C components/operator deploy &&
+              - "make -C components/operator deploy &&
 make -C tests/operator test
 "
             env:

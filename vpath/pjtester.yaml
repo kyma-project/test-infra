@@ -4,7 +4,7 @@ pjConfigs:
       serverless:
         - pjName: "pull-serverless-operator-lint"
         - pjName: "integration-test-operator"
-#        - pjName: "unit-test-operator"
+        - pjName: "unit-test-operator"
         - pjName: "upgrade-test-operator"
 prConfigs: #
   kyma-project:

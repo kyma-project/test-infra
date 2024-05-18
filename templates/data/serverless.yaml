@@ -470,10 +470,6 @@ templates:
                     - bash
                     - -c
                     - |
-                      export KUBECONFIG=$(k3d kubeconfig write k3d) &&
-                      echo $KUBECONFIG &&
-                      kubectl config view &&
-                      ls -la && pwd && 
                       make -C components/operator deploy-release &&
                       make -C tests/operator test &&
                       make -C components/operator deploy &&
@@ -488,25 +484,20 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-#              - jobConfig:
-#                  name: unit-test-operator
-#                  annotations:
-#                    owner: otters
-#                    description: unit serverless operator test
-#                  always_run: "true"
-#                  optional: "true"
-#                  args:
-#                    - bash
-#                    - -c
-#                    - |
-#                      make -C components/operator test
-#                inheritedConfigs:
-#                  global:
-#                    - image_buildpack-golang # takes latest golang image
-#                    - jobConfig_default
-#                    - jobConfig_presubmit
-#                    - build_labels # default labels
-#                    - unprivileged
+              - jobConfig:
+                  name: unit-test-operator
+                  annotations:
+                    owner: otters
+                    description: unit serverless operator test
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make -C components/operator test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - privileged
               - jobConfig:
                   name: integration-test-operator
                   annotations:
@@ -518,10 +509,6 @@ templates:
                     - bash
                     - -c
                     - |
-                      apk add ntp && apk add install ntpdate && ntpdate ntp.ubuntu.com &&
-                      kubectl config view &&
-                      echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
-                      ls -la && pwd && make --version &&
                       make -C components/operator deploy &&
                       make -C tests/operator test
                   env:
