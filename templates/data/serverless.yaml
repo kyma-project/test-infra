@@ -479,7 +479,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - privileged
+                    - unprivileged
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
