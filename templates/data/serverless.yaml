@@ -469,9 +469,10 @@ templates:
                     - bash
                     - -c
                     - |
-                      sudo apt-get install ntp && sudo apt-get install ntpdate && sudo ntpdate ntp.ubuntu.com &&
-                      kubectl config view &&
+                      apk add ntp && apk add install ntpdate && ntpdate ntp.ubuntu.com &&
                       echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
+                      ls /etc/kubernetes && ls $HOME/.kube &&
+                      kubectl config view &&
                       ls -la && pwd && 
                       make -C components/operator deploy-release &&
                       make -C tests/operator test &&
@@ -517,7 +518,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      sudo apt-get install ntp && sudo apt-get install ntpdate && sudo ntpdate ntp.ubuntu.com &&
+                      apk add ntp && apk add install ntpdate && ntpdate ntp.ubuntu.com &&
                       kubectl config view &&
                       echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> $HOME/.bashrc &&
                       ls -la && pwd && make --version &&
