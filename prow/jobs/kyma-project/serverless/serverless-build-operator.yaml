@@ -132,7 +132,8 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "make -C components/operator deploy-release
+              - "ls -la && pwd && make --version
+make -C components/operator deploy-release
 make -C tests/operator test
 make -C components/operator deploy
 make -C tests/operator test
@@ -181,8 +182,7 @@ make -C tests/operator test
             args:
               - "bash"
               - "-c"
-              - "ls .
-make --version
+              - "ls -la && pwd && make --version
 make -C components/operator deploy
 make -C tests/operator test
 "

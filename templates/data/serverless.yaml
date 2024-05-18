@@ -469,6 +469,7 @@ templates:
                     - bash
                     - -c
                     - |
+                      ls -la && pwd && make --version
                       make -C components/operator deploy-release
                       make -C tests/operator test
                       make -C components/operator deploy
@@ -513,8 +514,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      ls .
-                      make --version
+                      ls -la && pwd && make --version
                       make -C components/operator deploy
                       make -C tests/operator test
                   env:
