@@ -460,7 +460,7 @@ templates:
 #                    - linting
 #                    - unprivileged
               - jobConfig:
-                  name: upgrade-test-operator-9
+                  name: upgrade-test-operator-10
                   annotations:
                     owner: otters
                     description: upgrade serverless operator test
