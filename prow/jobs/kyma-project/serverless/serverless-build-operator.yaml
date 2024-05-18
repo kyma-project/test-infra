@@ -64,7 +64,7 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: upgrade-test-operator-four
+    - name: upgrade-test-operator-5
       annotations:
         description: "upgrade serverless operator test"
         owner: "otters"
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
         pipeline.test: "k3d-test"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "upgrade-test-operator-four"
+        prow.k8s.io/pubsub.runID: "upgrade-test-operator-5"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-k3d-enabled: "true"
