@@ -96,10 +96,10 @@ presubmits: # runs on PRs
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/init.sh"
             args:
@@ -134,10 +134,10 @@ make -C tests/operator test
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240509-7efe3c8a"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:

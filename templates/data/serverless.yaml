@@ -479,7 +479,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - unprivileged
+                    - privileged
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
@@ -497,7 +497,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
-                    - privileged
+                    - unprivileged
               - jobConfig:
                   name: integration-test-operator
                   annotations:
