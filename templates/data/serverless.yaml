@@ -469,10 +469,10 @@ templates:
                     - bash
                     - -c
                     - |
-                      ls -la && pwd && make --version
-                      make -C components/operator deploy-release
-                      make -C tests/operator test
-                      make -C components/operator deploy
+                      ls -la && pwd && 
+                      make -C components/operator deploy-release &&
+                      make -C tests/operator test &&
+                      make -C components/operator deploy &&
                       make -C tests/operator test
                   env:
                     IMG: europe-docker.pkg.dev/kyma-project/prod/serverless-operator:0db84d0ac46cd47331cb21b60f66e448001e2595
@@ -514,8 +514,8 @@ templates:
                     - bash
                     - -c
                     - |
-                      ls -la && pwd && make --version
-                      make -C components/operator deploy
+                      ls -la && pwd && make --version &&
+                      make -C components/operator deploy &&
                       make -C tests/operator test
                   env:
                     IMG: europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-985
