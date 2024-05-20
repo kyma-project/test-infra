@@ -68,8 +68,6 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^develop$
-          reconciler_component_gardener_integration_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-component-provision-gardener.sh"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
