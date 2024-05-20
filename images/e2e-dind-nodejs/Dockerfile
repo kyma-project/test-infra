@@ -1,4 +1,4 @@
-FROM node:20.12.2-bookworm-slim as base
+FROM node:20.13.1-bookworm-slim as base
 
 
 ENV TERM=xterm
@@ -37,9 +37,9 @@ RUN mkdir -p /workspace; \
 
 WORKDIR /workspace
 
-FROM golang:1.22.2 AS go-deps
+FROM golang:1.22.3 AS go-deps
 ENV CGO_ENABLED=0
-ARG K3D_VERSION=v5.6.0
+ARG K3D_VERSION=v5.6.3
 
 RUN apt-get install --no-install-recommends -y curl
 
@@ -48,15 +48,11 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
     TAG=${K3D_VERSION} ./install.sh &&\
     rm install.sh
 
-# Only k3d is needed atm. If it's proven unstable, switch to kind
-#ARG KIND_VERSION=v0.18.0
-#RUN go install sigs.k8s.io/kind@${KIND_VERSION}
-
-ARG CLUSTER_VERSION=v1.28.9
+ARG CLUSTER_VERSION=v1.28.10
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
-ARG HELM_VERSION=v3.14.4
+ARG HELM_VERSION=v3.15.0
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
