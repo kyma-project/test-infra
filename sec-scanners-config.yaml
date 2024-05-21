@@ -57,7 +57,7 @@ protecode:
     - gcr.io/k8s-prow/tide:v20240517-ea10bd814
     - maven:3.9.6-eclipse-temurin-17-alpine
     - prom/pushgateway:v1.8.0
-    - quay.io/prometheus-operator/prometheus-operator:v0.67.1
+    - quay.io/prometheus-operator/prometheus-operator:v0.74.0
 whitesource:
     language: golang-mod
     exclude:

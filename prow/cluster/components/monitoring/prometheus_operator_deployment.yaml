@@ -19,9 +19,9 @@ spec:
       containers:
       - args:
         - --kubelet-service=kube-system/kubelet
-        - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.67.1
+        - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.74.0
         - --namespaces=prow-monitoring
-        image: quay.io/prometheus-operator/prometheus-operator:v0.67.1
+        image: quay.io/prometheus-operator/prometheus-operator:v0.74.0
         name: prometheus-operator
         ports:
         - containerPort: 8080
