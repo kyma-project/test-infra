@@ -36,10 +36,10 @@ presubmits: # runs on PRs
                 value: "cluster"
             resources:
               requests:
-                memory: 6Gi
+                memory: 8Gi
                 cpu: 2
               limits:
-                memory: 8Gi
+                memory: 10Gi
                 cpu: 4
     - name: pull-busola-integration-namespace-k3d
       annotations:
@@ -77,8 +77,8 @@ presubmits: # runs on PRs
                 value: "namespace"
             resources:
               requests:
-                memory: 6Gi
+                memory: 8Gi
                 cpu: 2
               limits:
-                memory: 8Gi
+                memory: 10Gi
                 cpu: 4

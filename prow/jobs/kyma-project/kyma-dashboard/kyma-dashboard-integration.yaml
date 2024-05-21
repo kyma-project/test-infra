@@ -37,8 +37,8 @@ presubmits: # runs on PRs
                 value: "e2e"
             resources:
               requests:
-                memory: 6Gi
+                memory: 8Gi
                 cpu: 2
               limits:
-                memory: 8Gi
+                memory: 10Gi
                 cpu: 4
