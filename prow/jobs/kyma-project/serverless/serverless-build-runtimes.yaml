@@ -32,7 +32,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-nodejs18"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
-              - "--dockerfile=components/runtimes/nodejs/nodejs18/Dockerfile"
+              - "--dockerfile=nodejs18/Dockerfile"
               - "--build-in-ado=true"
             resources:
               requests:
@@ -81,7 +81,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-nodejs20"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
-              - "--dockerfile=components/runtimes/nodejs/nodejs20/Dockerfile"
+              - "--dockerfile=nodejs20/Dockerfile"
               - "--build-in-ado=true"
             resources:
               requests:
@@ -130,7 +130,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+              - "--dockerfile=python39/Dockerfile"
               - "--build-in-ado=true"
             resources:
               requests:
@@ -179,7 +179,7 @@ presubmits: # runs on PRs
               - "--name=function-runtime-python312"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+              - "--dockerfile=python312/Dockerfile"
               - "--build-in-ado=true"
             resources:
               requests:
@@ -283,7 +283,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-nodejs18"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
-              - "--dockerfile=components/runtimes/nodejs/nodejs18/Dockerfile"
+              - "--dockerfile=nodejs18/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--build-in-ado=true"
@@ -337,7 +337,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-nodejs20"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
-              - "--dockerfile=components/runtimes/nodejs/nodejs20/Dockerfile"
+              - "--dockerfile=nodejs20/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--build-in-ado=true"
@@ -391,7 +391,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python39"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+              - "--dockerfile=python39/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--build-in-ado=true"
@@ -445,7 +445,7 @@ postsubmits: # runs on main
               - "--name=function-runtime-python312"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python"
-              - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+              - "--dockerfile=python312/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
               - "--build-in-ado=true"
