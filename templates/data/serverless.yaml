@@ -4,7 +4,7 @@ templates:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build.yaml
         localSets:
           skip_if_only_changed_documentation:
-            skip_if_only_changed: '^docs/|^examples/'
+            skip_if_only_changed: "^docs/|^examples/"
           default:
             labels:
               preset-image-builder-ado-token: "true"
@@ -44,7 +44,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -84,7 +84,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -124,7 +124,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -140,7 +140,7 @@ templates:
             labels:
               preset-image-builder-ado-token: "true"
           skip_if_only_changed_documentation:
-            skip_if_only_changed: '^docs/|^examples/'
+            skip_if_only_changed: "^docs/|^examples/"
           post_branches:
             branches:
               - "^main$"
@@ -158,7 +158,7 @@ templates:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs18/Dockerfile"
+                    - "--dockerfile=components/runtimes/nodejs/nodejs18/Dockerfile"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -177,8 +177,8 @@ templates:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs18/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/nodejs/nodejs18/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -199,7 +199,7 @@ templates:
                     - "--name=function-runtime-nodejs20"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs20/Dockerfile"
+                    - "--dockerfile=components/runtimes/nodejs/nodejs20/Dockerfile"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -218,8 +218,8 @@ templates:
                     - "--name=function-runtime-nodejs20"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs20/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/nodejs/nodejs20/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -240,7 +240,7 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python39/Dockerfile"
+                    - "--dockerfile=components/runtimes/python/python39/Dockerfile"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -259,8 +259,8 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python39/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -281,7 +281,7 @@ templates:
                     - "--name=function-runtime-python312"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python312/Dockerfile"
+                    - "--dockerfile=components/runtimes/python/python312/Dockerfile"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -300,8 +300,8 @@ templates:
                     - "--name=function-runtime-python312"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python312/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -342,7 +342,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -363,7 +363,7 @@ templates:
               - "^main$"
               - "^release-*"
           skip_if_only_changed_documentation:
-            skip_if_only_changed: '^docs/|^examples/'
+            skip_if_only_changed: "^docs/|^examples/"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -465,7 +465,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -485,7 +485,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -505,7 +505,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -524,8 +524,8 @@ templates:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs18/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/nodejs/nodejs18/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -544,8 +544,8 @@ templates:
                     - "--name=function-runtime-nodejs20"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
-                    - "--dockerfile=nodejs20/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/nodejs/nodejs20/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -564,8 +564,8 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python39/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -584,8 +584,8 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python39/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/python/python39/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -604,8 +604,8 @@ templates:
                     - "--name=function-runtime-python312"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
-                    - "--dockerfile=python312/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
+                    - "--dockerfile=components/runtimes/python/python312/Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
