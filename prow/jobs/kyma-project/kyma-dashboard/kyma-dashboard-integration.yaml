@@ -38,7 +38,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 10Gi
-                cpu: 2
+                cpu: 4
               limits:
                 memory: 12Gi
-                cpu: 4
+                cpu: 6
