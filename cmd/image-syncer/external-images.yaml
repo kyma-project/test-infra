@@ -1,7 +1,7 @@
 targetRepoPrefix:  "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
-- source: "alpine@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b"
-  tag: "3.19.1"
+- source: "alpine@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd"
+  tag: "3.20.0"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
   amd64Only: true
 - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
@@ -12,8 +12,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:cdc86d9f363e8786845bea2040312b4efa321b828acdeb26f393faa864d887b0"
-  tag: "1.22.2-alpine3.19"
+- source: "golang@sha256:e62cde42bd32f7b0435c997d4048ee7b76042e31bde380898e1df97eabdb01fd"
+  tag: "1.22.3-alpine3.20"
   amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
