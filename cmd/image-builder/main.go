@@ -227,7 +227,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	}
 
 	if len(options.tags) > 0 {
-		templateParameters.SetImageTags(strings.ReplaceAll(options.tags.String(), " ", ""))
+		templateParameters.SetImageTags(options.tags.String())
 	}
 
 	if options.ciSystem == GithubActions {
