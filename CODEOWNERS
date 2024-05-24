@@ -7,7 +7,7 @@
 # These are the default owners for the whole content of the `kyma` repository.
 # The default owners are automatically added as reviewers when you open a pull request, unless different owners are specified in the file.
 
-# IMPORTANT: Each path must have @neighbors-dev-bot added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
+# IMPORTANT: Each path must have @neighbors-dev-bot @kyma-project/prow added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
 
 * @kyma-project/prow @neighbors-dev-bot
 
@@ -21,64 +21,64 @@
 /prow/images/buildpack-node @kyma-project/prow @kyma-project/hasselhoff @a-thaler @lilitgh @neighbors-dev-bot
 
 /prow/jobs @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot
-/prow/jobs/btp-manager @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/busola @kyma-project/hasselhoff @neighbors-dev-bot
-/prow/jobs/cli @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/components/kubeconfig-service @kyma-project/operations @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/components/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/components/provisioner @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/components/schema-migrator @kyma-project/gopher @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/control-plane-reconciler-integration.yaml @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot
+/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/btp-manager @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/busola @kyma-project/hasselhoff @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/cli @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/components/kubeconfig-service @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/components/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/components/provisioner @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/components/schema-migrator @kyma-project/gopher @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/control-plane-reconciler-integration.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane/control-plane-validation.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot
-/prow/jobs/kyma-project/directory-size-exporter/ @kyma-project/observability @neighbors-dev-bot
-/prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/eventing-publisher-proxy @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot
-/prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
-/prow/jobs/kyma-incubator/compass-console @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
-/prow/jobs/kyma-incubator/hydroform/hydroform.yaml @janmedrek @neighbors-dev-bot
-/prow/jobs/kyma-incubator/ord-service @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
-/prow/jobs/kyma-incubator/reconciler/reconciler-k3d.yaml @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-incubator/reconciler/reconciler.yaml @kyma-project/jellyfish @kyma-project/goat  @neighbors-dev-bot
-/prow/jobs/kyma-project/infrastructure-manager/ @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/common @kyma-project/framefrog @neighbors-dev-bot
+/prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/directory-size-exporter/ @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/eventing-publisher-proxy @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/compass-console @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/hydroform/hydroform.yaml @janmedrek @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/ord-service @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/reconciler/reconciler-k3d.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-incubator/reconciler/reconciler.yaml @kyma-project/jellyfish @kyma-project/goat  @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/infrastructure-manager/ @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma/common @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 
 /prow/jobs/kyma-project/kyma/releases @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/keb-endpoints-test.yaml @kyma-project/gopher @neighbors-dev-bot
+/prow/jobs/kyma-project/kyma/keb-endpoints-test.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/kyma/kyma-gardener-cleanup.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot
+/prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/kyma/kyma-release-pr-image-guard.yaml @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/kyma-validation.yaml @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/periodics.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/skr-aws-upgrade-integration-dev.yaml @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/skr-integration.yaml @kyma-project/gopher @neighbors-dev-bot
+/prow/jobs/kyma-project/kyma/skr-aws-upgrade-integration-dev.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma/skr-integration.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
 
-/prow/jobs/kyma-project/kyma-dashboard @kyma-project/hasselhoff @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/compass-manager @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
-/prow/jobs/kyma-project/warden @kyma-project/otters @neighbors-dev-bot
-/prow/jobs/kyma-project/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot
-/prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/serverless @kyma-project/otters @neighbors-dev-bot
-/prow/jobs/kyma-project/docker-registry @kyma-project/otters @neighbors-dev-bot
-/prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
+/prow/jobs/kyma-project/kyma-dashboard @kyma-project/hasselhoff @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/compass-manager @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/control-plane @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/kyma @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/warden @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/serverless @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/docker-registry @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-incubator/slack-bot @kyma-project/gopher @neighbors-dev-bot
-/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
-/prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot
+/prow/jobs/kyma-incubator/slack-bot @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
+/prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/test-infra @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/operations @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
 
