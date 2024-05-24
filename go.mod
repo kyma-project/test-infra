@@ -26,7 +26,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/onsi/ginkgo/v2 v2.18.0
+	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
