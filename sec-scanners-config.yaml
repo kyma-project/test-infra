@@ -7,7 +7,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240523-63efdb74
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240520-85a288ea
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240527-2e43aa62
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240527-c5910055
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240527-c5910055
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240527-c5910055
@@ -33,14 +33,14 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240523-ceb33df7
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240522-7eae828c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240524-eee65d10
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240527-0ee484af
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240527-0ee484af
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240527-2e43aa62
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240527-2e43aa62
     - gcr.io/k8s-prow/analyze:v20240513-a9bd71bf01
     - gcr.io/k8s-prow/branchprotector:v20240527-d543baace
     - gcr.io/k8s-prow/crier:v20240527-d543baace
