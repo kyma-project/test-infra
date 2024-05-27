@@ -142,19 +142,19 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 
 func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	switch ciSystem {
+	// Load from env specific for Azure DevOps and Prow Jobs
+	case AzureDevOps, Prow:
+		return loadADOGitState()
 	// Load from env specific for Github Actions
 	case GithubActions:
 		return loadGithubActionsGitState()
-	// Load from env specific for Prow Jobs and Azure DevOps
-	case Prow, AzureDevOps:
-		return loadProwJobGitState()
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
 	}
 }
 
-func loadProwJobGitState() (GitStateConfig, error) {
+func loadADOGitState() (GitStateConfig, error) {
 	var pullNumber int
 
 	repoName, present := os.LookupEnv("REPO_NAME")
