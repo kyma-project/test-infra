@@ -1,0 +1,10 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      application-connector-manager:
+        prNumber: 258
+  prowJobs:
+    kyma-project:
+      application-connector-manager:
+        - pjName: "release-application-connector-manager-build"
+          report: true
