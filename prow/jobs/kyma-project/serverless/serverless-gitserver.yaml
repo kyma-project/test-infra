@@ -21,7 +21,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
             securityContext:
               privileged: false
               seccompProfile:
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
               - "--name=gitserver"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=tests/gitserver"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=tests/gitserver/Dockerfile"
               - "--build-in-ado=true"
             resources:
               requests:
@@ -73,7 +73,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
             securityContext:
               privileged: false
               seccompProfile:
@@ -85,7 +85,7 @@ postsubmits: # runs on main
               - "--name=gitserver"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=tests/gitserver"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=tests/gitserver/Dockerfile"
               - "--tag=$(PULL_BASE_SHA)"
               - "--tag=$(PULL_BASE_REF)"
               - "--build-in-ado=true"
