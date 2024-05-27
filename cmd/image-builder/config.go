@@ -20,6 +20,7 @@ type CISystem string
 const (
 	Prow          CISystem = "Prow"
 	GithubActions CISystem = "GithubActions"
+	AzureDevOps   CISystem = "AzureDevOps"
 )
 
 type Config struct {
@@ -141,19 +142,19 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 
 func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	switch ciSystem {
-	// Load from env specific for github actions
+	// Load from env specific for Azure DevOps and Prow Jobs
+	case AzureDevOps, Prow:
+		return loadADOGitState()
+	// Load from env specific for Github Actions
 	case GithubActions:
 		return loadGithubActionsGitState()
-	// Load from env specific for prow jobs
-	case Prow:
-		return loadProwJobGitState()
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
 	}
 }
 
-func loadProwJobGitState() (GitStateConfig, error) {
+func loadADOGitState() (GitStateConfig, error) {
 	var pullNumber int
 
 	repoName, present := os.LookupEnv("REPO_NAME")
@@ -282,6 +283,11 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 	_, isProwJob := envLookup("PROW_JOB_ID")
 	if isProwJob {
 		return Prow, nil
+	}
+
+	isAdo := envGetter("CI_SYSTEM") == "AzureDevOps"
+	if isAdo {
+		return AzureDevOps, nil
 	}
 
 	return "", fmt.Errorf("cannot determine ci system: unknown system")

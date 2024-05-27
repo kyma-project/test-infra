@@ -22,7 +22,7 @@ postsubmits:
           channel: kyma-skr-release
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240523-3d3dbff5"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240527-0ee484af"
             securityContext:
               privileged: false
               seccompProfile:
