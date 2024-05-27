@@ -316,7 +316,6 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 	logger := tokenProcessor.logger
 	logger.Debugw("Getting issuer from token")
 	claims := NewClaims(logger)
-	// claims := Claims{}
 	var signAlgs []jose.SignatureAlgorithm
 	for _, alg := range signAlgorithm {
 		signAlgs = append(signAlgs, jose.SignatureAlgorithm(alg))
@@ -335,7 +334,6 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 		return "", fmt.Errorf("failed to get claims from unverified token: %w", err)
 	}
 	logger.Debugw("Got claims from unverified token", "claims", fmt.Sprintf("%+v", claims))
-	// return claims.GetIssuer(), nil
 	return claims.Issuer, nil
 }
 

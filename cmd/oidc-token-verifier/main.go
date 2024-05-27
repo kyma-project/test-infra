@@ -97,7 +97,7 @@ func isTokenProvided(logger Logger, opts *options) error {
 
 // extractClaims verifies the OIDC token.
 // The OIDC token is read from the file specified by the --token flag or the AUTHORIZATION environment variable.
-// It returns an error if the token is validation failed.
+// It returns an error if the token validation failed.
 // It verifies the token signature and expiration time, verifies if the token is issued by a trusted issuer,
 // and the claims have expected values.
 // It uses OIDC discovery to get the public keys.
