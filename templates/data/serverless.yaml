@@ -182,7 +182,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v18-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
@@ -191,7 +191,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -204,7 +204,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function nodejs20 build job
@@ -223,7 +223,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function nodej20 build job
@@ -232,7 +232,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs20/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -245,7 +245,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.9 build job
@@ -264,7 +264,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.9 build job
@@ -273,7 +273,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -286,7 +286,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.12 build job
@@ -305,7 +305,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.12 build job
@@ -314,7 +314,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python312/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -327,7 +327,7 @@ templates:
                     - default
               - jobConfig:
                   name: pre-serverless-runtimes-java17-jvm-alpha-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -346,7 +346,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-runtimes-java17-jvm-alpha-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -355,7 +355,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--build-in-ado=true"
                 inheritedConfigs:
@@ -376,13 +376,26 @@ templates:
               - "^main$"
               - "^release-*"
           skip_if_only_changed_documentation:
-            skip_if_only_changed: "^docs/|^examples/"
+            skip_if_only_changed: '^docs/|^examples/'
+          dind_job_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: k3d-test
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240510-460cb9f9
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
               - jobConfig:
                   name: pre-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: serverless operator image build
@@ -406,7 +419,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: build serverless operator
@@ -470,24 +483,25 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-              - jobConfig:
-                  name: unit-test-operator
-                  annotations:
-                    owner: otters
-                    description: unit serverless operator test
-                  always_run: "true"
-                  optional: "true"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C components/operator test
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
+#              - jobConfig:
+#                  name: unit-test-operator
+#                  annotations:
+#                    owner: otters
+#                    description: unit serverless operator test
+#                  always_run: "true"
+#                  optional: "true"
+#                  args:
+#                    - bash
+#                    - -c
+#                    - |
+#                      make -C components/operator test
+#                inheritedConfigs:
+#                  global:
+#                    - image_buildpack-golang # takes latest golang image
+#                    - jobConfig_default
+#                    - jobConfig_presubmit
+#                    - build_labels # default labels
+#                    - unprivileged
               - jobConfig:
                   name: integration-test-operator
                   annotations:
@@ -527,7 +541,7 @@ templates:
             jobs:
               - jobConfig:
                   name: release-serverless-operator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: Job to build serverless operator for a release.
@@ -550,7 +564,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-controller-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function controller build for a release.
@@ -559,7 +573,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -570,7 +584,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-webhook-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function webhook build for a release.
@@ -579,7 +593,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -590,7 +604,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-jobinit-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function jobinit build for a release.
@@ -599,7 +613,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -610,7 +624,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v18-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function nodejs18 build for a release.
@@ -619,7 +633,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -630,7 +644,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-runtimes-nodejs-v20-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function nodejs20 build for a release.
@@ -639,7 +653,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs20/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -650,7 +664,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-runtimes-python39-build-legacy
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.9 build for a release.
@@ -659,7 +673,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -670,7 +684,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-runtimes-python39-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.9 build for a release.
@@ -679,7 +693,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python39/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -690,7 +704,7 @@ templates:
                     - default
               - jobConfig:
                   name: release-serverless-runtimes-python312-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: function python3.12 build for a release.
@@ -699,7 +713,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python"
                     - "--dockerfile=python312/Dockerfile"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--build-in-ado=true"
                 inheritedConfigs:
                   global:
@@ -718,7 +732,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-gitserver-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: gitserver build job
@@ -726,7 +740,7 @@ templates:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
-                    - "--dockerfile=Dockerfile"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
                     - "--build-in-ado=true"
                   run_if_changed: "^tests/gitserver/"
                   optional: "true"
@@ -738,7 +752,7 @@ templates:
                     - default
               - jobConfig:
                   name: post-gitserver-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-5a9a1704"
                   annotations:
                     owner: otters
                     description: gitserver build job
@@ -747,7 +761,7 @@ templates:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
-                    - "--dockerfile=Dockerfile"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
                     - "--tag=$(PULL_BASE_SHA)"
                     - "--tag=$(PULL_BASE_REF)"
                     - "--build-in-ado=true"
