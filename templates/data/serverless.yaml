@@ -492,6 +492,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
+                    - "kubectl config view --minify"
                     - "make -C components/operator test"
                 inheritedConfigs:
                   global:

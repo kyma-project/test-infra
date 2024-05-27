@@ -142,6 +142,7 @@ make -C tests/operator test
               - "/bin/sh"
             args:
               - "-c"
+              - "kubectl config view --minify"
               - "make -C components/operator test"
             resources:
               requests:
