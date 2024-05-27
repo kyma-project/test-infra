@@ -356,6 +356,10 @@ branch-protection:
               - "Verify Unit Test Coverage"
         cli:
           unmanaged: true
+        istio:
+          unmanaged: true
+        api-gateway:
+          unmanaged: true
         serverless:
           unmanaged: true
         keda-manager:
