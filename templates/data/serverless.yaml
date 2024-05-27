@@ -452,7 +452,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/operator && golangci-lint run"
                   run_if_changed: '^components/operator/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
@@ -492,7 +492,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "kubectl config view --minify"
+                    - "kubectl config view --minify &&"
                     - "make -C components/operator test"
                 inheritedConfigs:
                   global:
