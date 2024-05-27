@@ -140,13 +140,6 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
             resources:
               requests:
                 memory: 1.5Gi
