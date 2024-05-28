@@ -5,3 +5,8 @@ packages:
       include-regex: ".*Client"
       dir: "{{.InterfaceDir}}/mocks"
       outpkg: "{{.PackageName}}mocks"
+  github.com/kyma-project/test-infra/pkg/oidc:
+    config:
+      all: True
+      dir: "{{.InterfaceDir}}/mocks"
+      outpkg: "{{.PackageName}}mocks"

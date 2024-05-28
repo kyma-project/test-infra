@@ -20,9 +20,10 @@ var (
 	SupportedSigningAlgorithms = []string{"RS256"}
 	// GithubOIDCIssuer is the known GitHub OIDC issuer.
 	GithubOIDCIssuer = Issuer{
-		Name:      "github",
-		IssuerURL: "https://token.actions.githubusercontent.com",
-		JWKSURL:   "https://token.actions.githubusercontent.com/.well-known/jwks",
+		Name:                   "github",
+		IssuerURL:              "https://token.actions.githubusercontent.com",
+		JWKSURL:                "https://token.actions.githubusercontent.com/.well-known/jwks",
+		ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
 	}
 	TrustedOIDCIssuers = map[string]Issuer{GithubOIDCIssuer.IssuerURL: GithubOIDCIssuer}
 )
@@ -54,7 +55,8 @@ type VerifierProvider interface {
 }
 
 type ClaimsInterface interface {
-	Validate(e jwt.Expected) error
+	// Validate(jwt.Expected) error
+	ValidateExpectations(Issuer) error
 }
 
 type LoggerInterface interface {
@@ -67,9 +69,10 @@ type LoggerInterface interface {
 // IssuerURL is the OIDC discovery issuer endpoint.
 // JWKSURL is the OIDC issuer public keys endpoint.
 type Issuer struct {
-	Name      string `json:"name" yaml:"name"`
-	IssuerURL string `json:"issuer_url" yaml:"issuer_url"`
-	JWKSURL   string `json:"jwks_url" yaml:"jwks_url"`
+	Name                   string `json:"name" yaml:"name"`
+	IssuerURL              string `json:"issuer_url" yaml:"issuer_url"`
+	JWKSURL                string `json:"jwks_url" yaml:"jwks_url"`
+	ExpectedJobWorkflowRef string `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
 }
 
 // VerifierConfig is the configuration for a verifier.
@@ -82,7 +85,7 @@ type VerifierConfig struct {
 type TokenProcessor struct {
 	rawToken       string
 	trustedIssuers map[string]Issuer
-	issuer         string
+	issuer         Issuer
 	verifierConfig VerifierConfig
 	logger         LoggerInterface
 }
@@ -96,6 +99,7 @@ type TokenProcessorOption func(*TokenProcessor) error
 type Claims struct {
 	jwt.Claims
 	GithubClaims
+	LoggerInterface
 }
 
 // GithubClaims provide the GitHub specific claims.
@@ -196,6 +200,25 @@ func (token *Token) Claims(claims interface{}) error {
 	return token.Token.Claims(claims)
 }
 
+// NewClaims creates a new Claims struct with the provided logger.
+func NewClaims(logger LoggerInterface) Claims {
+	return Claims{
+		LoggerInterface: logger,
+	}
+}
+
+// ValidateExpectations validates the claims against the trusted issuer expected values.
+// It checks audience, issuer, and job_workflow_ref claims.
+func (claims *Claims) ValidateExpectations(issuer Issuer) error {
+	logger := claims.LoggerInterface
+	logger.Debugw("Validating job_workflow_ref claim against expected value", "job_workflow_ref", claims.JobWorkflowRef, "expected", issuer.ExpectedJobWorkflowRef)
+	if claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
+		return fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: %s, provided: %s", claims.JobWorkflowRef, issuer.ExpectedJobWorkflowRef)
+	}
+	logger.Debugw("Claims validated successfully")
+	return nil
+}
+
 // NewProviderFromDiscovery creates a new Provider for issuer using OIDC discovery.
 // It returns a Provider struct containing the new Provider if successful.
 func NewProviderFromDiscovery(ctx context.Context, logger LoggerInterface, issuer string) (Provider, error) {
@@ -264,10 +287,11 @@ func NewTokenProcessor(
 		return TokenProcessor{}, fmt.Errorf("failed to get issuer from token: %w", err)
 	}
 	logger.Debugw("Got issuer from token", "issuer", issuer)
-	if !tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers) {
-		return TokenProcessor{}, fmt.Errorf("%s issuer is not trusted", issuer)
+	trustedIssuer, err := tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers)
+	if err != nil {
+		return TokenProcessor{}, err
 	}
-	tokenProcessor.issuer = issuer
+	tokenProcessor.issuer = trustedIssuer
 	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
 
 	logger.Debugw("Applying TokenProcessorOptions")
@@ -291,8 +315,7 @@ func NewTokenProcessor(
 func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (string, error) {
 	logger := tokenProcessor.logger
 	logger.Debugw("Getting issuer from token")
-	// claims := jwt.Claims{}
-	claims := Claims{}
+	claims := NewClaims(logger)
 	var signAlgs []jose.SignatureAlgorithm
 	for _, alg := range signAlgorithm {
 		signAlgs = append(signAlgs, jose.SignatureAlgorithm(alg))
@@ -305,7 +328,7 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 	if err != nil {
 		return "", fmt.Errorf("failed to parse oidc token: %w", err)
 	}
-	logger.Debugw("Parsed oidc token")
+	logger.Debugw("Parsed oidc token", "parsedJWT", fmt.Sprintf("%+v", parsedJWT))
 	err = parsedJWT.UnsafeClaimsWithoutVerification(&claims)
 	if err != nil {
 		return "", fmt.Errorf("failed to get claims from unverified token: %w", err)
@@ -316,36 +339,43 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 
 // isTrustedIssuer checks if the issuer is trusted.
 // It's used to create a new TokenProcessor.
-func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssuers map[string]Issuer) bool {
+func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssuers map[string]Issuer) (Issuer, error) {
 	logger := tokenProcessor.logger
 	logger.Debugw("Checking if issuer is trusted", "issuer", issuer)
 	logger.Debugw("Trusted issuers", "trustedIssuers", trustedIssuers)
-	if _, exists := trustedIssuers[issuer]; exists {
+	if trustedIssuer, exists := trustedIssuers[issuer]; exists {
 		logger.Debugw("Issuer is trusted", "issuer", issuer)
-		return true
+		return trustedIssuer, nil
 	}
 	logger.Debugw("Issuer is not trusted", "issuer", issuer)
-	return false
+	return Issuer{}, fmt.Errorf("issuer %s is not trusted", issuer)
 }
 
+// TODO(dekiel): This should return Issuer struct or has a different name.
 // Issuer returns the issuer of the token.
 func (tokenProcessor *TokenProcessor) Issuer() string {
-	return tokenProcessor.issuer
+	return tokenProcessor.issuer.IssuerURL
 }
 
-// Claims verify and parse the token to get the token claims.
+// VerifyAndExtractClaims verify and parse the token to get the token claims.
+// It uses the provided verifier to verify the token signature and expiration time.
+// It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.
 func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
-	idToken, err := verifier.Verify(ctx, tokenProcessor.rawToken)
+	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
 	if err != nil {
 		return fmt.Errorf("failed to verify token: %w", err)
 	}
 	logger.Debugw("Getting claims from token")
-	err = idToken.Claims(claims)
+	err = token.Claims(claims)
 	if err != nil {
 		return fmt.Errorf("failed to get claims from token: %w", err)
 	}
 	logger.Debugw("Got claims from token", "claims", fmt.Sprintf("%+v", claims))
+	err = claims.ValidateExpectations(tokenProcessor.issuer)
+	if err != nil {
+		return fmt.Errorf("failed to validate claims: %w", err)
+	}
 	return nil
 }
