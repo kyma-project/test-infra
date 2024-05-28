@@ -38,6 +38,10 @@ on:
         required: false
         type: string
         default: ""
+    outputs:
+      images:
+        description: JSON list of images built by image-builder
+        value: ${{ jobs.build.outputs.images }}
 
 jobs:
   get_oidc_token:
@@ -65,6 +69,8 @@ jobs:
   build:
     needs: get_oidc_token
     runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.build.outputs.images }}
     steps:
       - uses: ./.github/actions/image-builder
         id: build

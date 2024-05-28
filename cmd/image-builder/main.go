@@ -339,6 +339,13 @@ func buildInADO(o options) error {
 
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
+		images := extractImagesFromADOLogs(logs)
+		data, err := json.Marshal(images)
+		if err != nil {
+			return fmt.Errorf("cannot marshal list of images: %w", err)
+		}
+
+		actions.SetOutput("images", string(data))
 		actions.SetOutput("adoResult", string(*pipelineRunResult))
 	}
 
