@@ -179,11 +179,11 @@ globalSets:
   image_wssagent_nodejs:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240528-ab6c2b58"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240528-5deb0cee
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240528-5deb0cee
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240528-5deb0cee
   image_e2e-dind-k3d:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240528-ab6c2b58"
   # JobConfig sets
