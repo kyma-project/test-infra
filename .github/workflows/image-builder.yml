@@ -41,10 +41,10 @@ on:
     outputs:
       images:
         description: JSON list of images built by image-builder
-        value: ${{ jobs.build.outputs.images }}
+        value: ${{ jobs.get_oidc_token.outputs.images }}
 
 jobs:
-  get_oidc_token:
+  build:
     permissions:
       id-token: write # This is required for requesting the JWT token
       contents: read # This is required for actions/checkout
@@ -52,6 +52,7 @@ jobs:
     name: A job to get OIDC token
     outputs:
       token: ${{ steps.get_oidc.outputs.jwt }}
+      images: ${{ steps.build.outputs.images }}
     steps:
       - name: Checkout repository based on test flag
         uses: actions/checkout@v4
@@ -66,17 +67,11 @@ jobs:
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
 
-  build:
-    needs: get_oidc_token
-    runs-on: ubuntu-latest
-    outputs:
-      images: ${{ steps.build.outputs.images }}
-    steps:
       - uses: ./.github/actions/image-builder
         id: build
         name: Run build in image-builder
         with:
-          oidc-token: ${{ needs.get_oidc_token.outputs.token }}
+          oidc-token: ${{ steps.get_oidc.outputs.token }}
           ado-token: ${{ secrets.ADO_PAT }}
           context: ${{ inputs.context }}
           build-args: ${{ inputs.build-args }}
