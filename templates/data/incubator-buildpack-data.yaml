@@ -152,7 +152,7 @@ templates:
                     - reconciler_publish_pr_cli_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-mothership-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
                   annotations:
                     owner: jellyfish
                     description: build mothership reconciler
@@ -170,7 +170,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-mothership-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
                   annotations:
                     owner: jellyfish
                     description: build reconciler
@@ -191,7 +191,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: pre-main-kyma-incubator-component-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
                   annotations:
                     owner: jellyfish
                     description: build component reconciler
@@ -209,7 +209,7 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
                   annotations:
                     owner: jellyfish
                     description: build component reconciler
