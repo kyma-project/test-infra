@@ -1,15 +1,15 @@
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pull-central-application-gateway-build
+  kyma-project/application-connector-manager:
+    - name: pull-central-application-connectivity-validator-build
       annotations:
         description: "Build the component image"
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-gateway-build"
+        prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/central-application-gateway/'
+      run_if_changed: '^components/central-application-connectivity-validator/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -25,9 +25,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=central-application-gateway"
+              - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/central-application-gateway"
+              - "--context=components/central-application-connectivity-validator"
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -49,18 +49,18 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma:
-    - name: post-central-application-gateway-build
+  kyma-project/application-connector-manager:
+    - name: post-central-application-connectivity-validator-build
       annotations:
         description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-central-application-gateway-build"
+        prow.k8s.io/pubsub.runID: "post-central-application-connectivity-validator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/central-application-gateway/'
+      run_if_changed: '^components/central-application-connectivity-validator/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -76,9 +76,9 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=central-application-gateway"
+              - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/central-application-gateway"
+              - "--context=components/central-application-connectivity-validator"
               - "--dockerfile=Dockerfile"
             resources:
               requests:
