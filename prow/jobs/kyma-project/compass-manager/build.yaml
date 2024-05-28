@@ -19,7 +19,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240523-63efdb74"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
             command:
               - "/image-builder"
             args:
@@ -71,7 +71,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240523-63efdb74"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
             command:
               - "/image-builder"
             args:
