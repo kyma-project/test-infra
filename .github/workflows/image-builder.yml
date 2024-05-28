@@ -41,7 +41,7 @@ on:
     outputs:
       images:
         description: JSON list of images built by image-builder
-        value: ${{ jobs.get_oidc_token.outputs.images }}
+        value: ${{ jobs.build.outputs.images }}
 
 jobs:
   build:
