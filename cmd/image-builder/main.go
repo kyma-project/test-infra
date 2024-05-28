@@ -13,12 +13,14 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
+	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
@@ -337,12 +339,6 @@ func buildInADO(o options) error {
 
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
-		registry := o.Config.DevRegistry
-		if !o.gitState.isPullRequest {
-			registry = o.Config.Registry
-		}
-		destinations := gatherDestinations(registry, o.name, o.tags)
-		actions.SetOutput("images", fmt.Sprintf("[%s]", strings.Join(destinations, ",")))
 		actions.SetOutput("adoResult", string(*pipelineRunResult))
 	}
 
@@ -865,4 +861,22 @@ func getDockerfileDirPath(o options) (string, error) {
 	// Get the absolute path to the dockerfile.
 	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
 	return dockerfileDirPath, err
+}
+
+func extractImagesFromADOLogs(logs string) []string {
+	re := regexp.MustCompile(`--images-to-sign=(([a-z0-9]+(?:[.-][a-z0-9]+)*/)*([a-z0-9]+(?:[.-][a-z0-9]+)*)(?::[a-z0-9.-]+)?/([a-z0-9-]+)/([a-z0-9-]+)(?::[a-zA-Z0-9.-]+))`)
+	matches := re.FindAllStringSubmatch(logs, -1)
+
+	images := []string{}
+	if len(matches) > 1 {
+		for _, match := range matches {
+			if len(match) > 1 {
+				images = append(images, match[1])
+			}
+		}
+	}
+
+	images = extractimageurls.UniqueImages(images)
+
+	return images
 }
