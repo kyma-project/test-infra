@@ -337,6 +337,12 @@ func buildInADO(o options) error {
 
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
+		registry := o.Config.DevRegistry
+		if !o.gitState.isPullRequest {
+			registry = o.Config.Registry
+		}
+		destinations := gatherDestinations(registry, o.name, o.tags)
+		actions.SetOutput("images", fmt.Sprintf("[%s]", strings.Join(destinations, ",")))
 		actions.SetOutput("adoResult", string(*pipelineRunResult))
 	}
 
