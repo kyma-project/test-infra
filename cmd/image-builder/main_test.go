@@ -7,6 +7,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -613,6 +614,51 @@ func Test_parseTags(t *testing.T) {
 
 			if !reflect.DeepEqual(tags, c.tags) {
 				t.Errorf("Got %v, but expected %v", tags, c.tags)
+			}
+		})
+	}
+}
+
+func Test_prepareADOTemplateParameters(t *testing.T) {
+	tests := []struct {
+		name    string
+		options options
+		want    pipelines.OCIImageBuilderTemplateParams
+		wantErr bool
+	}{
+		{
+			name: "Tag with parentheses",
+			options: options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"VERSION\" }}-ShortSHA", Value: "{{ .Env \"VERSION\" }}-{{ .ShortSHA }}"},
+				},
+			},
+			want: pipelines.OCIImageBuilderTemplateParams{
+				"Context":               "",
+				"Dockerfile":            "",
+				"ExportTags":            "false",
+				"JobType":               "postsubmit",
+				"Name":                  "",
+				"PullBaseSHA":           "",
+				"RepoName":              "",
+				"RepoOwner":             "",
+				"Tags":                  "{{ .Env \\\\\\\"VERSION\\\\\\\" }}-ShortSHA={{ .Env \\\\\\\"VERSION\\\\\\\" }}-{{ .ShortSHA }}",
+				"UseKanikoConfigFromPR": "false",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := prepareADOTemplateParameters(tt.options)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
