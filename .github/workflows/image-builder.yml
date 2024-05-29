@@ -40,12 +40,12 @@ on:
         default: ""
 
 jobs:
-  get_oidc_token:
+  build-image:
     permissions:
       id-token: write # This is required for requesting the JWT token
       contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
-    name: A job to get OIDC token
+    name: Build image
     outputs:
       token: ${{ steps.get_oidc.outputs.jwt }}
     steps:
@@ -62,15 +62,11 @@ jobs:
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
 
-  build:
-    needs: get_oidc_token
-    runs-on: ubuntu-latest
-    steps:
       - uses: ./.github/actions/image-builder
         id: build
         name: Run build in image-builder
         with:
-          oidc-token: ${{ needs.get_oidc_token.outputs.token }}
+          oidc-token: ${{ steps.get_oidc.outputs.token }}
           ado-token: ${{ secrets.ADO_PAT }}
           context: ${{ inputs.context }}
           build-args: ${{ inputs.build-args }}
