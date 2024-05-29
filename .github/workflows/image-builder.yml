@@ -49,7 +49,7 @@ jobs:
     outputs:
       token: ${{ steps.get_oidc.outputs.jwt }}
     steps:
-      - name: Checkout repository based on test flag
+      - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
           repository: kyma-project/test-infra
