@@ -62,12 +62,27 @@ jobs:
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
 
-      - uses: ./.github/actions/image-builder
-        id: build
-        name: Run build in image-builder
+      
+      - name: Authenticate in GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
         with:
-          oidc-token: ${{ steps.get_oidc.outputs.token }}
-          ado-token: ${{ secrets.ADO_PAT }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: ${{ vars.IMAGE_BUILDER_GH_WORKFLOW_GCP_SERVICE_ACCOUNT_EMAIL }}
+      
+      - name: Get ADO PAT from Secret Manager
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+          secrets: |-
+            ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
+      
+      - uses: ./.github/actions/image-builder
+        name: Run build in image-builder
+        id: build
+        with:
+          oidc-token: ${{ steps.get_oidc.outputs.jwt }}
+          ado-token: ${{ steps.secrets.outputs.ado-pat }}
           context: ${{ inputs.context }}
           build-args: ${{ inputs.build-args }}
           tags: ${{ inputs.tags }}

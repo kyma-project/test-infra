@@ -21,3 +21,15 @@ variable "github_terraform_apply_workflow_name" {
   default     = "Post Apply Prod Terraform"
   description = "Workflow name for terraform apply workflow"
 }
+
+variable "gh_com_kyma_project_wif_pool_id" {
+  type        = string
+  default     = "github-com-kyma-project"
+  description = "Google Cloud Platform workflow identity federation pool id used for github.com/kyma-project org identities"
+}
+
+variable "gh_com_kyma_project_wif_provider_id" {
+  type        = string
+  default     = "github-com-kyma-project"
+  description = "Google Cloud Platform workflow identity federation provider id used for github.com/kyma-project org identities"
+}

@@ -10,7 +10,6 @@ tmp/
 __debug_bin
 
 .terraform
-.terraform.lock.hcl
 
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json

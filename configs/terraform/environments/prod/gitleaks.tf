@@ -7,12 +7,6 @@ resource "google_service_account" "gitleaks_secret_accesor" {
   description  = "Identity of gitleaks. It's used to retrieve secrets from secret manager"
 }
 
-# Retrieve id of kyma project github organization used in subject of workload identity federation.
-data "github_organization" "kyma-project" {
-  provider = github.kyma_project
-  name     = "kyma-project"
-}
-
 # Retrieval of repository id of each repository that can run gitleaks workflow
 data "github_repository" "gitleaks_repository" {
   for_each = var.gitleaks_repositories
