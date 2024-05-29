@@ -36,7 +36,6 @@ module "gh_com_kyma_project_workload_identity_federation" {
 }
 
 # TODO(dekiel): Another GitHub variables related to workload identity federation are defined in github-com.tf file.
-
 resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
   provider      = github.kyma_project
   repository    = "test-infra"

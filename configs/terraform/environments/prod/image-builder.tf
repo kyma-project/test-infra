@@ -76,6 +76,8 @@ resource "google_service_account" "image-builder-gh-workflow" {
   display_name = var.image_builder_gh_workflow_service_account.id
 }
 
+# Grant the image-builder service account the workload identity user role.
+# This role is required to impersonate the image-builder-workflow GCP service account by GitHub image-builder reusable workflow using workload identity federation.
 resource "google_service_account_iam_binding" "image_builder_gh_workflow_workload_identity" {
   service_account_id = google_service_account.image-builder-gh-workflow.name
   role               = "roles/iam.workloadIdentityUser"
@@ -84,6 +86,8 @@ resource "google_service_account_iam_binding" "image_builder_gh_workflow_workloa
   ]
 }
 
+# Grant read access to the GCP secret manager secret with ado pat to the image-builder service account.
+# This secret is used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
 resource "google_secret_manager_secret_iam_member" "image_builder_ado_pat" {
   project   = var.gcp_project_id
   secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
@@ -93,6 +97,8 @@ resource "google_secret_manager_secret_iam_member" "image_builder_ado_pat" {
 
 # GitHub resources
 
+# Define GitHub Actions secrets for the image-builder reusable workflow.
+# These secret contains the values of the GCP service account email used by the image-builder reusable workflow to access GCP secret manager.
 resource "github_actions_variable" "image_builder_gh_workflow_gcp_service_account_email" {
   provider      = github.kyma_project
   repository    = "test-infra"
@@ -100,6 +106,9 @@ resource "github_actions_variable" "image_builder_gh_workflow_gcp_service_accoun
   value         = google_service_account.image-builder-gh-workflow.email
 }
 
+# Define GitHub Actions secrets for the image-builder reusable workflow.
+# These secret contains the values of the GCP secret manager secret name with ado pat
+# It's used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
 resource "github_actions_variable" "image_builder_ado_pat_gcp_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
