@@ -13,8 +13,9 @@ terraform {
       version = ">= 2.0.0"
     }
     github = {
-      source  = "integrations/github"
-      version = "~> 5.0"
+      source = "integrations/github"
+      #version = "~> 5.0"
+      version = "~> 6.2.1"
     }
   }
 }

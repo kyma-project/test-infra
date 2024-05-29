@@ -3,6 +3,7 @@ data "github_repository" "test_infra" {
   name     = var.github_test_infra_repository_name
 }
 
+# TODO(dekiel): Repalce pool_id and provider_id with variables.
 module "gh_com_kyma_project_workload_identity_federation" {
   source = "../../modules/gcp-workload-identity-federation"
 
@@ -34,6 +35,8 @@ module "gh_com_kyma_project_workload_identity_federation" {
   }
 }
 
+# TODO(dekiel): Another GitHub variables related to workload identity federation are defined in github-com.tf file.
+
 resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
   provider      = github.kyma_project
   repository    = "test-infra"
@@ -54,4 +57,3 @@ resource "github_actions_variable" "gh_com_kyma_project_gcp_workload_identity_fe
   variable_name = "GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER"
   value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
 }
-
