@@ -15,7 +15,13 @@ variable "signify_prod_secret_name" {
 variable "image_builder_reusable_workflow_name" {
   type        = string
   description = "Name of the image-builder reusable workflow in the test-infra repository."
-  default = "image-builder"
+  default     = "image-builder"
+}
+
+variable "image_builder_reusable_workflow_ref" {
+  type        = string
+  description = "The value of GitHub OIDC token job_workflow_ref claim of the image-builder reusable workflow in the test-infra repository. This is used to identify token exchange requests for image-builder reusable workflow."
+  default     = "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main"
 }
 
 # GCP resources

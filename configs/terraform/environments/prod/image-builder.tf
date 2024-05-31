@@ -88,11 +88,18 @@ resource "google_service_account_iam_binding" "image_builder_gh_workflow_workloa
 
 # Grant read access to the GCP secret manager secret with ado pat to the image-builder service account.
 # This secret is used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
-resource "google_secret_manager_secret_iam_member" "image_builder_ado_pat" {
+resource "google_secret_manager_secret_iam_member" "image_builder_gh_workflow_sa_ado_pat_reader" {
   project   = var.gcp_project_id
   secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.image-builder-gh-workflow.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "image_builder_reusable_workflow_principal_ado_pat_reader" {
+  project   = var.gcp_project_id
+  secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
 }
 
 # GitHub resources
