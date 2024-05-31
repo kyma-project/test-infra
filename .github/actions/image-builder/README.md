@@ -1,0 +1,88 @@
+# Image builder
+
+This action is supposed to trigger image-builder service. It receives authentication tokens (**oidc** and ***azure personal access token**) via inputs as well as image name.
+
+Optinally you can set other inputs to control which image with which context should be built.
+
+# Inputs
+
+## **oidc-token**
+
+JWT token exposed by **expose-jwt** github action, which is JWT token sign by github containing information about runnig workflow.
+
+Required: **true**
+
+## **ado-token**
+
+Azure DevOps personal access token (PAT), which is used by action to authenticate against Azure API.
+
+Required: **true**
+
+## **image-name**
+
+Name of the image that will be build via image builder.
+
+Required: **true**
+
+## **context**
+
+Optional parameter that allows you to set build context for image builder, related to the root of repository.
+
+Default: **'.'**
+
+## **dockerfile**
+
+Optional parameter that allows you to set path to the Dockerfile for the image to build.
+
+Default: **'Dockerfile'**
+
+## **build-args**
+
+Optional parameter that allows you to set additional build arguments.
+Each argument has format `name=value`, multiply arguments are separated by new line.
+
+Default: **''**
+
+## **tags**
+
+Optional parameter that allows you to pass tags with which image will be build. Each tag is placed in new line.
+
+Default: **''**
+
+## **export-tags**
+
+Optional parameter that enable exporting tags provided via **tags** input and default tag to be exported as build argument.
+Each tag will have format **TAG_x**, where `x` is the tag name passed along with tag.
+
+Default: **false**
+
+## **config**
+
+Optional parameter to set the config file containing information about connection to Azure DevOps.
+
+Default: **'./configs/kaniko-build-config.yaml'**
+
+## **env-file**
+
+Optional parameter that allows you to provided path to the file with environment variables to be loaded in the build
+
+Default: **''**
+
+## **dry-run**
+
+Optional parameter that allows you to prevent calling Azure service
+
+Default: **false**
+
+# Outputs
+
+## **adoResult**
+
+Result status of the Azure DevOps execution
+
+## **images**
+
+JSON formatted array containing all images build during process.
+
+# How it work?
+
