@@ -15,7 +15,7 @@ variable "signify_prod_secret_name" {
 variable "image_builder_reusable_workflow_name" {
   type        = string
   description = "Name of the image-builder reusable workflow in the test-infra repository."
-  default     = "image-builder.yml"
+  default = "image-builder"
 }
 
 # GCP resources
