@@ -18,6 +18,12 @@ variable "image_builder_reusable_workflow_name" {
   default = "image-builder"
 }
 
+variable "image_builder_reusable_workflow_ref" {
+  type        = string
+  description = "Name of the image-builder reusable workflow in the test-infra repository."
+  default     = "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main"
+}
+
 # GCP resources
 
 variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {

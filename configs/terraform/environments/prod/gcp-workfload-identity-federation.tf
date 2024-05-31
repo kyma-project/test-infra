@@ -21,6 +21,8 @@ module "gh_com_kyma_project_workload_identity_federation" {
     "attribute.workflow"            = "assertion.workflow"
     "attribute.workflow_ref"        = "assertion.workflow_ref"
     "attribute.event_name"          = "assertion.event_name"
+    "attribute.reusable_workflow_ref" = "assertion.job_workflow_ref"
+    "attribute.reusable_workflow_sha" = "assertion.job_workflow_sha"
   }
 
   sa_mapping = {

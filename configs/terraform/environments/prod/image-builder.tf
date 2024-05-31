@@ -95,6 +95,13 @@ resource "google_secret_manager_secret_iam_member" "image_builder_ado_pat" {
   member    = "serviceAccount:${google_service_account.image-builder-gh-workflow.email}"
 }
 
+resource "google_secret_manager_secret_iam_member" "image_builder_ado_pat" {
+  project   = var.gcp_project_id
+  secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
+}
+
 # GitHub resources
 
 # Define GitHub Actions secrets for the image-builder reusable workflow.
