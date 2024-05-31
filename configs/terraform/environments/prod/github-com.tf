@@ -3,6 +3,8 @@
 # They are required for getting terraform executor github personal access token from gcp secret manager.
 # We must develop a solution for creating a minimal initial setup to let terraform executor apply our whole config.
 
+# TODO(dekiel): Another GitHub variables related to workload identity federation are defined in gcp-workload-identity-federation.tf file.
+
 # GCP project id that contains secret manager with secrets
 resource "github_actions_variable" "gcp_kyma_project_project_id" {
   provider      = github.kyma_project
@@ -26,4 +28,9 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
   repository    = "test-infra"
   variable_name = "GH_TERRAFORM_PLANNER_SECRET_NAME"
   value         = "kyma-bot-gh-com-terraform-planner-token"
+}
+
+data "github_organization" "kyma-project" {
+  provider = github.kyma_project
+  name     = "kyma-project"
 }
