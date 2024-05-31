@@ -153,7 +153,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240529-cd48887a"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -171,21 +171,21 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240529-cd48887a"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240529-cd48887a"
   image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240529-cd48887a"
   image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240529-cd48887a"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240529-f3b9dbf1
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240529-f3b9dbf1
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240528-c37c8281
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240529-f3b9dbf1
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240529-cd48887a"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

@@ -47,12 +47,12 @@ on:
         value: ${{ jobs.build.outputs.result }}
 
 jobs:
-  build:
+  build-image:
     permissions:
       id-token: write # This is required for requesting the JWT token
       contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
-    name: A job to get OIDC token
+    name: Build image
     outputs:
       token: ${{ steps.get_oidc.outputs.jwt }}
       images: ${{ steps.build.outputs.images }}

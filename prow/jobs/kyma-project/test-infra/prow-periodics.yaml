@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240529-f3b9dbf1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -51,7 +51,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240529-f3b9dbf1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -87,7 +87,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240527-2e43aa62"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240529-cd48887a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -119,7 +119,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240528-00793f193"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20240529-b83934c65"
             securityContext:
               privileged: false
               seccompProfile:
@@ -152,7 +152,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240529-f3b9dbf1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -189,7 +189,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240528-00793f193"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20240529-b83934c65"
             securityContext:
               privileged: false
               seccompProfile:
