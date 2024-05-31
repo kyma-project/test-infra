@@ -82,7 +82,7 @@ resource "google_service_account_iam_binding" "image_builder_gh_workflow_workloa
   service_account_id = google_service_account.image-builder-gh-workflow.name
   role               = "roles/iam.workloadIdentityUser"
   members = [
-    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${data.github_organization.kyma-project.id}:workflow${var.image_builder_reusable_workflow_name}"
+    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${data.github_organization.kyma-project.id}:workflow:${var.image_builder_reusable_workflow_name}"
   ]
 }
 
