@@ -67,8 +67,9 @@ jobs:
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-          service_account: ${{ vars.IMAGE_BUILDER_GH_WORKFLOW_GCP_SERVICE_ACCOUNT_EMAIL }}
+      #          service_account: ${{ vars.IMAGE_BUILDER_GH_WORKFLOW_GCP_SERVICE_ACCOUNT_EMAIL }}
       
       - name: Get ADO PAT from Secret Manager
         id: 'secrets'
