@@ -57,11 +57,12 @@ jobs:
 
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
-
-      - name: Expose JWT Action
+      
+      - name: Get OIDC token
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
-
+        with:
+          audience: "image-builder"
       
       - name: Authenticate in GCP
         id: 'auth'
@@ -69,7 +70,6 @@ jobs:
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-      #          service_account: ${{ vars.IMAGE_BUILDER_GH_WORKFLOW_GCP_SERVICE_ACCOUNT_EMAIL }}
       
       - name: Get ADO PAT from Secret Manager
         id: 'secrets'
@@ -78,9 +78,9 @@ jobs:
           secrets: |-
             ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
       
-      - uses: ./.github/actions/image-builder
-        name: Run build in image-builder
+      - name: Build image
         id: build
+        uses: ./.github/actions/image-builder
         with:
           oidc-token: ${{ steps.get_oidc.outputs.jwt }}
           ado-token: ${{ steps.secrets.outputs.ado-pat }}
@@ -92,6 +92,6 @@ jobs:
           dockerfile: ${{ inputs.dockerfile }}
           env-file: ${{ inputs.env-file }}
           config: "./configs/kaniko-build-config.yaml"
-
-      - run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
-        name: Show outputs
+      
+      - name: Show outputs
+        run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
