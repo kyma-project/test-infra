@@ -8,9 +8,9 @@ module "gh_com_kyma_project_workload_identity_federation" {
   source = "../../modules/gcp-workload-identity-federation"
 
   project_id  = data.google_client_config.gcp.project
-  pool_id     = "github-com-kyma-project"
-  provider_id = "github-com-kyma-project"
-  issuer_uri  = "https://token.actions.githubusercontent.com"
+  pool_id     = var.gh_com_kyma_project_wif_pool_id
+  provider_id = var.gh_com_kyma_project_wif_provider_id
+  issuer_uri  = var.gh_com_kyma_project_wif_issuer_uri
 
   attribute_mapping = {
     "google.subject"                = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow:\" + assertion.workflow"
