@@ -43,13 +43,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240603-8333140c"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240603-276e1bee"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-8333140c"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:

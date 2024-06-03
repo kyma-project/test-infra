@@ -153,7 +153,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -171,21 +171,21 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240603-276e1bee"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
   image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240603-276e1bee"
   image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240603-276e1bee"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240603-68660081
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240603-1df7d86a
   image_markdown_index:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240603-1df7d86a
   image_image_detector:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240603-1df7d86a
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240603-8333140c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240603-276e1bee"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
