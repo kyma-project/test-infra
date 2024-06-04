@@ -54,7 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build image
     outputs:
-      token: ${{ steps.get_oidc.outputs.jwt }}
       images: ${{ steps.build.outputs.images }}
       result: ${{ steps.build.outputs.adoResult }}
     steps:
