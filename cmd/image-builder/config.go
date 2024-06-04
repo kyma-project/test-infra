@@ -285,6 +285,8 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 		return Prow, nil
 	}
 
+	// BUILD_BUILDID environment variable is set in Azure DevOps pipeline
+	// See: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables-devops-services
 	_, isAdo := envLookup("BUILD_BUILDID")
 	if isAdo {
 		return AzureDevOps, nil
