@@ -285,7 +285,7 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 		return Prow, nil
 	}
 
-	isAdo := envGetter("CI_SYSTEM") == "AzureDevOps"
+	_, isAdo := envLookup("BUILD_BUILDID")
 	if isAdo {
 		return AzureDevOps, nil
 	}
