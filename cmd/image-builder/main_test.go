@@ -618,6 +618,84 @@ func Test_parseTags(t *testing.T) {
 	}
 }
 
+func Test_extractImagesFromADOLogs(t *testing.T) {
+	tc := []struct {
+		name           string
+		expectedImages []string
+		logs           string
+	}{
+		{
+			name:           "sign image task log",
+			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854", "europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852"},
+			logs: `2024-05-28T09:49:07.8176591Z ==============================================================================
+			2024-05-28T09:49:07.8176701Z Task         : Docker
+			2024-05-28T09:49:07.8176776Z Description  : Build or push Docker images, login or logout, start or stop containers, or run a Docker command
+			2024-05-28T09:49:07.8176902Z Version      : 2.240.2
+			2024-05-28T09:49:07.8176962Z Author       : Microsoft Corporation
+			2024-05-28T09:49:07.8177044Z Help         : https://aka.ms/azpipes-docker-tsg
+			2024-05-28T09:49:07.8177121Z ==============================================================================
+			2024-05-28T09:49:08.2220004Z [command]/usr/bin/docker run --env REPO_NAME=test-infra --env REPO_OWNER=kyma-project --env CI=true --env JOB_TYPE=presubmit --mount type=bind,src=/agent/_work/1/s/kaniko-build-config.yaml,dst=/kaniko-build-config.yaml --mount type=bind,src=/agent/_work/1/s/signify-prod-secret.yaml,dst=/secret-prod/secret.yaml europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622 --sign-only --name=image-builder --context=. --dockerfile=cmd/image-builder/images/kaniko/Dockerfile --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854 --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852 --config=/kaniko-build-config.yaml
+			2024-05-28T09:49:08.4547604Z sign images using services signify-prod
+			2024-05-28T09:49:08.4548507Z signer signify-prod ignored, because is not enabled for a CI job of type: presubmit
+			2024-05-28T09:49:08.4549247Z Start signing images europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854
+			2024-05-28T09:49:08.5907215Z ##[section]Finishing: sign_images`,
+		},
+
+		{
+			name:           "prepare args and sign tasks log",
+			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696"},
+			logs: `2024-05-28T07:36:31.8953681Z ##[section]Starting: prepare_build_and_sign_args
+			2024-05-28T07:36:31.8958057Z ==============================================================================
+			2024-05-28T07:36:31.8958168Z Task         : Python script
+			2024-05-28T07:36:31.8958230Z Description  : Run a Python file or inline script
+			2024-05-28T07:36:31.8958324Z Version      : 0.237.1
+			2024-05-28T07:36:31.8958385Z Author       : Microsoft Corporation
+			2024-05-28T07:36:31.8958459Z Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/python-script
+			2024-05-28T07:36:31.8958587Z ==============================================================================
+			2024-05-28T07:36:33.6944350Z [command]/usr/bin/python /agent/_work/1/s/scripts/prepare_kaniko_and_sign_arguments.py --PreparedTagsFile /agent/_work/_temp/task_outputs/run_1716881791884.txt --ExportTags False --JobType presubmit --Context . --Dockerfile cmd/image-builder/images/kaniko/Dockerfile --ImageName image-builder --BuildArgs  --Platforms  --BuildConfigPath /agent/_work/1/s/kaniko-build-config.yaml
+			2024-05-28T07:36:33.7426177Z ##[command]Read build config file:
+			2024-05-28T07:36:33.7426567Z ##[group]Build config file content:
+			2024-05-28T07:36:33.7430240Z ##[debug] {'tag-template': 'v{{ .Date }}-{{ .ShortSHA }}', 'registry': ['europe-docker.pkg.dev/kyma-project/prod'], 'dev-registry': ['europe-docker.pkg.dev/kyma-project/dev'], 'reproducible': False, 'log-format': 'json', 'ado-config': {'ado-organization-url': 'https://dev.azure.com/hyperspace-pipelines', 'ado-project-name': 'kyma', 'ado-pipeline-id': 14902}, 'cache': {'enabled': True, 'cache-repo': 'europe-docker.pkg.dev/kyma-project/cache/cache', 'cache-run-layers': True}, 'sign-config': {'enabled-signers': {'*': ['signify-prod']}, 'signers': [{'name': 'signify-prod', 'type': 'notary', 'job-type': ['postsubmit'], 'config': {'endpoint': 'https://signing.repositories.cloud.sap/signingsvc/sign', 'timeout': '5m', 'retry-timeout': '10s', 'secret': {'path': '/secret-prod/secret.yaml', 'type': 'signify'}}}]}}
+			2024-05-28T07:36:33.7431327Z ##[endgroup]
+			2024-05-28T07:36:33.7431542Z Running in presubmit mode
+			2024-05-28T07:36:33.7432035Z ##[debug]Using dev registries: ['europe-docker.pkg.dev/kyma-project/dev']
+			2024-05-28T07:36:33.7432334Z ##[debug]Using build context: .
+			2024-05-28T07:36:33.7432779Z ##[debug]Using Dockerfile: ./cmd/image-builder/images/kaniko/Dockerfile
+			2024-05-28T07:36:33.7433181Z ##[debug]Using image name: image-builder
+			2024-05-28T07:36:33.7433438Z ##[command]Using prepared OCI image tags:
+			2024-05-28T07:36:33.7433924Z ##[debug]Prepared tags file content: [{"name":"default_tag","value":"PR-10696"}]
+			2024-05-28T07:36:33.7434608Z 
+			2024-05-28T07:36:33.7435959Z ##[command]Setting job scope pipeline variable kanikoArgs with value: --cache=True --cache-run-layers=True --cache-repo=europe-docker.pkg.dev/kyma-project/cache/cache --context=dir:///workspace/. --dockerfile=/workspace/./cmd/image-builder/images/kaniko/Dockerfile --build-arg=default_tag=PR-10696 --destination=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
+			2024-05-28T07:36:33.7438292Z ##[command]Setting job scope pipeline variable imagesToSign with value: --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
+			2024-05-28T07:36:33.7496968Z 
+			2024-05-28T07:36:33.7549637Z ##[section]Finishing: prepare_build_and_sign_args
+			2024-05-28T07:38:12.4360275Z ##[section]Starting: sign_images
+2024-05-28T07:38:12.4364459Z ==============================================================================
+2024-05-28T07:38:12.4364568Z Task         : Docker
+2024-05-28T07:38:12.4364645Z Description  : Build or push Docker images, login or logout, start or stop containers, or run a Docker command
+2024-05-28T07:38:12.4364762Z Version      : 2.240.2
+2024-05-28T07:38:12.4364823Z Author       : Microsoft Corporation
+2024-05-28T07:38:12.4364906Z Help         : https://aka.ms/azpipes-docker-tsg
+2024-05-28T07:38:12.4364993Z ==============================================================================
+2024-05-28T07:38:12.8400661Z [command]/usr/bin/docker run --env REPO_NAME=test-infra --env REPO_OWNER=kyma-project --env CI=true --env JOB_TYPE=presubmit --mount type=bind,src=/agent/_work/1/s/kaniko-build-config.yaml,dst=/kaniko-build-config.yaml --mount type=bind,src=/agent/_work/1/s/signify-prod-secret.yaml,dst=/secret-prod/secret.yaml europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622 --sign-only --name=image-builder --context=. --dockerfile=cmd/image-builder/images/kaniko/Dockerfile --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696 --config=/kaniko-build-config.yaml
+2024-05-28T07:38:13.0389131Z sign images using services signify-prod
+2024-05-28T07:38:13.0389670Z signer signify-prod ignored, because is not enabled for a CI job of type: presubmit
+2024-05-28T07:38:13.0390290Z Start signing images europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
+2024-05-28T07:38:13.1669325Z ##[section]Finishing: sign_images`,
+		},
+	}
+
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			actualImages := extractImagesFromADOLogs(c.logs)
+
+			if !reflect.DeepEqual(actualImages, c.expectedImages) {
+				t.Errorf("Expected %v, but got %v", c.expectedImages, actualImages)
+			}
+		})
+	}
+}
+
 type mockSigner struct {
 	signFunc func([]string) error
 }

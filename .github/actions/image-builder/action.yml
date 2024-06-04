@@ -46,6 +46,8 @@ inputs:
 outputs:
   adoResult:
     description: The result of the ADO pipeline execution
+  images:
+    description: JSON array of the images built in ADO
 
 runs:
   using: "composite"
