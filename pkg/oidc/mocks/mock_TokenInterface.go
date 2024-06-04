@@ -43,7 +43,7 @@ type MockTokenInterface_Claims_Call struct {
 // Claims is a helper method to define mock.On call
 //   - _a0 interface{}
 func (_e *MockTokenInterface_Expecter) Claims(_a0 interface{}) *MockTokenInterface_Claims_Call {
-	return &MockTokenInterface_Claims_Call{Call: _e.mock.On("VerifyAndExtractClaims", _a0)}
+	return &MockTokenInterface_Claims_Call{Call: _e.mock.On("Claims", _a0)}
 }
 
 func (_c *MockTokenInterface_Claims_Call) Run(run func(_a0 interface{})) *MockTokenInterface_Claims_Call {

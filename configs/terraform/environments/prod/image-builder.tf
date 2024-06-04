@@ -66,3 +66,24 @@ resource "kubernetes_cluster_role_binding" "access_signify_prod_secret_untrusted
     name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }
+
+# GCP resources
+
+resource "google_secret_manager_secret_iam_member" "image_builder_reusable_workflow_principal_ado_pat_reader" {
+  project   = var.gcp_project_id
+  secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
+}
+
+# GitHub resources
+
+# Define GitHub Actions secrets for the image-builder reusable workflow.
+# These secret contains the values of the GCP secret manager secret name with ado pat
+# It's used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
+resource "github_actions_variable" "image_builder_ado_pat_gcp_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME"
+  value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
+}

@@ -17,7 +17,7 @@ presubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -67,7 +67,7 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -116,7 +116,7 @@ postsubmits:
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240527-0e670a08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
             securityContext:
               privileged: false
               seccompProfile:
