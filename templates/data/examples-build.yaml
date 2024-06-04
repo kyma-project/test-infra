@@ -12,7 +12,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-monitoring-custom-metrics-example-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
                   annotations:
                     owner: huskies
                     description: builds monitoring-custom-metrics-example image
@@ -30,7 +30,7 @@ templates:
                     - "job_default"
               - jobConfig:
                   name: post-monitoring-custom-metrics-example-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
                   annotations:
                     owner: huskies
                     description: builds monitoring-custom-metrics-example image
