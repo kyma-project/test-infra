@@ -1,6 +1,5 @@
 module-name: test-infra
 protecode:
-    - docker.io/library/nginx:1.25.3-alpine
     - docker.io/library/nginx:1.25.4-alpine
     - europe-docker.pkg.dev/gardener-project/releases/ci-infra/cla-assistant:v20240412-d22f4bf
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.12.0
