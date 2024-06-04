@@ -444,6 +444,7 @@ tide:
     kyma-project/nats-manager: squash
     kyma-project/docker-registry: squash
     kyma-project/modulectl: squash
+    kyma-project/cloud-manager: squash
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
