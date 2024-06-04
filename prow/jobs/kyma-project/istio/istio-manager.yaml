@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -81,7 +81,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -137,7 +137,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -195,7 +195,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -252,7 +252,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-dba78c0a"
             securityContext:
               privileged: false
               seccompProfile:

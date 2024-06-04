@@ -620,13 +620,13 @@ func Test_parseTags(t *testing.T) {
 
 func Test_extractImagesFromADOLogs(t *testing.T) {
 	tc := []struct {
-		name   string
-		images []string
-		logs   string
+		name           string
+		expectedImages []string
+		logs           string
 	}{
 		{
-			name:   "sign image task log",
-			images: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854", "europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852"},
+			name:           "sign image task log",
+			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854", "europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852"},
 			logs: `2024-05-28T09:49:07.8176591Z ==============================================================================
 			2024-05-28T09:49:07.8176701Z Task         : Docker
 			2024-05-28T09:49:07.8176776Z Description  : Build or push Docker images, login or logout, start or stop containers, or run a Docker command
@@ -642,8 +642,8 @@ func Test_extractImagesFromADOLogs(t *testing.T) {
 		},
 
 		{
-			name:   "prepare args and sign tasks log",
-			images: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696"},
+			name:           "prepare args and sign tasks log",
+			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696"},
 			logs: `2024-05-28T07:36:31.8953681Z ##[section]Starting: prepare_build_and_sign_args
 			2024-05-28T07:36:31.8958057Z ==============================================================================
 			2024-05-28T07:36:31.8958168Z Task         : Python script
@@ -687,10 +687,10 @@ func Test_extractImagesFromADOLogs(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			images := extractImagesFromADOLogs(c.logs)
+			actualImages := extractImagesFromADOLogs(c.logs)
 
-			if !reflect.DeepEqual(images, c.images) {
-				t.Errorf("Expected %v, but got %v", c.images, images)
+			if !reflect.DeepEqual(actualImages, c.expectedImages) {
+				t.Errorf("Expected %v, but got %v", c.expectedImages, actualImages)
 			}
 		})
 	}

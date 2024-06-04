@@ -870,6 +870,9 @@ func getDockerfileDirPath(o options) (string, error) {
 	return dockerfileDirPath, err
 }
 
+// extractImagesFromADOLogs extract docker images from Azure DevOps logs to allow us prepare list of images built in ADO backend
+// The list can be than saved and provided as input for developers to use in next steps of their workflows.
+// ADO Logs that we fetch anyway are the simplest solution to get such list from ADO backend.
 func extractImagesFromADOLogs(logs string) []string {
 	re := regexp.MustCompile(`--images-to-sign=(([a-z0-9]+(?:[.-][a-z0-9]+)*/)*([a-z0-9]+(?:[.-][a-z0-9]+)*)(?::[a-z0-9.-]+)?/([a-z0-9-]+)/([a-z0-9-]+)(?::[a-zA-Z0-9.-]+))`)
 	matches := re.FindAllStringSubmatch(logs, -1)
