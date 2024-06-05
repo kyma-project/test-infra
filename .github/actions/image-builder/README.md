@@ -1,6 +1,6 @@
 # Image Builder Action
 
-This action is supposed to trigger image-builder service. It receives authentication tokens (**oidc** and ***azure personal access token**) via inputs as well as image name.
+This action is supposed to trigger image-builder service. It receives authentication tokens (**oidc** and **azure personal access token**) via inputs as well as image name.
 
 Optinally you can set other inputs to control which image with which context should be built.
 
