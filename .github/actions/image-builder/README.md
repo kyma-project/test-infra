@@ -8,7 +8,7 @@ Optionally you can set other inputs to control which image with which context sh
 
 ## **oidc-token**
 
-JWT token exposed by **expose-jwt** github action, which is JWT token sign by github containing information about runnig workflow.
+JWT token exposed by **expose-jwt** github action, which is JWT token signed by github, containing information about running workflow.
 
 Required: **true**
 
