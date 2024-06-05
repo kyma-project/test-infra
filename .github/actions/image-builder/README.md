@@ -14,7 +14,7 @@ Required: **true**
 
 ## **ado-token**
 
-Azure DevOps personal access token (PAT), which is used by action to authenticate against Azure API.
+Azure DevOps personal access token (PAT), which is used by this action to authenticate against Azure API.
 
 Required: **true**
 
