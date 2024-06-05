@@ -1,0 +1,16 @@
+name: push-build-slack-message-sender.yml
+#  description: "Build slack-message-sender image for sending labeling notification to kyma teams.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/cloud-run/slack-message-sender/**"
+
+jobs:
+  build_oidc-token-verifier:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: test-infra/slackmessagesender
+      dockerfile: cmd/cloud-run/slack-message-sender/Dockerfile
+      context: .
