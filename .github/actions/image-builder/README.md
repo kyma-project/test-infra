@@ -26,7 +26,7 @@ Required: **true**
 
 ## **context**
 
-Optional parameter that allows you to set build context for image builder, related to the root of repository.
+Optional parameter that allows you to set build context for image builder, related to the root of the repository.
 
 Default: **'.'**
 
