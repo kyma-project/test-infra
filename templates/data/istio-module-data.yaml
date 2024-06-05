@@ -15,7 +15,7 @@ templates:
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240528-c37c8281"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240604-ff0c326b"
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -43,13 +43,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240529-cd48887a"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240604-1f0d952f"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240529-cd48887a"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240604-1f0d952f"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:

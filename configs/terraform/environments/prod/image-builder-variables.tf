@@ -12,10 +12,10 @@ variable "signify_prod_secret_name" {
 
 # GitHub resources
 
-variable "image_builder_reusable_workflow_name" {
+variable "image_builder_reusable_workflow_ref" {
   type        = string
-  description = "Name of the image-builder reusable workflow in the test-infra repository."
-  default     = "image-builder.yml"
+  description = "The value of GitHub OIDC token job_workflow_ref claim of the image-builder reusable workflow in the test-infra repository. This is used to identify token exchange requests for image-builder reusable workflow."
+  default     = "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main"
 }
 
 # GCP resources
@@ -24,18 +24,4 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   description = "Name of the secret in GCP Secret Manager that contains the ADO PAT for image-builder to trigger ADO pipeline."
   type        = string
   default     = "image-builder-ado-pat"
-}
-
-variable "image_builder_gh_workflow_service_account" {
-  description = "Service account used by image-builder reusable workflow to access GCP secret manager. Reusable workflow is defined in the test-infra repository."
-
-  type = object({
-    id         = string
-    project_id = string
-  })
-
-  default = {
-    id         = "image-builder-gh-workflow"
-    project_id = "sap-kyma-prow"
-  }
 }
