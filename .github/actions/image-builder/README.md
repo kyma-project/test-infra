@@ -58,7 +58,7 @@ Default: **false**
 
 ## **config**
 
-Optional parameter to set the config file containing information about connection to Azure DevOps.
+Optional parameter which sets the config file containing information about connection to the Azure DevOps.
 
 Default: **'./configs/kaniko-build-config.yaml'**
 
