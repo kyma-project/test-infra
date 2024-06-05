@@ -39,7 +39,7 @@ Default: **'Dockerfile'**
 ## **build-args**
 
 Optional parameter that allows you to set additional build arguments.
-Each argument has format `name=value`, multiply arguments are separated by new line.
+Each argument has format `name=value`, multiple arguments are separated by new line.
 
 Default: **''**
 
