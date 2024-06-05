@@ -45,7 +45,7 @@ Default: **''**
 
 ## **tags**
 
-Optional parameter that allows you to pass tags with which image will be build. Each tag is placed in new line.
+Optional parameter that allows you to pass tags with which image will be build. Each tag is placed in the new line.
 
 Default: **''**
 
