@@ -82,15 +82,15 @@ Result status of the Azure DevOps execution
 
 ## **images**
 
-JSON formatted array containing all images build during process.
+Formatted JSON array containing all built images.
 
-# How It Work?
+# How It Works?
 
-Github action is using **europe-docker.pkg.dev/kyma-project/prod/image-builder** docker image to trigger pipeline in Azure DevOps (ADO). It's passing parameters using REST API provided by ADO and kaniko-build-config from `main` branch of `test-infra` repository.
+Github action is using **europe-docker.pkg.dev/kyma-project/prod/image-builder** docker image to trigger pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO and kaniko-build-config from `main` branch of `test-infra` repository.
 
-During the ADO pipeline execution is checking for status to be reported, if execution ended it fetches status and logs.
+During the ADO pipeline execution this action is checking for status to be reported, if execution ended it fetches status and logs.
 
-If execution failed, the github action is also failing. If the execution successed, it sets the output and success.
+If execution failed, the github action fails. If the execution successes, it sets the output and success.
 
 # Example Usage
 
@@ -112,6 +112,6 @@ If execution failed, the github action is also failing. If the execution success
           export-tags: true
           image-name: 'ginkgo'
           dockerfile: 'Dockerfile'
-          env-file: '.env'
+          env-file: 'envs'
           config: "./configs/kaniko-build-config.yaml"
 ```
