@@ -229,6 +229,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	}
 
 	if len(options.tags) > 0 {
+		//expected format by ADO parameter is {{ .Env \\\"GOLANG_VERSION\\\" }} after escaping special characters
 		templateParameters.SetImageTags(strings.ReplaceAll(options.tags.String(), "\"", "\\\\\\\""))
 	}
 
