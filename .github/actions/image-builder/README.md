@@ -51,7 +51,7 @@ Default: **''**
 
 ## **export-tags**
 
-Optional parameter that enable exporting tags provided via **tags** input and default tag to be exported as build argument.
+Optional parameter that enable exporting tags provided via **tags** input and default tags to be exported as build argument.
 Each tag will have format **TAG_x**, where `x` is the tag name passed along with tag.
 
 Default: **false**
