@@ -18,3 +18,4 @@ jobs:
       context: .
       env-file: "envs"
       export-tags: true
+      tags: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"
