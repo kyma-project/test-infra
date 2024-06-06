@@ -8,7 +8,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-local-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
       run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
@@ -27,6 +26,12 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -35,6 +40,7 @@ presubmits: # runs on PRs
               - "--dockerfile=Dockerfile.local"
               - "--config=/config/kaniko-build-config.yaml"
               - "--export-tags"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -53,9 +59,6 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/busola:
@@ -67,8 +70,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-busola-local-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
@@ -85,6 +86,12 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -94,6 +101,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--export-tags"
               - "--tag=latest"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -112,6 +120,3 @@ postsubmits: # runs on main
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
