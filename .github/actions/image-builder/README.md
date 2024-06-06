@@ -1,8 +1,8 @@
 # Image Builder Action
 
-This action is supposed to trigger image-builder service. It receives authentication tokens (**oidc** and **azure personal access token**) via inputs as well as image name.
+The image builder action triggers the image-builder service. It receives authentication tokens (**oidc** and **azure personal access token**) from inputs as well as from the image name.
 
-Optionally you can set other inputs to control which image with which context should be built.
+Optionally, you can set other inputs to control which image with which context should be built.
 
 # Inputs
 
@@ -14,51 +14,51 @@ Required: **true**
 
 ## **ado-token**
 
-Azure DevOps personal access token (PAT), which is used by this action to authenticate against Azure API.
+Azure DevOps personal access token (PAT), which is used by the image builder action to authenticate against the Azure API.
 
 Required: **true**
 
 ## **image-name**
 
-Name of the image that will be build via image builder.
+Name of the image that is build with the image builder action.
 
 Required: **true**
 
 ## **context**
 
-Optional parameter that allows you to set build context for image builder, related to the root of the repository.
+Optional parameter to set the build context for image builder, related to the root of the repository.
 
 Default: **'.'**
 
 ## **dockerfile**
 
-Optional parameter that allows you to set path to the Dockerfile for the image to build.
+Optional parameter to to set the path to the Dockerfile for the image to build.
 
 Default: **'Dockerfile'**
 
 ## **build-args**
 
-Optional parameter that allows you to set additional build arguments.
-Each argument has format `name=value`, multiple arguments are separated by new line.
+Optional parameter to set additional build arguments.
+Each argument has the format `name=value`, multiple arguments are separated by new line.
 
 Default: **''**
 
 ## **tags**
 
-Optional parameter that allows you to pass tags with which image will be build. Each tag is placed in the new line.
+Optional parameter to pass tags with which the image is built. Each tag is placed in a new line.
 
 Default: **''**
 
 ## **export-tags**
 
-Optional parameter that enable exporting tags provided via **tags** input and default tags to be exported as build argument.
-Each tag will have format **TAG_x**, where `x` is the tag name passed along with the tag.
+Optional parameter that enables exporting tags provided with the **tags** input and default tags to be exported as build argument.
+Each tag gets the format **TAG_x**, where `x` is the tag name passed along with the tag.
 
 Default: **false**
 
 ## **config**
 
-Optional parameter which sets the config file containing information about connection to the Azure DevOps.
+Optional parameter that sets the config file containing information about connection to the Azure DevOps.
 
 Default: **'./configs/kaniko-build-config.yaml'**
 
@@ -70,7 +70,7 @@ Default: **''**
 
 ## **dry-run**
 
-Optional parameter that allows you to prevent calling Azure service
+Optional parameter to prevent calling the Azure service
 
 Default: **false**
 
@@ -86,11 +86,11 @@ Formatted JSON array containing all built images.
 
 # How It Works?
 
-Github action is using **europe-docker.pkg.dev/kyma-project/prod/image-builder** docker image to trigger pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO and kaniko-build-config from `main` branch of `test-infra` repository.
+The image builder action uses a **europe-docker.pkg.dev/kyma-project/prod/image-builder** Docker image to trigger a pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO and kaniko-build-config from the `main` branch of `test-infra` repository.
 
-During the ADO pipeline execution this action is checking for status to be reported, if execution ended it fetches status and logs.
+During the ADO pipeline execution, the image builder action is checks for the status to be reported. When the execution ends, it fetches the status and logs.
 
-If execution failed, the github action fails. If the execution successes, it sets the output and success.
+If the execution failed, the the image builder action fails. If the execution succeeds, it sets the output and success status.
 
 # Example Usage
 
