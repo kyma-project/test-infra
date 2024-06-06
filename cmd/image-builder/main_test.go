@@ -645,7 +645,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"PullBaseSHA":           "",
 				"RepoName":              "",
 				"RepoOwner":             "",
-				"Tags":                  "{{ .Env \\\\\\\"VERSION\\\\\\\" }}-ShortSHA={{ .Env \\\\\\\"VERSION\\\\\\\" }}-{{ .ShortSHA }}",
+				"Tags":                  "{{ .Env \\\\\\\"VERSION\\\\\\\" }}-{{ .ShortSHA }}",
 				"UseKanikoConfigFromPR": "false",
 			},
 		},
@@ -663,7 +663,6 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 		})
 	}
 }
-
 
 func Test_extractImagesFromADOLogs(t *testing.T) {
 	tc := []struct {
