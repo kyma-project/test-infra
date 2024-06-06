@@ -8,7 +8,7 @@ on:
       - "cmd/cloud-run/slack-message-sender/**"
 
 jobs:
-  build_oidc-token-verifier:
+  build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: test-infra/slackmessagesender
