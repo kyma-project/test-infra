@@ -23,10 +23,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Get the latest tag
         id: get_tag
-        run: echo ::set-output name=TAG::$(git describe --tags --abbrev=0)
+        run: echo ::set-output name=TAG::"v0.0.1-test"
       - name: Echo the tag
         run: echo ${{ steps.get_tag.outputs.TAG }}
   build-image:
+    needs: compute-tag
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: test-infra/ginkgo
