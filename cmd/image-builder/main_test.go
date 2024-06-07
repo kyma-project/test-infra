@@ -633,7 +633,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 					JobType: "postsubmit",
 				},
 				tags: sets.Tags{
-					{Name: "{{ .Env \"VERSION\" }}-ShortSHA", Value: "{{ .Env \"VERSION\" }}-{{ .ShortSHA }}"},
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
 				},
 			},
 			want: pipelines.OCIImageBuilderTemplateParams{
@@ -645,7 +645,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"PullBaseSHA":           "",
 				"RepoName":              "",
 				"RepoOwner":             "",
-				"Tags":                  "e3sgLkVudiAiVkVSU0lPTiIgfX0te3sgLlNob3J0U0hBIH19",
+				"Tags":                  "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LXt7IC5TaG9ydFNIQSB9fQ==",
 				"UseKanikoConfigFromPR": "false",
 			},
 		},
