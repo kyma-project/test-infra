@@ -804,10 +804,13 @@ func main() {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Println(decoded)
-			//TODO: split tags by comma
+			fmt.Println(string(decoded))
 			o.tags = sets.Tags{}
-			o.tags.Set(string(decoded))
+			tags := strings.Split(string(decoded), ",")
+			for _, tag := range tags {
+				fmt.Println(tag)
+				o.tags.Set(tag)
+			}
 		}
 		dockerfilePath, err := getDockerfileDirPath(o)
 		if err != nil {
