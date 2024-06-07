@@ -799,6 +799,7 @@ func main() {
 
 	if o.parseTagsOnly || o.parseTagsOnlyBase64 {
 		if o.parseTagsOnlyBase64 {
+			fmt.Println(o.tags.StringOnlyValues())
 			decoded, err := base64.StdEncoding.DecodeString(o.tags.StringOnlyValues())
 			if err != nil {
 				fmt.Println(err)
