@@ -57,6 +57,13 @@ jobs:
       images: ${{ steps.build.outputs.images }}
       result: ${{ steps.build.outputs.adoResult }}
     steps:
+      - name: Verify repository owner
+        id: verify_repo_owner
+        if: ${{ github.repository_owner != 'kyma-project' }}
+        run: |
+          echo "Using image-builder workflow outside of kyma-project organisation is not supported.
+          exit 1
+      
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
