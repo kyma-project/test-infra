@@ -645,7 +645,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"PullBaseSHA":           "",
 				"RepoName":              "",
 				"RepoOwner":             "",
-				"Tags":                  "{{ .Env \\\\\\\"VERSION\\\\\\\" }}-{{ .ShortSHA }}",
+				"Tags":                  "e3sgLkVudiAiVkVSU0lPTiIgfX0te3sgLlNob3J0U0hBIH19",
 				"UseKanikoConfigFromPR": "false",
 			},
 		},

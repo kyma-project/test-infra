@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -229,8 +230,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	}
 
 	if len(options.tags) > 0 {
-		//expected format by ADO parameter is {{ .Env \\\"GOLANG_VERSION\\\" }} after escaping special characters
-		templateParameters.SetImageTags(strings.ReplaceAll(options.tags.StringOnlyValues(), "\"", "\\\\\\\""))
+		sEnc := base64.StdEncoding.EncodeToString([]byte(options.tags.StringOnlyValues()))
+		templateParameters.SetImageTags(sEnc)
 	}
 
 	if options.ciSystem == GithubActions {
