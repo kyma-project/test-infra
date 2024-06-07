@@ -7,10 +7,11 @@ to verify that the image comes from a trusted repository and has not been altere
 The tool is designed to be used in ProwJobs.
 
 Key features:
+
 * automatically provides a default tag, which is computed based on a template provided in `config.yaml`
 * supports adding multiple tags to the image
 * saves command outputs to separate files
-* when running in Prow's presubmit job, supports pushing images to different repositories with different tags 
+* when running in Prow's presubmit job, supports pushing images to different repositories with different tags
 * supports pushing the same images to multiple repositories
 * supports caching of built layers to reduce build times
 
@@ -73,6 +74,24 @@ Signing images is supported only in postsubmit ProwJobs.
 
 Image Builder is configured using a global configuration YAML file, set of environment variables, and command line flags.
 
+### Configuration YAML File
+
+`image-builder` requires a configuration YAML file. The file holds the global configuration for the tool and is maintained by the authors.
+Use the `--config` flag to provide a path to the config YAML file.
+
+For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
+
+Here's an example file:
+
+```yaml
+registry: eu.gcr.io/kyma-project
+reproducible: true
+log-format: json
+cache:
+  enabled: true
+  cache-repo: eu.gcr.io/sap-kyma-neighbors-dev/cache
+  cache-run-layers: true
+```
 
 ### Environment Variables
 
@@ -83,7 +102,8 @@ Here is the list of environment variables used by Image Builder:
 
 - **REPO_NAME**: The name of the repository with source code to build an image from.
 - **REPO_OWNER**: The owner of the repository with source code.
-- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request (PR) job, and `postsubmit`
+- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request (PR) job,
+  and `postsubmit`
   represents a push job.
 - **PULL_NUMBER**: The number of the PR.
 - **PULL_BASE_SHA**: The base SHA of the PR or push commit SHA.
@@ -96,7 +116,8 @@ Here is the list of environment variables used by Image Builder:
 ### Command Line Flags
 
 Command line flags are the main way for developers to configure the tool and provide needed values for the build process.
-Check the list and description of the available flags in the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
+Check the list and description of the available flags in
+the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
 
 ## Image Signing
 
@@ -105,6 +126,7 @@ Image signing allows verification that the image comes from a trusted repository
 You can enable every supported signing service on repository and global levels.
 
 See the following example of sign services configuration in the `config.yaml` file:
+
 ```yaml
 sign-config:
   enabled-signers:
@@ -150,11 +172,13 @@ It supports signing multiple images at once. The flag can be used multiple times
 ## Named Tags
 
 Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
-You can use `-tag name=value` to pass the name for the tag. 
+You can use `-tag name=value` to pass the name for the tag.
 
 If the name is not provided, it is evaluated from the value:
- - if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
- - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
+
+- if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
+- if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
+  to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
 ### Parse-Tags-Only Mode
 
@@ -173,27 +197,33 @@ Image Builder supports three build backends:
 kaniko and BuildKit build images locally, while for the ADO pipelines backend, Image Builder calls ADO API to start the build process.
 To use the kaniko backend, use the `image-builder` image and set the **build-in-ado** flag to `false`.
 To use the BuildKit backend, use the `buildkit-image-builder` image and set the **build-in-ado** flag to `false`.
-The ADO backend is supported by both images. 
+The ADO backend is supported by both images.
 The preferred and default way to build images is to use the ADO backend because it's the only SLC-29 compliant backend.
 The BuildKit and kaniko backends are deprecated and will be removed in the future.
 
 ### Azure DevOps Backend (ADO)
 
-The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
-This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported. 
-To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob definition.
+The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It
+supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries.
+To build images, the ADO backend uses the `kaniko-project/executor` image.
+This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported.
+To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob
+definition.
 
-When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API. 
-Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and building, pushing, and signing an image.
+When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
+Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
+building, pushing, and signing an image.
 
 Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
-Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition. 
-Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add the `--ado-preview-run=true` flag.
+Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
+Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add
+the `--ado-preview-run=true` flag.
 To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
 
 ### Migration from BuildKit and Kaniko to ADO
 
-To migrate from BuildKit or Kaniko to ADO, you need to update the ProwJob definition. If you want to use the **env** field to add the **ADO_PAT** variable,
+To migrate from BuildKit or Kaniko to ADO, you need to update the ProwJob definition. If you want to use the **env** field to add the *
+*ADO_PAT** variable,
 you must not use rendertemplates for generating your ProwJob definition. Using `preset-image-builder-ado-token` is compatible with
 rendertemplates.
 
@@ -237,7 +267,7 @@ args:
 
 ### Build Multi-Architecture Images
 
-> [!WARNING] 
+> [!WARNING]
 > This is an experimental feature that may change in the future.
 
 With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
