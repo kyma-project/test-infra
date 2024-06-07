@@ -55,6 +55,7 @@ type options struct {
 	adoPreviewRunYamlPath string
 	testKanikoBuildConfig bool
 	parseTagsOnly         bool
+	parseTagsOnlyBase64   bool
 	oidcToken             string
 	azureAccessToken      string
 	ciSystem              CISystem
@@ -740,6 +741,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
+	flagSet.BoolVar(&o.parseTagsOnlyBase64, "parse-tags-only-base64", false, "Only parse tags encoded by base64 and print them to stdout")
 	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
@@ -795,7 +797,18 @@ func main() {
 		os.Exit(0)
 	}
 
-	if o.parseTagsOnly {
+	if o.parseTagsOnly || o.parseTagsOnlyBase64 {
+		if o.parseTagsOnlyBase64 {
+			decoded, err := base64.StdEncoding.DecodeString(o.tags.StringOnlyValues())
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			fmt.Println(decoded)
+			//TODO: split tags by comma
+			o.tags = sets.Tags{}
+			o.tags.Set(string(decoded))
+		}
 		dockerfilePath, err := getDockerfileDirPath(o)
 		if err != nil {
 			fmt.Println(err)
