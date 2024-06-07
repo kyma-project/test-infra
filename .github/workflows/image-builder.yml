@@ -103,4 +103,4 @@ jobs:
       
       - name: Show outputs
         run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
-      - run: cat $GITHUB_OUTPUTS
+      - run: cat $GITHUB_OUTPUT
