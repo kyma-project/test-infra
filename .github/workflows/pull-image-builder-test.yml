@@ -20,7 +20,7 @@ jobs:
       tag: ${{ steps.get_tag.outputs.TAG }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Get the latest tag
         id: get_tag
         run: echo ::set-output name=TAG::"v0.0.1-test"
