@@ -33,7 +33,7 @@ func (t *Tags) StringOnlyValues() string {
 	var stringTags []string
 
 	for _, tg := range *t {
-		stringTags = append(stringTags, fmt.Sprintf("%s", tg.Value))
+		stringTags = append(stringTags, tg.Value)
 	}
 
 	return strings.Join(stringTags, ",")
