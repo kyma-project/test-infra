@@ -41,7 +41,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--export-tags"
               - "--build-in-ado=true"
-              - --build-arg=IMG_VERSION=$(DOCKER_TAG)
+              - --build-arg=IMG_VERSION=PR-$(PULL_NUMBER)
             resources:
               requests:
                 memory: 1.5Gi
