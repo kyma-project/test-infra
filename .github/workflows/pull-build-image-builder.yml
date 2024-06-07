@@ -11,7 +11,7 @@ on:
       - "go.sum"
 
 jobs:
-  build_oidc-token-verifier:
+  build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: image-builder
