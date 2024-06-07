@@ -113,9 +113,6 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
