@@ -44,6 +44,7 @@ type options struct {
 	silent     bool
 	isCI       bool
 	tags       sets.Tags
+	tagBase64  string
 	buildArgs  sets.Tags
 	platforms  sets.Strings
 	exportTags bool
@@ -732,6 +733,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	// TODO: What is expected value repo only or org/repo? How this flag influence an image builder behaviour?
 	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
+	flagSet.StringVar(&o.tagBase64, "tag-base64", "", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
 	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build dockerfile. It can be used in the name=value format.")
 	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
@@ -799,9 +801,8 @@ func main() {
 
 	if o.parseTagsOnly || o.parseTagsOnlyBase64 {
 		if o.parseTagsOnlyBase64 {
-			fmt.Println(o.tags.String())
-			fmt.Println(o.tags.StringOnlyValues())
-			decoded, err := base64.StdEncoding.DecodeString(o.tags.StringOnlyValues())
+			fmt.Println(o.tagBase64)
+			decoded, err := base64.StdEncoding.DecodeString(o.tagBase64)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)

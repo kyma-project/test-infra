@@ -29,8 +29,8 @@ func NewTagFromString(val string) (Tag, error) {
 		t.Name = sp[0]
 		t.Value = sp[1]
 	default:
-		re := regexp.MustCompile(`[^a-zA-Z0-9_-]+`)
-		t.Name = re.ReplaceAllString(val, "")
+		re := regexp.MustCompile(`{{ *\.(\w+) *}}`)
+		t.Name = re.ReplaceAllString(val, "$1")
 
 		t.Value = val
 	}
