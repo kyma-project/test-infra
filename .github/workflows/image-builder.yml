@@ -61,7 +61,7 @@ jobs:
         id: verify_repo_owner
         if: ${{ github.repository_owner != 'kyma-project' }}
         run: |
-          echo "Using image-builder workflow outside of kyma-project organisation is not supported.
+          echo "Using image-builder workflow outside of kyma-project organisation is not supported."
           exit 1
       
       - name: Checkout test-infra repository
