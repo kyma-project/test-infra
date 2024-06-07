@@ -79,3 +79,4 @@ runs:
     - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240605-0b95104d
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true
+    - run: cat $GITHUB_OUTPUTS
