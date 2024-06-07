@@ -435,6 +435,7 @@ tide:
     kyma-project/serverless: squash
     kyma-project/keda-manager: squash
     kyma-project/telemetry-manager: squash
+    kyma-project/opentelemetry-collector-components: squash
     kyma-project/kyma-metrics-collector: squash
     kyma-project/directory-size-exporter: squash
     kyma-project/eventing-publisher-proxy: squash
