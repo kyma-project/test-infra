@@ -107,6 +107,3 @@ jobs:
           dockerfile: ${{ inputs.dockerfile }}
           env-file: ${{ inputs.env-file }}
           config: "./configs/kaniko-build-config.yaml"
-      
-      - name: Show outputs
-        run: echo ${{ toJson(steps.build.outputs) }} # TODO(kacpermalachowski): Remove after implementation of output handling
