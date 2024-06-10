@@ -356,6 +356,27 @@ func buildInADO(o options) error {
 	return nil
 }
 
+// validateDockerFile checks whether provided dockerfile
+// will run smoothly in ADO image-builder.
+// It return clear error message, including known issue urls.
+func validateDockerFile(dockerFilePath string) error {
+	// Load Dockerfile
+	data, err := os.ReadFile(dockerFilePath)
+	if err != nil {
+		return fmt.Errorf("cannot load provided dockerfile: %w", err)
+	}
+
+	// Dockerfile using /workspace
+	// see: https://github.com/GoogleContainerTools/kaniko/issues/2192
+	// see: https://github.com/GoogleContainerTools/kaniko/issues/3176
+	re := regexp.MustCompile("WORKDIR.*/workspace")
+	if re.Match(data) {
+		return fmt.Errorf("dockerfile cannot use /workspace as working directory, please switch to other one (e.g. /<module>-workspace). See: https://github.com/GoogleContainerTools/kaniko/issues/3176 and https://github.com/GoogleContainerTools/kaniko/issues/2192")
+	}
+
+	return nil
+}
+
 // buildLocally is a function that builds an image locally using either Kaniko or BuildKit.
 // It takes an options struct as an argument and returns an error.
 // The function determines the build tool to use based on the USE_BUILDKIT environment variable.
