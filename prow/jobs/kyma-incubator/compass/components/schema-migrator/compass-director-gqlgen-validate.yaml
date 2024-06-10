@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240610-261e39cf"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240610-67b17c15"
             securityContext:
               privileged: false
               seccompProfile:
