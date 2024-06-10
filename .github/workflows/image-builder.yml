@@ -41,10 +41,10 @@ on:
     outputs:
       images:
         description: JSON list of images built by image-builder
-        value: ${{ jobs.build.outputs.images }}
+        value: ${{ jobs.build-image.outputs.images }}
       adoResult:
         description: The result of the ADO pipeline execution
-        value: ${{ jobs.build.outputs.result }}
+        value: ${{ jobs.build-image.outputs.result }}
 
 jobs:
   build-image:
