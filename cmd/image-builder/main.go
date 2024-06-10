@@ -261,6 +261,12 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 // TODO(dekiel): refactor this function to accept clients as parameters to make it testable with mocks.
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
+
+	// Validate provided dockerfile for ADO usage
+	if err := validateDockerFile(o.dockerfile); err != nil {
+		return fmt.Errorf("invalid dockerfile provided: %w", err)
+	}
+
 	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API when it's not set via flag.
 	if o.azureAccessToken == "" {
 		adoPAT, present := os.LookupEnv("ADO_PAT")
