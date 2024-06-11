@@ -1,151 +1,151 @@
 # Image Builder
 
-Image Builder is a tool for building OCI-compliant images.
-It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
-It also supports signing images with a pre-defined set of signing services
-to verify that the image comes from a trusted repository and has not been altered in the meantime.
-The tool is designed to be used in ProwJobs.
+Image Builder is a tool for building OCI-compliant images in SLC-29 compliant system from GitHub workflow.
+It signs images with a signify service to verify that the image comes from a trusted repository and has not been altered in the meantime.
+It pushes images to the Google Cloud artifacts registry.
 
 Key features:
 * automatically provides a default tag, which is computed based on a template provided in `config.yaml`
 * supports adding multiple tags to the image
-* saves command outputs to separate files
-* when running in Prow's presubmit job, supports pushing images to different repositories with different tags 
 * supports pushing the same images to multiple repositories
 * supports caching of built layers to reduce build times
+* supports signing images with signify service
+* supports pushing images to the Google Cloud artifacts registry
+
+> [!NOTE]
+> If you look for the documentation of Image Builder usage in ProwJobs see [README_deprecated.md](./README_deprecated.md).
 
 ## Quickstart Guide
 
-To build an image in an SLC-29 compliant way, use Image Builder with ADO backend in your ProwJob for building images.
-Here is an example of a ProwJob for building images with ADO backend:
+You can use Image Builder in your GitHub workflow to build an image in an SLC-29 compliant system.
+Here is an example of a GitHub workflow building image using Image Builder:
 
 ```yaml
-    - name: pull-build-buildkit-image-builder
-      annotations:
-        description: "build buildkit image-builder image"
-        owner: "neighbors"
-      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
-      decorate: true
-      cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=buildkit-image-builder"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
-              - "--build-in-ado=true"
-            resources:
-              requests:
-                memory: 500Mi
-                cpu: 500m
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
+name: pull-image-builder-test
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/pull-image-builder-test.yml"
+      - ".github/workflows/image-builder.yml"
+      - ".github/actions/expose-jwt-action/**"
+      - ".github/actions/image-builder/**"
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  compute-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get the latest tag
+        id: get_tag
+        run: echo ::set-output name=TAG::"v0.0.1-test"
+      - name: Echo the tag
+        run: echo ${{ steps.get_tag.outputs.TAG }}
+  build-image:
+    needs: compute-tag
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: test-infra/ginkgo
+      dockerfile: prow/images/ginkgo/Dockerfile
+      context: .
+      env-file: "envs"
+      tags: ${{ needs.compute-tag.outputs.tag }}
+  test-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Test image
+        run: echo "Testing images ${{ needs.build-image.outputs.images }}"
 ```
 
-It builds the `buildkit-image-builder` image using the `image-builder` ADO backend.
-It uses the Dockerfile from the `cmd/image-builder/images/buildkit/Dockerfile` path and the config from the `kaniko-build-config` ConfigMap.
-Because it's a presubmit ProwJob, it does not sign the image.
-Signing images is supported only in postsubmit ProwJobs.
+The example workflow consists of three jobs:
 
-## Configuration
+1. `compute-tag` - a job that computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
+2. `build-image` - a job that builds the image using the Image Builder reusable workflow.
+   It uses the `kyma-project/test-infra/.github/workflows/image-builder.yml@main` reusable workflow.
+   It builds the `test-infra/ginkgo` image, using the Dockerfile from the `prow/images/gingko/Dockerfile` path.
+   The build context is the current directory which effectively means the repository root.
+   It uses the `envs` file to load environment variables.
+   The image will be tagged with the tag computed in the `compute-tag` job.
+3. `test-image` - a job that tests the image build in `build-image` job. It uses the `build-image` job output to get the image name.
 
-Image Builder is configured using a global configuration YAML file, set of environment variables, and command line flags.
+## Workflow Permissions
 
+Image Builder reusable workflow requires permissions to access the repository and get OIDC token from GitHub identity provider.
+You must provide the following permissions to the workflow or the job that uses the reusable workflow:
 
-### Environment Variables
+```yaml
+permissions:
+  id-token: write # This is required for requesting the OIDC token
+  contents: read # This is required for actions/checkout
+```
 
-Environment variables are mainly used to provide runtime values and configuration set by the CI/CD system.
-They provide details about the context in which the tool is running.
+## Supported Events
 
-Here is the list of environment variables used by Image Builder:
+Image Builder reusable workflow supports the following GitHub events to trigger workflow:
 
-- **REPO_NAME**: The name of the repository with source code to build an image from.
-- **REPO_OWNER**: The owner of the repository with source code.
-- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request (PR) job, and `postsubmit`
-  represents a push job.
-- **PULL_NUMBER**: The number of the PR.
-- **PULL_BASE_SHA**: The base SHA of the PR or push commit SHA.
-- **PULL_PULL_SHA**: The PR head SHA of the PR.
-- **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the ADO API.
-- **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set
-  to `true` by default.
-- **CI**: Determines whether the image builder runs in CI mode.
+* `push` - to build images on push to the specified branch.
+* `pull_request_target` - to build images on pull requests.
 
-### Command Line Flags
+## Reusable Workflow Ref
 
-Command line flags are the main way for developers to configure the tool and provide needed values for the build process.
-Check the list and description of the available flags in the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
+The workflow that uses the Image Builder reusable workflow must use the exact reference to the reusable workflow.
+The value of the `uses` key must be `kyma-project/test-infra/.github/workflows/image-builder.yml@main`.
+
+```yaml
+uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+```
+
+> [!IMPORTANT]
+> Using different references to the reusable workflow will result in an error during the workflow execution.
+
+## Reusable Workflow Inputs
+
+Image Builder reusable workflow accepts inputs to parametrize the build process.
+See accepted inputs description in the [image-builder reusable workflow](./.github/workflows/image-builder.yml) file.
+
+## Reusable Workflow Outputs
+
+Image Builder reusable workflow provides outputs to pass the results of the build process.
+See provided outputs description in the [image-builder reusable workflow](./.github/workflows/image-builder.yml) file.
+
+## Supported Image Repositories
+
+Image Builder supports pushing images to the Google Cloud Artifact registries.
+
+- Images build on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
+- Images build on push events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
+
+### Image URI
+
+The URI of the image built by Image Builder is constructed as follows:
+
+```
+europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
+```
+
+Where:
+
+* `<repository>` is the repository where the image is pushed. It can be either `dev` or `prod`, based on the event that triggered the build.
+* `<image-name>` is the name of the image provided in the `name` input.
+* `<tag>` is the tag of the image provided in the `tags` input or default tag value.
 
 ## Image Signing
 
-Image Builder supports signing the images with a pre-defined set of signing services.
+Image Builder signs images with a signify service.
+By default, Image Builder signs images with the production signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
-You can enable every supported signing service on repository and global levels.
 
-See the following example of sign services configuration in the `config.yaml` file:
-```yaml
-sign-config:
-  enabled-signers:
-    '*':
-      - default-signify
-    org/repo:
-      - repo-token-notary
-  signers:
-    - name: default-signify
-      type: notary
-      config:
-        endpoint: https://notary/sign
-        timeout: 5m
-        retry-timeout: 10s
-        secret:
-          path: /path/to/secret/file/signify.yaml
-          type: signify
-    - name: repo-token-notary
-      type: notary
-      config:
-        endpoint: https://repo-notary/sign
-        timeout: 5m
-        retry-timeout: 10s
-        secret:
-          path: /path/to/secret/file/token
-          type: token
-```
-
-All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
-in the **org/repo** key, Image Builder also uses this service to sign the image.
-If the job is running in CI (Prow), it picks up the current **org/repo** value from the default Prow variables. If binary
-is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration will not be used.
-
-Currently, Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
-the [`sign`](../../pkg/sign) package, and its code.
-
-### Sign-Only Mode
-
-Image Builder supports sign-only mode. To enable it, use the `--sign-only` flag.
-It signs the images provided in the `--images-to-sign` flag.
-It supports signing multiple images at once. The flag can be used multiple times.
+> [!NOTE]
+> Image Builder signs images build on push event only. Images build in pull_request_target event are not signed.
 
 ## Named Tags
 
@@ -156,118 +156,20 @@ If the name is not provided, it is evaluated from the value:
  - if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
  - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
-### Parse-Tags-Only Mode
+> [!Note]
+> When running on pull_request_target event, Image Builder ignores additional tags provided with tags input.
+> Image will be tagged only with the default PR-<PR_NUMBER> tag.
 
-You can use Image Builder to generate tags using pars-tags-only mode. To enable it, use the `--parse-tags-only` flag.
-It parses the tags provided in the `--tag` flag and in `config.yaml`. The generated tags are written as JSON to
-stdout.
+## Environment File
 
-## Build Backend
+> [!IMPORTANT]
+> Support for env files is still a work in progress.
 
-Image Builder supports three build backends:
+The environment file contains environment variables to be loaded in the build.
+The file must be in the format of `key=value` pairs, separated by newlines.
 
-- kaniko
-- BuildKit
-- ADO pipelines
+## Azure DevOps Backend (ADO)
 
-kaniko and BuildKit build images locally, while for the ADO pipelines backend, Image Builder calls ADO API to start the build process.
-To use the kaniko backend, use the `image-builder` image and set the **build-in-ado** flag to `false`.
-To use the BuildKit backend, use the `buildkit-image-builder` image and set the **build-in-ado** flag to `false`.
-The ADO backend is supported by both images. 
-The preferred and default way to build images is to use the ADO backend because it's the only SLC-29 compliant backend.
-The BuildKit and kaniko backends are deprecated and will be removed in the future.
-
-### Azure DevOps Backend (ADO)
-
-The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries. To build images, the ADO backend uses the `kaniko-project/executor` image. 
-This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported. 
-To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob definition.
-
-When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API. 
-Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and building, pushing, and signing an image.
-
-Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
-Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition. 
-Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add the `--ado-preview-run=true` flag.
-To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
-
-### Migration from BuildKit and Kaniko to ADO
-
-To migrate from BuildKit or Kaniko to ADO, you need to update the ProwJob definition. If you want to use the **env** field to add the **ADO_PAT** variable,
-you must not use rendertemplates for generating your ProwJob definition. Using `preset-image-builder-ado-token` is compatible with
-rendertemplates.
-
-Follow these steps to migrate to the ADO backend:
-
-1. Add the **ADO_PAT** environment variable to the ProwJob definition.
-   Use the predefined `image-builder-ado-token` preset in the ProwJob definition if you use rendertemplates.
-   You can remove the data file for your ProwJob to effectively stop using rendertemplates as well.
-   ```yaml
-   labels:
-     preset-image-builder-ado-token: "true"
-   ```
-   If you don't use rendertemplates, you can add the **ADO_PAT** environment variable directly.
-   ```yaml
-   env:
-     - name: "ADO_PAT"
-       valueFrom:
-         secretKeyRef:
-           name: "image-builder-ado-token"
-           key: "token"
-   ```
-2. Add the `--build-in-ado=true` flag to the Image Builder command.
-   ```yaml
-   args:
-     - "--build-in-ado=true"
-   ```
-3. Remove signify secrets from the ProwJob definition.
-4. Remove unsupported Image Builder flags from the ProwJob definition. See [Deprecated Features](#deprecated-features) for more information.
-
-### Opt Out of ADO Backend
-
-The ADO backend is going to be the only SLC-29 compliant backend. To opt out of using the ADO backend in the ProwJob, use
-the `--build-in-ado=false` flag.
-
-```yaml
-args:
-  - "--build-in-ado=false"
-```
-
-## Deprecated Features
-
-### Build Multi-Architecture Images
-
-> [!WARNING] 
-> This is an experimental feature that may change in the future.
-
-With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
-You can define multiple platforms you want to build an image for.
-
-You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
-
-If you want to use experimental features, there is a new image with the tag suffix `-buildkit`.
-
-### Build Multiple Variants of the Same Image
-
-With `image-builder`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
-To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
-Use that feature when you need to build an image with different versions of the same binary, for example, for different
-versions of Kubernetes or Go.
-
-The file has a simple structure:
-
-```yaml
-'main':
-  KUBECTL_VERSION: "1.24.4"
-'1.23':
-  KUBECTL_VERSION: "1.23.9"
-```
-
-To use this feature, make sure that:
-
-* you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
-* your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
-
-### Environment Variables File
-
-The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
+The Image Builder uses ADO `oci-image-builder` pipeline as a build backend.
+That means the images are built, signed and pushed to the Google Cloud Artifact registry in the ADO pipeline.
+Image Builder does not build images locally on GitHub runners.

@@ -1,3 +1,7 @@
+# Deprecation Notice
+
+This document describes the deprecated usage of the Image Builder tool. It was created to describe how to use image-builder in ProwJobs.
+
 # Image Builder
 
 Image Builder is a tool for building OCI-compliant images.
