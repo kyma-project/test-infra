@@ -13,7 +13,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240610-c69fa627
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240611-f9463059
             env:
               - name: KO_DOCKER_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/test-infra
@@ -55,7 +55,7 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240610-c69fa627
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240611-f9463059
             env:
               - name: KO_DOCKER_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko

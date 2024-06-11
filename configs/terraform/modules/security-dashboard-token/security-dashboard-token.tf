@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "security_dashboard_token" {
   template {
     spec {
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240610-c0bb1f77" #gitleaks:allow ignore gitleaks detection
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240611-b6880add" #gitleaks:allow ignore gitleaks detection
         env {
           name = "CLIENT_SECRET"
           value_from {
