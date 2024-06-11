@@ -110,12 +110,12 @@ uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
 ## Reusable Workflow Inputs
 
 Image Builder reusable workflow accepts inputs to parametrize the build process.
-See accepted inputs description in the [image-builder reusable workflow](./.github/workflows/image-builder.yml) file.
+See accepted inputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
 
 ## Reusable Workflow Outputs
 
 Image Builder reusable workflow provides outputs to pass the results of the build process.
-See provided outputs description in the [image-builder reusable workflow](./.github/workflows/image-builder.yml) file.
+See provided outputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
 
 ## Supported Image Repositories
 
