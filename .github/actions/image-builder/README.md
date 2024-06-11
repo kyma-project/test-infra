@@ -64,7 +64,7 @@ Default: **'./configs/kaniko-build-config.yaml'**
 
 ## **env-file**
 
-Optional parameter to provide a path to the file with environment variables that loads in the build.
+Optional parameter that provides the path to the file with environment variables that are loaded into the build environment
 
 Default: **''**
 
