@@ -11,7 +11,7 @@ WORKDIR /
 COPY . /app/
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
-FROM moby/buildkit:v0.13.2-rootless
+FROM moby/buildkit:v0.14.0-rootless
 
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
