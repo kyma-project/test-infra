@@ -145,7 +145,7 @@ By default, Image Builder signs images with the production signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
 
 > [!NOTE]
-> Image Builder signs images build on push event only. Images build on pull_request_target event are not signed.
+> Image Builder signs images built on the push event only. Images built on the pull_request_target event are not signed.
 
 ## Named Tags
 
