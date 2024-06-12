@@ -28,7 +28,7 @@ presubmits: # runs on PRs
               - "--name=central-application-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/central-application-gateway"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/central-application-gateway/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
