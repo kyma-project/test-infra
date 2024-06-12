@@ -4,7 +4,7 @@ templates:
       - to: ../../prow/jobs/kyma-project/kyma/kyma-gardener-cleanup.yaml
         localSets:
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240611-4104ec31
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240612-9a1fe462
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
