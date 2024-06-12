@@ -375,7 +375,7 @@ func validateDockerFile(dockerFilePath string) error {
 	// Dockerfile using /workspace
 	// see: https://github.com/GoogleContainerTools/kaniko/issues/2192
 	// see: https://github.com/GoogleContainerTools/kaniko/issues/3176
-	re := regexp.MustCompile("WORKDIR.*/workspace")
+	re := regexp.MustCompile("(WORKDIR|COPY).* /workspace")
 	if re.Match(data) {
 		return fmt.Errorf("dockerfile cannot use /workspace as working directory, please switch to other one (e.g. /<module>-workspace). See: https://github.com/GoogleContainerTools/kaniko/issues/3176 and https://github.com/GoogleContainerTools/kaniko/issues/2192")
 	}
