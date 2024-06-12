@@ -1,8 +1,7 @@
-# Deprecation Notice
-
-This document describes the deprecated usage of the Image Builder tool. It was created to describe how to use image-builder in ProwJobs.
-
 # Image Builder
+
+> Deprecation Notice
+> This document describes the deprecated usage of the Image Builder tool. It was created to describe how to use image-builder in ProwJobs.
 
 Image Builder is a tool for building OCI-compliant images.
 It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
@@ -12,12 +11,12 @@ The tool is designed to be used in ProwJobs.
 
 Key features:
 
-* automatically provides a default tag, which is computed based on a template provided in `config.yaml`
-* supports adding multiple tags to the image
-* saves command outputs to separate files
-* when running in Prow's presubmit job, supports pushing images to different repositories with different tags
-* supports pushing the same images to multiple repositories
-* supports caching of built layers to reduce build times
+* Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
+* Supports adding multiple tags to the image
+* Saves command outputs to separate files
+* When running in Prow's presubmit job, supports pushing images to different repositories with different tags
+* Supports pushing the same images to multiple repositories
+* Supports caching of built layers to reduce build times
 
 ## Quickstart Guide
 

@@ -1,24 +1,24 @@
 # Image Builder
 
-Image Builder is a tool for building OCI-compliant images in SLC-29 compliant system from GitHub workflow.
+Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
 It signs images with a signify service to verify that the image comes from a trusted repository and has not been altered in the meantime.
-It pushes images to the Google Cloud artifacts registry.
+It pushes images to Google Cloud Artifact Registry.
 
 Key features:
-* automatically provides a default tag, which is computed based on a template provided in `config.yaml`
-* supports adding multiple tags to the image
-* supports pushing the same images to multiple repositories
-* supports caching of built layers to reduce build times
-* supports signing images with signify service
-* supports pushing images to the Google Cloud artifacts registry
+* Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
+* Supports adding multiple tags to the image
+* Supports pushing the same images to multiple repositories
+* Supports caching of built layers to reduce build times
+* Supports signing images with signify service
+* Supports pushing images to the Google Cloud Artifact Registry
 
 > [!NOTE]
-> If you look for the documentation of Image Builder usage in ProwJobs see [README_deprecated.md](./README_deprecated.md).
+> For more information on Image Builder usage in ProwJobs, see [README_deprecated.md](./README_deprecated.md).
 
 ## Quickstart Guide
 
-You can use Image Builder in your GitHub workflow to build an image in an SLC-29 compliant system.
-Here is an example of a GitHub workflow building image using Image Builder:
+You can use Image Builder in your GitHub workflow to build an image in an SLC-29-compliant system.
+Here is an example of a GitHub workflow building an image using Image Builder:
 
 ```yaml
 name: pull-image-builder-test
@@ -68,18 +68,18 @@ jobs:
 
 The example workflow consists of three jobs:
 
-1. `compute-tag` - a job that computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
-2. `build-image` - a job that builds the image using the Image Builder reusable workflow.
+1. `compute-tag` - computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
+2. `build-image` - builds the image using the Image Builder reusable workflow.
    It uses the `kyma-project/test-infra/.github/workflows/image-builder.yml@main` reusable workflow.
    It builds the `test-infra/ginkgo` image, using the Dockerfile from the `prow/images/gingko/Dockerfile` path.
    The build context is the current directory which effectively means the repository root.
    It uses the `envs` file to load environment variables.
    The image will be tagged with the tag computed in the `compute-tag` job.
-3. `test-image` - a job that tests the image build in `build-image` job. It uses the `build-image` job output to get the image name.
+3. `test-image` - tests the image build in the `build-image` job. It uses the `build-image` job output to get the image name.
 
 ## Workflow Permissions
 
-Image Builder reusable workflow requires permissions to access the repository and get OIDC token from GitHub identity provider.
+The Image Builder reusable workflow requires permissions to access the repository and get the OIDC token from the GitHub identity provider.
 You must provide the following permissions to the workflow or the job that uses the reusable workflow:
 
 ```yaml
@@ -90,12 +90,12 @@ permissions:
 
 ## Supported Events
 
-Image Builder reusable workflow supports the following GitHub events to trigger workflow:
+The Image Builder reusable workflow supports the following GitHub events to trigger a workflow:
 
 * `push` - to build images on push to the specified branch.
 * `pull_request_target` - to build images on pull requests.
 
-## Reusable Workflow Ref
+## Reusable Workflow Reference
 
 The workflow that uses the Image Builder reusable workflow must use the exact reference to the reusable workflow.
 The value of the `uses` key must be `kyma-project/test-infra/.github/workflows/image-builder.yml@main`.
@@ -109,20 +109,20 @@ uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
 
 ## Reusable Workflow Inputs
 
-Image Builder reusable workflow accepts inputs to parametrize the build process.
-See accepted inputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
+The Image Builder reusable workflow accepts inputs to parametrize the build process.
+See the accepted inputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
 
 ## Reusable Workflow Outputs
 
-Image Builder reusable workflow provides outputs to pass the results of the build process.
-See provided outputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
+The Image Builder reusable workflow provides outputs to pass the results of the build process.
+See the provided outputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
 
 ## Supported Image Repositories
 
 Image Builder supports pushing images to the Google Cloud Artifact registries.
 
-- Images build on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
-- Images build on push events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
+- Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
+- Images built on `push` events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
 
 ### Image URI
 
@@ -136,7 +136,7 @@ Where:
 
 * `<repository>` is the repository where the image is pushed. It can be either `dev` or `prod`, based on the event that triggered the build.
 * `<image-name>` is the name of the image provided in the `name` input.
-* `<tag>` is the tag of the image provided in the `tags` input or default tag value.
+* `<tag>` is the tag of the image provided in the `tags` input or the default tag value.
 
 ## Image Signing
 
@@ -157,19 +157,19 @@ If the name is not provided, it is evaluated from the value:
  - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
 > [!Note]
-> When running on pull_request_target event, Image Builder ignores additional tags provided with tags input.
-> Image will be tagged only with the default PR-<PR_NUMBER> tag.
+> When running on the `pull_request_target` event, Image Builder ignores additional tags provided with tags input.
+> The image will be tagged only with the default PR-<PR_NUMBER> tag.
 
 ## Environment File
 
 > [!IMPORTANT]
-> Support for env files is still a work in progress.
+> Support for `env` files is still a work in progress.
 
 The environment file contains environment variables to be loaded in the build.
 The file must be in the format of `key=value` pairs, separated by newlines.
 
 ## Azure DevOps Backend (ADO)
 
-The Image Builder uses ADO `oci-image-builder` pipeline as a build backend.
+Image Builder uses the ADO `oci-image-builder` pipeline as a build backend.
 That means the images are built, signed and pushed to the Google Cloud Artifact registry in the ADO pipeline.
 Image Builder does not build images locally on GitHub runners.
