@@ -28,7 +28,7 @@ presubmits: # runs on PRs
               - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/central-application-connectivity-validator"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/central-application-connectivity-validator/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
