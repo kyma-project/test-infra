@@ -86,7 +86,7 @@ Formatted JSON array containing all built images.
 
 # How It Works?
 
-The image builder action uses a **europe-docker.pkg.dev/kyma-project/prod/image-builder** Docker image to trigger a pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO and kaniko-build-config from the `main` branch of `test-infra` repository.
+The image builder action uses a **europe-docker.pkg.dev/kyma-project/prod/image-builder** Docker image to trigger a pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO. The definition of parameters passed via REST API is taken from kaniko-build-config located on the `main` branch of `test-infra` repository and github context.
 
 During the ADO pipeline execution, the image builder action is checks for the status to be reported. When the execution ends, it fetches the status and logs.
 
