@@ -263,7 +263,7 @@ func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 
 	// Validate provided dockerfile for ADO usage
-	if err := validateDockerFile(o.dockerfile); err != nil {
+	if err := validateDockerFile(o.context, o.dockerfile); err != nil {
 		return fmt.Errorf("invalid dockerfile provided: %w", err)
 	}
 
@@ -365,8 +365,9 @@ func buildInADO(o options) error {
 // validateDockerFile checks whether provided dockerfile
 // will run smoothly in ADO image-builder.
 // It return clear error message, including known issue urls.
-func validateDockerFile(dockerFilePath string) error {
+func validateDockerFile(context, dockerFile string) error {
 	// Load Dockerfile
+	dockerFilePath := fmt.Sprintf("%s/%s", context, dockerFile)
 	data, err := os.ReadFile(dockerFilePath)
 	if err != nil {
 		return fmt.Errorf("cannot load provided dockerfile: %w", err)
