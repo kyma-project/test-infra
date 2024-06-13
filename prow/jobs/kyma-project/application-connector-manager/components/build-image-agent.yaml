@@ -79,7 +79,7 @@ postsubmits: # runs on main
               - "--name=compass-runtime-agent"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/compass-runtime-agent"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/compass-runtime-agent/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
