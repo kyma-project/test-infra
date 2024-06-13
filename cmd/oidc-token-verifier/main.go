@@ -100,7 +100,7 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It returns an error if the token validation failed.
 // It verifies the token signature and expiration time, verifies if the token is issued by a trusted issuer,
 // and the claims have expected values.
-// It uses OIDC discovery to get the public keys.
+// It uses OIDC discovery to get the identity provider public keys.
 func (opts *options) extractClaims() error {
 	var (
 		zapLogger *zap.Logger
@@ -138,6 +138,7 @@ func (opts *options) extractClaims() error {
 
 	// Create a new token processor
 	// It reads issuer from the token and verifies if the issuer is trusted.
+	// The tokenProcessor is a main object that is used to verify the token and extract the claims values.
 	// TODO(dekiel): add support for providing trusted issuers instead of using the value from the package.
 	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
 	if err != nil {
