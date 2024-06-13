@@ -23,7 +23,7 @@ resource "google_cloud_run_service" "secrets_leak_log_scanner" {
     spec {
       service_account_name = google_service_account.secrets_leak_log_scanner.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240613-c511c1f0" #gitleaks:allow
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240613-fd542ac2" #gitleaks:allow
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
