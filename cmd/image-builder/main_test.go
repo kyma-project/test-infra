@@ -735,14 +735,14 @@ func Test_validateDockerFile(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			// Arrange
 			tempDir := t.TempDir()
-			dockerFilePath := fmt.Sprintf("%s/out_file", tempDir)
+			dockerFilePath := fmt.Sprintf("%s/Dockerfile", tempDir)
 			err := os.WriteFile(dockerFilePath, []byte(c.dockerfile), os.ModePerm)
 			if err != nil {
 				t.Errorf("failed to write dockerfile for test: %s", err)
 			}
 
 			// Act & Assert
-			err = validateDockerFile(dockerFilePath)
+			err = validateDockerFile(tempDir, "Dockerfile")
 			if err != nil && !c.expectErr {
 				t.Errorf("unexpected error occured: %s", err)
 			}
