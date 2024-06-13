@@ -42,7 +42,7 @@ func NewRootCmd() *cobra.Command {
 		Long: `oidc is a CLI tool to verify OIDC tokens and extract claims from them. It can use cached public keys to verify tokens.
 	It uses OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
 	}
-	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token")
+	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token to verify")
 	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
 	// This flag should be enabled once we add support for it in the code.
 	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
@@ -50,7 +50,7 @@ func NewRootCmd() *cobra.Command {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID")
+	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID, this is used to verify the audience claim in the token. The value should be the same as the audience claim value in the token.")
 	rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	return rootCmd
@@ -77,10 +77,10 @@ func init() {
 	rootCmd.AddCommand(verifyCmd)
 }
 
+// isTokenProvided checks if the token flag is set.
+// If not, check if AUTHORIZATION environment variable is set.
+// If neither is set, return an error.
 func isTokenProvided(logger Logger, opts *options) error {
-	// Check if a token flag is set.
-	// If not, check if AUTHORIZATION environment variable is set.
-	// If neither is set, return an error.
 	if opts.token == "" {
 		logger.Infow("Token flag not provided, checking for AUTHORIZATION environment variable")
 		opts.token = os.Getenv("AUTHORIZATION")
@@ -128,12 +128,16 @@ func (opts *options) extractClaims() error {
 	logger.Infow("Using the following new public keys environment variable", "new-keys-var", opts.newPublicKeysVarName)
 	logger.Infow("Using the following claims output path", "claims-output-path", opts.outputPath)
 
+	// Create a new verifier config that will be used to verify the token.
+	// The clientID is used to verify the audience claim in the token.
 	verifyConfig, err := tioidc.NewVerifierConfig(logger, opts.clientID)
 	if err != nil {
 		return err
 	}
 	logger.Infow("Verifier config created", "config", verifyConfig)
 
+	// Create a new token processor
+	// It reads issuer from the token and verifies if the issuer is trusted.
 	// TODO(dekiel): add support for providing trusted issuers instead of using the value from the package.
 	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
 	if err != nil {
@@ -142,16 +146,25 @@ func (opts *options) extractClaims() error {
 	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
 
 	ctx := context.Background()
+	// Create a new provider using OIDC discovery to get the public keys.
+	// It uses the issuer from the token to get the OIDC discovery endpoint.
 	provider, err := tioidc.NewProviderFromDiscovery(ctx, logger, tokenProcessor.Issuer())
 	if err != nil {
 		return err
 	}
 	logger.Infow("Provider created using OIDC discovery", "issuer", tokenProcessor.Issuer())
 
+	// Create a new verifier using the provider and the verifier config.
+	// The verifier is used to verify the token signature, expiration time and execute standard OIDC validation.
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
+	// claims will store the extracted claims values from the token.
 	claims := tioidc.NewClaims(logger)
+	// Verifies the token and check if the claims have expected values.
+	// Verifies custom claims values too.
+	// Extract the claims values from the token into the claims struct.
+	// It provides a final result if the token is valid and the claims have expected values.
 	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, &claims)
 	if err != nil {
 		return err
