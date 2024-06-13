@@ -8,7 +8,9 @@
 
 [gardener-rotate](/cmd/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in Secret Manager.
 
-[Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images.
+[Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
+
+[Image Builder](/cmd/image-builder/README_deprecated.md) - > Deprecation Notice
 
 [Image Builder GitHub Workflow Integration](/cmd/image-builder/github-workflow-integration.md) - The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to run the process of building OCI
 
