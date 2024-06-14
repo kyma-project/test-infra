@@ -18,7 +18,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-control-plane-reconciler-e2e
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240613-51181d84
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240614-a30137b1
                   annotations:
                     owner: jellyfish
                     description: control-plane reconciler e2e test
@@ -37,7 +37,7 @@ templates:
                     - reconciler_e2e_jobConfig
               - jobConfig:
                   name: pre-main-control-plane-reconciler-e2e-latest-release
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240613-51181d84
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240614-a30137b1
                   annotations:
                     owner: jellyfish
                     description: control-plane reconciler e2e test
@@ -67,7 +67,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-control-plane-rec-upgrade-kyma2-stable-to-main-grdnr
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240613-51181d84
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240614-a30137b1
                   annotations:
                     owner: jellyfish
                     description: control-plane reconciler e2e test
