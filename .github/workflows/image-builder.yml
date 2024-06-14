@@ -1,3 +1,5 @@
+# See documentation at https://github.com/kyma-project/test-infra/blob/main/cmd/image-builder/github-workflow-integration.md
+
 name: image-builder
 
 on:
