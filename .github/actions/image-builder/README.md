@@ -5,7 +5,7 @@ The image builder action triggers the image-builder service. It receives authent
 Optionally, you can set other inputs to control which image with which context should be built.
 
 # Inputs
-Description of each input is available [here](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L3-L44).
+Descriptions of each input is available in the [`action`](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L3-L44) file.
 
 # Outputs
 Description of each output is available [here](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L46-L52).
