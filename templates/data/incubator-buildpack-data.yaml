@@ -236,7 +236,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20240614-1530389fc
+                  image: gcr.io/k8s-prow/generic-autobumper:v20240614-e4ae242d1
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/configs/autobump-config/control-plane-autobump-reconciler-config.yaml
