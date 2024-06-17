@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240614-a30137b1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240617-cb2ed184"
             securityContext:
               privileged: false
               seccompProfile:
@@ -48,7 +48,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240614-a30137b1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240617-cb2ed184"
             securityContext:
               privileged: false
               seccompProfile:
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240614-a30137b1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240617-cb2ed184"
             securityContext:
               privileged: false
               seccompProfile:
