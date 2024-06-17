@@ -19,7 +19,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240614-a30137b1
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240617-cb2ed184
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
