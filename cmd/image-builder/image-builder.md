@@ -1,10 +1,9 @@
 # Image Builder
 
 Image Builder is a tool for building OCI-compliant images.
-It can build images using different backends, such as Kaniko, BuildKit, and Azure DevOps (ADO).
-It also supports signing images with a pre-defined set of signing services
-to verify that the image comes from a trusted repository and has not been altered in the meantime.
-The tool is designed to be used in ProwJobs.
+It builds images using Azure DevOps (ADO) pipeline backend.
+It also supports signing images with a signify service to ensure that the image comes from a trusted repository and has not been altered in
+the meantime.
 
 Key features:
 
@@ -15,10 +14,6 @@ Key features:
 * Supports pushing the same images to multiple repositories
 * Supports caching of built layers to reduce build times
 
-It builds the `buildkit-image-builder` image using the `image-builder` ADO backend.
-It uses the Dockerfile from the `cmd/image-builder/images/buildkit/Dockerfile` path and the config from the `kaniko-build-config` ConfigMap.
-Because it's a presubmit ProwJob, it does not sign the image.
-Signing images is supported only in postsubmit ProwJobs.
 
 ## Configuration
 
@@ -50,11 +45,12 @@ They provide details about the context in which the tool is running.
 
 Here is the list of environment variables used by Image Builder:
 
+# TODO: add detailed descriptoin needed variables.
+
 - **REPO_NAME**: The name of the repository with source code to build an image from.
 - **REPO_OWNER**: The owner of the repository with source code.
 - **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request (PR) job,
-  and `postsubmit`
-  represents a push job.
+  and `postsubmit` represents a push job.
 - **PULL_NUMBER**: The number of the PR.
 - **PULL_BASE_SHA**: The base SHA of the PR or push commit SHA.
 - **PULL_PULL_SHA**: The PR head SHA of the PR.
@@ -68,6 +64,25 @@ Here is the list of environment variables used by Image Builder:
 Command line flags are the main way for developers to configure the tool and provide needed values for the build process.
 Check the list and description of the available flags in
 the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
+
+## Azure DevOps Build Backend (ADO)
+
+The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It
+supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries.
+To build images, the ADO backend uses the `kaniko-project/executor` image.
+This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported.
+To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob
+definition.
+
+When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
+Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
+building, pushing, and signing an image.
+
+Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
+Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
+Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add
+the `--ado-preview-run=true` flag.
+To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
 
 ## Image Signing
 
@@ -139,22 +154,3 @@ stdout.
 ## Environment Variables File
 
 The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
-
-## Azure DevOps Build Backend (ADO)
-
-The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It
-supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries.
-To build images, the ADO backend uses the `kaniko-project/executor` image.
-This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported.
-To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob
-definition.
-
-When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
-Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
-building, pushing, and signing an image.
-
-Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
-Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
-Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add
-the `--ado-preview-run=true` flag.
-To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
