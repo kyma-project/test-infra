@@ -240,14 +240,7 @@ branch-protection:
               required_status_checks:
                 strict: true
         reconciler:
-          protect: false
-          branches:
-            main:
-              protect: true
-            develop:
-              protect: true
-            load-test-mock:
-              protect: true
+          unmanaged: true
 
 tide:
   sync_period: 2m
@@ -268,7 +261,6 @@ tide:
     kyma-project/kyma-watcher: squash
     kyma-project/manifest-operator: squash
     kyma-incubator/compass: squash
-    kyma-incubator/reconciler: squash
     kyma-incubator/api-gateway: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
@@ -1199,7 +1191,5 @@ presets:
         value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
       - name: KCP_KUBECONFIG_API_URL
         value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
-      - name: KCP_MOTHERSHIP_API_URL
-        value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"

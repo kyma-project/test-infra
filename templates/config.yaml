@@ -33,7 +33,6 @@ global:
       repos:
         - name: "compass"
         - name: "ord-service"
-        - name: "reconciler"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
         - name: "slack-bot"
@@ -317,12 +316,6 @@ globalSets:
       kyma:
         - org: "kyma-project"
           repo: "kyma"
-          base_ref: "main"
-  extra_refs_reconciler:
-    extra_refs:
-      reconciler:
-        - org: "kyma-incubator"
-          repo: "reconciler"
           base_ref: "main"
   extra_refs_control-plane:
     extra_refs:
