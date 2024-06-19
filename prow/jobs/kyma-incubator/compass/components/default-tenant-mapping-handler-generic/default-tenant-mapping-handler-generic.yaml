@@ -115,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240617-cb2ed184"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240618-b088714c"
             securityContext:
               privileged: false
               seccompProfile:
