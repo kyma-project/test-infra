@@ -240,7 +240,14 @@ branch-protection:
               required_status_checks:
                 strict: true
         reconciler:
-          unmanaged: true
+          protect: false
+          branches:
+            main:
+              protect: true
+            develop:
+              protect: true
+            load-test-mock:
+              protect: true
 
 tide:
   sync_period: 2m
@@ -261,6 +268,7 @@ tide:
     kyma-project/kyma-watcher: squash
     kyma-project/manifest-operator: squash
     kyma-incubator/compass: squash
+    kyma-incubator/reconciler: squash
     kyma-incubator/api-gateway: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
