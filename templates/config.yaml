@@ -15,7 +15,6 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "hydroform"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "examples"
         - name: "api-gateway"
