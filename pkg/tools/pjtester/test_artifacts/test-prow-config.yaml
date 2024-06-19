@@ -1199,7 +1199,5 @@ presets:
         value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
       - name: KCP_KUBECONFIG_API_URL
         value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
-      - name: KCP_MOTHERSHIP_API_URL
-        value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
