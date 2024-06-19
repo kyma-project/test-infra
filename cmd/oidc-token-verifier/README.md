@@ -16,9 +16,10 @@ oidc-token-verifier --token "your-oidc-token"
 
 See all available [flags](https://github.com/kyma-project/test-infra/blob/main/cmd/oidc-token-verifier/main.go#L45-L55).
 
-If a token is issued by the trusted issuer, the tool will validate the token against it.
-If the token is valid and the claims are as expected, the tool will exit with a status code of 0.
-Otherwise, it will exit with a status code of 1.
+> [!IMPORTANT]
+> If a token is issued by the trusted issuer, the tool will validate the token against it.
+> If the token is valid and the claims are as expected, the tool will exit with a status code of 0.
+> Otherwise, it will exit with a status code of 1.
 
 Apart from standard OIDC token validation, the tool will validate the following claim values:
 
