@@ -26,7 +26,7 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 3. **Trigger the `oci-image-builder` pipeline**:
    The image-builder reusable workflow uses Image Builder GitHub action to collect required data and to trigger the `oci-image-builder`
    pipeline.
-   Required data is collected from inputs to the Image Builder reusable workflow, defined by the user and GitHub workflow context variables.
+   Required data is collected from inputs to the Image Builder reusable workflow defined by the user and GitHub workflow context variables.
 
 4. **Validating the OIDC Token**: The `oci-image-builder` pipeline, running in ADO, validates the OIDC token against trusted issuer.
    The pipeline validates the claims in the OIDC token to ensure that the workflow is authorized to trigger the build process.
@@ -34,12 +34,12 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 
 5. **OCI Image build preparation**: The `oci-image-builder` pipeline uses the information from pipeline parameters to clone appropriate
    source code for the building of the OCI image.
-   It uses the information from pipeline parameters to set the appropriate parameters for the image build and signing.
+   It uses the information from pipeline parameters to set the appropriate parameters for the build and signing images too.
 
 6. **Building the OCI Image**: The `oci-image-builder` pipeline proceeds to build the OCI image.
    The build process uses a kaniko executor as a build engine.
 
-7. **Pushing the OCI Image**: After the OCI image is built, it is then pushed to a specified OCI registry.
+7. **Pushing the OCI Image**: After the OCI image is built, it is pushed to a specified OCI registry.
    The `oci-image-builder` pipeline pushes the OCI image to dev or prod registry, depending on the event that triggered the pipeline.
 
 8. **Signing the OCI Image**: If the build was triggered by a push GitHub event, the `oci-image-builder` pipeline uses the `signify`
@@ -47,20 +47,22 @@ process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant i
 
 ## Image Builder Reusable Workflow
 
-Image-builder reusable workflow is a GitHub workflow used to collect required data from workflow inputs and GitHub context
-variables. It retrieves the OIDC token from GitHubs OIDC identity provider, and ADO PAT from Google Secret Manager.
-
-It triggers the `oci-image-builder` pipeline in ADO
+Image-builder reusable workflow is a GitHub workflow used to collect required data from workflow inputs and GitHub context variables.
+It retrieves the OIDC token from GitHubs OIDC identity provider, and ADO PAT from Google Secret Manager.
+Using the reusable workflow we bundle all the steps required to collect the data
+and trigger the `oci-image-builder` pipeline in a controlled and secure environment.
+Using an OIDC token allows `oci-image-builder` ADO pipeline
+to confirm the version and identity of the reusable workflow that triggered the build process.
+The image-builder reusable workflow collects needed data from reusable workflow inputs and GitHub context variables.
+The workflow triggers `oci-image-builder` pipeline
 using [Image Builder GitHub Action](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/README.md).
-The image-builder reusable workflow collects needed data from GitHub context variables.
-The OIDC token alone does not contain enough data to clone the appropriate source code for the build process.
-Using the reusable workflow
-we bundle all the steps required to collect the data and trigger the `oci-image-builder` pipeline in a controlled and secure environment.
-Using an OIDC token allows us to confirm the version and identity of the workflow that triggered the build process.
 The image-builder reusable workflow is stored in the `github.com/kyma-project/test-infra` repository on the `main` branch, and changes to
-the workflow are versioned and provided using pull requests. Together with CODEOWNERS file mechanism,
-this ensures that the changes to the workflow are reviewed and approved by the appropriate team members.
+the workflow are versioned and provided using pull requests.
+Together with CODEOWNERS file mechanism, this ensures that the changes to the workflow are reviewed and approved by the appropriate team
+members.
 This protects the workflow from unauthorized changes and ensures that the workflow is secure and reliable.
+The workflow that uses an image-builder reusable workflow must reference the workflow version referenced by
+`kyma-project/test-infra/.github/workflows/image-builder-reusable.yml@main`.
 
 ## GitHub OIDC Identity Token Claims
 
@@ -68,32 +70,27 @@ The OIDC token issued by GitHub's OIDC identity provider contains several claims
 These claims are used to identify the workflow triggering the build pipeline.
 This is essential for SLC-29 compliance, as it ensures that only trusted clients can build and sign image.
 
-The validity and integrity of the OIDC token is validated in the `oci-image-builder` pipeline. The pipeline execution fail if validation
-fails.
-Because the OIDC token uses the `JWT` format, it can be validated with a standard validation process against GitHub's OIDC identity provider.
-Except validating standard claims, the `oci-image-builder` pipeline also validates custom claims
+The validity and integrity of the OIDC token is validated in the `oci-image-builder` pipeline following standard oidc token validation.
+Apart from validation of standard claims, the `oci-image-builder` pipeline also validates custom claims specific for the token issuer.
 
 ### Workflow Identification Claims
 
-The OIDC token contains the following claims that can be used to identify the workflow that triggered the build pipeline. These include:
+The OIDC token contains the following claims that can be used to identify the workflow that triggered the build pipeline.
 
 <!-- markdown-link-check-disable -->
 
-- **iss**: The issuer of the token. This is always https://token.actions.githubusercontent.com. <!-- markdown-link-check-enable-->
+- **iss**: The issuer of the token. <!-- markdown-link-check-enable-->
 - **event_name**: The name of the event that triggers the workflow run.
 - **repository_owner**: The owner of the repository where the workflow run occurs.
 - **job_workflow_ref**: For jobs using a reusable workflow, the ref path to the reusable workflow. For more information,
   see [Using OpenID Connect with reusable workflows.](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/using-openid-connect-with-reusable-workflows)
-- **event_name**: The name of the event that triggers the workflow run.
 
 ## Parameters for the `oci-image-builder` Pipeline
 
 The `oci-image-builder` pipeline requires certain data to be provided in parameters to execute a build process.
-Certain parameters need to be defined by the user in addition to the data taken from the OIDC token and GitHub context variables.
+Certain parameters need to be defined by the user in addition to the data taken from the GitHub context variables.
 
-These parameters include user-defined parameters, parameters from the OIDC token, and computed parameters.
-
-### User Defined Parameters
+### Parameters from Image Builder Reusable Workflow Inputs
 
 - **Context**: The context of the build.
 - **Dockerfile**: The Dockerfile to be used for the build.
@@ -103,14 +100,29 @@ These parameters include user-defined parameters, parameters from the OIDC token
 - **ExportTags**: Whether to export the tags.
 - **EnvFile**: The environment variables file.
 
+See the list of reusable workflow inputs in
+the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/image-builder.yml#L5-L40)
+
 ### Parameters from GitHub Context Variables
 
 - **PullBaseSHA**: The base SHA of the pull request.
 - **PullPullSHA**: The SHA of the pull request.
 - **PullNumber**: The number of the pull request.
 - **RepoName**: The name of the repository.
-- **RepoOwner**: The owner of the repository. Possible values include `kyma-project` and `kyma-incubator`.
-- **JobType**: The type of job. Possible values include `presubmit` and `postsubmit`.
+- **RepoOwner**: The owner of the repository. Allowed value is `kyma-project`.
+- **JobType**: The type of job. Allowed values are `presubmit` and `postsubmit`.
+
+## Azure DevOps Pipeline
+
+The `oci-image-builder` pipeline is an Azure DevOps pipeline that is triggered by the image-builder reusable workflow.
+The pipeline is responsible for building, pushing, and signing the OCI image.
+The pipeline uses [oidc-token-verifier](https://github.com/kyma-project/test-infra/blob/main/cmd/oidc-token-verifier/README.md) to validate
+the OIDC token.
+The pipeline execution output is retrieved by the image-builder reusable workflow and returned to the caller workflow as output.
+The URIs of the pushed images are retrieved by the image-builder reusable workflow and returned to the caller workflow as output.
+
+See the reusable workflow outputs in
+the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/image-builder.yml#L41-L47)
 
 ## Block Diagram
 
@@ -119,10 +131,6 @@ These parameters include user-defined parameters, parameters from the OIDC token
 ## Activity Diagram
 
 ![image-builder-activity-diagram](documentation_assets/image-builder-activity-diagram.png)
-
-## Azure DevOps Pipeline
-
-The `oci-image-builder` pipeline
 
 ## Conclusion
 
