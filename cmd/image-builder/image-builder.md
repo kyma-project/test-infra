@@ -2,17 +2,18 @@
 
 Image Builder is a tool for building OCI-compliant images.
 It builds images using Azure DevOps (ADO) pipeline backend.
-It also supports signing images with a signify service to ensure that the image comes from a trusted repository and has not been altered in
-the meantime.
+It can run in two modes. The first mode is the default mode, where Image Builder acts as a client and triggers the ADO pipeline.
+In this mode Image Builder support running as part of a GitHub Actions workflow.
+In second mode Image Builder runs as part of the `oci-image-builder` pipeline in the ADO backend.
+The Image Builder is build and pushed as a container image to the Google artifact registry repository.
 
 Key features:
 
 * Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
 * Supports adding multiple tags to the image
-* Saves command outputs to separate files
-* When running in Prow's presubmit job, supports pushing images to different repositories with different tags
-* Supports pushing the same images to multiple repositories
-* Supports caching of built layers to reduce build times
+* Supports pushing images to google artifact registries.
+* Supports running in a GitHub Actions workflow.
+* Supports building images using the ADO pipeline backend.
 
 
 ## Configuration
@@ -45,19 +46,25 @@ They provide details about the context in which the tool is running.
 
 Here is the list of environment variables used by Image Builder:
 
-# TODO: add detailed descriptoin needed variables.
+The Image Builder uses several environment variables, which can be grouped by their use cases as follows:
 
-- **REPO_NAME**: The name of the repository with source code to build an image from.
-- **REPO_OWNER**: The owner of the repository with source code.
-- **JOB_TYPE**: The type of job. This can be either `presubmit` or `postsubmit`. `presubmit` represents a pull request (PR) job,
-  and `postsubmit` represents a push job.
-- **PULL_NUMBER**: The number of the PR.
-- **PULL_BASE_SHA**: The base SHA of the PR or push commit SHA.
-- **PULL_PULL_SHA**: The PR head SHA of the PR.
-- **ADO_PAT**: The Azure DevOps Personal Access Token. It's used in the `buildInADO` function to authenticate with the ADO API.
-- **USE_BUILDKIT**: Determines whether to use BuildKit for building the image. A `buildkit-image-builder` image has this variable set
-  to `true` by default.
-- **CI**: Determines whether the image builder runs in CI mode.
+- `ADO_PAT`: Personal Access Token used to authenticate with the ADO API.
+- `REPO_OWNER`: Used to extract the repository owner for the ADO pipeline.
+- `REPO_NAME`: Used to extract the repository name for the ADO pipeline.
+- `JOB_TYPE`: Determines the type of the job (presubmit or postsubmit).
+- `PULL_NUMBER`: Used when the job type is a presubmit job.
+- `PULL_BASE_SHA`: Used to fetch the base commit SHA for the image tag.
+- `PULL_PULL_SHA`: Used when the job type is a pull request.
+- `CI`: Determines if the Image Builder is running inside a CI system. If set to "true", the CI system is determined and the git state is
+  loaded accordingly.
+- `GITHUB_REPOSITORY`: Used to get the repository name when the CI system is GitHub Actions.
+- `GITHUB_EVENT_NAME`: Used to determine the job type when the CI system is GitHub Actions.
+- `GITHUB_EVENT_PATH`: Used to get the path to the event JSON file when the CI system is GitHub Actions.
+- `GITHUB_SHA`: Used to get the commit SHA when the CI system is GitHub Actions.
+- `GITHUB_REF`: Used to get the pull request number when the CI system is GitHub Actions.
+
+Please note that the actual usage of these environment variables may vary depending on the specific configuration and usage of the Image
+Builder.
 
 ### Command Line Flags
 
@@ -67,18 +74,15 @@ the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b
 
 ## Azure DevOps Build Backend (ADO)
 
-The ADO backend uses Image Builder to call ADO API and trigger the `oci-image-builder` pipeline. This backend is SLC-29 compliant. It
-supports signing images with a production signify service. Images built with ADO can be pushed into Kyma Google Cloud artifacts registries.
-To build images, the ADO backend uses the `kaniko-project/executor` image.
-This backend doesn't support the `--platform` and `--variant` flags. Building images for platforms other than amd64 is not supported.
-To use this backend, you need to use Image Builder in a ProwJob. See [Quickstart Guide](#quickstart-guide) for an example ProwJob
-definition.
-
+The Image Builder by default is used to call ADO API and trigger the `oci-image-builder` pipeline ADO pipeline.
 When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
 Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
 building, pushing, and signing an image.
 
-Apart from calling ADO API to trigger image build, Image Builder also supports preview mode. In preview mode,
+The Image Builder is used as part of the `oci-image-builder` pipeline in the ADO backend too.
+It's used to execute steps responsible for generating image tags and signing images using the signify service.
+
+Apart from building images using ADO, Image Builder also supports preview mode. In preview mode,
 Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
 Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use preview mode, add
 the `--ado-preview-run=true` flag.
@@ -86,7 +90,7 @@ To specify a path to the YAML file with the pipeline definition, use the `--ado-
 
 ## Image Signing
 
-Image Builder supports signing the images with a pre-defined set of signing services.
+Image Builder supports signing images with the signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
 You can enable every supported signing service on repository and global levels.
 
@@ -154,3 +158,5 @@ stdout.
 ## Environment Variables File
 
 The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
+All variables and their values are loaded into the environment before the build starts.
+The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
