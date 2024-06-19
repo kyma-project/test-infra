@@ -138,7 +138,7 @@ func (opts *options) extractClaims() error {
 
 	// Create a new token processor
 	// It reads issuer from the token and verifies if the issuer is trusted.
-	// The tokenProcessor is a main object that is used to verify the token and extract the claims values.
+	// The tokenProcessor is a main object that is used to verify the token and extract the claim values.
 	// TODO(dekiel): add support for providing trusted issuers instead of using the value from the package.
 	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
 	if err != nil {
@@ -160,11 +160,11 @@ func (opts *options) extractClaims() error {
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
-	// claims will store the extracted claims values from the token.
+	// claims will store the extracted claim values from the token.
 	claims := tioidc.NewClaims(logger)
 	// Verifies the token and check if the claims have expected values.
-	// Verifies custom claims values too.
-	// Extract the claims values from the token into the claims struct.
+	// Verifies custom claim values too.
+	// Extract the claim values from the token into the claims struct.
 	// It provides a final result if the token is valid and the claims have expected values.
 	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, &claims)
 	if err != nil {
