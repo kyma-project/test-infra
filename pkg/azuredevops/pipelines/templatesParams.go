@@ -110,6 +110,10 @@ func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 	p["Tags"] = encodedTags
 }
 
+func (p OCIImageBuilderTemplateParams) SetEncodedTags(encodedTags bool) {
+	p["EncodedTags"] = strconv.FormatBool(encodedTags)
+}
+
 // SetUseKanikoConfigFromPR sets optional parameter UseKanikoConfigFromPR.
 // If true, ADO pipeline will use a Kaniko config from PR.
 // This is used for testing purposes.
