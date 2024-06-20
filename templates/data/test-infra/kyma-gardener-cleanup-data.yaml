@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-project/kyma/kyma-gardener-cleanup.yaml
+      - to: ../../prow/jobs/kyma-project/test-infra/kyma-gardener-cleanup.yaml
         localSets:
           jobConfig_default:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240619-abcecd95
