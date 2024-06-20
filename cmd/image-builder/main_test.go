@@ -640,6 +640,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 			want: pipelines.OCIImageBuilderTemplateParams{
 				"Context":               "",
 				"Dockerfile":            "",
+				"EncodedTags":           "true",
 				"ExportTags":            "false",
 				"JobType":               "postsubmit",
 				"Name":                  "",
