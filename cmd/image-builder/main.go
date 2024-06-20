@@ -312,6 +312,10 @@ func buildInADO(o options) error {
 	}
 
 	fmt.Println("Triggering ADO build pipeline")
+	var (
+		pipelineRunResult *pipelines.RunResult
+		logs              string
+	)
 	if !o.dryRun {
 		ctx := context.Background()
 		// Triggering ADO build pipeline.
@@ -333,7 +337,7 @@ func buildInADO(o options) error {
 		// Fetch the ADO pipeline run result.
 		// GetRunResult function waits for the pipeline runs to finish and returns the result.
 		// TODO(dekiel) make the timeout configurable instead of hardcoding it.
-		pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
+		pipelineRunResult, err = adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 		}
@@ -352,27 +356,34 @@ func buildInADO(o options) error {
 		} else {
 			fmt.Printf("ADO pipeline image build logs:\n%s", logs)
 		}
-
-		// TODO: Setting github outputs should happen outside buildInADO function.
-		//  buildInADO should return required data and caller should handle it.
-		// if run in github actions, set output parameters
-		if o.ciSystem == GithubActions {
-			images := extractImagesFromADOLogs(logs)
-			data, err := json.Marshal(images)
-			if err != nil {
-				return fmt.Errorf("cannot marshal list of images: %w", err)
-			}
-
-			actions.SetOutput("images", string(data))
-			actions.SetOutput("adoResult", string(*pipelineRunResult))
-		}
-
-		// Handle the ADO pipeline run failure.
-		if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
-			return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
-		}
 	} else {
-		fmt.Println("Running in dry-run mode. Skipping ADO pipeline run.")
+		dryRunPipelineRunResult := pipelines.RunResult("Succeeded")
+		pipelineRunResult = &dryRunPipelineRunResult
+	}
+
+	// TODO: Setting github outputs should happen outside buildInADO function.
+	//  buildInADO should return required data and caller should handle it.
+	// if run in github actions, set output parameters
+	var images []string
+	if o.ciSystem == GithubActions {
+		if !o.dryRun {
+			images = extractImagesFromADOLogs(logs)
+		} else {
+			fmt.Println("Running in dry-run mode. Skipping extracting images and results from ADO.")
+			images = []string{"registry/repo/image1:tag1", "registry/repo/image2:tag2"}
+		}
+		data, err := json.Marshal(images)
+		if err != nil {
+			return fmt.Errorf("cannot marshal list of images: %w", err)
+		}
+
+		actions.SetOutput("images", string(data))
+		actions.SetOutput("adoResult", string(*pipelineRunResult))
+	}
+
+	// Handle the ADO pipeline run failure.
+	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
+		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
 	return nil
 }
@@ -516,7 +527,8 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 	}
 }
 
-// appendToTags appends key-value pairs from source map to target slice and returns the result
+// appendToTags appends key-value pairs from source map to target slice of tags.Tag
+// This allows creation of image tags from key value pairs.
 func appendToTags(target *[]tags.Tag, source map[string]string) {
 	for key, value := range source {
 		*target = append(*target, tags.Tag{Name: key, Value: value})
@@ -710,7 +722,7 @@ func validateOptions(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
-// loadEnv loads environment variables into application runtime from key=value list
+// loadEnv creates environment variables in application runtime from a file with key=value data
 func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 	if len(envFile) == 0 {
 		// file is empty - ignore
@@ -773,7 +785,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	flagSet.BoolVar(&o.debug, "debug", false, "Enable debug logging")
-	flagSet.BoolVar(&o.dryRun, "dry-run", false, "Do not build the image, only print the configuration and ADO API call pipeline parameters")
+	flagSet.BoolVar(&o.dryRun, "dry-run", false, "Do not build the image, only print a ADO API call pipeline parameters")
 	// TODO: What is expected value repo only or org/repo? How this flag influence an image builder behaviour?
 	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
@@ -878,6 +890,7 @@ func main() {
 			logger.Errorw("Failed to parse tags", "error", err)
 			os.Exit(1)
 		}
+		// Append environment variables to tags
 		appendToTags(&parsedTags, envs)
 		// Print parsed tags to stdout as json
 		jsonTags, err := json.Marshal(parsedTags)
