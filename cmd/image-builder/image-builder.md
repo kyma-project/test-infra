@@ -78,6 +78,8 @@ The Image Builder by default is used to call ADO API and trigger the `oci-image-
 When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
 Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
 building, pushing, and signing an image.
+The Image Builder passes the tag definitions and values provided by user as base64-encoded pipeline `Tags` parameter.
+Encoding the value allows for passing special characters in the tag values without the need to escape them.
 
 The Image Builder is used as part of the `oci-image-builder` pipeline in the ADO backend too.
 It's used to execute steps responsible for generating image tags and signing images using the signify service.
@@ -152,8 +154,14 @@ If the name is not provided, it is evaluated from the value:
 ### Parse-Tags-Only Mode
 
 You can use Image Builder to generate tags using pars-tags-only mode. To enable it, use the `--parse-tags-only` flag.
-It parses the tags provided in the `--tag` flag and in `config.yaml`. The generated tags are written as JSON to
+It parses the tags provided in the `--tag`, `--tag-base64` flags and in `config.yaml`. The generated tags are written as JSON to
 stdout.
+
+Flag `--tag-base64` is used to pass the base64-encoded, comma-separated list of tags.
+The flag value is decoded and parsed as a list of named tags.
+The separated tags are expected to follow the same format as the `--tag` flag values.
+The flag is used to pass the tag values to the `oci-image-builder` pipeline in the ADO backend.
+The flag value is base64-encoded to avoid issues with special characters in the tag values and do not need to escape them.
 
 ## Environment Variables File
 
