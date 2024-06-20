@@ -46,8 +46,10 @@ inputs:
 outputs:
   adoResult:
     description: The result of the ADO pipeline execution
+    value: ${{ steps.build.outputs.adoResult }}
   images:
     description: JSON array of the images built in ADO
+    value: ${{ steps.build.outputs.images }}
 
 runs:
   using: "composite"
@@ -75,7 +77,8 @@ runs:
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
       shell: bash
-
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240516-f00d14e6
+    
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240605-0b95104d
+      id: build
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true

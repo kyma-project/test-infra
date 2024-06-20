@@ -19,9 +19,9 @@ images:
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
   amd64Only: true
-- source: "istio/pilot:1.21.2-distroless"
-- source: "istio/proxyv2:1.21.2-distroless"
-- source: "istio/install-cni:1.21.2-distroless"
+- source: "istio/pilot:1.22.1-distroless"
+- source: "istio/proxyv2:1.22.1-distroless"
+- source: "istio/install-cni:1.22.1-distroless"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true

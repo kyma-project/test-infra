@@ -15,7 +15,6 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "hydroform"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "examples"
         - name: "api-gateway"
@@ -33,7 +32,6 @@ global:
       repos:
         - name: "compass"
         - name: "ord-service"
-        - name: "reconciler"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
         - name: "slack-bot"
@@ -56,7 +54,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240619-0204c8ae
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -79,7 +77,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240619-0204c8ae
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -143,7 +141,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240527-2e43aa62"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240610-c4997bfe"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -153,7 +151,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240619-abcecd95"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -171,21 +169,21 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240619-abcecd95"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240619-abcecd95"
   image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240619-abcecd95"
   image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240619-abcecd95"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240603-d416573f
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240619-5863afab
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240603-d416573f
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240619-5863afab
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240603-d416573f
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240619-5863afab
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240603-276e1bee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240619-abcecd95"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -317,12 +315,6 @@ globalSets:
       kyma:
         - org: "kyma-project"
           repo: "kyma"
-          base_ref: "main"
-  extra_refs_reconciler:
-    extra_refs:
-      reconciler:
-        - org: "kyma-incubator"
-          repo: "reconciler"
           base_ref: "main"
   extra_refs_control-plane:
     extra_refs:

@@ -1,0 +1,19 @@
+name: pull-build-image-builder.yml
+#  description: "Build image-builder image for image-builder application."
+on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/image-builder/*.go"
+      - "cmd/image-builder/images/kaniko/*"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-builder
+      dockerfile: cmd/image-builder/images/kaniko/Dockerfile
+      context: .

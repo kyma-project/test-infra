@@ -1,0 +1,10 @@
+name: Call Reusable Autobumper
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  call-autobumper:
+    uses: ./.github/workflows/reusable-autobumper.yml
+    with:
+      GCP_PROJECT_ID: 'sap-kyma-neighbors-dev'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

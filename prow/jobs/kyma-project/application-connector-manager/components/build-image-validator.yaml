@@ -16,7 +16,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240619-0204c8ae"
             securityContext:
               privileged: false
               seccompProfile:
@@ -28,7 +28,7 @@ presubmits: # runs on PRs
               - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/central-application-connectivity-validator"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/central-application-connectivity-validator/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -67,7 +67,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240603-1df7d86a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240619-0204c8ae"
             securityContext:
               privileged: false
               seccompProfile:
@@ -79,7 +79,7 @@ postsubmits: # runs on main
               - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/central-application-connectivity-validator"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=components/central-application-connectivity-validator/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi

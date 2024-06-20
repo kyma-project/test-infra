@@ -1,0 +1,19 @@
+name: push-build-oidc-token-verifier.yml
+# description: "Build test-infra/cmd/oidc-token-verifier image for image-builder application."
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/oidc-token-verifier/**"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: test-infra/oidc-token-verifier
+      dockerfile: cmd/oidc-token-verifier/Dockerfile
+      context: .

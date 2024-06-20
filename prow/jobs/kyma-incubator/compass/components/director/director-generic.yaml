@@ -81,7 +81,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240527-2e43aa62"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240610-c4997bfe"
             securityContext:
               privileged: false
               seccompProfile:
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240603-276e1bee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240619-abcecd95"
             securityContext:
               privileged: false
               seccompProfile:
