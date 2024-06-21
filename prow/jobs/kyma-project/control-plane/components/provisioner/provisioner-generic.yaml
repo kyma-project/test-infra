@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240621-e89caf0c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240621-1edeaa7a"
             securityContext:
               privileged: true
               seccompProfile:
