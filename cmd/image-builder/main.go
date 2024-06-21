@@ -364,8 +364,8 @@ func buildInADO(o options) error {
 	// TODO: Setting github outputs should happen outside buildInADO function.
 	//  buildInADO should return required data and caller should handle it.
 	// if run in github actions, set output parameters
-	var images []string
 	if o.ciSystem == GithubActions {
+		var images []string
 		if !o.dryRun {
 			images = extractImagesFromADOLogs(logs)
 		} else {
