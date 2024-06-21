@@ -17,7 +17,7 @@ presubmits:
       optional: false
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240619-0204c8ae"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240621-63f4f2b1"
             securityContext:
               privileged: false
               seccompProfile:
