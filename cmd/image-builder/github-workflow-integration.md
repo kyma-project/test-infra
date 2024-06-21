@@ -5,6 +5,24 @@ images. It leverages a signed JWT format in which an OIDC token from GitHub's OI
 authentication and authorization the reusable workflow that trigger the `oci-image-builder` pipeline. The build
 process is executed in an Azure DevOps pipeline, providing an SLC-29-compliant infrastructure for building OCI images.
 
+## Image Builder Application Components
+
+The Image Builder solution consists of the following components:
+
+1. **Image Builder Reusable Workflow**: A GitHub workflow that collects required data from workflow inputs and GitHub context variables.
+   It triggers the `oci-image-builder` pipeline in Azure DevOps.
+2. **Image Builder GitHub Action**: A GitHub action that prepares the `oci-image-builder` pipeline parameters values
+   and triggers the pipeline in the Azure DevOps. It is used by the Image Builder Reusable Workflow.
+3. **Expose JWT GitHub Action**: A GitHub action that requests the OIDC token from GitHub's OIDC identity provider
+   and expose its value as an output. It is used by the Image Builder Reusable Workflow.
+4. **Image Builder Binary**: A binary that is used in Image Builder GitHub Action to call the Azure DevOps API
+   and trigger the `oci-image-builder` pipeline. It is used in the `oci-image-builder` pipeline in Azure DevOps to prepare image tags values
+   and sign images using the signify service.
+5. **OCI Image Builder Pipeline**: An Azure DevOps pipeline that is triggered by the Image Builder Binary.
+   The pipeline is responsible for building, pushing, and signing the OCI image.
+6. **OIDC Token Verifier**: A binary that is used in the `oci-image-builder` pipeline in Azure DevOps to validate the OIDC token.
+   It is used to ensure that the client that triggered the build process is authorized to do so.
+
 ## Process Flow
 
 1. **Trigger workflow**: The user or automation triggers a GitHub workflow. The workflow calls image-builder reusable workflow to build the
