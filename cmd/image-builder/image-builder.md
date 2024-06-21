@@ -1,17 +1,17 @@
 # Image Builder
 
 Image Builder is a tool for building OCI-compliant images.
-It builds images using Azure DevOps (ADO) pipeline backend.
+It builds images using the Azure DevOps (ADO) pipeline backend.
 It can run in two modes. The first mode is the default mode, where Image Builder acts as a client and triggers the ADO pipeline.
-In this mode Image Builder support running as part of a GitHub Actions workflow.
-In second mode Image Builder runs as part of the `oci-image-builder` pipeline in the ADO backend.
-The Image Builder is build and pushed as a container image to the Google artifact registry repository.
+In this mode, Image Builder supports running as part of a GitHub Actions workflow.
+In the second mode, Image Builder runs as part of the `oci-image-builder` pipeline in the ADO backend.
+The Image Builder is built and pushed as a container image to the Google Artifact Registry repository.
 
 Key features:
 
 * Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
 * Supports adding multiple tags to the image
-* Supports pushing images to google artifact registries.
+* Supports pushing images to Google Artifact Registries.
 * Supports running in a GitHub Actions workflow.
 * Supports building images using the ADO pipeline backend.
 
@@ -78,7 +78,7 @@ The Image Builder by default is used to call ADO API and trigger the `oci-image-
 When using the ADO backend, Image Builder is used as a client collecting values from flags and environment variables and calling ADO API.
 Image Builder triggers the `oci-image-builder` pipeline. This pipeline is responsible for processing parameters provided in a call and
 building, pushing, and signing an image.
-The Image Builder passes the tag definitions and values provided by user as base64-encoded pipeline `Tags` parameter.
+The Image Builder passes the tag definitions and values provided by the user as a base64-encoded pipeline `Tags` parameter.
 Encoding the value allows for passing special characters in the tag values without the need to escape them.
 
 The Image Builder is used as part of the `oci-image-builder` pipeline in the ADO backend too.

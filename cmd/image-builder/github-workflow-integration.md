@@ -68,10 +68,10 @@ The workflow that uses an image-builder reusable workflow must reference the wor
 
 The OIDC token issued by GitHub's OIDC identity provider contains several claims that are crucial for the `oci-image-builder` pipeline.
 These claims are used to identify the workflow triggering the build pipeline.
-This is essential for SLC-29 compliance, as it ensures that only trusted clients can build and sign image.
+This is essential for SLC-29 compliance, as it ensures that only trusted clients can build and sign images.
 
-The validity and integrity of the OIDC token is validated in the `oci-image-builder` pipeline following standard oidc token validation.
-Apart from validation of standard claims, the `oci-image-builder` pipeline also validates custom claims specific for the token issuer.
+The validity and integrity of the OIDC token is validated in the `oci-image-builder` pipeline following standard OIDC token validation.
+Apart from validation of standard claims, the `oci-image-builder` pipeline also validates custom claims specific to the token issuer.
 
 ### Workflow Identification Claims
 
@@ -137,4 +137,4 @@ the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.gi
 The Image Builder solution, with its seamless integration with GitHub workflows and Azure DevOps pipeline, offers developers a robust and
 secure method to incorporate the building of OCI images into their workflows. By leveraging a signed JWT format in which an OIDC token from
 GitHub's OIDC identity provider is passed, it ensures the secure and authorized passing of information about the workflow and the image to
-build. The entire build process adheres to SLC-29 compliance, providing a reliable infrastructure for the building of OCI images.
+build. The entire build process adheres to SLC-29 compliance, providing a reliable infrastructure for building OCI images.
