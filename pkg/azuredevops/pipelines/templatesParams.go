@@ -3,6 +3,7 @@
 package pipelines
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strconv"
 )
@@ -102,9 +103,15 @@ func (p OCIImageBuilderTemplateParams) SetBuildArgs(args string) {
 
 // SetImageTags sets optional parameter Tags.
 // This parameter is used to provide additional tags for the image.
+// The value is base64 encoded to avoid issues with special characters.
 func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 	// TODO: Rename key to ImageTags
-	p["Tags"] = tags
+	encodedTags := base64.StdEncoding.EncodeToString([]byte(tags))
+	p["Tags"] = encodedTags
+}
+
+func (p OCIImageBuilderTemplateParams) SetEncodedTags(encodedTags bool) {
+	p["EncodedTags"] = strconv.FormatBool(encodedTags)
 }
 
 // SetUseKanikoConfigFromPR sets optional parameter UseKanikoConfigFromPR.

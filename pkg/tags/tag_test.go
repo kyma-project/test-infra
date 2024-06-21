@@ -52,6 +52,11 @@ func TestNewTagFromString(t *testing.T) {
 			ExpectedTag: Tag{Name: "vShortSHA-Date", Value: "v{{ .ShortSHA }}-{{ .Date }}"},
 			ExpectErr:   false,
 		},
+		{
+			Name:        "tag template with env var",
+			TagString:   "{{ .Env \"PULL_BASE_REF\" }}-{{ .ShortSHA }}",
+			ExpectedTag: Tag{Name: "EnvPULL_BASE_REF-ShortSHA", Value: "{{ .Env \"PULL_BASE_REF\" }}-{{ .ShortSHA }}"},
+		},
 	}
 
 	for _, c := range tc {

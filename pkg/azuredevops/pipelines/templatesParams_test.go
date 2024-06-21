@@ -1,6 +1,8 @@
 package pipelines_test
 
 import (
+	"encoding/base64"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -76,7 +78,13 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 
 	It("sets the correct ImageTags", func() {
 		params.SetImageTags("tag1 tag2")
-		Expect(params["Tags"]).To(Equal("tag1 tag2"))
+		expected := base64.StdEncoding.EncodeToString([]byte("tag1 tag2"))
+		Expect(params["Tags"]).To(Equal(expected))
+	})
+
+	It("sets the correct EncodedTags", func() {
+		params.SetEncodedTags(true)
+		Expect(params["EncodedTags"]).To(Equal("true"))
 	})
 
 	It("sets the correct UseKanikoConfigFromPR", func() {
