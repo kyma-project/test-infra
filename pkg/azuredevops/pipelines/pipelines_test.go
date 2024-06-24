@@ -48,6 +48,10 @@ var _ = Describe("Pipelines", func() {
 			ADOProjectName:     "example-project",
 			ADOPipelineID:      123,
 			ADOPipelineVersion: 1,
+			ADORetryStrategy: pipelines.RetryStrategy{
+				Attempts: 3,
+				Delay:    5 * time.Second,
+			},
 		}
 	})
 
