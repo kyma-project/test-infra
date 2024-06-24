@@ -57,7 +57,7 @@ Otherwise, it will exit with a status code of 1, indicating that the token is in
 
 ### Activity Diagram
 
-![oidc-token-verifier-activity-diagram](oidc-token-verifier-activity-diagram.png)
+![oidc-token-verifier-activity-diagram](oidc-token-verifier-activity-diagram.svg)
 
 ## Use Case
 
