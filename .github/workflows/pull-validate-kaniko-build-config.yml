@@ -1,0 +1,51 @@
+name: pull-validate-kaniko-build-config
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review] 
+    paths:
+      - "configs/kaniko-build-config.yaml"
+
+jobs:
+  validate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify repository owner
+        id: verify_repo_owner
+        if: ${{ github.repository_owner != 'kyma-project' }}
+        run: |
+          echo "Using image-builder workflow outside of kyma-project organisation is not supported."
+          exit 1
+      - name: Checkout test-infra repository
+        uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+
+      - name: Install Node.js and needed dependencies
+        uses: ./.github/actions/expose-jwt-action/install
+      
+      - name: Get OIDC token
+        id: get_oidc
+        uses: ./.github/actions/expose-jwt-action
+        with:
+          audience: "image-builder"
+      
+      - name: Authenticate in GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+      
+      - name: Get ADO PAT from Secret Manager
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+          secrets: |-
+            ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
+
+      - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240621-63f4f2b1
+        id: build
+        with:
+          args: --name=test-infra/ginkgo --context=. --dockerfile=prow/images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true
