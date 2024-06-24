@@ -36,10 +36,6 @@ Apart from standard OIDC token validation, the tool validates the following clai
 
 ## How It Works
 
-- the OIDC discovery
-- the token and claims verification
-- hardcoded trusted issuer and workflow, link to issue
-
 The OIDC Token Verifier is designed to validate the provided OIDC token and its claim values and provide a status code based on the validation
 result.
 The tool is not expected to be used as a long-running service but rather as a command-line tool that is run on demand as part of a larger
