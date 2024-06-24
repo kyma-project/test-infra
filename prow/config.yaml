@@ -1255,21 +1255,6 @@ presets:
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
   - labels:
-      preset-api-gateway-int-test-client-creds: "true"
-    env:
-      - name: OIDC_ISSUER_URL
-        value: "https://kymagoattest.accounts400.ondemand.com"
-      - name: CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: kyma-api-gateway-int-test-client-id
-            key: token
-      - name: CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: kyma-api-gateway-int-test-client-secret
-            key: token
-  - labels:
       preset-signify-prod-secret: "true"
     volumes:
       - name: signify-prod-secret
