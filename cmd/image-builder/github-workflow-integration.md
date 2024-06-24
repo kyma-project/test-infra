@@ -144,11 +144,11 @@ the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.gi
 
 ## Block Diagram
 
-![image-builder-block-diagram](documentation_assets/image-builder-block-diagram.png)
+![image-builder-block-diagram](documentation_assets/image-builder-block-diagram.svg)
 
 ## Activity Diagram
 
-![image-builder-activity-diagram](documentation_assets/image-builder-activity-diagram.png)
+![image-builder-activity-diagram](documentation_assets/image-builder-activity-diagram.svg)
 
 ## Conclusion
 
