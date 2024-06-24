@@ -14,6 +14,8 @@
 
 [Image Builder GitHub Workflow Integration](/cmd/image-builder/github-workflow-integration.md) - The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to run the process of building OCI
 
+[Image Builder](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images.
+
 [Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
 [image-syncer](/cmd/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
