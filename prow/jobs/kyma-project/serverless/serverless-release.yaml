@@ -23,7 +23,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: true
               seccompProfile:
@@ -84,7 +84,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -137,7 +137,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -190,7 +190,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -243,7 +243,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -296,7 +296,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -349,7 +349,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -402,7 +402,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -455,7 +455,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:

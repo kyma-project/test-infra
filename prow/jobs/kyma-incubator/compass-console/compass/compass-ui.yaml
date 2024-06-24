@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -152,7 +152,7 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-2786bc8d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240624-848515d5"
             securityContext:
               privileged: false
               seccompProfile:
