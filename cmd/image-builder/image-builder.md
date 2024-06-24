@@ -44,8 +44,6 @@ cache:
 Environment variables are mainly used to provide runtime values and configuration set by the CI/CD system.
 They provide details about the context in which the tool is running.
 
-Here is the list of environment variables used by Image Builder:
-
 Image Builder uses several environment variables, which can be grouped by their use cases as follows:
 
 - **ADO_PAT**: Personal Access Token used to authenticate with the ADO API.
