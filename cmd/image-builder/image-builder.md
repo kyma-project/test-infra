@@ -59,7 +59,7 @@ Image Builder uses several environment variables, which can be grouped by their 
 - **GITHUB_EVENT_NAME**: Used to determine the job type when the CI system is GitHub Actions.
 - **GITHUB_EVENT_PATH**: Used to get the path to the event JSON file when the CI system is GitHub Actions.
 - **GITHUB_SHA**: Used to get the commit SHA when the CI system is GitHub Actions.
-- `GITHUB_REF**: Used to get the pull request number when the CI system is GitHub Actions.
+- **GITHUB_REF**: Used to get the pull request number when the CI system is GitHub Actions.
 
 > [!NOTE]
  > The actual usage of these environment variables may vary depending on the specific configuration and usage of Image Builder.
