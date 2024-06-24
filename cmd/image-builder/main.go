@@ -269,11 +269,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 
-	// Validate provided dockerfile for ADO usage
-	if err := validateDockerFile(o.context, o.dockerfile); err != nil {
-		return fmt.Errorf("invalid dockerfile provided: %w", err)
-	}
-
 	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API when it's not set via flag.
 	if o.azureAccessToken == "" && !o.dryRun {
 		adoPAT, present := os.LookupEnv("ADO_PAT")
@@ -385,28 +380,6 @@ func buildInADO(o options) error {
 	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
 		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
-	return nil
-}
-
-// validateDockerFile checks whether provided dockerfile
-// will run smoothly in ADO image-builder.
-// It return clear error message, including known issue urls.
-func validateDockerFile(context, dockerFile string) error {
-	// Load Dockerfile
-	dockerFilePath := fmt.Sprintf("%s/%s", context, dockerFile)
-	data, err := os.ReadFile(dockerFilePath)
-	if err != nil {
-		return fmt.Errorf("cannot load provided dockerfile: %w", err)
-	}
-
-	// Dockerfile using /workspace
-	// see: https://github.com/GoogleContainerTools/kaniko/issues/2192
-	// see: https://github.com/GoogleContainerTools/kaniko/issues/3176
-	re := regexp.MustCompile("(WORKDIR|COPY).* /workspace")
-	if re.Match(data) {
-		return fmt.Errorf("dockerfile cannot use /workspace as working directory, please switch to other one (e.g. /<module>-workspace). See: https://github.com/GoogleContainerTools/kaniko/issues/3176 and https://github.com/GoogleContainerTools/kaniko/issues/2192")
-	}
-
 	return nil
 }
 
