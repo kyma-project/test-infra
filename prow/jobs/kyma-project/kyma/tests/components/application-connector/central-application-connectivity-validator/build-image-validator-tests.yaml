@@ -1,5 +1,5 @@
 presubmits:
-  kyma-project/kyma:
+  kyma-project/application-connector-manager:
     - name: pull-application-connector-connectivity-validator-test-build
       annotations:
         description: "Building the images used in acceptance test"
@@ -9,7 +9,7 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pull-application-connector-connectivity-validator-test-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^tests/components/application-connector/'
+      run_if_changed: '^tests/'
       optional: true
       skip_report: false
       decorate: true
@@ -28,7 +28,7 @@ presubmits:
             args:
               - "--name=connectivity-validator-test"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=tests/components/application-connector"
+              - "--context=tests"
               - "--dockerfile=Dockerfile.connectivity-validator"
             resources:
               requests:
@@ -49,7 +49,7 @@ presubmits:
             secret:
               secretName: signify-dev-secret
 postsubmits:
-  kyma-project/kyma:
+  kyma-project/application-connector-manager:
     - name: post-application-connector-connectivity-validator-test-build
       annotations:
         description: "Building the images used in acceptance test"
@@ -60,7 +60,7 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^tests/components/application-connector/'
+      run_if_changed: '^tests/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -78,7 +78,7 @@ postsubmits:
             args:
               - "--name=connectivity-validator-test"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=tests/components/application-connector"
+              - "--context=tests"
               - "--dockerfile=Dockerfile.connectivity-validator"
             resources:
               requests:
