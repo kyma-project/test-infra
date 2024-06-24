@@ -61,8 +61,8 @@ Image Builder uses several environment variables, which can be grouped by their 
 - **GITHUB_SHA**: Used to get the commit SHA when the CI system is GitHub Actions.
 - `GITHUB_REF**: Used to get the pull request number when the CI system is GitHub Actions.
 
-Please note that the actual usage of these environment variables may vary depending on the specific configuration and usage of the Image
-Builder.
+> [!NOTE]
+ > The actual usage of these environment variables may vary depending on the specific configuration and usage of Image Builder.
 
 ### Command Line Flags
 
