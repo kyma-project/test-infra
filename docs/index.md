@@ -22,6 +22,8 @@
 
 [JobGuard ](/cmd/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests (PRs) and waits for some of them to finish.
 
+[OIDC Token Verifier](/cmd/oidc-token-verifier/README.md) - The OIDC Token Verifier is a command-line tool designed to validate the OIDC token and its claim values. It is primarily used in the
+
 [Clusters Garbage Collector](/cmd/tools/clusterscollector/README.md) - This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud project.
 
 [Disks Garbage Collector](/cmd/tools/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud project.
