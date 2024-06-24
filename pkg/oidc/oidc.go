@@ -196,6 +196,7 @@ func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string)
 	return token, nil
 }
 
+// Claims gets the claims from the token and unmarshal them into the provided claims struct.
 func (token *Token) Claims(claims interface{}) error {
 	return token.Token.Claims(claims)
 }

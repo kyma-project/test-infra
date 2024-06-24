@@ -155,4 +155,4 @@ the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.gi
 The Image Builder solution, with its seamless integration with GitHub workflows and Azure DevOps pipeline, offers developers a robust and
 secure method to incorporate the building of OCI images into their workflows. By leveraging a signed JWT format in which an OIDC token from
 GitHub's OIDC identity provider is passed, it ensures the secure and authorized passing of information about the workflow and the image to
-build. The entire build process adheres to SLC-29 compliance, providing a reliable infrastructure for building OCI images.
+build. The entire build process adheres to SLC-29 compliance, providing a reliable infrastructure for the building of OCI images.

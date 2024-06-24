@@ -2,12 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"reflect"
 	"testing"
 	"testing/fstest"
 
+	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -619,6 +619,52 @@ func Test_parseTags(t *testing.T) {
 	}
 }
 
+func Test_prepareADOTemplateParameters(t *testing.T) {
+	tests := []struct {
+		name    string
+		options options
+		want    pipelines.OCIImageBuilderTemplateParams
+		wantErr bool
+	}{
+		{
+			name: "Tag with parentheses",
+			options: options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+			},
+			want: pipelines.OCIImageBuilderTemplateParams{
+				"Context":               "",
+				"Dockerfile":            "",
+				"EncodedTags":           "true",
+				"ExportTags":            "false",
+				"JobType":               "postsubmit",
+				"Name":                  "",
+				"PullBaseSHA":           "",
+				"RepoName":              "",
+				"RepoOwner":             "",
+				"Tags":                  "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"UseKanikoConfigFromPR": "false",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := prepareADOTemplateParameters(tt.options)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_extractImagesFromADOLogs(t *testing.T) {
 	tc := []struct {
 		name           string
@@ -692,62 +738,6 @@ func Test_extractImagesFromADOLogs(t *testing.T) {
 
 			if !reflect.DeepEqual(actualImages, c.expectedImages) {
 				t.Errorf("Expected %v, but got %v", c.expectedImages, actualImages)
-			}
-		})
-	}
-}
-
-func Test_validateDockerFile(t *testing.T) {
-	tc := []struct {
-		name       string
-		dockerfile string
-		expectErr  bool
-	}{
-		{
-			name: "simple dockerfile, valid",
-			dockerfile: `FROM debian
-			RUN apt-get update
-			RUN apt-get -y install gcc
-			ADD hello.c /hello.c
-			RUN gcc -static -o /hello hello.c`,
-			expectErr: false,
-		},
-		{
-			name: "dockerfile with workspace workdir, invalid",
-			dockerfile: `FROM golang:1.22.1-bullseye as builder
-
-			WORKDIR /workspace
-			# Copy the Go Modules manifests
-			COPY go.mod go.mod
-			COPY go.sum go.sum
-			
-			FROM europe-docker.pkg.dev/kyma-project/prod/tpi/fluent-bit:2.2.1-8adfb683
-			
-			WORKDIR /
-			COPY --from=builder /workspace/manager .
-			
-			USER 65532:65532`,
-			expectErr: true,
-		},
-	}
-
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			// Arrange
-			tempDir := t.TempDir()
-			dockerFilePath := fmt.Sprintf("%s/Dockerfile", tempDir)
-			err := os.WriteFile(dockerFilePath, []byte(c.dockerfile), os.ModePerm)
-			if err != nil {
-				t.Errorf("failed to write dockerfile for test: %s", err)
-			}
-
-			// Act & Assert
-			err = validateDockerFile(tempDir, "Dockerfile")
-			if err != nil && !c.expectErr {
-				t.Errorf("unexpected error occured: %s", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("expected error, but not one occured")
 			}
 		})
 	}

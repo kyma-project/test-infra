@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20240614-e4ae242d1
-          initupload: gcr.io/k8s-prow/initupload:v20240614-e4ae242d1
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20240614-e4ae242d1
-          sidecar: gcr.io/k8s-prow/sidecar:v20240614-e4ae242d1
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20240619-cfb8754e0
+          initupload: gcr.io/k8s-prow/initupload:v20240619-cfb8754e0
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20240619-cfb8754e0
+          sidecar: gcr.io/k8s-prow/sidecar:v20240619-cfb8754e0
         resources:
           clonerefs:
             requests:
@@ -292,7 +292,6 @@ branch-protection:
               - "run-go-checks"
               - "run-go-tests / build"
               - "run-keb-chart-tests / finish-keb-chart-tests"
-              - "markdown-link-check"
               - "validate-labels"
           exclude:
             - "^gh-pages$"
@@ -302,7 +301,6 @@ branch-protection:
             contexts:
               - "run-unit-tests / build"
               - "run-e2e-tests / finish-e2e-tests"
-              - "markdown-link-check"
               - "validate-labels"
               - "run-go-linter"
           exclude:
@@ -1252,25 +1250,8 @@ presets:
         value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
       - name: KCP_KUBECONFIG_API_URL
         value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
-      - name: KCP_MOTHERSHIP_API_URL
-        value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
-  - labels:
-      preset-api-gateway-int-test-client-creds: "true"
-    env:
-      - name: OIDC_ISSUER_URL
-        value: "https://kymagoattest.accounts400.ondemand.com"
-      - name: CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: kyma-api-gateway-int-test-client-id
-            key: token
-      - name: CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: kyma-api-gateway-int-test-client-secret
-            key: token
   - labels:
       preset-signify-prod-secret: "true"
     volumes:

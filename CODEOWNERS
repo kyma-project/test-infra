@@ -31,8 +31,6 @@
 /prow/jobs/kyma-project/control-plane/components/provisioner @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane/components/schema-migrator @kyma-project/gopher @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/control-plane-reconciler-integration.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane/control-plane-validation.yaml @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/directory-size-exporter/ @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
@@ -42,10 +40,7 @@
 /prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/compass-console @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-incubator/hydroform/hydroform.yaml @janmedrek @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/ord-service @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-incubator/reconciler/reconciler-k3d.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-incubator/reconciler/reconciler.yaml @kyma-project/jellyfish @kyma-project/goat  @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/infrastructure-manager/ @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/kyma/common @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow

@@ -55,6 +55,18 @@ type TimelineTest struct {
 	Result string
 }
 
+// Retry strategy contains configuration for ADO request retry policy
+//
+// Fields:
+// Attempts - Attempts to try before fail request
+// Delay - Waiting time between next try
+type RetryStrategy struct {
+	// Attempts to make before failing request
+	Attempts uint `yaml:"attempts" json:"attempts"`
+	// Delay between two request tries
+	Delay time.Duration `yaml:"delay" json:"delay"`
+}
+
 // Config is a struct that holds the configuration for Azure DevOps (ADO) pipelines.
 // It includes the ADO organization URL, project name, pipeline ID, test pipeline ID, and pipeline version.
 // These fields are used to trigger ADO pipelines and are required for the correct operation of the pipelines.
@@ -65,6 +77,7 @@ type TimelineTest struct {
 // ADOPipelineID: The ID of the ADO oci-image-builder pipeline.
 // ADOTestPipelineID: The ID of the ADO test pipeline.
 // ADOPipelineVersion: The version of the ADO pipeline.
+// ADORequestStrategy: Strategy for retrying failed requests to ADO API
 type Config struct {
 	// ADO organization URL to call for triggering ADO pipeline
 	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
@@ -74,6 +87,8 @@ type Config struct {
 	ADOPipelineID int `yaml:"ado-pipeline-id" json:"ado-pipeline-id"`
 	// ADO pipeline version to call for triggering ADO pipeline
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
+	// ADO Retry strategy for requests
+	ADORetryStrategy RetryStrategy `yaml:"ado-retry-strategy" json:"ado-retry-strategy"`
 }
 
 func (c Config) GetADOConfig() Config {
@@ -135,8 +150,8 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 				})
 				return pipelineRun, err
 			},
-			retry.Attempts(3),
-			retry.Delay(5*time.Second),
+			retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+			retry.Delay(adoConfig.ADORetryStrategy.Delay),
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
@@ -168,7 +183,7 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
 	// Fetch the build logs metadata for the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 	// We get the pipeline run status over network, so we need to handle network errors.
-	buildLogs, err := retry.DoWithData[*[]build.BuildLog](
+	buildLogs, err := retry.DoWithData(
 		func() (*[]build.BuildLog, error) {
 			buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 				Project: &adoConfig.ADOProjectName,
@@ -176,8 +191,8 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 			})
 			return buildLogs, err
 		},
-		retry.Attempts(3),
-		retry.Delay(5*time.Second),
+		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+		retry.Delay(adoConfig.ADORetryStrategy.Delay),
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
@@ -198,8 +213,8 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 		func() (*http.Response, error) {
 			return httpClient.Do(req)
 		},
-		retry.Attempts(3),
-		retry.Delay(5*time.Second),
+		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+		retry.Delay(adoConfig.ADORetryStrategy.Delay),
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
