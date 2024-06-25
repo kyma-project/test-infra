@@ -27,7 +27,6 @@ import (
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
-	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
@@ -788,21 +787,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	var (
-		zapLogger *zap.Logger
-		err       error
-	)
-
-	if o.debug {
-		zapLogger, err = zap.NewDevelopment()
-	} else {
-		zapLogger, err = zap.NewProduction()
-	}
-	if err != nil {
-		log.Fatalf("Failed to initialize logger: %s", err)
-	}
-	logger := zapLogger.Sugar()
-
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
 		ciSystem, err := DetermineUsedCISystem()
@@ -843,36 +827,7 @@ func main() {
 	}
 
 	if o.parseTagsOnly {
-		dockerfilePath, err := getDockerfileDirPath(o)
-		if err != nil {
-			logger.Errorw("Failed to get dockerfile path", "error", err)
-			os.Exit(1)
-		}
-		// Load environment variables from the envFile.
-		var envs map[string]string
-		if len(o.envFile) > 0 {
-			envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
-			if err != nil {
-				logger.Errorw("Failed to load env file", "error", err)
-				os.Exit(1)
-			}
-		}
-
-		parsedTags, err := parseTags(o)
-		if err != nil {
-			logger.Errorw("Failed to parse tags", "error", err)
-			os.Exit(1)
-		}
-		// Append environment variables to tags
-		appendToTags(&parsedTags, envs)
-		// Print parsed tags to stdout as json
-		jsonTags, err := json.Marshal(parsedTags)
-		if err != nil {
-			logger.Errorw("Failed to marshal tags to json", "error", err)
-			os.Exit(1)
-		}
-		fmt.Printf("%s\n", jsonTags)
-		os.Exit(0)
+		generateTags(o)
 	}
 	if o.buildInADO {
 		err = buildInADO(o)
@@ -889,6 +844,49 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func generateTags(o options) {
+	// Get the absolute path to the dockerfile directory.
+	dockerfilePath, err := getDockerfileDirPath(o)
+	if err != nil {
+		fmt.Printf("Failed to get dockerfile path: %s", err)
+		os.Exit(1)
+	}
+	// Load environment variables from the envFile.
+	envs := getEnvs(o, dockerfilePath)
+	// Parse tags from the provided options.
+	parsedTags, err := parseTags(o)
+	if err != nil {
+		fmt.Printf("Failed to parse tags : %s", err)
+		os.Exit(1)
+	}
+	// Append environment variables to tags.
+	appendToTags(&parsedTags, envs)
+	// Print parsed tags to stdout as json.
+	printParsedTags(err, parsedTags)
+}
+
+func printParsedTags(err error, parsedTags []tags.Tag) {
+	jsonTags, err := json.Marshal(parsedTags)
+	if err != nil {
+		fmt.Printf("Failed to marshal tags to json: %s", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s\n", jsonTags)
+	os.Exit(0)
+}
+
+func getEnvs(o options, dockerfilePath string) map[string]string {
+	if len(o.envFile) > 0 {
+		envs, err := loadEnv(os.DirFS(dockerfilePath), o.envFile)
+		if err != nil {
+			fmt.Printf("Failed to load env file: %s", err)
+			os.Exit(1)
+		}
+		return envs
+	}
+	return map[string]string{}
 }
 
 func parseTags(o options) ([]tags.Tag, error) {
