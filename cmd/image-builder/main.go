@@ -345,7 +345,7 @@ func buildInADO(o options) error {
 		if err != nil {
 			fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 		}
-		logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.azureAccessToken)
+		logs, err = adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.azureAccessToken)
 		if err != nil {
 			fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 		} else {
@@ -360,9 +360,11 @@ func buildInADO(o options) error {
 	//  buildInADO should return required data and caller should handle it.
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
+		fmt.Println("Setting GitHub outputs.")
 		var images []string
 		if !o.dryRun {
 			images = extractImagesFromADOLogs(logs)
+			fmt.Printf("Extracted built images from ADO logs: %v\n", images)
 		} else {
 			fmt.Println("Running in dry-run mode. Skipping extracting images and results from ADO.")
 			images = []string{"registry/repo/image1:tag1", "registry/repo/image2:tag2"}
@@ -372,8 +374,16 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot marshal list of images: %w", err)
 		}
 
-		actions.SetOutput("images", string(data))
-		actions.SetOutput("adoResult", string(*pipelineRunResult))
+		err = actions.SetOutput("images", string(data))
+		if err != nil {
+			return fmt.Errorf("cannot set images GitHub output: %w", err)
+		}
+		fmt.Println("images GitHub output set")
+		err = actions.SetOutput("adoResult", string(*pipelineRunResult))
+		if err != nil {
+			return fmt.Errorf("cannot set adoResult GitHub output: %w", err)
+		}
+		fmt.Println("adoResult GitHub output set")
 	}
 
 	// Handle the ADO pipeline run failure.
