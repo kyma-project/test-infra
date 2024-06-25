@@ -23,7 +23,7 @@
                 - 'if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi'
             jobConfig_pjtester:
               command: "/ko-app/pjtester"
-              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240625-689eb55a
+              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240625-2568d474
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
@@ -66,7 +66,7 @@
                           {{- end}}
                     - jobConfig:
                         name: "pull-{{$repo.name}}-vpathguard"
-                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240625-b549fbfa
+                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240625-2568d474
                         annotations:
                           description: "Run pjtester vpathguard for {{$repo.name}}"
                           owner: "neighbors"
