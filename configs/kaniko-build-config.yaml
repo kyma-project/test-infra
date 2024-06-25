@@ -12,6 +12,7 @@ ado-config:
   ado-retry-strategy:
     attempts: 3
     delay: 5s
+  ado-refresh-interval: 30s
 cache:
   enabled: true
   cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache

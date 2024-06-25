@@ -52,6 +52,7 @@ var _ = Describe("Pipelines", func() {
 				Attempts: 3,
 				Delay:    5 * time.Second,
 			},
+			ADORefreshInterval: 3 * time.Second,
 		}
 	})
 
@@ -75,7 +76,7 @@ var _ = Describe("Pipelines", func() {
 		It("should return the pipeline run result succeeded", func() {
 			mockADOClient.On("GetRun", ctx, runArgs).Return(mockRunSucceeded, nil)
 
-			result, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42), 3*time.Second)
+			result, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42))
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(&adoPipelines.RunResultValues.Succeeded))
@@ -88,7 +89,7 @@ var _ = Describe("Pipelines", func() {
 			mockADOClient.On("GetRun", ctx, runArgs).Return(mockRunInProgress, nil).Once()
 			mockADOClient.On("GetRun", ctx, runArgs).Return(mockRunSucceeded, nil).Once()
 
-			result, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42), 3*time.Second)
+			result, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42))
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(&adoPipelines.RunResultValues.Succeeded))
@@ -100,7 +101,7 @@ var _ = Describe("Pipelines", func() {
 		It("should handle ADO client error", func() {
 			mockADOClient.On("GetRun", ctx, runArgs).Return(nil, fmt.Errorf("ADO client error"))
 
-			_, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42), 3*time.Second)
+			_, err := pipelines.GetRunResult(ctx, mockADOClient, adoConfig, ptr.To(42))
 
 			Expect(err).To(HaveOccurred())
 			mockADOClient.AssertCalled(t, "GetRun", ctx, runArgs)
