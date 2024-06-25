@@ -89,6 +89,8 @@ type Config struct {
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 	// ADO Retry strategy for requests
 	ADORetryStrategy RetryStrategy `yaml:"ado-retry-strategy" json:"ado-retry-strategy"`
+	// ADO Refresh Interval holds information about how often client should ask for status of ADO Pipeline
+	ADORefreshInterval time.Duration `yaml:"ado-refresh-interval" json:"ado-refresh-interval"`
 }
 
 func (c Config) GetADOConfig() Config {

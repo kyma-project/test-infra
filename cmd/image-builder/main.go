@@ -18,7 +18,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
@@ -332,7 +331,7 @@ func buildInADO(o options) error {
 		// Fetch the ADO pipeline run result.
 		// GetRunResult function waits for the pipeline runs to finish and returns the result.
 		// TODO(dekiel) make the timeout configurable instead of hardcoding it.
-		pipelineRunResult, err = adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
+		pipelineRunResult, err = adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.AdoConfig.ADORefreshInterval)
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 		}
