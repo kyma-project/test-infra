@@ -78,6 +78,7 @@ type RetryStrategy struct {
 // ADOTestPipelineID: The ID of the ADO test pipeline.
 // ADOPipelineVersion: The version of the ADO pipeline.
 // ADORequestStrategy: Strategy for retrying failed requests to ADO API
+// ADORefreshInterval: Interval between two requests for ADO Pipelien status
 type Config struct {
 	// ADO organization URL to call for triggering ADO pipeline
 	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
@@ -136,11 +137,10 @@ func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 // the function waits for the specified sleep duration before checking again. If an error occurs while getting
 // the pipeline run, the function returns the error. If the pipeline run is completed, the function returns
 // the result of the pipeline run.
-// TODO: implement sleep parameter to be passed as a functional option
-func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int, sleep time.Duration) (*pipelines.RunResult, error) {
+func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int) (*pipelines.RunResult, error) {
 	for {
 		// Sleep for the specified duration before checking the pipeline run state.
-		time.Sleep(sleep)
+		time.Sleep(adoConfig.ADORefreshInterval)
 		// Get the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 		// We get the pipeline run status over network, so we need to handle network errors.
 		pipelineRun, err := retry.DoWithData[*pipelines.Run](
@@ -164,7 +164,7 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 		}
 		// If the pipeline run is still in progress, print a message and continue the loop.
 		// TODO: use structured logging with info severity
-		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", sleep)
+		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", adoConfig.ADORefreshInterval)
 	}
 }
 

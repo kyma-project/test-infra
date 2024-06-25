@@ -331,7 +331,7 @@ func buildInADO(o options) error {
 		// Fetch the ADO pipeline run result.
 		// GetRunResult function waits for the pipeline runs to finish and returns the result.
 		// TODO(dekiel) make the timeout configurable instead of hardcoding it.
-		pipelineRunResult, err = adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.AdoConfig.ADORefreshInterval)
+		pipelineRunResult, err = adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id)
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 		}
