@@ -864,17 +864,18 @@ func generateTags(o options) {
 	// Append environment variables to tags.
 	appendToTags(&parsedTags, envs)
 	// Print parsed tags to stdout as json.
-	printParsedTags(err, parsedTags)
+	jsonTags := tagsAsJSON(parsedTags)
+	fmt.Printf("%s\n", jsonTags)
+	os.Exit(0)
 }
 
-func printParsedTags(err error, parsedTags []tags.Tag) {
+func tagsAsJSON(parsedTags []tags.Tag) string {
 	jsonTags, err := json.Marshal(parsedTags)
 	if err != nil {
 		fmt.Printf("Failed to marshal tags to json: %s", err)
 		os.Exit(1)
 	}
-	fmt.Printf("%s\n", jsonTags)
-	os.Exit(0)
+	return string(jsonTags)
 }
 
 func getEnvs(o options, dockerfilePath string) map[string]string {
