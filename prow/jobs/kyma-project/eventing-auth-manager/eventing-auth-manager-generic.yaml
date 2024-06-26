@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240625-d2c10443"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240626-2f46eb74"
             securityContext:
               privileged: false
               seccompProfile:
@@ -73,7 +73,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240625-d2c10443"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240626-2f46eb74"
             securityContext:
               privileged: false
               seccompProfile:
@@ -128,7 +128,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$ # Watches for new Tag
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240625-d2c10443"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240626-2f46eb74"
             securityContext:
               privileged: false
               seccompProfile:
