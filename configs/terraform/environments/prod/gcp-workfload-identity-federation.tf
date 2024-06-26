@@ -52,9 +52,9 @@ resource "github_actions_variable" "gcp_terraform_planner_service_account_email"
   value         = google_service_account.terraform_planner.email
 }
 
-resource "github_actions_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
+resource "github_actions_organization_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
   provider      = github.kyma_project
-  repository    = "test-infra"
+  visibility    = "all"
   variable_name = "GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER"
   value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
 }
