@@ -6,9 +6,9 @@
 # TODO(dekiel): Another GitHub variables related to workload identity federation are defined in gcp-workload-identity-federation.tf file.
 
 # GCP project id that contains secret manager with secrets
-resource "github_actions_variable" "gcp_kyma_project_project_id" {
+resource "github_actions_organization_variable" "gcp_kyma_project_project_id" {
   provider      = github.kyma_project
-  repository    = "test-infra"
+  visibility    = "all"
   variable_name = "GCP_KYMA_PROJECT_PROJECT_ID"
   value         = var.gcp_project_id
 }
