@@ -69,18 +69,6 @@ updates:
       prefix: "ginkgo"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/cmd/tools/githubrelease"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "githubrelease"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/clonerefs"
     labels:
       - "docker"
