@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 )
@@ -17,6 +18,8 @@ func main() {
 	pipelineName := os.Getenv("PIPELINE_NAME")
 	pipelineIDStr := os.Getenv("PIPELINE_ID")
 	buildIDStr := os.Getenv("BUILD_ID")
+	retryDelayStr := os.Getenv("RETRY_DELAY")
+	retryAttemptsStr := os.Getenv("RETRY_ATTEMPTS")
 
 	// Converting variables from string to integer
 	pipelineID, err := strconv.Atoi(pipelineIDStr)
@@ -26,6 +29,26 @@ func main() {
 	buildID, err := strconv.Atoi(buildIDStr)
 	if err != nil {
 		log.Fatalf("Error parsing BUILD_ID: %v", err)
+	}
+	retryAttempts := 3
+	if retryAttemptsStr != "" {
+		var err error
+		retryAttempts, err = strconv.Atoi(retryAttemptsStr)
+		if err != nil {
+			log.Fatalf("Error parsing RETRY_ATTEMPTS: %v", err)
+		}
+	}
+	retryDelay := 30 * time.Second
+	if retryDelayStr != "" {
+		var err error
+		retryDelay, err = time.ParseDuration(retryDelayStr)
+		if err != nil {
+			log.Fatalf("Error parsing RETRY_DELAY: %v", err)
+		}
+	}
+	retryStrategy := pipelines.RetryStrategy{
+		Attempts: uint(retryAttempts),
+		Delay:    retryDelay,
 	}
 
 	// Setting up context for API calls
@@ -47,7 +70,7 @@ func main() {
 
 	// Running each build test if it exists in YAML file
 	for _, test := range buildTests {
-		err := pipelines.RunBuildTests(ctx, buildClient, projectName, pipelineName, pipelineID, &buildID, test)
+		err := pipelines.RunBuildTests(ctx, buildClient, retryStrategy, projectName, pipelineName, pipelineID, &buildID, test)
 		if err != nil {
 			log.Printf("Error running build test: %v\n", err)
 		}
@@ -55,7 +78,7 @@ func main() {
 
 	// Running each timeline test if it exists in YAML file
 	for _, test := range timelineTests {
-		err := pipelines.RunTimelineTests(ctx, buildClient, projectName, &buildID, test)
+		err := pipelines.RunTimelineTests(ctx, buildClient, retryStrategy, projectName, &buildID, test)
 		if err != nil {
 			log.Printf("Error running timeline test: %v\n", err)
 		}

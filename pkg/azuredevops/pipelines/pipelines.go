@@ -78,6 +78,7 @@ type RetryStrategy struct {
 // ADOTestPipelineID: The ID of the ADO test pipeline.
 // ADOPipelineVersion: The version of the ADO pipeline.
 // ADORequestStrategy: Strategy for retrying failed requests to ADO API
+// ADORefreshInterval: Interval between two requests for ADO Pipelien status
 type Config struct {
 	// ADO organization URL to call for triggering ADO pipeline
 	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
@@ -89,6 +90,8 @@ type Config struct {
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 	// ADO Retry strategy for requests
 	ADORetryStrategy RetryStrategy `yaml:"ado-retry-strategy" json:"ado-retry-strategy"`
+	// ADO Refresh Interval holds information about how often client should ask for status of ADO Pipeline
+	ADORefreshInterval time.Duration `yaml:"ado-refresh-interval" json:"ado-refresh-interval"`
 }
 
 func (c Config) GetADOConfig() Config {
@@ -134,11 +137,10 @@ func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 // the function waits for the specified sleep duration before checking again. If an error occurs while getting
 // the pipeline run, the function returns the error. If the pipeline run is completed, the function returns
 // the result of the pipeline run.
-// TODO: implement sleep parameter to be passed as a functional option
-func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int, sleep time.Duration) (*pipelines.RunResult, error) {
+func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int) (*pipelines.RunResult, error) {
 	for {
 		// Sleep for the specified duration before checking the pipeline run state.
-		time.Sleep(sleep)
+		time.Sleep(adoConfig.ADORefreshInterval)
 		// Get the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 		// We get the pipeline run status over network, so we need to handle network errors.
 		pipelineRun, err := retry.DoWithData[*pipelines.Run](
@@ -162,7 +164,7 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 		}
 		// If the pipeline run is still in progress, print a message and continue the loop.
 		// TODO: use structured logging with info severity
-		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", sleep)
+		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", adoConfig.ADORefreshInterval)
 	}
 }
 
@@ -235,11 +237,12 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 // It first fetches the build timeline for a given build ID and then checks for a record in the timeline that matches the test criteria.
 //
 // Parameters:
-// ctx          - The context to control the execution and cancellation of the test.
-// buildClient  - The client interface to interact with the build system.
-// pipelineName - The name of the pipeline within the project.
-// buildID      - A pointer to an integer storing the build identifier.
-// test         - The TimelineTest struct containing the name, expected result, and state of the test stage to be checked.
+// ctx           - The context to control the execution and cancellation of the test.
+// buildClient   - The client interface to interact with the build system.
+// retryStrategy - The configuration for request retry mechanism.
+// pipelineName  - The name of the pipeline within the project.
+// buildID       - A pointer to an integer storing the build identifier.
+// test          - The TimelineTest struct containing the name, expected result, and state of the test stage to be checked.
 //
 // Returns a boolean and an error. The boolean is true if a record matching the test's criteria (name, result, and state)
 // is found in the build timeline. If no matching record is found or if there is an error in retrieving the build timeline,
@@ -247,13 +250,18 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 //
 // This function is particularly useful for verifying specific stages or conditions in a build process, especially in continuous
 // integration and deployment scenarios where automated verification of build stages is required.
-func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) (bool, error) {
+func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, retryStrategy RetryStrategy, projectName string, buildID *int, test TimelineTest) (bool, error) {
 	buildArgs := build.GetBuildTimelineArgs{
 		Project: &projectName,
 		BuildId: buildID,
 	}
 
-	buildTimeline, err := buildClient.GetBuildTimeline(ctx, buildArgs)
+	buildTimeline, err := retry.DoWithData[*build.Timeline](func() (*build.Timeline, error) {
+		return buildClient.GetBuildTimeline(ctx, buildArgs)
+	},
+		retry.Attempts(retryStrategy.Attempts),
+		retry.Delay(retryStrategy.Delay),
+	)
 	if err != nil {
 		return false, fmt.Errorf("error getting build timeline: %w", err)
 	}
@@ -267,6 +275,7 @@ func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectNa
 // Parameters:
 // ctx           - The context to control the execution and cancellation of the test.
 // buildClient   - The client interface to interact with the build system.
+// retryStrategy - The configuration for request retry mechanism.
 // projectName   - The name of the project in which the test is being run.
 // pipelineName  - The name of the pipeline within the project.
 // logMessage    - The specific command or message to search for in the build logs.
@@ -276,12 +285,17 @@ func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectNa
 //
 // Returns a boolean and an error. The boolean is true if the condition (presence or absence) of the specified message is met in the build logs.
 // In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed message for troubleshooting.
-func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, projectName, pipelineName, logMessage string, expectAbsent bool, pipelineID int, buildID *int) (bool, error) {
+func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, retryStrategy RetryStrategy, projectName, pipelineName, logMessage string, expectAbsent bool, pipelineID int, buildID *int) (bool, error) {
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
 		Definitions: &[]int{pipelineID},
 	}
-	buildsResponse, err := buildClient.GetBuilds(ctx, buildArgs)
+	buildsResponse, err := retry.DoWithData[*build.GetBuildsResponseValue](func() (*build.GetBuildsResponseValue, error) {
+		return buildClient.GetBuilds(ctx, buildArgs)
+	},
+		retry.Attempts(retryStrategy.Attempts),
+		retry.Delay(retryStrategy.Delay),
+	)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
 	}
@@ -290,19 +304,23 @@ func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, proje
 		return false, fmt.Errorf("no builds found for pipeline %s", pipelineName)
 	}
 
-	logs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-		Project: &projectName,
-		BuildId: buildID,
+	logs, err := retry.DoWithData[*[]build.BuildLog](func() (*[]build.BuildLog, error) {
+		return buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
+			Project: &projectName,
+			BuildId: buildID,
+		})
 	})
 	if err != nil {
 		return false, fmt.Errorf("error getting build logs: %w", err)
 	}
 
 	for _, buildLog := range *logs {
-		logContent, err := buildClient.GetBuildLogLines(ctx, build.GetBuildLogLinesArgs{
-			Project: &projectName,
-			BuildId: buildID,
-			LogId:   buildLog.Id,
+		logContent, err := retry.DoWithData[*[]string](func() (*[]string, error) {
+			return buildClient.GetBuildLogLines(ctx, build.GetBuildLogLinesArgs{
+				Project: &projectName,
+				BuildId: buildID,
+				LogId:   buildLog.Id,
+			})
 		})
 		if err != nil {
 			return false, fmt.Errorf("error getting build log lines: %w", err)
@@ -359,6 +377,7 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 // Parameters:
 // ctx           - The context to control the execution and cancellation of the test.
 // buildClient   - The client interface to interact with the build system.
+// retryStrategy - The configuration for request retry mechanism.
 // projectName   - The name of the project in which the test is being run.
 // pipelineName  - The name of the pipeline within the project.
 // pipelineID    - The identifier of the pipeline.
@@ -367,8 +386,8 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 //
 // Returns an error if the test fails due to an error in execution or if the test conditions (presence or absence of the specified log message) are not met.
 // If the test passes, which includes successful execution and meeting of the test conditions, the function returns nil.
-func RunBuildTests(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, buildID *int, test BuildTest) error {
-	pass, err := CheckBuildLogForMessage(ctx, buildClient, projectName, pipelineName, test.LogMessage, test.ExpectAbsent, pipelineID, buildID)
+func RunBuildTests(ctx context.Context, buildClient BuildClient, retryStrategy RetryStrategy, projectName, pipelineName string, pipelineID int, buildID *int, test BuildTest) error {
+	pass, err := CheckBuildLogForMessage(ctx, buildClient, retryStrategy, projectName, pipelineName, test.LogMessage, test.ExpectAbsent, pipelineID, buildID)
 	if err != nil {
 		return fmt.Errorf("test failed for %s: %v", test.Description, err)
 	}
@@ -388,6 +407,7 @@ func RunBuildTests(ctx context.Context, buildClient BuildClient, projectName, pi
 // Parameters:
 // ctx           - The context to control the execution and cancellation of the test.
 // buildClient   - The client interface to interact with the build system.
+// retryStrategy - The configuration for request retry mechanism.
 // projectName   - The name of the project in which the test is being run.
 // buildID       - A pointer to an integer storing the build identifier.
 // test          - The timeline test to be executed, which includes test conditions and expectations.
@@ -395,11 +415,11 @@ func RunBuildTests(ctx context.Context, buildClient BuildClient, projectName, pi
 // Returns an error if the test fails due to an error in execution or if the test conditions are not met.
 // If the test passes, including successful execution and meeting of the test conditions, the function
 // returns nil. The function no longer logs fatal errors but returns them to the caller for handling.
-func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) error {
+func RunTimelineTests(ctx context.Context, buildClient BuildClient, retryStrategy RetryStrategy, projectName string, buildID *int, test TimelineTest) error {
 	var pass bool
 	var err error
 
-	pass, err = GetBuildStageStatus(ctx, buildClient, projectName, buildID, test)
+	pass, err = GetBuildStageStatus(ctx, buildClient, retryStrategy, projectName, buildID, test)
 	if err != nil {
 		return fmt.Errorf("test failed for %s: %v", test.Name, err)
 	}

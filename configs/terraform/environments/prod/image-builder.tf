@@ -81,9 +81,9 @@ resource "google_secret_manager_secret_iam_member" "image_builder_reusable_workf
 # Define GitHub Actions secrets for the image-builder reusable workflow.
 # These secret contains the values of the GCP secret manager secret name with ado pat
 # It's used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
-resource "github_actions_variable" "image_builder_ado_pat_gcp_secret_name" {
+resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secret_name" {
   provider      = github.kyma_project
-  repository    = "test-infra"
+  visibility    = "all"
   variable_name = "IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME"
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
