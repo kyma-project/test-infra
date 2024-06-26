@@ -315,7 +315,6 @@ branch-protection:
           required_status_checks:
             contexts:
               - "E2E (kyma-metrics)"
-              - "E2E (module-status-propagation)"
               - "E2E (module-without-default-cr)"
               - "E2E (upgrade-under-deletion)"
               - "E2E (self-signed-certificate-rotation)"
