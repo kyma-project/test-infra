@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240626-103526ff
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240626-ff82644e
             securityContext:
               privileged: true
               seccompProfile:
@@ -62,7 +62,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240626-103526ff
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240626-ff82644e
             securityContext:
               privileged: true
               seccompProfile:
