@@ -233,8 +233,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	if len(options.tags) > 0 {
 		templateParameters.SetImageTags(options.tags.String())
-		// TODO: Remove setting EncodedTags when we switch fully to base64 encoding Tags parameter.
-		templateParameters.SetEncodedTags(true)
 	}
 
 	if options.ciSystem == GithubActions {
