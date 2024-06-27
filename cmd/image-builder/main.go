@@ -827,7 +827,12 @@ func main() {
 	}
 
 	if o.parseTagsOnly {
-		generateTags(o)
+		err = generateTags(o)
+		if err != nil {
+			fmt.Printf("Parse tags failed with error: %s\n", err)
+			os.Exit(1)
+		}
+		os.Exit(0)
 	}
 	if o.buildInADO {
 		err = buildInADO(o)
@@ -846,27 +851,28 @@ func main() {
 	fmt.Println("Job's done.")
 }
 
-func generateTags(o options) {
+func generateTags(o options) error {
 	// Get the absolute path to the dockerfile directory.
 	dockerfilePath, err := getDockerfileDirPath(o)
 	if err != nil {
-		fmt.Printf("Failed to get dockerfile path: %s", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to get dockerfile path: %s", err)
 	}
 	// Load environment variables from the envFile.
-	envs := getEnvs(o, dockerfilePath)
+	envs, err := getEnvs(o, dockerfilePath)
+	if err != nil {
+		return err
+	}
 	// Parse tags from the provided options.
 	parsedTags, err := parseTags(o)
 	if err != nil {
-		fmt.Printf("Failed to parse tags : %s", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse tags : %s", err)
 	}
 	// Append environment variables to tags.
 	appendToTags(&parsedTags, envs)
 	// Print parsed tags to stdout as json.
 	jsonTags := tagsAsJSON(parsedTags)
 	fmt.Printf("%s\n", jsonTags)
-	os.Exit(0)
+	return nil
 }
 
 func tagsAsJSON(parsedTags []tags.Tag) string {
@@ -878,16 +884,15 @@ func tagsAsJSON(parsedTags []tags.Tag) string {
 	return string(jsonTags)
 }
 
-func getEnvs(o options, dockerfilePath string) map[string]string {
+func getEnvs(o options, dockerfilePath string) (map[string]string, error) {
 	if len(o.envFile) > 0 {
 		envs, err := loadEnv(os.DirFS(dockerfilePath), o.envFile)
 		if err != nil {
-			fmt.Printf("Failed to load env file: %s", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to load env file: %s", err)
 		}
-		return envs
+		return envs, nil
 	}
-	return map[string]string{}
+	return map[string]string{}, nil
 }
 
 func parseTags(o options) ([]tags.Tag, error) {

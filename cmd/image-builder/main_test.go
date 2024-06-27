@@ -823,7 +823,7 @@ func Test_getEnvs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getEnvs(tt.args.o, tt.args.dockerfilePath); !reflect.DeepEqual(got, tt.want) {
+			if got, _ := getEnvs(tt.args.o, tt.args.dockerfilePath); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getEnvs() = %v, want %v", got, tt.want)
 			}
 		})
