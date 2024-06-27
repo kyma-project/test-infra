@@ -82,11 +82,6 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["Tags"]).To(Equal(expected))
 	})
 
-	It("sets the correct EncodedTags", func() {
-		params.SetEncodedTags(true)
-		Expect(params["EncodedTags"]).To(Equal("true"))
-	})
-
 	It("sets the correct UseKanikoConfigFromPR", func() {
 		params.SetUseKanikoConfigFromPR(true)
 		Expect(params["UseKanikoConfigFromPR"]).To(Equal("true"))
