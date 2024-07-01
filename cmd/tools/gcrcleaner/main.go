@@ -43,7 +43,12 @@ func main() {
 
 	ctx := context.Background()
 
-	auth := gcrgoogle.NewJSONKeyAuthenticator(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	//auth := gcrgoogle.NewJSONKeyAuthenticator(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	// TODO replace?
+	auth, err := gcrgoogle.NewEnvAuthenticator(context.Background())
+	if err != nil {
+		log.Fatalf("failed to setup authenticator: %s", err)
+	}
 
 	regexRepo := regexp.MustCompile(*gcrNameIgnoreRegex)
 	repoFilter := gcrcleaner.NewRepoFilter(regexRepo)
