@@ -7,27 +7,27 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240702-3cbbd3cc
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240610-c4997bfe
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240702-3cbbd3cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240702-3cbbd3cc
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240702-d5ca846a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240702-d5ca846a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240702-3cbbd3cc
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240702-3cbbd3cc
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240610-a221097b
