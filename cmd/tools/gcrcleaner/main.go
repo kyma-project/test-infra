@@ -7,10 +7,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/tools/common"
-	"github.com/kyma-project/test-infra/pkg/tools/gcrcleaner"
 	"os"
 	"regexp"
+
+	"github.com/kyma-project/test-infra/pkg/tools/common"
+	"github.com/kyma-project/test-infra/pkg/tools/gcrcleaner"
 
 	gcrgoogle "github.com/google/go-containerregistry/pkg/v1/google"
 	log "github.com/sirupsen/logrus"
@@ -44,7 +45,7 @@ func main() {
 
 	//auth := gcrgoogle.NewJSONKeyAuthenticator(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 	// TODO replace?
-	auth, err := gcrgoogle.NewEnvAuthenticator()
+	auth, err := gcrgoogle.NewEnvAuthenticator(context.Background())
 	if err != nil {
 		log.Fatalf("failed to setup authenticator: %s", err)
 	}
