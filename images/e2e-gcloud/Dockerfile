@@ -11,7 +11,7 @@ RUN set -eux; \
     jq \
     yq \
     xfsprogs \
-    xz \
+    xz>5.6.2-r0 \
     git \
     device-mapper \
     python3 \

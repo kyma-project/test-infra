@@ -18,6 +18,7 @@ RUN set -eux; \
     dumb-init \
     libgit2-dev \
     pkgconf \
+    xz>5.6.2-r0 \
     && \
     arch="$(apk --print-arch)"; \
     case "$arch" in \

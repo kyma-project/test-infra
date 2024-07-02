@@ -16,7 +16,7 @@ RUN set -eux; \
     e2fsprogs \
     e2fsprogs-extra \
     xfsprogs \
-    xz \
+    xz>5.6.2-r0 \
     git \
     fuse-overlayfs \
     device-mapper \
