@@ -34,7 +34,7 @@ jobs:
       dockerfile: prow/images/ginkgo/Dockerfile
       context: .
       env-file: "envs"
-      tags: ${{ needs.compute-tag.outputs.tag }}
+      tags: ${{ needs.compute-tag.outputs.tag }} # TODO: add more tags using the format name=value and templates
   test-image:
     runs-on: ubuntu-latest
     needs: build-image
