@@ -12,7 +12,6 @@ apps:
   - ko://github.com/kyma-project/test-infra/cmd/tools/ipcleaner
   - ko://github.com/kyma-project/test-infra/cmd/tools/orphanremover
   - ko://github.com/kyma-project/test-infra/cmd/tools/dnscollector
-  - ko://github.com/kyma-project/test-infra/cmd/tools/gcrcleaner
   - ko://github.com/kyma-project/test-infra/cmd/tools/externalsecretschecker
   - ko://github.com/kyma-project/test-infra/cmd/gardener-rotate
   - ko://github.com/kyma-project/test-infra/cmd/cloud-run/gardener-sa-rotate
