@@ -373,27 +373,6 @@ branch-protection:
       exclude:
         - "^dependabot/"
       repos:
-        compass:
-          protect: false
-          branches:
-            main:
-              protect: true
-              required_status_checks:
-                # Require PR branch to be up-to-date with main
-                strict: true
-        compass-console:
-          protect: false
-          branches:
-            main:
-              protect: true
-        ord-service:
-          protect: false
-          branches:
-            main:
-              protect: true
-              required_status_checks:
-                # Require PR branch to be up-to-date with main
-                strict: true
         reconciler:
           protect: false
           branches:
@@ -443,10 +422,7 @@ tide:
     kyma-project/docker-registry: squash
     kyma-project/modulectl: squash
     kyma-project/cloud-manager: squash
-    kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
-    kyma-incubator/compass-console: squash
-    kyma-incubator/ord-service: squash
     kyma-incubator/kymart: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash
@@ -479,19 +455,6 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-project/k8s-prow
-      reviewApprovedRequired: true
-    - labels:
-        - lgtm
-        - approved
-        - ok-tested
-      missingLabels:
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      repos:
-        - kyma-incubator/compass
-        - kyma-incubator/ord-service
       reviewApprovedRequired: true
     # special query for automations
     - labels:

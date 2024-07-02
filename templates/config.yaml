@@ -30,9 +30,6 @@ global:
         - name: "compass-manager"
     - name: "kyma-incubator"
       repos:
-        - name: "compass"
-        - name: "ord-service"
-        - name: "compass-console"
         - name: "sap-btp-service-operator"
         - name: "slack-bot"
         - name: "migrate"
