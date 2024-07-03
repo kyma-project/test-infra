@@ -266,7 +266,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 		return GitStateConfig{
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
-			JobType:         "ondemand",
+			JobType:         "on-demand",
 			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
 			BaseCommitRef:   os.Getenv("GITHUB_REF"),
 		}, nil

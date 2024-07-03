@@ -201,6 +201,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetPresubmitJobType()
 	} else if options.gitState.JobType == "postsubmit" {
 		templateParameters.SetPostsubmitJobType()
+	} else if options.gitState.JobType == "on-demand" {
+		templateParameters.SetOnDemandJobType()
 	}
 
 	if options.gitState.IsPullRequest() {
@@ -208,6 +210,10 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	}
 
 	templateParameters.SetBaseSHA(options.gitState.BaseCommitSHA)
+
+	if len(options.gitState.BaseCommitRef) > 0 {
+		templateParameters.SetBaseRef(options.gitState.BaseCommitRef)
+	}
 
 	if options.gitState.IsPullRequest() {
 		templateParameters.SetPullSHA(options.gitState.PullHeadCommitSHA)

@@ -260,7 +260,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 			gitState: GitStateConfig{
 				RepositoryName:  "test-infra",
 				RepositoryOwner: "KacperMalachowski",
-				JobType:         "ondemand",
+				JobType:         "on-demand",
 				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
 				BaseCommitRef:   "refs/heads/main",
 				isPullRequest:   false,
