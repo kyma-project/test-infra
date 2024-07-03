@@ -7,7 +7,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240703-b82e9803
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240610-c4997bfe
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240703-b7fa11d6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240703-14228c3e
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20240703-b7fa11d6
@@ -17,13 +17,13 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240703-b7fa11d6
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240703-b7fa11d6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240703-14228c3e
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240703-b7fa11d6
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240703-b7fa11d6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240703-14228c3e
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20240703-b7fa11d6
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240703-b7fa11d6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240703-14228c3e
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240703-b7fa11d6
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240703-b7fa11d6
