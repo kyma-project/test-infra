@@ -13,7 +13,7 @@ templates:
               - "^release-*"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240702-deea4908
+            image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240703-b82e9803
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
