@@ -957,7 +957,7 @@ func extractImagesFromADOLogs(logs string) []string {
 	matches := re.FindAllStringSubmatch(logs, -1)
 
 	images := []string{}
-	if len(matches) > 1 {
+	if len(matches) > 0 {
 		for _, match := range matches {
 			if len(match) > 1 {
 				images = append(images, match[1])
