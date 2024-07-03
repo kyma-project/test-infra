@@ -66,7 +66,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240703-57669079
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240703-14228c3e
           command: ["/init.sh"]
           args: ["make", "-C", "images", "build"]
           resources:
@@ -149,7 +149,7 @@ postsubmits:
       cluster: trusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240703-57669079
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240703-14228c3e
           command: ["/init.sh"]
           args: ["make", "-C", "images", "push"]
           resources:
