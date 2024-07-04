@@ -1,8 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.22.3
-
-toolchain go1.22.4
+go 1.21
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0
@@ -68,12 +66,10 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
-	github.com/bombsimon/logrusr/v4 v4.1.0 // indirect
 	github.com/bwmarrin/snowflake v0.0.0 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.5.0 // indirect
-	github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466 // indirect
 	github.com/clarketm/json v1.13.4 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.14.3 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
