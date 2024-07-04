@@ -36,6 +36,11 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["JobType"]).To(Equal("postsubmit"))
 	})
 
+	It("sets the correct JobType to on-demand", func() {
+		params.SetOnDemandJobType()
+		Expect(params["JobType"]).To(Equal("on-demand"))
+	})
+
 	It("sets the correct PullNumber", func() {
 		params.SetPullNumber("123")
 		Expect(params["PullNumber"]).To(Equal("123"))
@@ -97,7 +102,8 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		params.SetRepoName("testName")
 		params.SetRepoOwner("testOwner")
 		params.SetPresubmitJobType()
-		params.SetBaseSHA("abc")
+		params.SetBaseSHA("abc123")
+		params.SetBaseRef("main")
 		params.SetImageName("my-image")
 		params.SetDockerfilePath("/path/to/dockerfile")
 		params.SetBuildContext("/path/to/context")
@@ -111,7 +117,7 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(err).NotTo(BeNil())
 	})
 
-	It("returns error if JobType is not presubmit or postsubmit", func() {
+	It("returns error if JobType is not presubmit or postsubmit or on-demand", func() {
 		params["JobType"] = "otherType"
 
 		err := params.Validate()

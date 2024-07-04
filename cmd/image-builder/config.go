@@ -128,8 +128,10 @@ type GitStateConfig struct {
 	JobType string
 	// Number of the pull request for presubmit job
 	PullRequestNumber int
-	// Commit SHA for base branch
+	// Commit SHA for base branch or tag
 	BaseCommitSHA string
+	// Base branch or tag
+	BaseCommitRef string
 	// Commit SHA for head of the pull request
 	PullHeadCommitSHA string
 	// isPullRequest contains information whether event which triggered the job was from pull request
@@ -254,6 +256,19 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "postsubmit",
 			BaseCommitSHA:   *payload.HeadCommit.ID,
+		}, nil
+	case "workflow_dispatch":
+		var payload github.WorkflowDispatchEvent
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+		return GitStateConfig{
+			RepositoryName:  *payload.Repo.Name,
+			RepositoryOwner: *payload.Repo.Owner.Login,
+			JobType:         "on-demand",
+			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
+			BaseCommitRef:   os.Getenv("GITHUB_REF"),
 		}, nil
 	default:
 		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)

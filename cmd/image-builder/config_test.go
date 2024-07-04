@@ -247,6 +247,26 @@ func TestLoadGitStateConfig(t *testing.T) {
 			},
 		},
 		{
+			name: "Load data from event payload for github workflow_dispatch event",
+			options: options{
+				ciSystem: GithubActions,
+			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/workflow_dispatch.json",
+				"GITHUB_EVENT_NAME": "workflow_dispatch",
+				"GITHUB_SHA":        "d42f5051757b3e0699eb979d7581404e36fc0eee",
+				"GITHUB_REF":        "refs/heads/main",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-infra",
+				RepositoryOwner: "KacperMalachowski",
+				JobType:         "on-demand",
+				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
+				BaseCommitRef:   "refs/heads/main",
+				isPullRequest:   false,
+			},
+		},
+		{
 			name: "Unknown ci system, return err",
 			options: options{
 				ciSystem: "",
