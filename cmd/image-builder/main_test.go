@@ -650,13 +650,38 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"UseKanikoConfigFromPR": "false",
 			},
 		},
+		{
+			name: "On demand job type with base commit SHA and base commit ref",
+			options: options{
+				gitState: GitStateConfig{
+					JobType:       "on-demand",
+					BaseCommitSHA: "abc123",
+					BaseCommitRef: "main",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+			},
+			want: pipelines.OCIImageBuilderTemplateParams{
+				"Context":               "",
+				"Dockerfile":            "",
+				"ExportTags":            "false",
+				"JobType":               "on-demand",
+				"Name":                  "",
+				"PullBaseSHA":           "abc123",
+				"BaseRef":               "main",
+				"RepoName":              "",
+				"RepoOwner":             "",
+				"Tags":                  "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"UseKanikoConfigFromPR": "false",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := prepareADOTemplateParameters(tt.options)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
