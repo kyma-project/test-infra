@@ -1,25 +1,10 @@
-/*
-Copyright 2021 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
 
 import (
 	"fmt"
 	"strings"
 
+	"github.com/kyma-project/test-infra/pkg/github/bumper"
 	"sigs.k8s.io/prow/cmd/generic-autobumper/imagebumper"
 )
 
@@ -89,7 +74,7 @@ func isUnderPath(name string, paths []string) bool {
 // isBumpedPrefix takes a prefix and a map of new tags resulted from bumping
 // : the images using those tags and iterates over the map to find if the
 // prefix is found. If it is, this means it has been bumped.
-func isBumpedPrefix(prefix Prefix, versions map[string][]string) (string, bool) {
+func isBumpedPrefix(prefix bumper.Prefix, versions map[string][]string) (string, bool) {
 	for tag, imageList := range versions {
 		for _, image := range imageList {
 			if strings.HasPrefix(image, prefix.Prefix) {
