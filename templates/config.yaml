@@ -51,7 +51,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240703-b82e9803
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240704-a07d9cd8
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -74,7 +74,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240703-b82e9803
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240704-a07d9cd8
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -174,11 +174,11 @@ globalSets:
   image_wssagent_nodejs:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240703-14228c3e"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240703-583e75e0
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240704-a07d9cd8
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240703-583e75e0
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240704-a07d9cd8
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240703-583e75e0
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240704-a07d9cd8
   image_e2e-dind-k3d:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240703-14228c3e"
   # JobConfig sets
