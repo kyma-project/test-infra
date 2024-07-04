@@ -36,9 +36,9 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["JobType"]).To(Equal("postsubmit"))
 	})
 
-	It("sets the correct JobType to on-demand", func() {
-		params.SetOnDemandJobType()
-		Expect(params["JobType"]).To(Equal("on-demand"))
+	It("sets the correct JobType to workflow_dispatch", func() {
+		params.SetWorkflowDispatchJobType()
+		Expect(params["JobType"]).To(Equal("workflow_dispatch"))
 	})
 
 	It("sets the correct PullNumber", func() {
@@ -117,7 +117,7 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(err).NotTo(BeNil())
 	})
 
-	It("returns error if JobType is not presubmit or postsubmit or on-demand", func() {
+	It("returns error if JobType is not presubmit or postsubmit or workflow_dispatch", func() {
 		params["JobType"] = "otherType"
 
 		err := params.Validate()

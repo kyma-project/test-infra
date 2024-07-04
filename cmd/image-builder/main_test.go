@@ -654,7 +654,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 			name: "On demand job type with base commit SHA and base commit ref",
 			options: options{
 				gitState: GitStateConfig{
-					JobType:       "on-demand",
+					JobType:       "workflow_dispatch",
 					BaseCommitSHA: "abc123",
 					BaseCommitRef: "main",
 				},
@@ -666,7 +666,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"Context":               "",
 				"Dockerfile":            "",
 				"ExportTags":            "false",
-				"JobType":               "on-demand",
+				"JobType":               "workflow_dispatch",
 				"Name":                  "",
 				"PullBaseSHA":           "abc123",
 				"BaseRef":               "main",
