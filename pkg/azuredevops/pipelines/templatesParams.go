@@ -42,6 +42,11 @@ func (p OCIImageBuilderTemplateParams) SetPostsubmitJobType() {
 	p["JobType"] = "postsubmit"
 }
 
+// SetOnDemandJobType sets required parameter JobType to on-demand.
+func (p OCIImageBuilderTemplateParams) SetOnDemandJobType() {
+	p["JobType"] = "on-demand"
+}
+
 // SetPullNumber sets optional parameter PullNumber.
 func (p OCIImageBuilderTemplateParams) SetPullNumber(number string) {
 	p["PullNumber"] = number
@@ -53,6 +58,11 @@ func (p OCIImageBuilderTemplateParams) SetPullNumber(number string) {
 func (p OCIImageBuilderTemplateParams) SetBaseSHA(sha string) {
 	// TODO: Rename key to BaseSHA
 	p["PullBaseSHA"] = sha
+}
+
+// SetBaseRef sets required parameter BaseRef.
+func (p OCIImageBuilderTemplateParams) SetBaseRef(ref string) {
+	p["BaseRef"] = ref
 }
 
 // SetPullSHA sets optional parameter PullSHA.
@@ -139,8 +149,8 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if jobType, ok = p["JobType"]; !ok {
 		return ErrRequiredParamNotSet("JobType")
 	}
-	if jobType != "presubmit" && jobType != "postsubmit" {
-		return fmt.Errorf("JobType must be either presubmit or postsubmit, got: %s", jobType)
+	if jobType != "presubmit" && jobType != "postsubmit" && jobType != "on-demand" {
+		return fmt.Errorf("JobType must be either presubmit, postsubmit or on-demand, got: %s", jobType)
 	}
 	if _, ok = p["PullBaseSHA"]; !ok {
 		return ErrRequiredParamNotSet("BaseSHA")
