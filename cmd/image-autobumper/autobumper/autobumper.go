@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package bumper
+package autobumper
 
 import (
 	"bytes"
 	"context"
-	"crypto/sha1"
 	"errors"
 	"flag"
 	"fmt"
@@ -65,8 +64,6 @@ type Options struct {
 	SkipPullRequest bool `json:"skipPullRequest"`
 	// Whether to signoff the commits.
 	Signoff bool `json:"signoff"`
-	// Information needed to do a gerrit bump. Do not include if doing github bump
-	Gerrit *Gerrit `json:"gerrit"`
 	// The name used in the address when creating remote. This should be the same name as the fork. If fork does not exist this will be the name of the fork that is created.
 	// If it is not the same as the fork, the robot will change the name of the fork to this. Format will be git@github.com:{GitLogin}/{RemoteName}.git
 	RemoteName string `json:"remoteName"`
@@ -76,20 +73,6 @@ type Options struct {
 	Labels []string `json:"labels"`
 	// The GitHub host to use, defaulting to github.com
 	GitHubHost string `json:"gitHubHost"`
-}
-
-// Information needed for gerrit bump
-type Gerrit struct {
-	// Unique tag in commit messages to identify a Gerrit bump CR. Required if using gerrit
-	AutobumpPRIdentifier string `json:"autobumpPRIdentifier"`
-	// Gerrit CR Author. Only Required if using gerrit
-	Author string `json:"author"`
-	// Email account associated with gerrit author. Only required if using gerrit.
-	Email string `json:"email"`
-	// The path to the Gerrit httpcookie file. Only Required if using gerrit
-	CookieFile string `json:"cookieFile"`
-	// The path to the hosted Gerrit repo
-	HostRepo string `json:"hostRepo"`
 }
 
 // PRHandler is the interface implemented by consumer of prcreator, for
@@ -149,7 +132,7 @@ func (gc GitCommand) getCommand() string {
 }
 
 func validateOptions(o *Options) error {
-	if !o.SkipPullRequest && o.Gerrit == nil {
+	if !o.SkipPullRequest {
 		if o.GitHubToken == "" {
 			return fmt.Errorf("gitHubToken is mandatory when skipPullRequest is false or unspecified")
 		}
@@ -161,20 +144,6 @@ func validateOptions(o *Options) error {
 		}
 		if o.RemoteName == "" {
 			return fmt.Errorf("remoteName is mandatory when skipPullRequest is false or unspecified")
-		}
-	}
-	if !o.SkipPullRequest && o.Gerrit != nil {
-		if o.Gerrit.Author == "" {
-			return fmt.Errorf("GerritAuthor is required when skipPullRequest is false and Gerrit is true")
-		}
-		if o.Gerrit.AutobumpPRIdentifier == "" {
-			return fmt.Errorf("GerritCommitId is required when skipPullRequest is false and Gerrit is true")
-		}
-		if o.Gerrit.HostRepo == "" {
-			return fmt.Errorf("GerritHostRepo is required when skipPullRequest is false and Gerrit is true")
-		}
-		if o.Gerrit.CookieFile == "" {
-			return fmt.Errorf("GerritCookieFile is required when skipPullRequest is false and Gerrit is true")
 		}
 	}
 	if !o.SkipPullRequest {
@@ -201,10 +170,7 @@ func Run(ctx context.Context, o *Options, prh PRHandler) error {
 	if o.SkipPullRequest {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
-	if o.Gerrit == nil {
-		return processGitHub(ctx, o, prh)
-	}
-	return processGerrit(ctx, o, prh)
+	return processGitHub(ctx, o, prh)
 }
 
 func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
@@ -282,74 +248,6 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	}
 	if err := updatePRWithLabels(gc, o.GitHubOrg, o.GitHubRepo, getAssignment(o.AssignTo), o.GitHubLogin, o.GitHubBaseBranch, o.HeadBranchName, updater.PreventMods, summary, body, o.Labels, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("to create the PR: %w", err)
-	}
-	return nil
-}
-
-func processGerrit(ctx context.Context, o *Options, prh PRHandler) error {
-	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
-	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
-
-	if err := Call(stdout, stderr, gitCmd, []string{"config", "http.cookiefile", o.Gerrit.CookieFile}); err != nil {
-		return fmt.Errorf("unable to load cookiefile: %w", err)
-	}
-	if err := Call(stdout, stderr, gitCmd, []string{"config", "user.name", o.Gerrit.Author}); err != nil {
-		return fmt.Errorf("unable to set username: %w", err)
-	}
-	if err := Call(stdout, stderr, gitCmd, []string{"config", "user.email", o.Gerrit.Email}); err != nil {
-		return fmt.Errorf("unable to set password: %w", err)
-	}
-	if err := Call(stdout, stderr, gitCmd, []string{"remote", "add", "upstream", o.Gerrit.HostRepo}); err != nil {
-		return fmt.Errorf("unable to add upstream remote: %w", err)
-	}
-	changeId, err := getChangeId(o.Gerrit.Author, o.Gerrit.AutobumpPRIdentifier, "")
-	if err != nil {
-		return fmt.Errorf("Failed to create CR: %w", err)
-	}
-
-	// Make change, commit and push
-	for i, changeFunc := range prh.Changes() {
-		msg, err := changeFunc(ctx)
-		if err != nil {
-			return fmt.Errorf("process function %d: %w", i, err)
-		}
-
-		changed, err := HasChanges()
-		if err != nil {
-			return fmt.Errorf("checking changes: %w", err)
-		}
-
-		if !changed {
-			logrus.WithField("function", i).Info("Nothing changed, skip commit ...")
-			continue
-		}
-
-		if err = gerritCommitandPush(msg, o.Gerrit.AutobumpPRIdentifier, changeId, nil, nil, stdout, stderr); err != nil {
-			// If push because a closed PR already exists with this
-			// change ID (the PR was abandoned). Hash the ID again and try one
-			// more time.
-			if !strings.Contains(err.Error(), "push some refs") || !strings.Contains(err.Error(), "closed") {
-				return err
-			}
-			logrus.Warn("Error pushing CR due to already used ChangeID. PR may have been abandoned. Trying again with new ChangeID.")
-			if changeId, err = getChangeId(o.Gerrit.Author, o.Gerrit.AutobumpPRIdentifier, changeId); err != nil {
-				return err
-			}
-			if err := Call(stdout, stderr, gitCmd, []string{"reset", "HEAD^"}); err != nil {
-				return fmt.Errorf("unable to call git reset: %w", err)
-			}
-			return gerritCommitandPush(msg, o.Gerrit.AutobumpPRIdentifier, changeId, nil, nil, stdout, stderr)
-		}
-	}
-	return nil
-}
-
-func gerritCommitandPush(summary, autobumpId, changeId string, reviewers, cc []string, stdout, stderr io.Writer) error {
-	msg := makeGerritCommit(summary, autobumpId, changeId)
-
-	// TODO(mpherman): Add reviewers to CreateCR
-	if err := createCR(msg, "master", changeId, reviewers, cc, stdout, stderr); err != nil {
-		return fmt.Errorf("create CR: %w", err)
 	}
 	return nil
 }
@@ -533,11 +431,6 @@ func MakeGitCommit(remote, remoteBranch, name, email string, stdout, stderr io.W
 	return GitCommitAndPush(remote, remoteBranch, name, email, summary, stdout, stderr, dryrun)
 }
 
-func makeGerritCommit(summary, commitTag, changeId string) string {
-	//Gerrit commits do not recognize "&#x2011;" as NON-BREAKING HYPHEN, so just replace with a regular hyphen.
-	return fmt.Sprintf("%s\n\n[%s]\n\nChange-Id: %s", strings.ReplaceAll(summary, "&#x2011;", "-"), commitTag, changeId)
-}
-
 // GitCommitAndPush runs a sequence of git commands to commit.
 // The "name", "email", and "message" are used for git-commit command
 func GitCommitAndPush(remote, remoteBranch, name, email, message string, stdout, stderr io.Writer, dryrun bool) error {
@@ -648,138 +541,4 @@ func getTreeRef(stderr io.Writer, refname string, opts ...CallOption) (string, e
 		return "", errors.New("got no output when trying to rev-parse")
 	}
 	return fields[0], nil
-}
-
-func buildPushRef(branch string, reviewers, cc []string) string {
-	pushRef := fmt.Sprintf("HEAD:refs/for/%s", branch)
-	var addedOptions []string
-	for _, v := range reviewers {
-		addedOptions = append(addedOptions, fmt.Sprintf("r=%s", v))
-	}
-	for _, v := range cc {
-		addedOptions = append(addedOptions, fmt.Sprintf("cc=%s", v))
-	}
-	if len(addedOptions) > 0 {
-		pushRef = fmt.Sprintf("%s%%%s", pushRef, strings.Join(addedOptions, ","))
-	}
-	return pushRef
-}
-
-func getDiff(prevCommit string) (string, error) {
-	var diffBuf bytes.Buffer
-	var errBuf bytes.Buffer
-	if err := Call(&diffBuf, &errBuf, gitCmd, []string{"diff", prevCommit}); err != nil {
-		return "", fmt.Errorf("diffing previous bump: %v -- %s", err, errBuf.String())
-	}
-	return diffBuf.String(), nil
-}
-
-func gerritNoOpChange(changeID string) (bool, error) {
-	var garbageBuf bytes.Buffer
-	var outBuf bytes.Buffer
-	// Fetch current pending CRs
-	if err := Call(&garbageBuf, &garbageBuf, gitCmd, []string{"fetch", "upstream", "+refs/changes/*:refs/remotes/upstream/changes/*"}); err != nil {
-		return false, fmt.Errorf("unable to fetch upstream changes: %v -- \nOUTPUT: %s", err, garbageBuf.String())
-	}
-	// Get PR with same ChangeID for this bump
-	if err := Call(&outBuf, &garbageBuf, gitCmd, []string{"log", "--all", fmt.Sprintf("--grep=Change-Id: %s", changeID), "-1", "--format=%H"}); err != nil {
-		return false, fmt.Errorf("getting previous bump: %w", err)
-	}
-	prevCommit := strings.TrimSpace(outBuf.String())
-	// No current CRs with cur ChangeID means this is not a noOp change
-	if prevCommit == "" {
-		return false, nil
-	}
-	diff, err := getDiff(prevCommit)
-	if err != nil {
-		return false, err
-	}
-	if diff == "" {
-		return true, nil
-	}
-	return false, nil
-
-}
-
-func createCR(msg, branch, changeID string, reviewers, cc []string, stdout, stderr io.Writer) error {
-	noOp, err := gerritNoOpChange(changeID)
-	if err != nil {
-		return fmt.Errorf("diffing previous bump: %w", err)
-	}
-	if noOp {
-		logrus.Info("CR is a no-op change. Returning without pushing update")
-		return nil
-	}
-
-	pushRef := buildPushRef(branch, reviewers, cc)
-	if err := Call(stdout, stderr, gitCmd, []string{"commit", "-a", "-v", "-m", msg}); err != nil {
-		return fmt.Errorf("unable to commit: %w", err)
-	}
-	if err := Call(stdout, stderr, gitCmd, []string{"push", "upstream", pushRef}); err != nil {
-		return fmt.Errorf("unable to push: %w", err)
-	}
-	return nil
-}
-
-func getLastBumpCommit(gerritAuthor, commitTag string) (string, error) {
-	var outBuf bytes.Buffer
-	var errBuf bytes.Buffer
-
-	if err := Call(&outBuf, &errBuf, gitCmd, []string{"log", fmt.Sprintf("--author=%s", gerritAuthor), fmt.Sprintf("--grep=%s", commitTag), "-1", "--format='%H'"}); err != nil {
-		return "", errors.New("running git command")
-	}
-
-	return outBuf.String(), nil
-}
-
-// getChangeId generates a change ID for the gerrit PR that is deterministic
-// rather than being random as is normally preferable.
-// In particular this chooses a change ID by hashing the last commit by the
-// robot with a given string in the commit message (This string will be added to all autobump commit messages)
-// if there is no commit by the robot with this commit tag, we assume that the job has never run, or that the robot/commit tag has changed
-// in either case, the deterministic ID is generated by just hashing a string of the author + commit tag
-func getChangeId(gerritAuthor, commitTag, startingID string) (string, error) {
-	var id string
-	if startingID == "" {
-		lastBumpCommit, err := getLastBumpCommit(gerritAuthor, commitTag)
-		if err != nil {
-			return "", fmt.Errorf("Error getting change Id: %w", err)
-		}
-		if lastBumpCommit != "" {
-			id = "I" + GitHash(lastBumpCommit)
-		} else {
-			// If it is the first time the autobumper has run a commit will not exist with the tag
-			// create a deterministic tag by hashing the tag itself instead of the last commit.
-			id = "I" + GitHash(gerritAuthor+commitTag)
-		}
-	} else {
-		id = GitHash(startingID)
-	}
-	gitLog, err := getFullLog()
-	if err != nil {
-		return "", err
-	}
-	//While a commit on the base branch exists with this change ID...
-	for strings.Contains(gitLog, id) {
-		// Choose another ID by hashing the current ID.
-		id = "I" + GitHash(id)
-	}
-
-	return id, nil
-}
-
-func getFullLog() (string, error) {
-	var outBuf bytes.Buffer
-	var errBuf bytes.Buffer
-
-	if err := Call(&outBuf, &errBuf, gitCmd, []string{"log"}); err != nil {
-		return "", fmt.Errorf("unable to run git log: %w, %s", err, errBuf.String())
-	}
-	return outBuf.String(), nil
-}
-
-func GitHash(hashing string) string {
-	h := sha1.New()
-	io.WriteString(h, hashing)
-	return fmt.Sprintf("%x", h.Sum(nil))
 }
