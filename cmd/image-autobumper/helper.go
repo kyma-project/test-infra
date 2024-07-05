@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/test-infra/pkg/github/bumper"
-	"sigs.k8s.io/prow/cmd/generic-autobumper/imagebumper"
+	"github.com/kyma-project/test-infra/pkg/github/imagebumper"
 )
 
 // Extract image from image name
