@@ -49,7 +49,7 @@ func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message p
 		// Get matched document.
 		failureInstance := failureInstances[0]
 		return failureInstance, nil
-	} 
+	}
 	return nil, fmt.Errorf("more than one failure instance exists")
 }
 

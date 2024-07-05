@@ -15,6 +15,7 @@ import (
 
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/bumper"
+	"github.com/kyma-project/test-infra/pkg/github/imagebumper"
 	"github.com/kyma-project/test-infra/pkg/securityconfig"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -23,7 +24,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/test-infra/prow/config"
-	"sigs.k8s.io/prow/cmd/generic-autobumper/imagebumper"
 )
 
 var (
