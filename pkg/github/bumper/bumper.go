@@ -43,6 +43,59 @@ type Options struct {
 	HeadBranchName string `json:"headBranchName" yaml:"headBranchName"`
 	// Optional list of labels to add to the bump PR
 	Labels []string `json:"labels" yaml:"labels"`
+	// The URL where upstream image references are located. Only required if Target Version is "upstream" or "upstreamStaging". Use "https://raw.githubusercontent.com/{ORG}/{REPO}"
+	// Images will be bumped based off images located at the address using this URL and the refConfigFile or stagingRefConfigFile for each Prefix.
+	UpstreamURLBase string `yaml:"upstreamURLBase"`
+	// The config paths to be included in this bump, in which only .yaml files will be considered. By default, all files are included.
+	IncludedConfigPaths []string `yaml:"includedConfigPaths"`
+	// The config paths to be excluded in this bump, in which only .yaml files will be considered.
+	ExcludedConfigPaths []string `yaml:"excludedConfigPaths"`
+	// The extra non-yaml file to be considered in this bump.
+	ExtraFiles []string `yaml:"extraFiles"`
+	// The target version to bump images version to, which can be one of latest, upstream, upstream-staging and vYYYYMMDD-deadbeef.
+	TargetVersion string `yaml:"targetVersion"`
+	// List of prefixes that the autobumped is looking for, and other information needed to bump them. Must have at least 1 prefix.
+	Prefixes []Prefix `yaml:"prefixes"`
+	// The oncall address where we can get the JSON file that stores the current oncall information.
+	OncallAddress string `json:"onCallAddress"`
+	// The oncall group that is responsible for reviewing the change, i.e. "test-infra".
+	OncallGroup string `json:"onCallGroup"`
+	// Whether skip if no oncall is discovered
+	SkipIfNoOncall bool `yaml:"skipIfNoOncall"`
+	// SkipOncallAssignment skips assigning to oncall.
+	// The OncallAddress and OncallGroup are required for auto-bumper to figure out whether there are active oncall,
+	// which is used to avoid bumping when there is no active oncall.
+	SkipOncallAssignment bool `yaml:"skipOncallAssignment"`
+	// SelfAssign is used to comment `/assign` and `/cc` so that blunderbuss wouldn't assign
+	// bump PR to someone else.
+	SelfAssign bool `yaml:"selfAssign"`
+	// ImageRegistryAuth determines a way the autobumper with authenticate when talking to image registry.
+	// Allowed values:
+	// * "" (empty) -- uses no auth token
+	// * "google" -- uses Google's "Application Default Credentials" as defined on https://pkg.go.dev/golang.org/x/oauth2/google#hdr-Credentials.
+	ImageRegistryAuth string `yaml:"imageRegistryAuth"`
+	// AdditionalPRBody allows for generic, additional content in the body of the PR
+	AdditionalPRBody string `yaml:"additionalPRBody"`
+}
+
+// prefix is the information needed for each prefix being bumped.
+type Prefix struct {
+	// Name of the tool being bumped
+	Name string `yaml:"name"`
+	// The image prefix that the autobumper should look for
+	Prefix string `yaml:"prefix"`
+	// File that is looked at to determine current upstream image when bumping to upstream. Required only if targetVersion is "upstream"
+	RefConfigFile string `yaml:"refConfigFile"`
+	// File that is looked at to determine current upstream staging image when bumping to upstream staging. Required only if targetVersion is "upstream-staging"
+	StagingRefConfigFile string `yaml:"stagingRefConfigFile"`
+	// The repo where the image source resides for the images with this prefix. Used to create the links to see comparisons between images in the PR summary.
+	Repo string `yaml:"repo"`
+	// Whether or not the format of the PR summary for this prefix should be summarised.
+	Summarise bool `yaml:"summarise"`
+	// Whether the prefix tags should be consistent after the bump
+	ConsistentImages bool `yaml:"consistentImages"`
+	// A list of images whose tags are not required to be consistent after the bump. Requires `consistentImages: true`.
+	ConsistentImageExceptions []string `yaml:"consistentImageExceptions"`
 }
 
 const (
