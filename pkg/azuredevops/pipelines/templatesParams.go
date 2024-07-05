@@ -9,6 +9,9 @@ import (
 	"strconv"
 )
 
+// unexported variable to hold the constant values for valid job types
+var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch"}
+
 // ErrRequiredParamNotSet is returned when the required template parameter is not set
 type ErrRequiredParamNotSet string
 
@@ -150,7 +153,7 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if jobType, ok = p["JobType"]; !ok {
 		return ErrRequiredParamNotSet("JobType")
 	}
-	if !slices.Contains([]string{"presubmit", "postsubmit", "workflow_dispatch"}, jobType) {
+	if !slices.Contains(validJobTypes, jobType) {
 		return fmt.Errorf("JobType must be either presubmit, postsubmit or workflow_dispatch, got: %s", jobType)
 	}
 	if _, ok = p["PullBaseSHA"]; !ok {
