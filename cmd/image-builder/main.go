@@ -201,8 +201,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetPresubmitJobType()
 	} else if options.gitState.JobType == "postsubmit" {
 		templateParameters.SetPostsubmitJobType()
-	} else if options.gitState.JobType == "on-demand" {
-		templateParameters.SetOnDemandJobType()
+	} else if options.gitState.JobType == "workflow_dispatch" {
+		templateParameters.SetWorkflowDispatchJobType()
 	}
 
 	if options.gitState.IsPullRequest() {

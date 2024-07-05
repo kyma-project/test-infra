@@ -5,8 +5,15 @@ package pipelines
 import (
 	"encoding/base64"
 	"fmt"
+	"slices"
 	"strconv"
 )
+
+var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch"}
+
+func GetValidJobTypes() []string {
+	return validJobTypes
+}
 
 // ErrRequiredParamNotSet is returned when the required template parameter is not set
 type ErrRequiredParamNotSet string
@@ -42,9 +49,9 @@ func (p OCIImageBuilderTemplateParams) SetPostsubmitJobType() {
 	p["JobType"] = "postsubmit"
 }
 
-// SetOnDemandJobType sets required parameter JobType to on-demand.
-func (p OCIImageBuilderTemplateParams) SetOnDemandJobType() {
-	p["JobType"] = "on-demand"
+// SetWorkflowDispatchJobType sets required parameter JobType to workflow_dispatch.
+func (p OCIImageBuilderTemplateParams) SetWorkflowDispatchJobType() {
+	p["JobType"] = "workflow_dispatch"
 }
 
 // SetPullNumber sets optional parameter PullNumber.
@@ -149,8 +156,8 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if jobType, ok = p["JobType"]; !ok {
 		return ErrRequiredParamNotSet("JobType")
 	}
-	if jobType != "presubmit" && jobType != "postsubmit" && jobType != "on-demand" {
-		return fmt.Errorf("JobType must be either presubmit, postsubmit or on-demand, got: %s", jobType)
+	if !slices.Contains(validJobTypes, jobType) {
+		return fmt.Errorf("JobType must be either presubmit, postsubmit or workflow_dispatch, got: %s", jobType)
 	}
 	if _, ok = p["PullBaseSHA"]; !ok {
 		return ErrRequiredParamNotSet("BaseSHA")
