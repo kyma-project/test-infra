@@ -9,8 +9,11 @@ import (
 	"strconv"
 )
 
-// unexported variable to hold the constant values for valid job types
 var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch"}
+
+func GetValidJobTypes() []string {
+	return validJobTypes
+}
 
 // ErrRequiredParamNotSet is returned when the required template parameter is not set
 type ErrRequiredParamNotSet string

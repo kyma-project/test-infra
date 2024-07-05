@@ -173,7 +173,7 @@ func loadADOGitState() (GitStateConfig, error) {
 	if !present {
 		return GitStateConfig{}, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
 	}
-	if !slices.Contains([]string{"presubmit", "postsubmit", "workflow_dispatch"}, jobType) {
+	if !slices.Contains(adoPipelines.GetValidJobTypes(), jobType) {
 		return GitStateConfig{}, fmt.Errorf("image builder is running for unsupported event %s", jobType)
 	}
 
