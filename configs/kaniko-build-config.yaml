@@ -13,7 +13,7 @@ cache:
   enabled: true
   cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache
   cache-run-layers: true
-sign-config:
+sign-config: 
   enabled-signers:
     "*":
       - signify-prod
