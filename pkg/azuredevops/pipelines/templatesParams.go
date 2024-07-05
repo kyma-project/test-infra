@@ -149,7 +149,7 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if jobType, ok = p["JobType"]; !ok {
 		return ErrRequiredParamNotSet("JobType")
 	}
-	if jobType != "presubmit" && jobType != "postsubmit" && jobType != "workflow_dispatch" {
+	if !slices.Contains([]string{"presubmit", "postsubmit", "workflow_dispatch"}, jobType) {
 		return fmt.Errorf("JobType must be either presubmit, postsubmit or workflow_dispatch, got: %s", jobType)
 	}
 	if _, ok = p["PullBaseSHA"]; !ok {
