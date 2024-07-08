@@ -2,7 +2,7 @@ presubmits:
   kyma-project/test-infra:
     - name: pull-test-infra-ko-build
       decorate: true
-      cluster: untrusted-workload
+      cluster: trusted-workload
       run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod|^images/
       annotations:
         owner: neighbors
@@ -22,7 +22,7 @@ presubmits:
               - resolve
               - -f
               - .koapps.yaml
-              - --push=false
+              - --push=true
               - --base-import-paths
               - -j4
             securityContext:
