@@ -50,7 +50,7 @@ var rootCmd = &cobra.Command{
 	Use:   "autobumper",
 	Short: "Autobumper CLI",
 	Long:  "Command-Line tool to update images in pipeline files and create PRs for them",
-	Run: func(_ *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		// load security config
 		reader, err := os.Open(SecScannerConfig)
 		if err != nil {
@@ -286,7 +286,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to resolve the %s image version: %w", o.TargetVersion, err)
 		}
 	default:
-		tagPicker = func(_, imageName, currentTag string) (string, error) { return o.TargetVersion, nil }
+		tagPicker = func(_, _, currentTag string) (string, error) { return o.TargetVersion, nil }
 	}
 
 	updateFile := func(name string) error {
@@ -310,7 +310,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to get the file info for %q: %w", path, err)
 		}
 		if info.IsDir() {
-			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, err error) error {
+			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, _ error) error {
 				return updateYAMLFile(subpath)
 			})
 			if err != nil {
