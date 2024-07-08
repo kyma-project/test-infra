@@ -1,6 +1,6 @@
 presubmits:
   kyma-project/test-infra:
-    - name: pull-test-infra-ko-build
+    - name: post-test-infra-ko-build
       decorate: true
       cluster: trusted-workload
       run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod|^images/
@@ -8,23 +8,27 @@ presubmits:
         owner: neighbors
         description: Builds go-based toolkit in one go
       labels:
+        preset-sa-kyma-push-images: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-test-infra-ko-build"
+        prow.k8s.io/pubsub.runID: "post-test-infra-ko-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      branches:
+        - ^main$
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240705-f43bf98f
             env:
               - name: KO_DOCKER_REPO
-                value: europe-docker.pkg.dev/kyma-project/prod/test-infra
-            command: ["ko"]
+                value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko
+            command: ["bash", "-c"]
             args:
-              - resolve
-              - -f
-              - .koapps.yaml
-              - --push=true
-              - --base-import-paths
-              - -j4
+              - |-
+                TAG="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}"
+                ko resolve -f .koapps.yaml \
+                  --base-import-paths \
+                  --tags=latest \
+                  --tags="$TAG" \
+                  -j4
             securityContext:
               privileged: false
               seccompProfile:
@@ -37,6 +41,7 @@ presubmits:
               limits:
                 memory: 6Gi
                 cpu: 3
+
 postsubmits:
   kyma-project/test-infra:
     - name: post-test-infra-ko-build
