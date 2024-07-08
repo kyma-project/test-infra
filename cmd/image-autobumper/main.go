@@ -50,7 +50,7 @@ var rootCmd = &cobra.Command{
 	Use:   "autobumper",
 	Short: "Autobumper CLI",
 	Long:  "Command-Line tool to update images in pipeline files and create PRs for them",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, args []string) {
 		// load security config
 		reader, err := os.Open(SecScannerConfig)
 		if err != nil {
@@ -230,7 +230,7 @@ func updateReferencesWrapper(ctx context.Context, o *bumper.Options) (map[string
 	if err != nil {
 		return nil, fmt.Errorf("bad regexp %q: %w", strings.Join(allPrefixes, "|"), err)
 	}
-	var client *http.Client = http.DefaultClient
+	var client = http.DefaultClient
 	if o.ImageRegistryAuth == googleImageRegistryAuth {
 		var err2 error
 		client, err2 = google.DefaultClient(ctx, cloudPlatformScope)
@@ -286,7 +286,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to resolve the %s image version: %w", o.TargetVersion, err)
 		}
 	default:
-		tagPicker = func(imageHost, imageName, currentTag string) (string, error) { return o.TargetVersion, nil }
+		tagPicker = func(_, imageName, currentTag string) (string, error) { return o.TargetVersion, nil }
 	}
 
 	updateFile := func(name string) error {
@@ -310,7 +310,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to get the file info for %q: %w", path, err)
 		}
 		if info.IsDir() {
-			err := filepath.Walk(path, func(subpath string, info os.FileInfo, err error) error {
+			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, err error) error {
 				return updateYAMLFile(subpath)
 			})
 			if err != nil {
@@ -433,7 +433,7 @@ func generatePRBody(images map[string]string, prefixes []bumper.Prefix) (body st
 }
 
 // Generate PR summary for github
-func generateSummary(name, repo, prefix string, summarise bool, images map[string]string) string {
+func generateSummary(_, repo, prefix string, summarise bool, images map[string]string) string {
 	type delta struct {
 		oldCommit string
 		newCommit string
@@ -576,7 +576,7 @@ func runAutobumper(autoBumperCfg string) error {
 		return fmt.Errorf("open autobumper config: %s", err)
 	}
 
-	_, pro, err := parseOptions()
+	_, pro, _ := parseOptions()
 
 	var bumperClientOpt bumper.Options
 	err = yaml.Unmarshal(data, &bumperClientOpt)
