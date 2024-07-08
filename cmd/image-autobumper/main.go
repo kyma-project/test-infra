@@ -286,7 +286,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to resolve the %s image version: %w", o.TargetVersion, err)
 		}
 	default:
-		tagPicker = func(_, _, currentTag string) (string, error) { return o.TargetVersion, nil }
+		tagPicker = func(_, _, _ string) (string, error) { return o.TargetVersion, nil }
 	}
 
 	updateFile := func(name string) error {
