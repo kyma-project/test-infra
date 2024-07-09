@@ -6,7 +6,7 @@ templates:
           - repoName: "github.com/kyma-project/btp-manager"
             jobs:
               - jobConfig: # builds a docker image of the btp-manager tagged with the PR name
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240708-039422b6"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240709-f825e5d7"
                   name: pull-btp-manager-build
                   annotations:
                     owner: "gopher"
@@ -23,7 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig: # builds a docker image of the btp-manager tagged with the branch name
                   name: post-btp-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240708-039422b6"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240709-f825e5d7"
                   annotations:
                     owner: "gopher"
                     description: "BTP Manager image build on main"
