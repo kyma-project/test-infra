@@ -13,27 +13,19 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/bumper"
 	"github.com/kyma-project/test-infra/pkg/github/imagebumper"
-	"github.com/kyma-project/test-infra/pkg/securityconfig"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 	"golang.org/x/oauth2/google"
 	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/util/sets"
-	"k8s.io/test-infra/prow/config"
 )
 
 var (
-	ProwConfig       string
-	JobsConfigDir    string
-	TerraformDir     string
-	SecScannerConfig string
-	KubernetesFiles  string
-	AutobumpConfig   string
-	GithubTokenPath  string
+	AutobumpConfig  string
+	GithubTokenPath string
 )
 
 const (
@@ -51,71 +43,15 @@ var rootCmd = &cobra.Command{
 	Short: "Autobumper CLI",
 	Long:  "Command-Line tool to update images in pipeline files and create PRs for them",
 	Run: func(_ *cobra.Command, _ []string) {
-		// load security config
-		reader, err := os.Open(SecScannerConfig)
-		if err != nil {
-			log.Fatalf("failed to open security config file %s", err)
-		}
-		securityConfig, err := securityconfig.ParseSecurityConfig(reader)
-		if err != nil {
-			log.Fatalf("failed to parse security config file: %s", err)
-		}
-
-		images := []string{}
-
-		// get images from prow jobs
-		if ProwConfig != "" && JobsConfigDir != "" {
-			prowConfig, err := config.Load(ProwConfig, JobsConfigDir, nil, "")
-			if err != nil {
-				log.Fatalf("failed to load prow job config: %s", err)
-			}
-
-			images = append(images, extractimageurls.FromProwJobConfig(prowConfig.JobConfig)...)
-		}
-
-		// get images from terraform
-		if TerraformDir != "" {
-			files, err := extractimageurls.FindFilesInDirectory(TerraformDir, ".*.(tf|tfvars)")
-			if err != nil {
-				log.Fatalf("failed to find files in terraform directory %s: %s", TerraformDir, err)
-			}
-
-			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTerraform)
-			if err != nil {
-				log.Fatalf("failed to extract images from terraform files: %s", err)
-			}
-
-			images = append(images, imgs...)
-		}
-
-		// get images from kubernetes
-		if KubernetesFiles != "" {
-			files, err := extractimageurls.FindFilesInDirectory(KubernetesFiles, ".*.(yaml|yml)")
-			if err != nil {
-				log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
-			}
-
-			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromKubernetesDeployments)
-			if err != nil {
-				log.Fatalf("failed to extract images from kubernetes files: %s", err)
-			}
-
-			images = append(images, imgs...)
-		}
-
-		images = extractimageurls.UniqueImages(images)
-		sort.Strings(images)
-		securityConfig.Images = images
-		securityConfig.SaveToFile(SecScannerConfig)
-
-		// Run autbumper if autobump config provided
+		// Run autobumper if autobump config provided
 		if AutobumpConfig != "" {
 			err := runAutobumper(AutobumpConfig)
 			if err != nil {
 				log.Fatalf("failed to run bumper: %s", err)
 			}
+		} else {
+			log.Fatalf("autobump-config is required")
 		}
-
 	},
 }
 
@@ -125,11 +61,6 @@ var (
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&ProwConfig, "prow-config", "", "path to the Prow config file")
-	rootCmd.PersistentFlags().StringVar(&JobsConfigDir, "prow-jobs-dir", "", "path to the directory which contains Prow job files")
-	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files")
-	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
-	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 
@@ -156,7 +87,7 @@ type client struct {
 	versions map[string][]string
 }
 
-// getVersionsAndCheckConisistency takes a list of Prefixes and a map of
+// getVersionsAndCheckConsistency takes a list of Prefixes and a map of
 // all the images found in the code before the bump : their versions after the bump
 // For example {"gcr.io/k8s-prow/test1:tag": "newtag", "gcr.io/k8s-prow/test2:tag": "newtag"},
 // and returns a map of new versions resulted from bumping : the images using those versions.
@@ -180,11 +111,10 @@ func getVersionsAndCheckConsistency(prefixes []bumper.Prefix, images map[string]
 					}
 				}
 
-				//Only add bumped images to the new versions map
+				// Only add bumped images to the new versions map
 				if !strings.Contains(k, v) {
 					versions[v] = append(versions[v], k)
 				}
-
 			}
 		}
 	}
@@ -236,7 +166,7 @@ func updateReferencesWrapper(ctx context.Context, o *bumper.Options) (map[string
 		client, err2 = google.DefaultClient(ctx, cloudPlatformScope)
 		fmt.Println("Error: ", err2)
 		if err != nil {
-			return nil, fmt.Errorf("failed to create authed cllllient: %v", err)
+			return nil, fmt.Errorf("failed to create authed client: %v", err)
 		}
 	}
 	imageBumperCli := imagebumper.NewClient(client)
