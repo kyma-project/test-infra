@@ -466,30 +466,28 @@ func validateOptions(o bumper.Options) error {
 }
 
 func parseOptions() (*options, *bumper.Options, error) {
-	var config string
 	var labelsOverride []string
 	var skipPullRequest bool
 	var signoff bool
 
 	var o options
-	flag.StringVar(&config, "config", "", "The path to the config file for the autobumber.")
 	flag.StringSliceVar(&labelsOverride, "labels-override", nil, "Override labels to be added to PR.")
 	flag.BoolVar(&skipPullRequest, "skip-pullrequest", false, "")
 	flag.BoolVar(&signoff, "signoff", false, "Signoff the commits.")
 	flag.Parse()
 
 	var pro bumper.Options
-	data, err := os.ReadFile(config)
+	data, err := os.ReadFile(AutobumpConfig)
 	if err != nil {
-		return nil, nil, fmt.Errorf("read %q: %w", config, err)
+		return nil, nil, fmt.Errorf("read %q: %w", AutobumpConfig, err)
 	}
 
 	if err = yaml.Unmarshal(data, &o); err != nil {
-		return nil, nil, fmt.Errorf("unmarshal %q: %w", config, err)
+		return nil, nil, fmt.Errorf("unmarshal %q: %w", AutobumpConfig, err)
 	}
 
 	if err := yaml.Unmarshal(data, &pro); err != nil {
-		return nil, nil, fmt.Errorf("unmarshal %q: %w", config, err)
+		return nil, nil, fmt.Errorf("unmarshal %q: %w", AutobumpConfig, err)
 	}
 
 	if labelsOverride != nil {
