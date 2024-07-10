@@ -166,21 +166,31 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	return string(output), nil
 }
 
-func gitAdd(files []string, stdout, stderr io.Writer) error {
-	if err := Call(stdout, stderr, gitCmd, "add", strings.Join(files, " ")); err != nil {
-		return fmt.Errorf("git add: %w", err)
+func gitAdd(files []string, dir string) error {
+	addArgs := append([]string{"add"}, files...)
+	logrus.WithField("cmd", gitCmd).WithField("args", addArgs).Info("running command ...")
+	addCmd := exec.Command(gitCmd, addArgs...)
+	addCmd.Dir = dir
+	addOutput, addErr := addCmd.CombinedOutput()
+	if addErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(addOutput))
+		return fmt.Errorf("git add: %w", addErr)
 	}
-
 	return nil
 }
 
-func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
+func gitCommit(name, email, message string, dir string) error {
 	commitArgs := []string{"commit", "-m", message}
 	if name != "" && email != "" {
 		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
 	}
-	if err := Call(stdout, stderr, gitCmd, commitArgs...); err != nil {
-		return fmt.Errorf("git commit: %w", err)
+	logrus.WithField("cmd", gitCmd).WithField("args", commitArgs).Info("running command ...")
+	commitCmd := exec.Command(gitCmd, commitArgs...)
+	commitCmd.Dir = dir
+	commitOutput, commitErr := commitCmd.CombinedOutput()
+	if commitErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(commitOutput))
+		return fmt.Errorf("git commit: %w", commitErr)
 	}
 	return nil
 }
@@ -291,6 +301,9 @@ func validateOptions(o *Options) error {
 			o.HeadBranchName = defaultHeadBranchName
 		}
 	}
+	if o.GitHubHost == "" {
+		o.GitHubHost = "github.com"
+	}
 
 	return nil
 }
@@ -346,7 +359,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
 		}
 
-		changed, err := HasChanges()
+		changed, err := HasChanges("/workspace")
 		if err != nil {
 			return fmt.Errorf("checking changes: %w", err)
 		}
@@ -365,11 +378,11 @@ func processGitHub(o *Options, prh PRHandler) error {
 			return nil
 		}
 
-		if err := gitAdd(filesToBeAdded, stdout, stderr); err != nil {
+		if err := gitAdd(filesToBeAdded, "/workspace"); err != nil {
 			return fmt.Errorf("add changes to commit %w", err)
 		}
 
-		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr); err != nil {
+		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, "/workspace"); err != nil {
 			return fmt.Errorf("commit changes to the remote branch: %w", err)
 		}
 	}
@@ -397,10 +410,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 }
 
 // HasChanges checks if the current git repo contains any changes
-func HasChanges() (bool, error) {
-	// List files in the workspace directory
-	dir := "/workspace"
-
+func HasChanges(dir string) (bool, error) {
 	// Configure Git to recognize the /workspace directory as safe
 	configArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
