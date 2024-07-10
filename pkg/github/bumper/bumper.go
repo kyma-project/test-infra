@@ -167,7 +167,7 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 }
 
 func gitAdd(files []string, dir string) error {
-	addArgs := append([]string{"add"}, files...)
+	addArgs := []string{"add", "-A"}
 	logrus.WithField("cmd", gitCmd).WithField("args", addArgs).Info("running command ...")
 	addCmd := exec.Command(gitCmd, addArgs...)
 	addCmd.Dir = dir
