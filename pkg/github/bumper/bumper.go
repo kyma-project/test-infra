@@ -363,7 +363,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 	}
 
 	for i, changeFunc := range prh.Changes() {
-		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
+		commitMsg, _, err := changeFunc(context.Background())
 		if err != nil {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
 		}
