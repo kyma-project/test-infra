@@ -122,16 +122,16 @@ func getVersionsAndCheckConsistency(prefixes []bumper.Prefix, images map[string]
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
-func (c *client) Changes() []func(context.Context) (string, []string, error) {
-	return []func(context.Context) (string, []string, error){
-		func(ctx context.Context) (string, []string, error) {
+func (c *client) Changes() []func(context.Context) (string, error) {
+	return []func(context.Context) (string, error){
+		func(ctx context.Context) (string, error) {
 			var err error
 			if c.images, err = updateReferencesWrapper(ctx, c.o); err != nil {
-				return "", []string{""}, fmt.Errorf("failed to update image references: %w", err)
+				return "", fmt.Errorf("failed to update image references: %w", err)
 			}
 
 			if c.versions, err = getVersionsAndCheckConsistency(c.o.Prefixes, c.images); err != nil {
-				return "", []string{""}, err
+				return "", err
 			}
 
 			var body string
@@ -141,7 +141,7 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 				body = body + generateSummary(prefix.Name, prefix.Repo, prefix.Prefix, prefix.Summarise, c.images) + "\n\n"
 			}
 
-			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), []string{""}, nil
+			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), nil
 		},
 	}
 }
