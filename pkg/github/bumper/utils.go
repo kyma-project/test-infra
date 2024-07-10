@@ -13,8 +13,9 @@ type GitCommand struct {
 	workingDir  string
 }
 
-func (gc *GitCommand) Call(stdout, stderr io.Writer) error {
-	return Call(stdout, stderr, gc.baseCommand, gc.buildCommand()...)
+// Call will execute the Git command and switch the working directory if specified
+func (gc GitCommand) Call(stdout, stderr io.Writer, opts ...CallOption) error {
+	return Call(stdout, stderr, gc.baseCommand, gc.buildCommand(), opts...)
 }
 
 func (gc *GitCommand) buildCommand() []string {
