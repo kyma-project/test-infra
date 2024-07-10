@@ -17,7 +17,6 @@ import (
 	"github.com/kyma-project/test-infra/pkg/github/imagebumper"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	flag "github.com/spf13/pflag"
 	"golang.org/x/oauth2/google"
 	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -465,46 +464,12 @@ func validateOptions(o bumper.Options) error {
 	return nil
 }
 
-func parseOptions() (*options, *bumper.Options, error) {
-	var labelsOverride []string
-	var skipPullRequest bool
-	var signoff bool
-
-	var o options
-	flag.StringSliceVar(&labelsOverride, "labels-override", nil, "Override labels to be added to PR.")
-	flag.BoolVar(&skipPullRequest, "skip-pullrequest", false, "")
-	flag.BoolVar(&signoff, "signoff", false, "Signoff the commits.")
-	flag.Parse()
-
-	var pro bumper.Options
-	data, err := os.ReadFile(AutobumpConfig)
-	if err != nil {
-		return nil, nil, fmt.Errorf("read %q: %w", AutobumpConfig, err)
-	}
-
-	if err = yaml.Unmarshal(data, &o); err != nil {
-		return nil, nil, fmt.Errorf("unmarshal %q: %w", AutobumpConfig, err)
-	}
-
-	if err := yaml.Unmarshal(data, &pro); err != nil {
-		return nil, nil, fmt.Errorf("unmarshal %q: %w", AutobumpConfig, err)
-	}
-
-	if labelsOverride != nil {
-		pro.Labels = labelsOverride
-	}
-	pro.SkipPullRequest = skipPullRequest
-	return &o, &pro, nil
-}
-
 // runAutobumper is wrapper for bumper API -> ACL
 func runAutobumper(autoBumperCfg string) error {
 	data, err := os.ReadFile(autoBumperCfg)
 	if err != nil {
 		return fmt.Errorf("open autobumper config: %s", err)
 	}
-
-	_, pro, _ := parseOptions()
 
 	var bumperClientOpt bumper.Options
 	err = yaml.Unmarshal(data, &bumperClientOpt)
@@ -518,10 +483,6 @@ func runAutobumper(autoBumperCfg string) error {
 		return fmt.Errorf("decode bumper options: %s", err)
 	}
 
-	if err := validateOptions(opts); err != nil {
-		logrus.WithError(err).Fatalf("Failed validating flags")
-	}
-
 	ctx := context.Background()
-	return bumper.Run(ctx, pro, &client{o: &bumperClientOpt})
+	return bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
 }
