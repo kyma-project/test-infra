@@ -108,62 +108,67 @@ const (
 	gitCmd = "git"
 )
 
+type callOptions struct {
+	ctx context.Context
+	dir string
+}
+
+type CallOption func(*callOptions)
+
 // PRHandler is the interface implemented by consumer of prcreator, for
 // manipulating the repo, and provides commit messages, PR title and body.
 type PRHandler interface {
 	// Changes returns a slice of functions, each one does some stuff, and
 	// returns commit message for the changes and list of files that should be added to commit
-	Changes() []func(context.Context) (string, []string, error)
+	Changes() []func(context.Context) (string, error)
 	// PRTitleBody returns the body of the PR, this function runs after all
 	// changes have been executed
 	PRTitleBody() (string, string, error)
 }
 
-func Call(stdout, stderr io.Writer, cmd string, args ...string) error {
-	(&logrus.Logger{
+func Call(stdout, stderr io.Writer, cmd string, args []string, opts ...CallOption) error {
+	var options callOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
+	logger := (&logrus.Logger{
 		Out:       stderr,
 		Formatter: logrus.StandardLogger().Formatter,
 		Hooks:     logrus.StandardLogger().Hooks,
 		Level:     logrus.StandardLogger().Level,
 	}).WithField("cmd", cmd).
 		// The default formatting uses a space as separator, which is hard to read if an arg contains a space
-		WithField("args", fmt.Sprintf("['%s']", strings.Join(args, "', '"))).
-		Info("running command")
+		WithField("args", fmt.Sprintf("['%s']", strings.Join(args, "', '")))
 
-	c := exec.Command(cmd, args...)
+	if options.dir != "" {
+		logger = logger.WithField("dir", options.dir)
+	}
+	logger.Info("running command")
+
+	var c *exec.Cmd
+	if options.ctx != nil {
+		c = exec.CommandContext(options.ctx, cmd, args...)
+	} else {
+		c = exec.Command(cmd, args...)
+	}
 	c.Stdout = stdout
 	c.Stderr = stderr
+	if options.dir != "" {
+		c.Dir = options.dir
+	}
 	return c.Run()
 }
 
-func getTreeRef(stderr io.Writer, refname string) (string, error) {
+func getTreeRef(stderr io.Writer, refname string, opts ...CallOption) (string, error) {
 	revParseStdout := &bytes.Buffer{}
-	if err := Call(revParseStdout, stderr, gitCmd, "rev-parse", refname+":"); err != nil {
+	if err := Call(revParseStdout, stderr, gitCmd, []string{"rev-parse", refname + ":"}, opts...); err != nil {
 		return "", fmt.Errorf("parse ref: %w", err)
 	}
 	fields := strings.Fields(revParseStdout.String())
 	if n := len(fields); n < 1 {
-		return "", errors.New("got no otput when trying to rev-parse")
+		return "", errors.New("got no output when trying to rev-parse")
 	}
 	return fields[0], nil
-}
-
-func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
-	tmpRead, tmpWrite, err := os.Pipe()
-	if err != nil {
-		return "", err
-	}
-
-	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
-		return "", fmt.Errorf("git status: %w", err)
-	}
-	tmpWrite.Close()
-	output, err := io.ReadAll(tmpRead)
-	if err != nil {
-		return "", err
-	}
-	stdout.Write(output)
-	return string(output), nil
 }
 
 func gitAdd(dir string) error {
@@ -188,41 +193,43 @@ func gitAdd(dir string) error {
 	return nil
 }
 
-func gitCommit(name, email, message string, dir string) error {
+func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
+	if err := Call(stdout, stderr, gitCmd, []string{"add", "-A"}); err != nil {
+		return fmt.Errorf("git add: %w", err)
+	}
 	commitArgs := []string{"commit", "-m", message}
 	if name != "" && email != "" {
 		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
 	}
-	logrus.WithField("cmd", gitCmd).WithField("args", commitArgs).Info("running command ...")
-	commitCmd := exec.Command(gitCmd, commitArgs...)
-	commitCmd.Dir = dir
-	commitOutput, commitErr := commitCmd.CombinedOutput()
-	if commitErr != nil {
-		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(commitOutput))
-		return fmt.Errorf("git commit: %w", commitErr)
+	if err := Call(stdout, stderr, gitCmd, commitArgs); err != nil {
+		return fmt.Errorf("git commit: %w", err)
 	}
 	return nil
 }
 
-func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool) error {
-	if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
+// MinimalGitPush pushes the content of the local repository to the remote, checking to make
+// sure that there are real changes that need updating by diffing the tree refs, ensuring that
+// no metadata-only pushes occur, as those re-trigger tests, remove LGTM, and cause churn without
+// changing the content being proposed in the PR.
+func MinimalGitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool, opts ...CallOption) error {
+	if err := Call(stdout, stderr, gitCmd, []string{"remote", "add", forkRemoteName, remote}, opts...); err != nil {
 		return fmt.Errorf("add remote: %w", err)
 	}
 	fetchStderr := &bytes.Buffer{}
 	var remoteTreeRef string
-	if err := Call(stdout, fetchStderr, gitCmd, "fetch", forkRemoteName, remoteBranch); err != nil {
+	if err := Call(stdout, fetchStderr, gitCmd, []string{"fetch", forkRemoteName, remoteBranch}, opts...); err != nil {
 		logrus.Info("fetchStderr is : ", fetchStderr.String())
 		if !strings.Contains(strings.ToLower(fetchStderr.String()), fmt.Sprintf("couldn't find remote ref %s", remoteBranch)) {
 			return fmt.Errorf("fetch from fork: %w", err)
 		}
 	} else {
 		var err error
-		remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch))
+		remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch), opts...)
 		if err != nil {
 			return fmt.Errorf("get remote tree ref: %w", err)
 		}
 	}
-	localTreeRef, err := getTreeRef(stderr, "HEAD")
+	localTreeRef, err := getTreeRef(stderr, "HEAD", opts...)
 	if err != nil {
 		return fmt.Errorf("get local tree ref: %w", err)
 	}
@@ -234,7 +241,7 @@ func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool)
 	}
 	// Avoid doing metadata-only pushes that re-trigger tests and remove lgtm
 	if localTreeRef != remoteTreeRef {
-		if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, ""); err != nil {
+		if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, "", opts...); err != nil {
 			return err
 		}
 	} else {
@@ -244,14 +251,14 @@ func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool)
 }
 
 // GitPush push the changes to the given remote and branch.
-func GitPush(remote, remoteBranch string, stdout, stderr io.Writer, workingDir string) error {
+func GitPush(remote, remoteBranch string, stdout, stderr io.Writer, workingDir string, opts ...CallOption) error {
 	logrus.Info("Pushing to remote...")
 	gc := GitCommand{
 		baseCommand: gitCmd,
 		args:        []string{"push", "-f", remote, fmt.Sprintf("HEAD:%s", remoteBranch)},
 		workingDir:  workingDir,
 	}
-	if err := gc.Call(stdout, stderr); err != nil {
+	if err := gc.Call(stdout, stderr, opts...); err != nil {
 		return fmt.Errorf("%s: %w", gc.getCommand(), err)
 	}
 	return nil
@@ -318,7 +325,7 @@ func validateOptions(o *Options) error {
 }
 
 // Run is the entrypoint which will update files based on the provided options and PRHandler.
-func Run(_ context.Context, o *Options, prh PRHandler) error {
+func Run(ctx context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
 	}
@@ -327,12 +334,25 @@ func Run(_ context.Context, o *Options, prh PRHandler) error {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
 
-	return processGitHub(o, prh)
+	return processGitHub(ctx, o, prh)
 }
 
-func processGitHub(o *Options, prh PRHandler) error {
-	stdout := CensoredWriter{Delegate: os.Stdout, Censor: secret.Censor}
-	stderr := CensoredWriter{Delegate: os.Stderr, Censor: secret.Censor}
+type HideSecretsWriter struct {
+	Delegate io.Writer
+	Censor   func(content []byte) []byte
+}
+
+func (w HideSecretsWriter) Write(content []byte) (int, error) {
+	_, err := w.Delegate.Write(w.Censor(content))
+	if err != nil {
+		return 0, err
+	}
+	return len(content), nil
+}
+
+func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
+	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
+	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
@@ -346,6 +366,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 	if err != nil {
 		return fmt.Errorf("failed to construct GitHub client: %v", err)
 	}
+
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
 		if err != nil {
@@ -362,13 +383,15 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
+	// Make change, commit and push
+	var anyChange bool
 	for i, changeFunc := range prh.Changes() {
-		commitMsg, _, err := changeFunc(context.Background())
+		msg, err := changeFunc(ctx)
 		if err != nil {
-			return fmt.Errorf("failed to process function %d: %s", i, err)
+			return fmt.Errorf("process function %d: %w", i, err)
 		}
 
-		changed, err := HasChanges("/workspace")
+		changed, err := HasChanges()
 		if err != nil {
 			return fmt.Errorf("checking changes: %w", err)
 		}
@@ -378,33 +401,21 @@ func processGitHub(o *Options, prh PRHandler) error {
 			continue
 		}
 
-		resp, err := gitStatus(stdout, stderr)
-		if err != nil {
-			return fmt.Errorf("git status: %w", err)
-		}
-		if strings.Contains(resp, "nothing to commit, working tree clean") {
-			fmt.Println("No changes, quitting.")
-			return nil
-		}
-
-		if err := gitAdd("/workspace"); err != nil {
-			return fmt.Errorf("add changes to commit %w", err)
-		}
-
-		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, "/workspace"); err != nil {
-			return fmt.Errorf("commit changes to the remote branch: %w", err)
+		anyChange = true
+		if err := gitCommit(o.GitName, o.GitEmail, msg, stdout, stderr); err != nil {
+			return fmt.Errorf("git commit: %w", err)
 		}
 	}
+	if !anyChange {
+		logrus.Info("Nothing changed from all functions, skip PR ...")
+		return nil
+	}
 
-	remote := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName)
-	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
+	if err := MinimalGitPush(fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubHost, o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
 	summary, body, err := prh.PRTitleBody()
-	if err != nil {
-		return fmt.Errorf("creating PR summary and body: %w", err)
-	}
 	if o.GitHubBaseBranch == "" {
 		repo, err := gc.GetRepo(o.GitHubOrg, o.GitHubRepo)
 		if err != nil {
@@ -419,45 +430,37 @@ func processGitHub(o *Options, prh PRHandler) error {
 }
 
 // HasChanges checks if the current git repo contains any changes
-func HasChanges(dir string) (bool, error) {
+func HasChanges() (bool, error) {
 	// Configure Git to recognize the /workspace directory as safe
-	configArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
+	additionalArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
+	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
+	}
+
+	additionalArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
+	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput2))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs2, configErr)
+	}
+
+	// Configure Git to recognize the /workspace directory as safe
+	configArgs := []string{"config", "--global", "--add", "safe.directory", "'*'"}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
-	configCmd := exec.Command(gitCmd, configArgs...)
-	configCmd.Dir = dir
-	configOutput, configErr := configCmd.CombinedOutput()
+	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
 	if configErr != nil {
 		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput))
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
 	}
 
-	configArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
-	logrus.WithField("cmd", gitCmd).WithField("args", configArgs2).Info("running command ...")
-	configCmd2 := exec.Command(gitCmd, configArgs2...)
-	configCmd2.Dir = dir
-	configOutput2, configErr2 := configCmd2.CombinedOutput()
-	if configErr2 != nil {
-		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput2))
-		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs2, configErr2)
-	}
-
-	configArgs3 := []string{"config", "--global", "--add", "safe.directory", "*"}
-	logrus.WithField("cmd", gitCmd).WithField("args", configArgs3).Info("running command ...")
-	configCmd3 := exec.Command(gitCmd, configArgs3...)
-	configCmd3.Dir = dir
-	configOutput3, configErr3 := configCmd3.CombinedOutput()
-	if configErr3 != nil {
-		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput3))
-		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs3, configErr3)
-	}
-
 	// Check for changes using git status
 	statusArgs := []string{"status", "--porcelain"}
 	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).Info("running command ...")
-	statusCmd := exec.Command(gitCmd, statusArgs...)
-	statusCmd.Dir = dir
-	combinedOutput, err := statusCmd.CombinedOutput()
-	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).WithField("output", string(combinedOutput)).Info("git status --porcelain output")
+	combinedOutput, err := exec.Command(gitCmd, statusArgs...).CombinedOutput()
 	if err != nil {
 		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(combinedOutput))
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, statusArgs, err)
@@ -468,9 +471,7 @@ func HasChanges(dir string) (bool, error) {
 	if hasChanges {
 		diffArgs := []string{"diff"}
 		logrus.WithField("cmd", gitCmd).WithField("args", diffArgs).Info("running command ...")
-		diffCmd := exec.Command(gitCmd, diffArgs...)
-		diffCmd.Dir = dir
-		diffOutput, diffErr := diffCmd.CombinedOutput()
+		diffOutput, diffErr := exec.Command(gitCmd, diffArgs...).CombinedOutput()
 		if diffErr != nil {
 			logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(diffOutput))
 			return true, fmt.Errorf("running command %s %s: %w", gitCmd, diffArgs, diffErr)
