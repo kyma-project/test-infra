@@ -127,11 +127,11 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 		func(ctx context.Context) (string, []string, error) {
 			var err error
 			if c.images, err = updateReferencesWrapper(ctx, c.o); err != nil {
-				return "", nil, fmt.Errorf("failed to update image references: %w", err)
+				return "", []string{""}, fmt.Errorf("failed to update image references: %w", err)
 			}
 
 			if c.versions, err = getVersionsAndCheckConsistency(c.o.Prefixes, c.images); err != nil {
-				return "", nil, err
+				return "", []string{""}, err
 			}
 
 			var body string
@@ -141,7 +141,7 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 				body = body + generateSummary(prefix.Name, prefix.Repo, prefix.Prefix, prefix.Summarise, c.images) + "\n\n"
 			}
 
-			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), nil, nil
+			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), []string{""}, nil
 		},
 	}
 }
@@ -159,7 +159,7 @@ func updateReferencesWrapper(ctx context.Context, o *bumper.Options) (map[string
 	if err != nil {
 		return nil, fmt.Errorf("bad regexp %q: %w", strings.Join(allPrefixes, "|"), err)
 	}
-	var client = http.DefaultClient
+	var client *http.Client = http.DefaultClient
 	if o.ImageRegistryAuth == googleImageRegistryAuth {
 		var err2 error
 		client, err2 = google.DefaultClient(ctx, cloudPlatformScope)
