@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -401,15 +400,6 @@ func processGitHub(o *Options, prh PRHandler) error {
 func HasChanges() (bool, error) {
 	// List files in the workspace directory
 	dir := "/workspace"
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		logrus.Fatalf("failed to list files in directory %s: %s", dir, err)
-	}
-
-	logrus.Infof("Listing files in directory: %s", dir)
-	for _, file := range files {
-		logrus.Infof(" - %s", file.Name())
-	}
 
 	// Configure Git to recognize the /workspace directory as safe
 	configArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
@@ -448,6 +438,7 @@ func HasChanges() (bool, error) {
 	statusCmd := exec.Command(gitCmd, statusArgs...)
 	statusCmd.Dir = dir
 	combinedOutput, err := statusCmd.CombinedOutput()
+	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).WithField("output", string(combinedOutput)).Info("git status --porcelain output")
 	if err != nil {
 		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(combinedOutput))
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, statusArgs, err)
