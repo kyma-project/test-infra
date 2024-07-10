@@ -166,8 +166,17 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	return string(output), nil
 }
 
-func gitAdd(files []string, dir string) error {
-	addArgs := []string{"add", "-A"}
+func gitAdd(dir string) error {
+	updateArgs := []string{"add", "-u"}
+	logrus.WithField("cmd", gitCmd).WithField("args", updateArgs).Info("running command ...")
+	updateCmd := exec.Command(gitCmd, updateArgs...)
+	updateCmd.Dir = dir
+	updateOutput, updateErr := updateCmd.CombinedOutput()
+	if updateErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(updateOutput))
+		return fmt.Errorf("git add: %w", updateErr)
+	}
+	addArgs := []string{"add", "-a"}
 	logrus.WithField("cmd", gitCmd).WithField("args", addArgs).Info("running command ...")
 	addCmd := exec.Command(gitCmd, addArgs...)
 	addCmd.Dir = dir
@@ -378,7 +387,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 			return nil
 		}
 
-		if err := gitAdd(filesToBeAdded, "/workspace"); err != nil {
+		if err := gitAdd("/workspace"); err != nil {
 			return fmt.Errorf("add changes to commit %w", err)
 		}
 
