@@ -412,35 +412,42 @@ func HasChanges() (bool, error) {
 	}
 
 	// Configure Git to recognize the /workspace directory as safe
-	additionalArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
-	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
-	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
-	if configErr != nil {
-		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput))
-		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
-	}
-
-	additionalArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
-	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
-	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
-	if configErr != nil {
-		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput2))
-		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs2, configErr)
-	}
-
-	// Configure Git to recognize the /workspace directory as safe
-	configArgs := []string{"config", "--global", "--add", "safe.directory", "'*'"}
+	configArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
-	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
+	configCmd := exec.Command(gitCmd, configArgs...)
+	configCmd.Dir = dir
+	configOutput, configErr := configCmd.CombinedOutput()
 	if configErr != nil {
 		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput))
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
 	}
 
+	configArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
+	logrus.WithField("cmd", gitCmd).WithField("args", configArgs2).Info("running command ...")
+	configCmd2 := exec.Command(gitCmd, configArgs2...)
+	configCmd2.Dir = dir
+	configOutput2, configErr2 := configCmd2.CombinedOutput()
+	if configErr2 != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput2))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs2, configErr2)
+	}
+
+	configArgs3 := []string{"config", "--global", "--add", "safe.directory", "*"}
+	logrus.WithField("cmd", gitCmd).WithField("args", configArgs3).Info("running command ...")
+	configCmd3 := exec.Command(gitCmd, configArgs3...)
+	configCmd3.Dir = dir
+	configOutput3, configErr3 := configCmd3.CombinedOutput()
+	if configErr3 != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput3))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs3, configErr3)
+	}
+
 	// Check for changes using git status
 	statusArgs := []string{"status", "--porcelain"}
 	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).Info("running command ...")
-	combinedOutput, err := exec.Command(gitCmd, statusArgs...).CombinedOutput()
+	statusCmd := exec.Command(gitCmd, statusArgs...)
+	statusCmd.Dir = dir
+	combinedOutput, err := statusCmd.CombinedOutput()
 	if err != nil {
 		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(combinedOutput))
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, statusArgs, err)
@@ -451,7 +458,9 @@ func HasChanges() (bool, error) {
 	if hasChanges {
 		diffArgs := []string{"diff"}
 		logrus.WithField("cmd", gitCmd).WithField("args", diffArgs).Info("running command ...")
-		diffOutput, diffErr := exec.Command(gitCmd, diffArgs...).CombinedOutput()
+		diffCmd := exec.Command(gitCmd, diffArgs...)
+		diffCmd.Dir = dir
+		diffOutput, diffErr := diffCmd.CombinedOutput()
 		if diffErr != nil {
 			logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(diffOutput))
 			return true, fmt.Errorf("running command %s %s: %w", gitCmd, diffArgs, diffErr)
