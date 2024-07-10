@@ -398,7 +398,16 @@ func processGitHub(o *Options, prh PRHandler) error {
 
 // HasChanges checks if the current git repo contains any changes
 func HasChanges() (bool, error) {
-	// Configure Git to recognize the /workspace directory as safe
+	// Sprawdzenie, czy jest to repozytorium Git
+	isRepoArgs := []string{"rev-parse", "--is-inside-work-tree"}
+	logrus.WithField("cmd", gitCmd).WithField("args", isRepoArgs).Info("running command ...")
+	isRepoOutput, isRepoErr := exec.Command(gitCmd, isRepoArgs...).CombinedOutput()
+	if isRepoErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(isRepoOutput))
+		return false, fmt.Errorf("not a git repository (or any of the parent directories): %w", isRepoErr)
+	}
+
+	// Configure Git user.email
 	additionalArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
 	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
@@ -407,6 +416,7 @@ func HasChanges() (bool, error) {
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
 	}
 
+	// Configure Git user.name
 	additionalArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
 	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
@@ -415,7 +425,7 @@ func HasChanges() (bool, error) {
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs2, configErr)
 	}
 
-	// Configure Git to recognize the /workspace directory as safe
+	// Configure Git safe directory
 	configArgs := []string{"config", "--global", "--add", "safe.directory", "'*'"}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
 	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
