@@ -16,7 +16,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.11.0
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/go-jose/go-jose/v4 v4.0.2
+	github.com/go-jose/go-jose/v4 v4.0.3
 	github.com/go-playground/validator/v10 v10.22.0
 	github.com/google/go-containerregistry v0.20.0
 	github.com/google/go-github/v48 v48.2.0
