@@ -76,6 +76,8 @@ type Options struct {
 	ImageRegistryAuth string `yaml:"imageRegistryAuth"`
 	// AdditionalPRBody allows for generic, additional content in the body of the PR
 	AdditionalPRBody string `yaml:"additionalPRBody"`
+	// GitHubHost is the host of the GitHub instance. If not set, it defaults to "github.com".
+	GitHubHost string `yaml:"GitHubHost"`
 }
 
 // prefix is the information needed for each prefix being bumped.
@@ -313,9 +315,14 @@ func processGitHub(o *Options, prh PRHandler) error {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
 
-	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, github.DefaultGraphQLEndpoint, github.DefaultAPIEndpoint)
+	gitHubHost := "https://api.github.com"
+	if o.GitHubHost != "" {
+		gitHubHost = fmt.Sprintf("https://%s/api/v3", o.GitHubHost)
+	}
+
+	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, gitHubHost, gitHubHost)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to construct GitHub client: %v", err)
 	}
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
@@ -337,6 +344,16 @@ func processGitHub(o *Options, prh PRHandler) error {
 		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
 		if err != nil {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
+		}
+
+		changed, err := HasChanges()
+		if err != nil {
+			return fmt.Errorf("checking changes: %w", err)
+		}
+
+		if !changed {
+			logrus.WithField("function", i).Info("Nothing changed, skip commit ...")
+			continue
 		}
 
 		resp, err := gitStatus(stdout, stderr)
@@ -377,4 +394,57 @@ func processGitHub(o *Options, prh PRHandler) error {
 		return fmt.Errorf("to create the PR: %w", err)
 	}
 	return nil
+}
+
+// HasChanges checks if the current git repo contains any changes
+func HasChanges() (bool, error) {
+	// Configure Git to recognize the /workspace directory as safe
+	additionalArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
+	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
+	}
+
+	additionalArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
+	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput2))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs2, configErr)
+	}
+
+	// Configure Git to recognize the /workspace directory as safe
+	configArgs := []string{"config", "--global", "--add", "safe.directory", "'*'"}
+	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
+	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
+	}
+
+	// Check for changes using git status
+	statusArgs := []string{"status", "--porcelain"}
+	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).Info("running command ...")
+	combinedOutput, err := exec.Command(gitCmd, statusArgs...).CombinedOutput()
+	if err != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(combinedOutput))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, statusArgs, err)
+	}
+	hasChanges := len(strings.TrimSuffix(string(combinedOutput), "\n")) > 0
+
+	// If there are changes, get the diff
+	if hasChanges {
+		diffArgs := []string{"diff"}
+		logrus.WithField("cmd", gitCmd).WithField("args", diffArgs).Info("running command ...")
+		diffOutput, diffErr := exec.Command(gitCmd, diffArgs...).CombinedOutput()
+		if diffErr != nil {
+			logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(diffOutput))
+			return true, fmt.Errorf("running command %s %s: %w", gitCmd, diffArgs, diffErr)
+		}
+		logrus.WithField("cmd", gitCmd).Debugf("diff output is '%s'", string(diffOutput))
+	}
+
+	return hasChanges, nil
 }
