@@ -185,7 +185,7 @@ func parseOptions() (*options, *bumper.Options, error) {
 	var signoff bool
 
 	var o options
-	flag.StringVar(&config, "config", "", "The path to the config file for the autobumber.")
+	flag.StringVar(&config, "autobump-config", "", "The path to the config file for the autobumber.")
 	flag.StringSliceVar(&labelsOverride, "labels-override", nil, "Override labels to be added to PR.")
 	flag.BoolVar(&skipPullRequest, "skip-pullrequest", false, "")
 	flag.BoolVar(&signoff, "signoff", false, "Signoff the commits.")
