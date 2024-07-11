@@ -331,7 +331,7 @@ func HasChanges(o *Options) (bool, error) {
 	}
 
 	// Configure Git to recognize the /workspace directory as safe
-	configArgs := []string{"config", "--global", "--add", "safe.directory", "'*'"}
+	configArgs := []string{"config", "--global", "--add", "safe.directory", "/workspace"}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
 	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
 	if configErr != nil {
