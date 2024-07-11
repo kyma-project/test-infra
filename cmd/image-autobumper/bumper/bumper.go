@@ -27,11 +27,10 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/kyma-project/test-infra/cmd/image-autobumper/updater"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
-
-	"github.com/kyma-project/test-infra/cmd/image-autobumper/updater"
-	github "github.com/kyma-project/test-infra/pkg/github/client/v3"
+	"k8s.io/test-infra/prow/github"
 )
 
 const (

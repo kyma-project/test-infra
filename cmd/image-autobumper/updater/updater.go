@@ -20,8 +20,8 @@ package updater
 import (
 	"fmt"
 
-	github "github.com/kyma-project/test-infra/pkg/github/client/v3"
 	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/github"
 )
 
 // Indicates whether maintainers can modify a pull request in fork.
