@@ -28,8 +28,8 @@ var (
 	// AutoBumpConfig contains path to AutoBump config file
 	AutoBumpConfig string
 
-	// GithubTokenPath path to file containing GitHub token for fetching inrepo config
-	GithubTokenPath string
+	// GitHubToken contains path to GitHub token
+	GitHubToken string
 
 	// tagRegexp is the regular expression to match a tag.
 	tagRegexp = regexp.MustCompile("v[0-9]{8}-[a-f0-9]{6,9}")
@@ -169,7 +169,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&AutoBumpConfig, "autobump-config", "", "path to the Autobump config file")
-	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
+	rootCmd.PersistentFlags().StringVar(&GitHubToken, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 }
 
 func main() {

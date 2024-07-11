@@ -44,34 +44,34 @@ const (
 // Options is the options for autobumper operations.
 type Options struct {
 	// The target GitHub org name where the autobump PR will be created. Only required when SkipPullRequest is false.
-	GitHubOrg string `json:"gitHubOrg"`
+	GitHubOrg string `json:"gitHubOrg" yaml:"gitHubOrg"`
 	// The target GitHub repo name where the autobump PR will be created. Only required when SkipPullRequest is false.
-	GitHubRepo string `json:"gitHubRepo"`
+	GitHubRepo string `json:"gitHubRepo" yaml:"gitHubRepo"`
 	// The name of the branch in the target GitHub repo on which the autobump PR will be based.  If not specified, will be autodetected via GitHub API.
-	GitHubBaseBranch string `json:"gitHubBaseBranch"`
+	GitHubBaseBranch string `json:"gitHubBaseBranch" yaml:"gitHubBaseBranch"`
 	// The GitHub username to use. If not specified, uses values from the user associated with the access token.
-	GitHubLogin string `json:"gitHubLogin"`
+	GitHubLogin string `json:"gitHubLogin" yaml:"gitHubLogin"`
 	// The path to the GitHub token file. Only required when SkipPullRequest is false.
-	GitHubToken string `json:"gitHubToken"`
+	GitHubToken string `json:"gitHubToken" yaml:"gitHubToken"`
 	// The name to use on the git commit. Only required when GitEmail is specified and SkipPullRequest is false. If not specified, uses values from the user associated with the access token
-	GitName string `json:"gitName"`
+	GitName string `json:"gitName" yaml:"gitName"`
 	// The email to use on the git commit. Only required when GitName is specified and SkipPullRequest is false. If not specified, uses values from the user associated with the access token.
-	GitEmail string `json:"gitEmail"`
+	GitEmail string `json:"gitEmail" yaml:"gitEmail"`
 	// AssignTo specifies who to assign the created PR to. Takes precedence over onCallAddress and onCallGroup if set.
-	AssignTo string `json:"assign_to"`
+	AssignTo string `json:"assign_to" yaml:"assign_to"`
 	// Whether to skip creating the pull request for this bump.
-	SkipPullRequest bool `json:"skipPullRequest"`
+	SkipPullRequest bool `json:"skipPullRequest" yaml:"skipPullRequest"`
 	// Whether to signoff the commits.
-	Signoff bool `json:"signoff"`
+	Signoff bool `json:"signoff" yaml:"signoff"`
 	// The name used in the address when creating remote. This should be the same name as the fork. If fork does not exist this will be the name of the fork that is created.
 	// If it is not the same as the fork, the robot will change the name of the fork to this. Format will be git@github.com:{GitLogin}/{RemoteName}.git
-	RemoteName string `json:"remoteName"`
+	RemoteName string `json:"remoteName" yaml:"remoteName"`
 	// The name of the branch that will be used when creating the pull request. If unset, defaults to "autobump".
-	HeadBranchName string `json:"headBranchName"`
+	HeadBranchName string `json:"headBranchName" yaml:"headBranchName"`
 	// Optional list of labels to add to the bump PR
-	Labels []string `json:"labels"`
+	Labels []string `json:"labels" yaml:"labels"`
 	// The GitHub host to use, defaulting to github.com
-	GitHubHost string `json:"gitHubHost"`
+	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
 }
 
 // PRHandler is the interface implemented by consumer of prcreator, for
