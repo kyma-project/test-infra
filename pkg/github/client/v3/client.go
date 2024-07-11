@@ -34,7 +34,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kyma-project/test-infra/pkg/sets/ghcache"
 	"github.com/kyma-project/test-infra/pkg/sets/throttle"
 	"github.com/kyma-project/test-infra/pkg/sets/version"
 	"github.com/prometheus/client_golang/prometheus"
@@ -43,6 +42,7 @@ import (
 	"golang.org/x/oauth2"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/test-infra/ghproxy/ghcache"
 )
 
 type timeClient interface {

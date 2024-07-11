@@ -30,8 +30,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go/v4"
-
-	"github.com/kyma-project/test-infra/pkg/sets/ghcache"
+	"k8s.io/test-infra/ghproxy/ghcache"
 )
 
 type appGitHubClient interface {
