@@ -1,19 +1,3 @@
-/*
-Copyright 2019 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package bumper
 
 import (
@@ -214,7 +198,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 			return fmt.Errorf("process function %d: %w", i, err)
 		}
 
-		changed, err := HasChanges()
+		changed, err := HasChanges(o)
 		if err != nil {
 			return fmt.Errorf("checking changes: %w", err)
 		}
@@ -328,9 +312,9 @@ func UpdatePullRequestWithLabels(gc github.Client, org, repo, title, body, sourc
 }
 
 // HasChanges checks if the current git repo contains any changes
-func HasChanges() (bool, error) {
+func HasChanges(o *Options) (bool, error) {
 	// Configure Git to recognize the /workspace directory as safe
-	additionalArgs := []string{"config", "--global", "user.email", "dl_666c0cf3e82c7d0136da22ea@global.corp.sap"}
+	additionalArgs := []string{"config", "--global", "user.email", o.GitEmail}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
 	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
 	if configErr != nil {
@@ -338,7 +322,7 @@ func HasChanges() (bool, error) {
 		return false, fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
 	}
 
-	additionalArgs2 := []string{"config", "--global", "user.name", "autobumper-github-tools-sap-serviceuser"}
+	additionalArgs2 := []string{"config", "--global", "user.name", o.GitName}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
 	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
 	if configErr != nil {
