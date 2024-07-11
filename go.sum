@@ -140,6 +140,8 @@ github.com/charmbracelet/lipgloss v0.5.0/go.mod h1:EZLha/HbzEt7cYqdFPovlqy5FZPj0
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
+github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466 h1:eUjwn08FDjbj8vBM31026tjBraJCu+qpDvo/q0EAvQk=
+github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466/go.mod h1:f7xZ2fRr8CqTp834KCxLW2pOXC/raqwhTbEvtxu/lRo=
 github.com/clarketm/json v1.13.4 h1:0JketcMdLC16WGnRGJiNmTXuQznDEQaiknxSPRBxg+k=
 github.com/clarketm/json v1.13.4/go.mod h1:ynr2LRfb0fQU34l07csRNBTcivjySLLiY1YzQqKVfdo=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
