@@ -269,7 +269,7 @@ func updateReferencesWrapper(ctx context.Context, o *options) (map[string]string
 	if err != nil {
 		return nil, fmt.Errorf("bad regexp %q: %w", strings.Join(allPrefixes, "|"), err)
 	}
-	var client *http.Client = http.DefaultClient
+	var client = http.DefaultClient
 	if o.ImageRegistryAuth == googleImageRegistryAuth {
 		var err error
 		client, err = google.DefaultClient(ctx, cloudPlatformScope)
@@ -292,8 +292,6 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 		if tagPicker, err = upstreamImageVersionResolver(o, o.TargetVersion, parseUpstreamImageVersion, imageBumperCli); err != nil {
 			return nil, fmt.Errorf("failed to resolve the %s image version: %w", o.TargetVersion, err)
 		}
-	default:
-		tagPicker = func(imageHost, imageName, currentTag string) (string, error) { return o.TargetVersion, nil }
 	}
 
 	updateFile := func(name string) error {
@@ -317,7 +315,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to get the file info for %q: %w", path, err)
 		}
 		if info.IsDir() {
-			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, err error) error {
+			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, _ error) error {
 				return updateYAMLFile(subpath)
 			})
 			if err != nil {
