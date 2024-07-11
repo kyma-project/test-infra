@@ -18,7 +18,7 @@ Key features:
 ## Quickstart Guide
 
 You can use Image Builder in your GitHub workflow to build an image in an SLC-29-compliant system.
-Here is an example of a GitHub workflow building an image using Image Builder:
+[Here](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/pull-image-builder-test.yml) is an example of a GitHub workflow building an image using Image Builder:
 
 ```yaml
 name: pull-image-builder-test
