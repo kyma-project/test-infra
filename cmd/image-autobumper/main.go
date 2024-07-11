@@ -317,7 +317,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 			return nil, fmt.Errorf("failed to get the file info for %q: %w", path, err)
 		}
 		if info.IsDir() {
-			err := filepath.Walk(path, func(subpath string, info os.FileInfo, err error) error {
+			err := filepath.Walk(path, func(subpath string, _ os.FileInfo, err error) error {
 				return updateYAMLFile(subpath)
 			})
 			if err != nil {
