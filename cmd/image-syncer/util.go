@@ -2,26 +2,35 @@ package main
 
 import (
 	"fmt"
-	imagesyncer "github.com/kyma-project/test-infra/pkg/imagesync"
 	"os"
 	"strings"
+
+	imagesyncer "github.com/kyma-project/test-infra/pkg/imagesync"
 
 	"gopkg.in/yaml.v3"
 )
 
 func getTarget(source, targetRepo, targetTag string) (string, error) {
-	target := targetRepo + source
+	// Parse the source image to extract the repository name
+	sourceParts := strings.Split(source, "/")
+	repoName := sourceParts[len(sourceParts)-1] // Get the last part which should be repo:tag or repo@sha256
+
+	if strings.Contains(repoName, ":") {
+		repoName = strings.Split(repoName, ":")[0]
+	} else if strings.Contains(repoName, "@sha256:") {
+		repoName = strings.Split(repoName, "@sha256:")[0]
+	}
+
+	target := fmt.Sprintf("%s%s", targetRepo, repoName)
 	if strings.Contains(source, "@sha256:") {
 		if targetTag == "" {
 			return "", fmt.Errorf("sha256 digest detected, but the \"tag\" was not specified")
 		}
-		imageName := strings.Split(source, "@sha256:")[0]
-		target = targetRepo + imageName + ":" + targetTag
-		// Allow retagging when the source image is not using SHA256 hash
+		target = fmt.Sprintf("%s:%s", target, targetTag)
 	} else if targetTag != "" {
-		imageName := strings.Split(source, ":")[0]
-		target = targetRepo + imageName + ":" + targetTag
+		target = fmt.Sprintf("%s:%s", target, targetTag)
 	}
+
 	return target, nil
 }
 

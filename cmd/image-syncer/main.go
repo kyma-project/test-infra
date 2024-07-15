@@ -182,6 +182,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, authCfg []byte) error {
 	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 	for _, img := range images.Images {
+		// Update target repo prefix and source image to reflect namespace handling
 		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
 		imageType := "Index"
 		if err != nil {
