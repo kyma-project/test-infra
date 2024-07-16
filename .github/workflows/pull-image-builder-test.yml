@@ -39,6 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-image
     steps:
-      - name: Test image
+      - name: Test image test
         run: echo "Testing images ${{ needs.build-image.outputs.images }}"
 
