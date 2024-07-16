@@ -12,7 +12,7 @@ templates:
                     description: "Unstale Gardener project. This prowjob creates and removes a cluster to unstale the project"
                   type_periodic: "true"
                   cluster: "trusted-workload"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240712-f3c3878e
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240716-9b7057ce
                   decorate: "true"
                   skip_report: "false"
                   cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
