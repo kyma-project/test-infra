@@ -41,3 +41,4 @@ jobs:
     steps:
       - name: Test image
         run: echo "Testing images ${{ needs.build-image.outputs.images }}"
+
