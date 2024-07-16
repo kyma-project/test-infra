@@ -1,0 +1,132 @@
+apiVersion: prow.k8s.io/v1
+kind: ProwJob
+metadata:
+  annotations:
+    description: Builds go-based toolkit in one go
+    owner: neighbors
+    prow.k8s.io/context: post-test-infra-ko-build2
+    prow.k8s.io/job: post-test-infra-ko-build2
+  creationTimestamp: null
+  labels:
+    created-by-prow: "true"
+    preset-sa-kyma-push-images: "true"
+    prow.k8s.io/context: post-test-infra-ko-build2
+    prow.k8s.io/job: post-test-infra-ko-build2
+    prow.k8s.io/pubsub.project: sap-kyma-prow
+    prow.k8s.io/pubsub.runID: post-test-infra-ko-build
+    prow.k8s.io/pubsub.topic: prowjobs
+    prow.k8s.io/refs.base_ref: main
+    prow.k8s.io/refs.org: kyma-project
+    prow.k8s.io/refs.pull: "11277"
+    prow.k8s.io/refs.repo: test-infra
+    prow.k8s.io/type: presubmit
+  name: 0fe6f473-ec55-4e99-b5c7-e2dff50fb693
+spec:
+  agent: kubernetes
+  cluster: trusted-workload
+  context: post-test-infra-ko-build2
+  decoration_config:
+    censor_secrets: true
+    censoring_options:
+      censoring_buffer_size: 3092
+      censoring_concurrency: 2
+    default_service_account_name: prowjob-default-sa
+    gcs_configuration:
+      bucket: kyma-prow-logs
+      path_strategy: explicit
+    gcs_credentials_secret: ""
+    grace_period: 10m0s
+    resources:
+      clonerefs:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      initupload:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      place_entrypoint:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      sidecar:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+    timeout: 3h0m0s
+    utility_images:
+      clonerefs: gcr.io/k8s-prow/clonerefs:v20240627-79d27b6e3
+      entrypoint: gcr.io/k8s-prow/entrypoint:v20240627-79d27b6e3
+      initupload: gcr.io/k8s-prow/initupload:v20240627-79d27b6e3
+      sidecar: gcr.io/k8s-prow/sidecar:v20240627-79d27b6e3
+  job: post-test-infra-ko-build2
+  namespace: default
+  pod_spec:
+    containers:
+    - args:
+      - |-
+        TAG="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}"
+        ko resolve -f .koapps.yaml \
+          --base-import-paths \
+          --tags=latest \
+          --tags="$TAG" \
+          -j4
+      command:
+      - bash
+      - -c
+      env:
+      - name: KO_DOCKER_REPO
+        value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-push-images/service-account.json
+      image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240705-f43bf98f
+      name: ""
+      resources:
+        limits:
+          cpu: "3"
+          memory: 6Gi
+        requests:
+          cpu: "3"
+          memory: 6Gi
+      securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        seccompProfile:
+          type: RuntimeDefault
+      volumeMounts:
+      - mountPath: /etc/credentials/sa-kyma-push-images
+        name: sa-kyma-push-images
+        readOnly: true
+    volumes:
+    - name: sa-kyma-push-images
+      secret:
+        secretName: sa-kyma-push-images
+  prowjob_defaults:
+    tenant_id: GlobalDefaultID
+  refs:
+    base_ref: main
+    base_sha: ef3298c32cacf4a6821d746faf6930e86c4cd843
+    org: kyma-project
+    pulls:
+    - author: akiioto
+      number: 11277
+      sha: ccda4a5c1d82df07cad8f90f15848728a8803afd
+    repo: test-infra
+  report: true
+  rerun_command: /test post-test-infra-ko-build2
+  type: presubmit
+status:
+  startTime: "2024-07-08T23:07:57Z"
+  state: triggered

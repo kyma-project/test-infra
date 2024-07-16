@@ -42,7 +42,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-main-test-infra-image-syncer-run
+    - name: post-main-test-infra-image-syncer-run2
       annotations:
         description: "Sync images from external sources to Kyma owned registry"
         owner: "neighbors"
@@ -51,7 +51,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-main-test-infra-image-syncer-run"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(cmd/image-syncer/external-images.yaml)'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -61,7 +60,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240705-f6c638d2"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240716-ef3298c3"
             securityContext:
               privileged: false
               seccompProfile:

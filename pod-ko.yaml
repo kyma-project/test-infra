@@ -1,0 +1,191 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    description: Builds go-based toolkit in one go
+    owner: neighbors
+    prow.k8s.io/context: post-test-infra-ko-build2
+    prow.k8s.io/job: post-test-infra-ko-build2
+  labels:
+    preset-sa-kyma-push-images: "true"
+    prow.k8s.io/build-id: "1810451625718845440"
+    prow.k8s.io/context: post-test-infra-ko-build2
+    prow.k8s.io/id: 0fe6f473-ec55-4e99-b5c7-e2dff50fb693
+    prow.k8s.io/job: post-test-infra-ko-build2
+    prow.k8s.io/pubsub.project: sap-kyma-prow
+    prow.k8s.io/pubsub.runID: post-test-infra-ko-build
+    prow.k8s.io/pubsub.topic: prowjobs
+    prow.k8s.io/refs.base_ref: main
+    prow.k8s.io/refs.org: kyma-project
+    prow.k8s.io/refs.pull: "11277"
+    prow.k8s.io/refs.repo: test-infra
+    prow.k8s.io/type: presubmit
+  name: 0fe6f473-ec55-4e99-b5c7-e2dff50fb693
+spec:
+  automountServiceAccountToken: true
+  serviceAccountName: prowjob-default-sa
+  containers:
+    - command:
+        - /tools/entrypoint
+      env:
+        - name: KO_DOCKER_REPO
+          value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/credentials/sa-kyma-push-images/service-account.json
+        - name: ARTIFACTS
+          value: /logs/artifacts
+        - name: BUILD_ID
+          value: "1810451625718845440"
+        - name: BUILD_NUMBER
+          value: "1810451625718845440"
+        - name: CI
+          value: "true"
+        - name: GOPATH
+          value: /home/prow/go
+        - name: JOB_NAME
+          value: post-test-infra-ko-build2
+        - name: JOB_SPEC
+          value: '{"type":"presubmit","job":"post-test-infra-ko-build2","buildid":"1810451625718845440","prowjobid":"0fe6f473-ec55-4e99-b5c7-e2dff50fb693","refs":{"org":"kyma-project","repo":"test-infra","base_ref":"main","base_sha":"ef3298c32cacf4a6821d746faf6930e86c4cd843","pulls":[{"number":11277,"author":"akiioto","sha":"fa3e37595114955c87c3cd067d1c8d39c264b307"}]},"decoration_config":{"timeout":"3h0m0s","grace_period":"10m0s","utility_images":{"clonerefs":"gcr.io/k8s-prow/clonerefs:v20240627-79d27b6e3","initupload":"gcr.io/k8s-prow/initupload:v20240627-79d27b6e3","entrypoint":"gcr.io/k8s-prow/entrypoint:v20240627-79d27b6e3","sidecar":"gcr.io/k8s-prow/sidecar:v20240627-79d27b6e3"},"resources":{"clonerefs":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"initupload":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"place_entrypoint":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"sidecar":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}}},"gcs_configuration":{"bucket":"kyma-prow-logs","path_strategy":"explicit"},"gcs_credentials_secret":"","default_service_account_name":"prowjob-default-sa","censor_secrets":true,"censoring_options":{"censoring_concurrency":2,"censoring_buffer_size":3092}}}'
+        - name: JOB_TYPE
+          value: presubmit
+        - name: PROW_JOB_ID
+          value: 0fe6f473-ec55-4e99-b5c7-e2dff50fb693
+        - name: PULL_BASE_REF
+          value: main
+        - name: PULL_BASE_SHA
+          value: ef3298c32cacf4a6821d746faf6930e86c4cd843
+        - name: PULL_HEAD_REF
+        - name: PULL_NUMBER
+          value: "11330"
+        - name: PULL_PULL_SHA
+          value: fa3e37595114955c87c3cd067d1c8d39c264b307
+        - name: PULL_REFS
+          value: main:ef3298c32cacf4a6821d746faf6930e86c4cd843,11277:fa3e37595114955c87c3cd067d1c8d39c264b307
+        - name: PULL_TITLE
+        - name: REPO_NAME
+          value: test-infra
+        - name: REPO_OWNER
+          value: kyma-project
+        - name: ENTRYPOINT_OPTIONS
+          value: '{"timeout":10800000000000,"grace_period":600000000000,"artifact_dir":"/logs/artifacts","args":["bash","-c","TAG=\"$(date +v%Y%m%d)-${PULL_BASE_SHA::8}\"\nko resolve -f .koapps.yaml \\\n  --base-import-paths \\\n  --tags=latest \\\n  --tags=\"$TAG\" \\\n  -j4"],"container_name":"test","process_log":"/logs/process-log.txt","marker_file":"/logs/marker-file.txt","metadata_file":"/logs/artifacts/metadata.json"}'
+      image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240705-f43bf98f
+      name: test
+      resources:
+        limits:
+          cpu: "3"
+          memory: 6Gi
+        requests:
+          cpu: "3"
+          memory: 6Gi
+      securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        seccompProfile:
+          type: RuntimeDefault
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+        - mountPath: /etc/credentials/sa-kyma-push-images
+          name: sa-kyma-push-images
+          readOnly: true
+        - mountPath: /logs
+          name: logs
+        - mountPath: /tools
+          name: tools
+        - mountPath: /home/prow/go
+          name: code
+      workingDir: /home/prow/go/src/github.com/kyma-project/test-infra
+    - env:
+        - name: JOB_SPEC
+          value: '{"type":"presubmit","job":"post-test-infra-ko-build2","buildid":"1810451625718845440","prowjobid":"0fe6f473-ec55-4e99-b5c7-e2dff50fb693","refs":{"org":"kyma-project","repo":"test-infra","base_ref":"main","base_sha":"ef3298c32cacf4a6821d746faf6930e86c4cd843","pulls":[{"number":11277,"author":"akiioto","sha":"fa3e37595114955c87c3cd067d1c8d39c264b307"}]},"decoration_config":{"timeout":"3h0m0s","grace_period":"10m0s","utility_images":{"clonerefs":"gcr.io/k8s-prow/clonerefs:v20240627-79d27b6e3","initupload":"gcr.io/k8s-prow/initupload:v20240627-79d27b6e3","entrypoint":"gcr.io/k8s-prow/entrypoint:v20240627-79d27b6e3","sidecar":"gcr.io/k8s-prow/sidecar:v20240627-79d27b6e3"},"resources":{"clonerefs":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"initupload":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"place_entrypoint":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"sidecar":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}}},"gcs_configuration":{"bucket":"kyma-prow-logs","path_strategy":"explicit"},"gcs_credentials_secret":"","default_service_account_name":"prowjob-default-sa","censor_secrets":true,"censoring_options":{"censoring_concurrency":2,"censoring_buffer_size":3092}}}'
+        - name: SIDECAR_OPTIONS
+          value: '{"gcs_options":{"items":["/logs/artifacts"],"bucket":"kyma-prow-logs","path_strategy":"explicit","local_output_dir":"/output","dry_run":false},"entries":[{"args":["bash","-c","TAG=\"$(date +v%Y%m%d)-${PULL_BASE_SHA::8}\"\nko resolve -f .koapps.yaml \\\n  --base-import-paths \\\n  --tags=latest \\\n  --tags=\"$TAG\" \\\n  -j4"],"container_name":"test","process_log":"/logs/process-log.txt","marker_file":"/logs/marker-file.txt","metadata_file":"/logs/artifacts/metadata.json"}],"censoring_options":{"secret_directories":["/etc/credentials/sa-kyma-push-images"],"censoring_concurrency":2,"censoring_buffer_size":3092}}'
+      image: gcr.io/k8s-prow/sidecar:v20240627-79d27b6e3
+      name: sidecar
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+        - mountPath: /logs
+          name: logs
+        - mountPath: /etc/credentials/sa-kyma-push-images
+          name: sa-kyma-push-images
+          readOnly: true
+        - mountPath: /output
+          name: output
+  initContainers:
+    - env:
+        - name: CLONEREFS_OPTIONS
+          value: '{"src_root":"/home/prow/go","log":"/logs/clone.json","git_user_name":"ci-robot","git_user_email":"ci-robot@k8s.io","refs":[{"org":"kyma-project","repo":"test-infra","base_ref":"main","base_sha":"ef3298c32cacf4a6821d746faf6930e86c4cd843","pulls":[{"number":11277,"author":"akiioto","sha":"fa3e37595114955c87c3cd067d1c8d39c264b307"}]}],"github_api_endpoints":["https://api.github.com"]}'
+      image: gcr.io/k8s-prow/clonerefs:v20240627-79d27b6e3
+      name: clonerefs
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+        - mountPath: /logs
+          name: logs
+        - mountPath: /home/prow/go
+          name: code
+        - mountPath: /tmp
+          name: clonerefs-tmp
+    - env:
+        - name: INITUPLOAD_OPTIONS
+          value: '{"bucket":"kyma-prow-logs","path_strategy":"explicit","local_output_dir":"/output","dry_run":false,"log":"/logs/clone.json"}'
+        - name: JOB_SPEC
+          value: '{"type":"presubmit","job":"post-test-infra-ko-build2","buildid":"1810451625718845440","prowjobid":"0fe6f473-ec55-4e99-b5c7-e2dff50fb693","refs":{"org":"kyma-project","repo":"test-infra","base_ref":"main","base_sha":"ef3298c32cacf4a6821d746faf6930e86c4cd843","pulls":[{"number":11277,"author":"akiioto","sha":"fa3e37595114955c87c3cd067d1c8d39c264b307"}]},"decoration_config":{"timeout":"3h0m0s","grace_period":"10m0s","utility_images":{"clonerefs":"gcr.io/k8s-prow/clonerefs:v20240627-79d27b6e3","initupload":"gcr.io/k8s-prow/initupload:v20240627-79d27b6e3","entrypoint":"gcr.io/k8s-prow/entrypoint:v20240627-79d27b6e3","sidecar":"gcr.io/k8s-prow/sidecar:v20240627-79d27b6e3"},"resources":{"clonerefs":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"initupload":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"place_entrypoint":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}},"sidecar":{"limits":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"100m","memory":"250Mi"}}},"gcs_configuration":{"bucket":"kyma-prow-logs","path_strategy":"explicit"},"gcs_credentials_secret":"","default_service_account_name":"prowjob-default-sa","censor_secrets":true,"censoring_options":{"censoring_concurrency":2,"censoring_buffer_size":3092}}}'
+      image: gcr.io/k8s-prow/initupload:v20240627-79d27b6e3
+      name: initupload
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+        - mountPath: /logs
+          name: logs
+    - args:
+        - --copy-mode-only
+      image: gcr.io/k8s-prow/entrypoint:v20240627-79d27b6e3
+      name: place-entrypoint
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+        requests:
+          cpu: 100m
+          memory: 250Mi
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+        - mountPath: /tools
+          name: tools
+  restartPolicy: Never
+  securityContext: {}
+  terminationGracePeriodSeconds: 750
+  volumes:
+    - name: sa-kyma-push-images
+      secret:
+        secretName: sa-kyma-push-images
+    - emptyDir: {}
+      name: logs
+    - emptyDir: {}
+      name: tools
+    - emptyDir: {}
+      name: output
+    - emptyDir: {}
+      name: clonerefs-tmp
+    - emptyDir: {}
+      name: code
+status: {}
