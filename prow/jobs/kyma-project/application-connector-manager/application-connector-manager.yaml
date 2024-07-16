@@ -183,7 +183,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240712-f3c3878e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240716-9b7057ce"
             securityContext:
               privileged: true
               seccompProfile:
