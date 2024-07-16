@@ -6,7 +6,7 @@ on:
   workflow_call:
     inputs:
       name:
-        description: Name of the build image
+        description: Name of the build image test
         required: false
         type: string
         default: test-infra/ginkgo
