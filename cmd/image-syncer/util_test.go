@@ -3,9 +3,17 @@ package main
 import (
 	"os"
 	"testing"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestGetTarget(t *testing.T) {
+func TestMainSuite(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Main Suite")
+}
+
+var _ = Describe("getTarget", func() {
 	tests := []struct {
 		source     string
 		targetRepo string
@@ -58,26 +66,26 @@ func TestGetTarget(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.source, func(t *testing.T) {
+		test := test // capture range variable
+		It("should handle "+test.source, func() {
 			result, err := getTarget(test.source, test.targetRepo, test.targetTag)
-			if (err != nil) != test.shouldErr {
-				t.Errorf("expected error: %v, got: %v", test.shouldErr, err)
-			}
-			if result != test.expected {
-				t.Errorf("expected: %s, got: %s", test.expected, result)
+			if test.shouldErr {
+				Expect(err).To(HaveOccurred())
+			} else {
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(Equal(test.expected))
 			}
 		})
 	}
-}
+})
 
-func TestParseImagesFile(t *testing.T) {
+var _ = Describe("parseImagesFile", func() {
 	validYAML := `
 targetRepoPrefix: "external/prod/"
 images:
   - source: "cypress/included:9.5.0"
     target: "external/prod/cypress/included:latest"
 `
-
 	missingTargetRepoPrefixYAML := `
 images:
   - source: "cypress/included:9.5.0"
@@ -104,27 +112,23 @@ images:
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		test := test // capture range variable
+		It("should handle "+test.name, func() {
 			file, err := os.CreateTemp("", "test*.yaml")
-			if err != nil {
-				t.Fatalf("Failed to create temp file: %v", err)
-			}
+			Expect(err).NotTo(HaveOccurred())
 			defer os.Remove(file.Name())
 
-			if _, err := file.Write([]byte(test.content)); err != nil {
-				t.Fatalf("Failed to write to temp file: %v", err)
-			}
-			if err := file.Close(); err != nil {
-				t.Fatalf("Failed to close temp file: %v", err)
-			}
+			_, err = file.Write([]byte(test.content))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(file.Close()).To(Succeed())
 
 			_, err = parseImagesFile(file.Name())
-			if (err != nil) != test.shouldErr {
-				t.Errorf("expected error: %v, got: %v", test.shouldErr, err)
-			}
-			if err != nil && test.shouldErr && err.Error() != test.expectedErr {
-				t.Errorf("expected error message: %s, got: %s", test.expectedErr, err.Error())
+			if test.shouldErr {
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(test.expectedErr))
+			} else {
+				Expect(err).NotTo(HaveOccurred())
 			}
 		})
 	}
-}
+})
