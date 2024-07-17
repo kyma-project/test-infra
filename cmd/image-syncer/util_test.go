@@ -32,7 +32,7 @@ var _ = Describe("getTarget", func() {
 			source:     "included:9.5.0",
 			targetRepo: "external/prod/",
 			targetTag:  "latest",
-			expected:   "external/prod/included:latest",
+			expected:   "external/prod/library/included:latest",
 			shouldErr:  false,
 		},
 		{
@@ -46,7 +46,7 @@ var _ = Describe("getTarget", func() {
 			source:     "included@sha256:abcdef",
 			targetRepo: "external/prod/",
 			targetTag:  "latest",
-			expected:   "external/prod/included:latest",
+			expected:   "external/prod/library/included:latest",
 			shouldErr:  false,
 		},
 		{

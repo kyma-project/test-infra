@@ -14,7 +14,10 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 	sourceParts := strings.Split(source, "/")
 	repoName := sourceParts[len(sourceParts)-1] // Get the last part which should be repo:tag or repo@sha256
 
-	if len(sourceParts) > 1 {
+	// Add "library/" if the source image is not namespaced
+	if len(sourceParts) == 1 {
+		repoName = "library/" + repoName
+	} else {
 		repoName = strings.Join(sourceParts[:len(sourceParts)-1], "/") + "/" + repoName
 	}
 
