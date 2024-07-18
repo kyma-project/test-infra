@@ -30,7 +30,6 @@ plank:
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
-      gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
 
 deck:
   spyglass:

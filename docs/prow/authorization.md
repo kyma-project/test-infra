@@ -9,7 +9,6 @@ To deploy a Prow cluster, configure the following service accounts in the Google
 | **sa-gke-kyma-integration**   | Runs integration tests on a GKE cluster. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `Compute Admin` (`roles/compute.admin`), `Compute Network Admin`,`Kubernetes Engine Admin` (`roles/container.admin`), `Kubernetes Engine Cluster Admin` (`roles/container.clusterAdmin`), `DNS Administrator` (`roles/dns.admin`), `Service Account User` (`roles/iam.serviceAccountUser`), `Storage Admin` (`roles/storage.admin`)
 | **sa-kyma-artifacts**         | Saves release and development artifacts to the GCS bucket. | `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-vm-kyma-integration**    | Runs integration tests on k3d. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
-| **sa-gcs-plank**              | Currently not in use. | no roles attached
 | **sa-crier**                  | Reports Prow Job statuses to GitHub. | `Service Account User` |
 
 
