@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -117,7 +117,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -165,7 +165,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -205,57 +205,6 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
-    - name: pre-main-tpi-otel-collector
-      annotations:
-        description: "Pre-submit job to build OpenTelemetry Collector image."
-        owner: "huskies"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-tpi-otel-collector"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^otel-collector/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/otel-collector"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=otel-collector"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-              - "--build-in-ado=true"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
-            resources:
-              requests:
-                memory: 6Gi
-                cpu: 1
-              limits:
-                memory: 6Gi
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
 
 postsubmits: # runs on main
   kyma-project/third-party-images:
@@ -276,7 +225,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -327,7 +276,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -379,7 +328,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: false
               seccompProfile:
@@ -428,7 +377,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240717-aeb236e0"
             securityContext:
               privileged: true
               seccompProfile:
@@ -467,62 +416,6 @@ postsubmits: # runs on main
                 readOnly: true
         volumes:
           - name: share
-          - name: config
-            configMap:
-              name: kaniko-build-config
-    - name: post-main-tpi-otel-collector
-      annotations:
-        description: "Post-submit job to build OpenTelemetry Collector image."
-        owner: "huskies"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-tpi-otel-collector"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^otel-collector/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      reporter_config:
-        slack:
-          channel: huskies-notifications
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240711-76cb2bfd"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/otel-collector"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=otel-collector"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-              - "--build-in-ado=true"
-              - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
-            env:
-              - name: "ADO_PAT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "image-builder-ado-token"
-                    key: "token"
-            resources:
-              requests:
-                memory: 6Gi
-                cpu: 1
-              limits:
-                memory: 6Gi
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-        volumes:
           - name: config
             configMap:
               name: kaniko-build-config

@@ -15,6 +15,15 @@ images:
 - source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
   tag: "1.22.5-alpine3.20"
   amd64Only: true
+- source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
+  tag: "1.22.5-alpine"
+  amd64Only: true
+- source: "golang@sha256:cdc86d9f363e8786845bea2040312b4efa321b828acdeb26f393faa864d887b0"
+  tag: "1.22.2-alpine"
+  amd64Only: true
+- source: "golang@sha256:6c2780255bb7b881e904e303be0d7a079054160b2ce1efde446693c0850a39ad"
+  tag: "1.22.5-bookworm"
+  amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
