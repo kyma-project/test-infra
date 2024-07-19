@@ -13,13 +13,13 @@ resource "google_service_account" "gcr-cleaner" {
 
 resource "google_service_account" "github-issue-finder" {
   account_id       = "github-issue-finder"
-  display_name     = "default_display_name"
+  display_name     = "github-issue-finder"
   description      = "Identity of cloud run instance running github issue finder service."
 }
 
 resource "google_service_account" "secrets-leak-log-scanner" {
   account_id       = "secrets-leak-log-scanner"
-  display_name     = "default_display_name"
+  display_name     = "secrets-leak-log-scanner"
   description      = "Identity of cloud run instance running log scanner service."
 }
 
@@ -31,7 +31,7 @@ resource "google_service_account" "control-plane" {
 
 resource "google_service_account" "slack-message-sender" {
   account_id       = "slack-message-sender"
-  display_name     = "default_display_name"
+  display_name     = "slack-message-sender"
   description      = "Identity of cloud run instance running slack message sender service."
 }
 
@@ -115,13 +115,13 @@ resource "google_service_account" "sa-kyma-artifacts" {
 
 resource "google_service_account" "secrets-leak-detector" {
   account_id       = "secrets-leak-detector"
-  display_name     = "default_display_name"
+  display_name     = "secrets-leak-detector"
   description      = "Identity of secrets leak detector application."
 }
 
 resource "google_service_account" "sa-keys-cleaner" {
   account_id       = "sa-keys-cleaner"
-  display_name     = "default_display_name"
+  display_name     = "sa-keys-cleaner"
   description      = "Identity of the service account keys rotator service."
 }
 
@@ -169,7 +169,7 @@ resource "google_service_account" "sa-prow-deploy" {
 
 resource "google_service_account" "github-issue-creator" {
   account_id       = "github-issue-creator"
-  display_name     = "default_display_name"
+  display_name     = "github-issue-creator"
   description      = "Identity of cloud run instance running github issue creator service."
 }
 
@@ -181,19 +181,19 @@ resource "google_service_account" "sa-dev-kyma-project" {
 
 resource "google_service_account" "github-webhook-gateway" {
   account_id       = "github-webhook-gateway"
-  display_name     = "default_display_name"
+  display_name     = "github-webhook-gateway"
   description      = "Identity of cloud run instance running github webhook gateway service."
 }
 
 resource "google_service_account" "sa-keys-rotator" {
   account_id       = "sa-keys-rotator"
-  display_name     = "default_display_name"
+  display_name     = "sa-keys-rotator"
   description      = "Identity of the service account keys rotator service."
 }
 
 resource "google_service_account" "gcs-bucket-mover" {
   account_id       = "gcs-bucket-mover"
-  display_name     = "default_display_name"
+  display_name     = "gcs-bucket-mover"
   description      = "Identity of cloud run instance running gcs bucket mover service."
 }
 
