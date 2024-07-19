@@ -19,7 +19,6 @@ package imagebumper
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -54,13 +53,10 @@ var (
 	tagRegexp = regexp.MustCompile(`(v?\d{8}-(?:v\d(?:[.-]\d+)*-g)?[0-9a-f]{6,10}|latest)(-.+)?`)
 )
 
+// Constants to indicate parts of the image and tag regex matches.
 const (
-	imageHostPartStart  = 0
-	imageHostPartEnd    = 1
-	imageImagePartStart = 2
-	imageImagePartEnd   = 3
-	imageTagPartStart   = 4
-	imageTagPartEnd     = 5
+	tagVersionPart = 1 // Index of the main version part of the tag in regex match
+	tagExtraPart   = 2 // Index of the extra part of the tag in regex match
 )
 
 type Client struct {
@@ -103,17 +99,22 @@ func DeconstructCommit(commit string) (string, int, string) {
 
 	// If there's only one part, it can be a version tag or a commit hash
 	if len(parts) == 1 {
-		return "", 0, parts[0]
+		// Check if it's a commit hash
+		if len(parts[0]) == 40 || !strings.HasPrefix(parts[0], "v") {
+			return "", 0, strings.TrimPrefix(parts[0], "g")
+		}
+		// It's a tag
+		return parts[0], 0, ""
 	}
 
 	// If there are two parts, we need to handle it based on the second part
 	if len(parts) == 2 {
 		// If the second part starts with 'g', it's a git commit hash
 		if strings.HasPrefix(parts[1], "g") {
-			return parts[0], 0, parts[1][1:]
+			return parts[0], 0, strings.TrimPrefix(parts[1], "g")
 		}
 		// Otherwise, it's a version tag
-		return parts[0], 0, parts[1]
+		return parts[0], 0, ""
 	}
 
 	// If there are three parts, it should be in the form v0.0.30-14-gdeadbeef
@@ -124,9 +125,7 @@ func DeconstructCommit(commit string) (string, int, string) {
 			panic(err) // Handle error appropriately in real code
 		}
 		// The last part should start with 'g' and followed by a commit hash
-		if strings.HasPrefix(parts[2], "g") {
-			return parts[0], n, parts[2][1:]
-		}
+		return parts[0], n, strings.TrimPrefix(parts[2], "g")
 	}
 
 	// Fallback for unexpected formats
@@ -276,52 +275,32 @@ func (cli *Client) AddToCache(image, newTag string) {
 	cli.tagCache[image] = newTag
 }
 
-// updateAllTags updates all image tags in the content using the provided tagPicker function.
-// It filters images based on the provided imageFilter regex, if not nil.
-func updateAllTags(tagPicker func(host, image, tag string) (string, error), content []byte, imageFilter *regexp.Regexp) []byte {
-	// Find all submatch indices for images in the content
-	indexes := imageRegexp.FindAllSubmatchIndex(content, -1)
-	// If no images are found, return the original content
-	if indexes == nil {
-		return content
-	}
-
-	// Initialize new content with the same capacity as the original
-	newContent := make([]byte, 0, len(content))
-	lastIndex := 0
-
-	for _, m := range indexes {
-		// Append content up to the current image tag part
-		newContent = append(newContent, content[lastIndex:m[imageTagPartStart*2]]...)
-
-		// Extract host, image, and tag parts from the content
-		host := string(content[m[imageHostPartStart*2]:m[imageHostPartEnd*2+1]])
-		image := string(content[m[imageImagePartStart*2]:m[imageImagePartEnd*2+1]])
-		tag := string(content[m[imageTagPartStart*2]:m[imageTagPartEnd*2+1]])
-		lastIndex = m[1]
-
-		// If tag is empty or does not match the filter, append the original tag part and continue
-		if tag == "" || (imageFilter != nil && !imageFilter.MatchString(host+"/"+image+":"+tag)) {
-			newContent = append(newContent, content[m[imageTagPartStart*2]:m[1]]...)
-			continue
+// updateAllTags updates all image tags in the given content based on the tagPicker function.
+// If imageFilter is provided, only images matching the filter will be updated.
+func updateAllTags(tagPicker func(string, string, string) (string, error), content []byte, imageFilter *regexp.Regexp) []byte {
+	return imageRegexp.ReplaceAllFunc(content, func(image []byte) []byte {
+		matches := imageRegexp.FindSubmatch(image)
+		if len(matches) != 4 {
+			return image // Should not happen, but for safety
 		}
 
-		// Get the latest tag using the tagPicker function
-		latest, err := tagPicker(host, image, tag)
+		imageHost := string(matches[1])
+		imageName := string(matches[2])
+		imageTag := string(matches[3])
+
+		// Apply image filter if provided
+		if imageFilter != nil && !imageFilter.Match(image) {
+			return image
+		}
+
+		newTag, err := tagPicker(imageHost, imageName, imageTag)
 		if err != nil {
-			log.Printf("Failed to update %s/%s:%s: %v.\n", host, image, tag, err)
-			newContent = append(newContent, content[m[imageTagPartStart*2]:m[1]]...)
-			continue
+			return image // If there is an error getting the new tag, return the original image
 		}
 
-		// Append the latest tag to the new content
-		newContent = append(newContent, []byte(latest)...)
-	}
-
-	// Append the remaining content after the last match
-	newContent = append(newContent, content[lastIndex:]...)
-
-	return newContent
+		// Construct the updated image with the new tag
+		return []byte(fmt.Sprintf("%s/%s:%s", imageHost, imageName, newTag))
+	})
 }
 
 // UpdateFile updates a file in place.
