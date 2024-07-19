@@ -1,4 +1,4 @@
-FROM golang:1.23rc1-alpine as base
+FROM golang:1.23rc2-alpine as base
 
 
 RUN set -eux; \

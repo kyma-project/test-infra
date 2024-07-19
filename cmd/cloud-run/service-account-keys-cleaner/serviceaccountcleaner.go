@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
-	"github.com/kyma-project/test-infra/pkg/gcp/iam"
-	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
+	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
+	"github.com/kyma-project/test-infra/pkg/gcp/iam"
+	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 
 	"cloud.google.com/go/compute/metadata"
 	gcpiam "google.golang.org/api/iam/v1"
@@ -41,7 +42,7 @@ func main() {
 
 	ctx := context.Background()
 
-	projectID, err = metadata.ProjectID()
+	projectID, err = metadata.ProjectIDWithContext(ctx)
 	if err != nil {
 		mainLogger.LogCritical("failed to retrieve GCP Project ID, error: " + err.Error())
 	}
