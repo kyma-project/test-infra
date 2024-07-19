@@ -25,16 +25,22 @@ import (
 )
 
 var (
-	// AutoBumpConfig contains path to AutoBump config file
+	// AutoBumpConfig contains the path to the AutoBump config file
 	AutoBumpConfig string
 
-	// GitHubToken contains path to GitHub token
+	// GitHubToken contains the path to the GitHub token
 	GitHubToken string
 
 	// tagRegexp is the regular expression to match a tag.
+	// This expression matches a string that starts with 'v', followed by exactly 8 digits,
+	// a hyphen, and then a hexadecimal string of 6 to 9 characters.
 	tagRegexp = regexp.MustCompile("v[0-9]{8}-[a-f0-9]{6,9}")
 
 	// imageMatcher is the regular expression to match an image.
+	// This expression matches a string that starts with any character(s) (matched non-greedily due to (?s)^.),
+	// followed by the keyword 'image:', then captures any characters up to the next colon (:),
+	// and finally captures a version tag starting with 'v' and followed by any combination of alphanumeric
+	// characters, underscores, periods, or hyphens.
 	imageMatcher = regexp.MustCompile(`(?s)^.+image:(.+):(v[a-zA-Z0-9_.-]+)`)
 )
 
