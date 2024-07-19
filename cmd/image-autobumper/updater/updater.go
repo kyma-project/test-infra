@@ -87,6 +87,15 @@ func EnsurePRWithQueryTokens(org, repo, title, body, source, baseBranch, queryTo
 func updatePRWithQueryTokens(org, repo, title, body, queryTokensString string, gc updateClient) (*int, error) {
 	logrus.Info("Looking for a PR to reuse...")
 
+	// Constants for query fields
+	const (
+		queryState      = "state:open"
+		queryType       = "type:pr"
+		queryArchived   = "archived:false"
+		querySortField  = "updated"
+		firstIssueIndex = 0
+	)
+
 	// Get the bot user
 	me, err := gc.BotUser()
 	if err != nil {
@@ -109,7 +118,7 @@ func updatePRWithQueryTokens(org, repo, title, body, queryTokensString string, g
 	}
 
 	// Pick the first issue (most recently updated)
-	prNumber := issues[0].Number
+	prNumber := issues[firstIssueIndex].Number
 	logrus.Infof("Found PR #%d", prNumber)
 
 	// Prepare to ignore certain fields in the update request
