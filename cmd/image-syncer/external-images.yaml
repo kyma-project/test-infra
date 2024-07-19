@@ -15,6 +15,8 @@ images:
 - source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
   tag: "1.22.5-alpine3.20"
   amd64Only: true
+- source: "golang@sha256:7e788330fa9ae95c68784153b7fd5d5076c79af47651e992a3cdeceeb5dd1df0"
+  tag: "1.22.3-alpine"
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
