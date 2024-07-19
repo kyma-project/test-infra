@@ -81,9 +81,6 @@ type manifest map[string]struct {
 	Tags          []string `json:"tag"`
 }
 
-// commit | tag-n-gcommit
-var commitRegexp = regexp.MustCompile(`^g?([\da-f]+)|(.+?)??(?:-(\d+)-g([\da-f]+))?$`)
-
 // DeconstructCommit separates a git describe commit into its parts.
 //
 // Examples:
