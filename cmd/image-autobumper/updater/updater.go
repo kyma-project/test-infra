@@ -46,6 +46,9 @@ const (
 
 	// querySortField indicates the field to sort the search results by (updated time).
 	querySortField = "updated"
+
+	// firstIssueIndex is the index of the first issue in the search results.
+	firstIssueIndex = 0
 )
 
 type updateClient interface {
@@ -87,15 +90,6 @@ func EnsurePRWithQueryTokens(org, repo, title, body, source, baseBranch, queryTo
 // If found, it updates the PR; otherwise, it returns nil.
 func updatePRWithQueryTokens(org, repo, title, body, queryTokensString string, gc updateClient) (*int, error) {
 	logrus.Info("Looking for a PR to reuse...")
-
-	// Constants for query fields
-	const (
-		queryState      = "state:open"
-		queryType       = "type:pr"
-		queryArchived   = "archived:false"
-		querySortField  = "updated"
-		firstIssueIndex = 0
-	)
 
 	// Get the bot user
 	me, err := gc.BotUser()
