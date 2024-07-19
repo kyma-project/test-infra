@@ -415,19 +415,6 @@ resource "google_service_account" "sa-keys-rotator" {
   unique_id        = "116267434130697196528"
 }
 
-resource "google_service_account" "secrets-rotator" {
-  account_id       = "secrets-rotator"
-  display_name     = "Identity of the secrets rotator application"
-  description      = "No description provided"
-  disabled         = false
-  email            = "secrets-rotator@sap-kyma-prow.iam.gserviceaccount.com"
-  etag             = "MDEwMjE5MjA="
-  name             = "projects/sap-kyma-prow/serviceAccounts/secrets-rotator@sap-kyma-prow.iam.gserviceaccount.com"
-  oauth2_client_id = "111348641835057382688"
-  project_id       = var.gcp_project_id
-  unique_id        = "111348641835057382688"
-}
-
 resource "google_service_account" "gcs-bucket-mover" {
   account_id       = "gcs-bucket-mover"
   display_name     = "default_display_name"
