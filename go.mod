@@ -22,7 +22,7 @@ require (
 	github.com/go-playground/validator/v10 v10.22.0
 	github.com/gomodule/redigo v1.8.5
 	github.com/google/go-cmp v0.6.0
-	github.com/google/go-containerregistry v0.19.2
+	github.com/google/go-containerregistry v0.20.1
 	github.com/google/go-github/v48 v48.2.0
 	github.com/google/uuid v1.6.0
 	github.com/imdario/mergo v0.3.16
