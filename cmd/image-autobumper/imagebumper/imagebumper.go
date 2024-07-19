@@ -119,7 +119,7 @@ func DeconstructCommit(commit string) (string, int, string) {
 		// Parse the middle part as an integer (number of commits)
 		n, err := strconv.Atoi(parts[1])
 		if err != nil {
-			panic(err) // Handle error appropriately in real code
+			panic(err)
 		}
 		// The last part should start with 'g' and followed by a commit hash
 		return parts[0], n, strings.TrimPrefix(parts[2], "g")
