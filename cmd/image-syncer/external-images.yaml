@@ -1,67 +1,90 @@
-targetRepoPrefix:  "europe-docker.pkg.dev/kyma-project/prod/external/"
+targetRepoPrefix: "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
-- source: "alpine@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd"
-  tag: "3.20.0"
-- source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
-  amd64Only: true
-- source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
-  tag: "1.34.1-v1"
-- source: "curlimages/curl:7.78.0"
-- source: "cypress/included:9.5.0" # 10.3.0+, latest is 12.0.1
-  amd64Only: true
-- source: "gcr.io/google-containers/pause:3.2"
-- source: "goreleaser/goreleaser:v1.11.5"
-# Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
-  tag: "1.22.5-alpine3.20"
-  amd64Only: true
-- source: "golang@sha256:7e788330fa9ae95c68784153b7fd5d5076c79af47651e992a3cdeceeb5dd1df0"
-  tag: "1.22.3-alpine"
-- source: "grafana/grafana-image-renderer:3.2.1"
-  amd64Only: true
-- source: "hudymi/mockice:0.1.3"
-  amd64Only: true
-- source: "istio/pilot:1.22.2-distroless"
-- source: "istio/proxyv2:1.22.2-distroless"
-- source: "istio/install-cni:1.22.2-distroless"
-- source: "jettech/kube-webhook-certgen:v1.5.0"
-- source: "kennethreitz/httpbin:latest"
-  amd64Only: true
-- source: "oryd/hydra-maester:v0.0.25"
-  amd64Only: true
-- source: "oryd/hydra:v1.11.8"
-- source: "oryd/oathkeeper-maester:v0.1.5"
-  amd64Only: true
-- source: "oryd/oathkeeper:v0.38.25-beta.1"
-- source: "postgres@sha256:86c55091a74b9efe95396f65ddd83f0067ff47c3f09993621d6f94c835856445"
-  tag: "11.21-alpine3.18"
-- source: "prom/pushgateway:v1.8.0"
-- source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
-- source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
-- source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
-- source: "quay.io/jetstack/cert-manager-webhook:v1.1.0"
-- source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.66.0"
-- source: "quay.io/prometheus-operator/prometheus-operator:v0.66.0"
-- source: "quay.io/prometheus/alertmanager:v0.24.0"
-- source: "nats@sha256:1bcddab51b8099aad943e1e558d9aa7e91000ebc6e08e308e8e95fa3b50a000b"
-  tag: "v20240102-2.10.7-alpine3.18"
-- source: "natsio/nats-server-config-reloader:0.14.1"
-- source: "quay.io/prometheus/prometheus:v2.45.0"
-- source: "natsio/nats-box:0.14.1"
-- source: "natsio/prometheus-nats-exporter:0.14.0"
-- source: "mockserver/mockserver:mockserver-5.11.2"
-  amd64Only: true
-- source: "i331641/kyma-perf:v1"
-  amd64Only: true
-- source: "ghcr.io/kedacore/keda:2.14.0"
-- source: "ghcr.io/kedacore/keda-admission-webhooks:2.14.0"
-- source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
-- source: "nginx:1.23.3"
-  amd64Only: true
-- source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
-  tag: "v1.16-debian-1"
-- source: "gcr.io/istio-testing/ext-authz@sha256:8ffad059c8ad951102e5421562ac5b7cca129881903be8cbfdc5e910e49fd78e"
-  tag: "1.22-dev"
-  amd64Only: true
-- source: "registry@sha256:fb9c9aef62af3955f6014613456551c92e88a67dcf1fc51f5f91bcbd1832813f"
-  tag: "2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release
+  - source: "alpine@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd"
+    tag: "3.20.0"
+  - source: "alpine@sha256:b89d9c93e9ed3597455c90a0b88a8bbb5cb7188438f70953fede212a0c4394e0"
+    tag: "3.20.1"
+  - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
+    amd64Only: true
+  - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
+    tag: "1.34.1-v1"
+  - source: "curlimages/curl:7.78.0"
+  - source: "cypress/included:9.5.0" # 10.3.0+, latest is 12.0.1
+    amd64Only: true
+  - source: "gcr.io/google-containers/pause:3.2"
+  - source: "goreleaser/goreleaser:v1.11.5"
+  # Golang image is pinned because it is force updated in the upstream
+  - source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
+    tag: "1.22.5-alpine3.20"
+    amd64Only: true
+  - source: "golang@sha256:8c9183f715b0b4eca05b8b3dbf59766aaedb41ec07477b132ee2891ac0110a07"
+    tag: "1.22.5-alpine"
+    amd64Only: true
+  - source: "golang@sha256:cdc86d9f363e8786845bea2040312b4efa321b828acdeb26f393faa864d887b0"
+    tag: "1.22.2-alpine"
+    amd64Only: true
+  - source: "golang@sha256:7e788330fa9ae95c68784153b7fd5d5076c79af47651e992a3cdeceeb5dd1df0"
+    tag: "1.22.3-alpine"
+    amd64Only: true
+  - source: "golang@sha256:6c2780255bb7b881e904e303be0d7a079054160b2ce1efde446693c0850a39ad"
+    tag: "1.22.5-bookworm"
+    amd64Only: true
+  - source: "golang@sha256:7e0e13add7f57a3e030ef4c9180843ace2fff7c788d54a8b12945d7b5739a055"
+    tag: "1.21"
+    amd64Only: true
+  - source: "gcr.io/distroless/static:nonroot"
+  - source: "grafana/grafana-image-renderer:3.2.1"
+    amd64Only: true
+  - source: "hudymi/mockice:0.1.3"
+    amd64Only: true
+  - source: "istio/pilot:1.22.2-distroless"
+  - source: "istio/proxyv2:1.22.2-distroless"
+  - source: "istio/install-cni:1.22.2-distroless"
+  - source: "jettech/kube-webhook-certgen:v1.5.0"
+  - source: "kennethreitz/httpbin:latest"
+    amd64Only: true
+  - source: "oryd/hydra-maester:v0.0.25"
+    amd64Only: true
+  - source: "oryd/hydra:v1.11.8"
+  - source: "oryd/oathkeeper-maester:v0.1.5"
+    amd64Only: true
+  - source: "oryd/oathkeeper:v0.38.25-beta.1"
+  - source: "postgres@sha256:86c55091a74b9efe95396f65ddd83f0067ff47c3f09993621d6f94c835856445"
+    tag: "11.21-alpine3.18"
+  - source: "prom/pushgateway:v1.8.0"
+  - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
+  - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
+  - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
+  - source: "quay.io/jetstack/cert-manager-webhook:v1.1.0"
+  - source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.66.0"
+  - source: "quay.io/prometheus-operator/prometheus-operator:v0.66.0"
+  - source: "quay.io/prometheus/alertmanager:v0.24.0"
+  - source: "nats@sha256:1bcddab51b8099aad943e1e558d9aa7e91000ebc6e08e308e8e95fa3b50a000b"
+    tag: "v20240102-2.10.7-alpine3.18"
+  - source: "natsio/nats-server-config-reloader:0.14.1"
+  - source: "quay.io/prometheus/prometheus:v2.45.0"
+  - source: "natsio/nats-box:0.14.1"
+  - source: "natsio/prometheus-nats-exporter:0.14.0"
+  - source: "mockserver/mockserver:mockserver-5.11.2"
+    amd64Only: true
+  - source: "i331641/kyma-perf:v1"
+    amd64Only: true
+  - source: "ghcr.io/kedacore/keda:2.14.0"
+  - source: "ghcr.io/kedacore/keda-admission-webhooks:2.14.0"
+  - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
+  - source: "nginx:1.23.3"
+    amd64Only: true
+  - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
+    tag: "v1.16-debian-1"
+  - source: "gcr.io/istio-testing/ext-authz@sha256:8ffad059c8ad951102e5421562ac5b7cca129881903be8cbfdc5e910e49fd78e"
+    tag: "1.22-dev"
+    amd64Only: true
+  - source: "registry@sha256:fb9c9aef62af3955f6014613456551c92e88a67dcf1fc51f5f91bcbd1832813f"
+    tag: "2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release
+  - source: "gcr.io/kaniko-project/executor:v1.23.2"
+  - source: "python:3.9.19-alpine3.20"
+  - source: "python:3.12.3-alpine3.20"
+  - source: "fluent/fluent-bit@sha256:98fa7ea6d2585f64f75346aa196e24f134847a7741e11a6cb3c3c0c4b20671cb"
+    tag: "3.1.3"
+  - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
+    tag: "alpine3.20"
