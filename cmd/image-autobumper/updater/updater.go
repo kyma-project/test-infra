@@ -64,19 +64,20 @@ type ensureClient interface {
 // EnsurePRWithQueryTokens ensures that a pull request exists with the given parameters.
 // It reuses an existing pull request if one matches the query tokens, otherwise it creates a new one.
 func EnsurePRWithQueryTokens(org, repo, title, body, source, baseBranch, queryTokensString string, allowMods bool, gc ensureClient) (*int, error) {
-	// Try to update an existing PR that matches the query tokens.
 	prNumber, err := updatePRWithQueryTokens(org, repo, title, body, queryTokensString, gc)
 	if err != nil {
 		return nil, fmt.Errorf("update error: %w", err)
 	}
 
-	// If no reusable PR is found (prNumber is nil), create a new one.
 	if prNumber == nil {
 		pr, err := gc.CreatePullRequest(org, repo, title, body, source, baseBranch, allowMods)
 		if err != nil {
 			return nil, fmt.Errorf("create error: %w", err)
 		}
+		logrus.Infof("Created new PR with number: %d", pr)
 		prNumber = &pr
+	} else {
+		logrus.Infof("Reused existing PR with number: %d", *prNumber)
 	}
 
 	return prNumber, nil
