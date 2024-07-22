@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.21
 
 require (
-	cloud.google.com/go/compute/metadata v0.4.0
+	cloud.google.com/go/compute/metadata v0.5.0
 	cloud.google.com/go/firestore v1.15.0
 	cloud.google.com/go/logging v1.10.0
 	cloud.google.com/go/pubsub v1.40.0
@@ -16,9 +16,9 @@ require (
 	github.com/coreos/go-oidc/v3 v3.11.0
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/go-jose/go-jose/v4 v4.0.2
+	github.com/go-jose/go-jose/v4 v4.0.3
 	github.com/go-playground/validator/v10 v10.22.0
-	github.com/google/go-containerregistry v0.20.0
+	github.com/google/go-containerregistry v0.20.1
 	github.com/google/go-github/v48 v48.2.0
 	github.com/google/uuid v1.6.0
 	github.com/imdario/mergo v0.3.16

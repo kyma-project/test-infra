@@ -4,13 +4,14 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/kyma-project/test-infra/pkg/gcp/iam"
-	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
-	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 	"io"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/kyma-project/test-infra/pkg/gcp/iam"
+	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
+	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 
 	"cloud.google.com/go/compute/metadata"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,7 +30,7 @@ func main() {
 	var err error
 	ctx := context.Background()
 
-	projectID, err = metadata.ProjectID()
+	projectID, err = metadata.ProjectIDWithContext(ctx)
 	if err != nil {
 		panic("failed to retrieve GCP Project ID, error: " + err.Error())
 	}
