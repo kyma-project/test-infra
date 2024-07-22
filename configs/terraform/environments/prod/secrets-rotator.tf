@@ -9,9 +9,10 @@ resource "google_pubsub_topic" "secrets_rotator_dead_letter" {
 }
 
 resource "google_service_account" "secrets-rotator" {
-  account_id   = "secrets-rotator"
-  display_name = "secrets-rotator"
-  description  = "Identity of the secrets rotator application"
+  account_id                   = "secrets-rotator"
+  display_name                 = "secrets-rotator"
+  description                  = "Identity of the secrets rotator application"
+  create_ignore_already_exists = true
 }
 
 data "google_pubsub_topic" "secret-manager-notifications-topic" {
