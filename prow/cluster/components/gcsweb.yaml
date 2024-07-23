@@ -22,7 +22,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: gcsweb
-          image: gcr.io/k8s-prow/gcsweb:v20240513-a9bd71bf01
+          image: gcr.io/k8s-prow/gcsweb:v20240719-47a381b1df
           args:
             - -upgrade-proxied-http-to-https
             - -b=kyma-prow-logs

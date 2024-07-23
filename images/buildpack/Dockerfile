@@ -1,4 +1,4 @@
-FROM alpine:3.20.1
+FROM alpine:3.20.2
 
 ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.22
 RUN set -eux; \

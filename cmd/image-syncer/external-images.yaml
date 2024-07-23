@@ -90,6 +90,7 @@ images:
   - source: "gcr.io/kaniko-project/executor:v1.23.2"
   - source: "python:3.9.19-alpine3.20"
   - source: "python:3.12.3-alpine3.20"
+  - source: "python:3.12.4-slim-bullseye"
   - source: "fluent/fluent-bit@sha256:98fa7ea6d2585f64f75346aa196e24f134847a7741e11a6cb3c3c0c4b20671cb"
     tag: "3.1.3"
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"

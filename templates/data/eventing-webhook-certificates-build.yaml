@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-eventing-webhook-certificates-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240719-49542d2d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240723-c838d6f8"
                   annotations:
                     owner: skydivingtunas
                     description: Image to generate certificates for eventing webhooks.
@@ -25,7 +25,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-eventing-webhook-certificates-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240719-49542d2d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240723-c838d6f8"
                   annotations:
                     owner: skydivingtunas
                     description: Image to generate certificates for eventing webhooks.
