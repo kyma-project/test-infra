@@ -39,19 +39,19 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240722-5c71c551
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240722-5c71c551
     - gcr.io/k8s-prow/analyze:v20240719-47a381b1df
-    - gcr.io/k8s-prow/branchprotector:v20240711-e49eac682
-    - gcr.io/k8s-prow/crier:v20240711-e49eac682
-    - gcr.io/k8s-prow/deck:v20240711-e49eac682
+    - gcr.io/k8s-prow/branchprotector:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/crier:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/deck:v20240723-dbbd2d86b
     - gcr.io/k8s-prow/gcsweb:v20240719-47a381b1df
     - gcr.io/k8s-prow/gencred:v20240719-47a381b1df
-    - gcr.io/k8s-prow/generic-autobumper:v20240711-e49eac682
-    - gcr.io/k8s-prow/ghproxy:v20240711-e49eac682
-    - gcr.io/k8s-prow/hook:v20240711-e49eac682
-    - gcr.io/k8s-prow/horologium:v20240711-e49eac682
-    - gcr.io/k8s-prow/prow-controller-manager:v20240711-e49eac682
-    - gcr.io/k8s-prow/sinker:v20240711-e49eac682
-    - gcr.io/k8s-prow/status-reconciler:v20240711-e49eac682
-    - gcr.io/k8s-prow/tide:v20240711-e49eac682
+    - gcr.io/k8s-prow/generic-autobumper:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/ghproxy:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/hook:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/horologium:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/prow-controller-manager:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/sinker:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/status-reconciler:v20240723-dbbd2d86b
+    - gcr.io/k8s-prow/tide:v20240723-dbbd2d86b
     - prom/pushgateway:v1.8.0
 whitesource:
     language: golang-mod
