@@ -31,13 +31,13 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240723-c838d6f8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240723-c838d6f8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240610-a221097b
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240722-5c71c551
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240722-5c71c551
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240723-da078f33
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240723-da078f33
     - gcr.io/k8s-prow/analyze:v20240719-47a381b1df
     - gcr.io/k8s-prow/branchprotector:v20240723-dbbd2d86b
     - gcr.io/k8s-prow/crier:v20240723-dbbd2d86b
