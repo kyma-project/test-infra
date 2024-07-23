@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /movegcsbucket -ldflags="-s -w" ./cmd/cloud-run/move-gcs-bucket
 
-FROM alpine:3.20.1
+FROM alpine:3.20.2
 
 COPY --from=builder /movegcsbucket /movegcsbucket
 RUN apk add --no-cache ca-certificates && \
