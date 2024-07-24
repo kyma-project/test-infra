@@ -159,3 +159,9 @@ resource "google_service_account" "sa-prow-pubsub" {
   display_name = "sa-prow-pubsub"
   description  = "Run prow related pubsub topics, subscriptions and cloud functions. Will be removed with Prow"
 }
+
+resource "google_service_account" "kyma-submission-pipeline" {
+  account_id   = "kyma-submission-pipeline"
+  display_name = "kyma-submission-pipeline"
+  description  = "Service Account for retrieving secrets on the submission-pipeline ADO pipeline."
+}
