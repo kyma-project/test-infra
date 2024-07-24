@@ -88,7 +88,7 @@ images:
   - source: "registry@sha256:fb9c9aef62af3955f6014613456551c92e88a67dcf1fc51f5f91bcbd1832813f"
     tag: "2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release
   - source: "gcr.io/kaniko-project/executor:v1.23.2"
-  - source: "python@sha256:a005997dd6efd8e26c88765676b570281c0bf58a515233c8f0ec448e2ba83b37
+  - source: "python@sha256:a005997dd6efd8e26c88765676b570281c0bf58a515233c8f0ec448e2ba83b37"
     tag: "3.9.19-alpine3.20"
   - source: "python:3.12.3-alpine3.20"
   - source: "python:3.12.4-slim-bullseye"
