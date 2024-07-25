@@ -97,6 +97,8 @@ images:
   - source: "python:3.12.3-alpine3.20"
   - source: "python@sha256:7e9400f6d73dcb6fd4ea9a2f6e5334da18631f8facb007711648d924a38cfdc6"
     tag: "3.12.4-slim-bullseye"
+  - source: "python@sha256:3c9599f1a8a5c384e3a17231dd24a32777e26b3705386b3a0403086cbbd23868"
+    tag: "3.12.2-slim-bullseye"
   - source: "fluent/fluent-bit@sha256:98fa7ea6d2585f64f75346aa196e24f134847a7741e11a6cb3c3c0c4b20671cb"
     tag: "3.1.3"
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
