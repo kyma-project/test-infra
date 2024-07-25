@@ -4,6 +4,8 @@ images:
     tag: "3.20.0"
   - source: "alpine@sha256:b89d9c93e9ed3597455c90a0b88a8bbb5cb7188438f70953fede212a0c4394e0"
     tag: "3.20.1"
+  - source: "alpine@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5"
+    tag: "3.20.2"
   - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
     amd64Only: true
   - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
