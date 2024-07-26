@@ -20,7 +20,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240725-76e201a5
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240725-76e201a5
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240726-e0d07440
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240725-76e201a5
@@ -28,8 +28,8 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240725-76e201a5
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240725-76e201a5
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240725-a930a8cc
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240725-a930a8cc
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240726-e0d07440
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240726-e0d07440
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240610-a221097b
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240725-61cd2f27
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240725-61cd2f27
