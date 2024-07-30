@@ -98,7 +98,7 @@ func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 
 	// options are provided as GET query:
 	// time that latest version of secret needs to exist before older ones can be destroyed
-	cutoffTimeHours := 5
+	cutoffTimeHours := 1
 	keys, ok := r.URL.Query()["age"]
 	if ok && len(keys[0]) > 0 {
 		cutoffTimeHours, err = strconv.Atoi(keys[0])
