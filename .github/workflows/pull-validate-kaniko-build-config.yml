@@ -53,4 +53,4 @@ jobs:
       - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240621-63f4f2b1
         id: build
         with:
-          args: --name=test-infra/ginkgo --context=. --dockerfile=prow/images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true
+          args: --name=test-infra/ginkgo --context=. --dockerfile=prow/images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true --config="./configs/kaniko-build-config.yaml"
