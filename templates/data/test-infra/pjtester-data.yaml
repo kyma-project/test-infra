@@ -66,7 +66,7 @@
                           {{- end}}
                     - jobConfig:
                         name: "pull-{{$repo.name}}-vpathguard"
-                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240729-5b8c0d0f
+                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240730-a8cc6e70
                         annotations:
                           description: "Run pjtester vpathguard for {{$repo.name}}"
                           owner: "neighbors"
