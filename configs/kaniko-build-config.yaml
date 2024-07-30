@@ -26,6 +26,7 @@ sign-config:
       type: notary
       job-type:
         - postsubmit
+        - workflow_dispatch
       config:
         endpoint: https://signing.repositories.cloud.sap/signingsvc/sign
         timeout: 5m
