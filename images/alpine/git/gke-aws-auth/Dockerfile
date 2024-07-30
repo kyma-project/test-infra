@@ -1,4 +1,4 @@
-FROM google/cloud-sdk:485.0.0 AS base
+FROM google/cloud-sdk:486.0.0 AS base
 
 ARG AWS_IAM_AUTHENTICATOR_VERSION="0.6.11"
 RUN curl -fsSL \
