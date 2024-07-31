@@ -262,6 +262,14 @@ branch-protection:
         private-fn-for-e2e-serverless-tests:
           protect: false
         busola:
+          required_status_checks:
+            contexts:
+              - "run-cluster-test"
+              - "run-namespace-test"
+              - "run-unit-test"
+              - "build-local-image"
+              - "run-lint-check"
+              - "markdown-link-check"
           branches:
             ui5:
               protect: false
