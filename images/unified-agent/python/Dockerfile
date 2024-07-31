@@ -3,12 +3,6 @@ FROM local/unified-agent:latest
 ### Install python3.x
 RUN apk add --no-cache python3 py3-pip
 
-# python utilities
-RUN python -m pip install --upgrade pip && \
-    python3 -m pip install --upgrade pip && \
-    python -m pip install virtualenv && \
-    python3 -m pip install virtualenv
-
 ## Install Conda (python)
 USER ${WSS_USER}
 RUN cd ${WSS_USER_HOME} && \
