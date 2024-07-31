@@ -2,19 +2,7 @@ FROM local/unified-agent:latest
 
 ### Install python3.x
 RUN apk add --no-cache python3 py3-pip
-
-## Install Conda (python)
-USER ${WSS_USER}
-RUN cd ${WSS_USER_HOME} && \
-    wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh && \
-    bash Anaconda3-2021.05-Linux-x86_64.sh -b && \
-    rm Anaconda3-2021.05-Linux-x86_64.sh
-
-USER root
-RUN echo '#!/usr/bin/env bash' >> /usr/bin/conda && \
-    echo 'source ${WSS_USER_HOME}/anaconda3/etc/profile.d/conda.sh' >> /usr/bin/conda && \
-    echo '${WSS_USER_HOME}/anaconda3/bin/conda "$@"' >> /usr/bin/conda && \
-    chmod +x /usr/bin/conda
+RUN pip3 install virtualenv
 
 ### Install Poetry (python)
 ### requires python3.X version matching the projects (defaults to python3.6)
