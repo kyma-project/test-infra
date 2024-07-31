@@ -89,8 +89,8 @@ images:
   - source: "gcr.io/istio-testing/ext-authz@sha256:8ffad059c8ad951102e5421562ac5b7cca129881903be8cbfdc5e910e49fd78e"
     tag: "1.22-dev"
     amd64Only: true
-  - source: "registry@sha256:fb9c9aef62af3955f6014613456551c92e88a67dcf1fc51f5f91bcbd1832813f"
-    tag: "2.8.3" # latest: 3.0.0-alpha.1 <- wait for a fully supported release
+  - source: "registry@sha256:12120425f07de11a1b899e418d4b0ea174c8d4d572d45bdb640f93bc7ca06a3d"
+    tag: "2.8.3-v1" # latest: 3.0.0-beta.1 <- wait for a fully supported release
   - source: "gcr.io/kaniko-project/executor:v1.23.2"
   - source: "python@sha256:eb26ce0d03bcfdf8061df6b7b0ffec9201c68d04caa0ef68c4b7dc26cbcbefd3"
     tag: "3.9.19-alpine3.20"
