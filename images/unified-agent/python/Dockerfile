@@ -1,7 +1,7 @@
 FROM local/unified-agent:latest
 
 ### Install python3.x
-RUN apk add --no-cache python3-pip
+RUN apk add --no-cache python3 py3-pip
 
 # python utilities
 RUN python -m pip install --upgrade pip && \
