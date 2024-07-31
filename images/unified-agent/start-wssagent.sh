@@ -7,7 +7,7 @@
 # - WS_APIKEY- Key provided by SAP Whitesource Team
 # - WS_USERKEY - Users specified key(should be a service account)
 # - WS_PRODUCTNAME - Product inside whitesource
-# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / golang-mod / javascript
+# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / golang-mod / javascript / python
 # Optional vars:
 # - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
 
@@ -16,6 +16,7 @@ set -e
 # whitesource config
 GO_MOD_CONFIG_PATH="/wss/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="/wss/javascript-wss-unified-agent.config"
+PYTHON_CONFIG_PATH="/wss/python-wss-unified-agent.config"
 
 if [[ -z "$PROJECT" ]]; then
   PROJECT="$REPO_NAME"
@@ -46,6 +47,12 @@ javascript)
   echo "SCAN: javascript"
   CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
   COMPONENT_DEFINITION="package.json"
+  ;;
+
+python)
+  echo "SCAN: python"
+  CONFIG_PATH=$PYTHON_CONFIG_PATH
+  COMPONENT_DEFINITION="pyproject.toml"
   ;;
 
 *)
