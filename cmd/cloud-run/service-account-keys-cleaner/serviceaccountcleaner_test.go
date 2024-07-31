@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/gcp/iam"
-	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -16,6 +14,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/kyma-project/test-infra/pkg/gcp/iam"
+	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 
 	gcpiam "google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
@@ -281,10 +282,9 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 		t.Errorf("could not generate fake secret version data: %s", err)
 	}
 
-	timeTenHoursAgo := time.Now().Add(time.Duration(-10) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
-	timeSixHoursAgo := time.Now().Add(time.Duration(-6) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
-	// timeThreeHoursAgo := time.Now().Add(time.Duration(-3) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
-	timeOneHoursAgo := time.Now().Add(time.Duration(-1) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
+	timeThreeHoursAgo := time.Now().Add(time.Duration(-3) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
+	timeTwoHoursAgo := time.Now().Add(time.Duration(-2) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
+	time59MinutesAgo := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format("2006-01-02T15:04:05.000000Z")
 
 	tests := []struct {
 		name             string
@@ -308,11 +308,11 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 			name: "secret without labels",
 			secrets: map[string]*fakeSecret{"secret_no_label": {
 				Labels:   map[string]string{},
-				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"}},
+				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"}},
 			}},
 			expectedSecrets: map[string]*fakeSecret{"secret_no_label": {
 				Labels:   map[string]string{},
-				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"}},
+				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"}},
 			}},
 			keys:             make(map[string]map[string]bool),
 			expectedKeys:     make(map[string]map[string]bool),
@@ -323,11 +323,11 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 			name: "secret with correct labels, one enabled version",
 			secrets: map[string]*fakeSecret{"secret_one_version": {
 				Labels:   map[string]string{"type": "service-account"},
-				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"}},
+				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"}},
 			}},
 			expectedSecrets: map[string]*fakeSecret{"secret_one_version": {
 				Labels:   map[string]string{"type": "service-account"},
-				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"}},
+				Versions: map[string]*fakeSecretVersion{"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"}},
 			}},
 			keys:             make(map[string]map[string]bool),
 			expectedKeys:     make(map[string]map[string]bool),
@@ -339,15 +339,15 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 			secrets: map[string]*fakeSecret{"secret_new": {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
-					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"},
-					"2": {Data: fakeSecretVersionData, Date: timeOneHoursAgo, State: "enabled"},
+					"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"},
+					"2": {Data: fakeSecretVersionData, Date: time59MinutesAgo, State: "enabled"},
 				},
 			}},
 			expectedSecrets: map[string]*fakeSecret{"secret_new": {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
-					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"},
-					"2": {Data: fakeSecretVersionData, Date: timeOneHoursAgo, State: "enabled"},
+					"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"},
+					"2": {Data: fakeSecretVersionData, Date: time59MinutesAgo, State: "enabled"},
 				},
 			}},
 			keys:             map[string]map[string]bool{fakeSecretEmail: {fakeSecretKey: true, fakeSecretKey2: true}},
@@ -360,15 +360,15 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 			secrets: map[string]*fakeSecret{"secret_outdated": {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
-					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"},
-					"2": {Data: fakeSecretVersionData2, Date: timeSixHoursAgo, State: "enabled"},
+					"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "enabled"},
+					"2": {Data: fakeSecretVersionData2, Date: timeTwoHoursAgo, State: "enabled"},
 				},
 			}},
 			expectedSecrets: map[string]*fakeSecret{"secret_outdated": {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
-					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "destroyed"},
-					"2": {Data: fakeSecretVersionData2, Date: timeSixHoursAgo, State: "enabled"},
+					"1": {Data: fakeSecretVersionData, Date: timeThreeHoursAgo, State: "destroyed"},
+					"2": {Data: fakeSecretVersionData2, Date: timeTwoHoursAgo, State: "enabled"},
 				},
 			}},
 			keys:             map[string]map[string]bool{fakeSecretEmail: {fakeSecretKey: true, fakeSecretKey2: true}},
