@@ -18,7 +18,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240730-9ec3085a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240802-10584a7b"
             securityContext:
               privileged: false
               seccompProfile:
