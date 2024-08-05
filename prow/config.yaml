@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20240730-12bb925b4
-          initupload: gcr.io/k8s-prow/initupload:v20240730-12bb925b4
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20240730-12bb925b4
-          sidecar: gcr.io/k8s-prow/sidecar:v20240730-12bb925b4
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20240802-66b115076
+          initupload: gcr.io/k8s-prow/initupload:v20240802-66b115076
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20240802-66b115076
+          sidecar: gcr.io/k8s-prow/sidecar:v20240802-66b115076
         resources:
           clonerefs:
             requests:
@@ -273,6 +273,16 @@ branch-protection:
           branches:
             ui5:
               protect: false
+        kyma-dashboard:
+          required_status_checks:
+            contexts:
+              - "check-extensibility"
+              - "build-web-dev"
+              - "build-backend-dev"
+              - "build-local-dev"
+              - "run-integration-test"
+              - "run-smoke-test-prod"
+              - "run-smoke-test-stage"
         price-calculator:
           branches:
             gh-pages:

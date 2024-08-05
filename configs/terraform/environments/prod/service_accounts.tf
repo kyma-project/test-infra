@@ -165,3 +165,21 @@ resource "google_service_account" "kyma-submission-pipeline" {
   display_name = "kyma-submission-pipeline"
   description  = "Service Account for retrieving secrets on the submission-pipeline ADO pipeline."
 }
+
+resource "google_service_account" "kyma-security-scanners" {
+  account_id   = "kyma-security-scanners"
+  display_name = "kyma-security-scanners"
+  description  = "Service account for retrieving secrets on the security-scanners and orphan-cleaner Azure pipelines."
+}
+
+resource "google_service_account" "kyma-compliance-pipeline" {
+  account_id   = "kyma-compliance-pipeline"
+  display_name = "kyma-compliance-pipeline"
+  description  = "Service account for retrieving secrets on the compliance Azure pipeline."
+}
+
+resource "google_service_account" "neighbors-conduit-cli-builder" {
+  account_id   = "neighbors-conduit-cli-builder"
+  display_name = "neighbors-conduit-cli-builder"
+  description  = "Service account for retrieving secrets on the conduit-cli build pipeline."
+}
