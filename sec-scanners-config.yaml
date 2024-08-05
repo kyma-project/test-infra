@@ -4,7 +4,7 @@ protecode:
     - europe-docker.pkg.dev/gardener-project/releases/ci-infra/cla-assistant:v20240412-d22f4bf
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.12.0
     - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:v20240523-63efdb74
-    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240802-c6a46803
+    - europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240805-e658d6ac
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240610-c4997bfe
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver:v20240803-11976482
@@ -28,8 +28,8 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240803-11976482
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240803-11976482
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240803-11976482
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240802-c6a46803
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240802-c6a46803
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240805-e658d6ac
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240805-e658d6ac
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240610-a221097b
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240802-6bbf6a39
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240802-6bbf6a39
