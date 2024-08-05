@@ -56,7 +56,7 @@ python)
   ;;
 
 *)
-  echo "can only be golang or javascript"
+  echo "can only be golang, javascript or python"
   exit 1
   ;;
 esac
