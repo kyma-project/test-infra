@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20240802-66b115076
-          initupload: gcr.io/k8s-prow/initupload:v20240802-66b115076
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20240802-66b115076
-          sidecar: gcr.io/k8s-prow/sidecar:v20240802-66b115076
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20240805-533a2035d
+          initupload: gcr.io/k8s-prow/initupload:v20240805-533a2035d
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20240805-533a2035d
+          sidecar: gcr.io/k8s-prow/sidecar:v20240805-533a2035d
         resources:
           clonerefs:
             requests:
