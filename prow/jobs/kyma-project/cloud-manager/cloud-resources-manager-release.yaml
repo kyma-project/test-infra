@@ -20,7 +20,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240805-45a2863c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240806-c390a057"
             securityContext:
               privileged: false
               seccompProfile:
