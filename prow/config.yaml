@@ -273,16 +273,6 @@ branch-protection:
           branches:
             ui5:
               protect: false
-        kyma-dashboard:
-          required_status_checks:
-            contexts:
-              - "check-extensibility"
-              - "build-web-dev"
-              - "build-backend-dev"
-              - "build-local-dev"
-              - "run-integration-test"
-              - "run-smoke-test-prod"
-              - "run-smoke-test-stage"
         price-calculator:
           branches:
             gh-pages:
