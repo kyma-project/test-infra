@@ -267,7 +267,7 @@ branch-protection:
               - "run-cluster-test"
               - "run-namespace-test"
               - "run-unit-test"
-              - "build-local-image"
+              - "build-local-image / Build image"
               - "run-lint-check"
               - "markdown-link-check"
           branches:
