@@ -20,7 +20,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240806-c390a057"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
             securityContext:
               privileged: false
               seccompProfile:
@@ -78,7 +78,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240806-c390a057"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
             securityContext:
               privileged: false
               seccompProfile:
