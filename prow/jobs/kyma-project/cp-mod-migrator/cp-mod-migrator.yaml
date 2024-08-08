@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -111,7 +111,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -163,7 +163,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -213,7 +213,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -263,7 +263,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240808-81c694bc"
             securityContext:
               privileged: false
               seccompProfile:
