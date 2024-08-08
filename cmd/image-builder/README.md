@@ -94,6 +94,7 @@ The Image Builder reusable workflow supports the following GitHub events to trig
 
 * `push` - to build images on push to the specified branch.
 * `pull_request_target` - to build images on pull requests.
+* `workflow_dispatch` - to manually trigger the workflow.
 
 ## Reusable Workflow Reference
 
@@ -145,7 +146,7 @@ By default, Image Builder signs images with the production signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
 
 > [!NOTE]
-> Image Builder signs images built on the push event only. Images built on the pull_request_target event are not signed.
+> Image Builder signs images built on the push and workflow_dispatch events only. Images built on the pull_request_target event are not signed.
 
 ## Named Tags
 
@@ -161,9 +162,6 @@ If the name is not provided, it is evaluated from the value:
 > The image will be tagged only with the default PR-<PR_NUMBER> tag.
 
 ## Environment File
-
-> [!IMPORTANT]
-> Support for `env` files is still a work in progress.
 
 The environment file contains environment variables to be loaded in the build.
 The file must be in the format of `key=value` pairs, separated by newlines.
