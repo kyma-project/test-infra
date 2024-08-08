@@ -1317,7 +1317,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-
+  
   kyma-project/btp-manager:
     - name: pull-btp-manager-pjtester
       annotations:
@@ -2373,3 +2373,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
+  
