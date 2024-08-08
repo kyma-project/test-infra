@@ -43,8 +43,6 @@ images:
   - source: "golang@sha256:7e0e13add7f57a3e030ef4c9180843ace2fff7c788d54a8b12945d7b5739a055"
     tag: "1.21"
     amd64Only: true
-  - source: golang:1.22
-    amd64Only: true
   - source: "gcr.io/distroless/static:nonroot"
   - source: "grafana/grafana-image-renderer:3.2.1"
     amd64Only: true
