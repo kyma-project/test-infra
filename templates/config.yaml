@@ -22,7 +22,6 @@ global:
         - name: "runtime-watcher"
         - name: "keda-manager"
         - name: "kyma-dashboard"
-        - name: "application-connector-manager"
         - name: "template-repository"
         - name: "btp-manager"
         - name: "kyma-environment-broker"
