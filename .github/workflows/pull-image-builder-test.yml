@@ -28,6 +28,7 @@ jobs:
         run: echo ${{ steps.get_tag.outputs.TAG }}
   build-image:
     needs: compute-tag
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
