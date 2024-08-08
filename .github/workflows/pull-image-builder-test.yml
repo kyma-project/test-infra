@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kyma-project/test-infra
-          ref: {{ github.event.pull_request_target.head.ref }}
+          ref: ${{ github.event.pull_request_target.head.ref }}
       - name: Build image
         uses: ./.github/workflows/image-builder.yml
         with:
