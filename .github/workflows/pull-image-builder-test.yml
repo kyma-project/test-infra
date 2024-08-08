@@ -30,10 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: compute-tag
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Build image
-        uses: ./.github/workflows/image-builder.yml
+        uses: kyma-project/test-infra/.github/workflows/image-builder.yml@${{ github.event.pull_request_target.head.ref }}
         with:
           name: test-infra/ginkgo
           dockerfile: prow/images/ginkgo/Dockerfile
