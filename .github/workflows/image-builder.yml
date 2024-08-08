@@ -59,6 +59,7 @@ jobs:
       images: ${{ steps.build.outputs.images }}
       result: ${{ steps.build.outputs.adoResult }}
     steps:
+      - run: echo "Building image ${{ inputs.name }}"
       - name: Verify repository owner
         id: verify_repo_owner
         if: ${{ github.repository_owner != 'kyma-project' }}
