@@ -5,22 +5,6 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma-environment-broker"
             jobs:
-              - jobConfig:
-                  name: pull-keb-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "KEB image build on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - --name=kyma-environment-broker
-                    - --context=./
-                    - --dockerfile=Dockerfile.keb
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
               - jobConfig: # builds a docker image of the KEB tagged with the branch name
                   name: post-keb-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
@@ -41,23 +25,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-              - jobConfig:
-                  name: pull-keb-cleanup-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Clean up DEV from Kyma runtimes older than day job build on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - --name=kyma-environments-cleanup-job
-                    - --context=./
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=environmentscleanup
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-cleanup-job-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
@@ -80,23 +47,6 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pull-keb-subaccount-cleanup-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Removes SKRs when BTP subaccount is deleted job build on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - --name=kyma-environment-subaccount-cleanup-job
-                    - --context=./
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=accountcleanup
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
                   name: post-keb-subaccount-cleanup-job-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
                   annotations:
@@ -117,23 +67,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-              - jobConfig:
-                  name: pull-keb-expirator-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Expires instances for given plan and expiration period, build on PR"
-                  run_if_changed: "./"
-                  args:
-                    - --name=kyma-environment-expirator-job
-                    - --context=./
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=expirator
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-expirator-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
@@ -156,23 +89,6 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pull-keb-deprovision-retrigger-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - --name=kyma-environment-deprovision-retrigger-job
-                    - --context=./
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=deprovisionretrigger
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
                   name: post-keb-deprovision-retrigger-job-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
                   annotations:
@@ -193,24 +109,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-              - jobConfig:
-                  name: pull-keb-archiver-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Archives deleted instances, removes operations and runtime states. Job built on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - --name=kyma-environment-archiver-job
-                    - --context=./
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=archiver
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-
               - jobConfig:
                   name: post-keb-archiver-job-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
@@ -233,25 +131,6 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pull-keb-runtime-reconciler-job-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Job to build runtime-reconciler image on PR submit"
-                  run_if_changed: ".+"
-                  branches:
-                    - ^main$
-                  args:
-                    - "--name=kyma-environment-runtime-reconciler"
-                    - "--context=./"
-                    - "--dockerfile=Dockerfile.runtimereconciler"
-                    - "--build-arg=BIN=runtime-reconciler"
-                    - "--config=/config/kaniko-build-config.yaml"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
                   name: post-keb-runtime-reconciler-job-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
                   annotations:
@@ -272,24 +151,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-              - jobConfig:
-                  name: pull-keb-subaccount-sync-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
-                  annotations:
-                    owner: "gopher"
-                    description: "Synchronize selected subaccount attributes with kyma resource labels. Job built on PR"
-                  run_if_changed: ".+"
-                  args:
-                    - '--name=kyma-environment-subaccount-sync'
-                    - '--context=./'
-                    - '--dockerfile=Dockerfile.subaccountsync'
-                    - '--build-arg=BIN=subaccount-sync'
-                    - '--config=/config/kaniko-build-config.yaml'
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-
               - jobConfig:
                   name: post-keb-subaccount-sync-release-build
                   image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240807-3edddcc9"
