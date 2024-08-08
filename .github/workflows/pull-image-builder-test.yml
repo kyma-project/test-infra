@@ -33,7 +33,7 @@ jobs:
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request_target.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Build image
         uses: ./.github/workflows/image-builder.yml
         with:
