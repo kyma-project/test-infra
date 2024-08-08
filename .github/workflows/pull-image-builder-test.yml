@@ -27,9 +27,8 @@ jobs:
       - name: Echo the tag
         run: echo ${{ steps.get_tag.outputs.TAG }}
   build-image:
-    runs-on: ubuntu-latest
     needs: compute-tag
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: test-infra/ginkgo
       dockerfile: prow/images/ginkgo/Dockerfile
