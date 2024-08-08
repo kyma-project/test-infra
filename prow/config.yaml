@@ -277,9 +277,9 @@ branch-protection:
           required_status_checks:
             contexts:
               - "check-extensibility"
-              - "build-web-dev"
-              - "build-backend-dev"
-              - "build-local-dev"
+              - "build-web-dev / Build image"
+              - "build-backend-dev / Build image"
+              - "build-local-dev / Build image"
               - "run-integration-test"
               - "run-smoke-test-prod"
               - "run-smoke-test-stage"
