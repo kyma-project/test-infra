@@ -390,6 +390,12 @@ branch-protection:
           unmanaged: true
         docker-registry:
           unmanaged: true
+        telemetry-manager:
+          unmanaged: true
+        directory-size-exporter:
+          unmanaged: true
+        opentelemetry-collector-components:
+          unmanaged: true
 
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
