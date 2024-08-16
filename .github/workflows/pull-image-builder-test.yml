@@ -25,7 +25,8 @@ jobs:
         id: get_tag
         run: echo "TAG=v0.0.1-test" >> "$GITHUB_OUTPUT"
       - name: Echo the tag
-        run: echo ${{ steps.get_tag.outputs.TAG }}
+        run:
+          echo "Generated tag value: ${{ steps.get_tag.outputs.TAG }}"
   build-image:
     needs: compute-tag
     uses: ./.github/workflows/image-builder.yml
