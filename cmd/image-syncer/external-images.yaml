@@ -88,7 +88,7 @@ images:
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
   - source: "nginx:1.23.3"
     amd64Only: true
-  - source: "nginx@sha256:c04c18adc2a407740a397c8407c011fc6c90026a9b65cceddef7ae5484360158"
+  - source: "nginxinc/nginx-unprivileged@sha256:f9abf2e3f911c05e28d97b2e6826ebe83a2fb26ec5d441522d3b2a8a6f7947ad"
     tag: "1.27-alpine"
   - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
     tag: "v1.16-debian-1"
