@@ -16,6 +16,9 @@ images:
   - source: "gcr.io/google-containers/pause:3.2"
   - source: "goreleaser/goreleaser:v1.11.5"
   # Golang image is pinned because it is force updated in the upstream
+  - source: "golang@sha256:d0b31558e6b3e4cc59f6011d79905835108c919143ebecc58f35965bf79948f4"
+    tag: "1.23.0-alpine3.20"
+    amd64Only: true
   - source: "golang@sha256:1a478681b671001b7f029f94b5016aed984a23ad99c707f6a0ab6563860ae2f3"
     tag: 1.22.6-alpine
     amd64Only: true
@@ -88,7 +91,7 @@ images:
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
   - source: "nginx:1.23.3"
     amd64Only: true
-  - source: "nginx@sha256:c04c18adc2a407740a397c8407c011fc6c90026a9b65cceddef7ae5484360158"
+  - source: "nginxinc/nginx-unprivileged@sha256:f9abf2e3f911c05e28d97b2e6826ebe83a2fb26ec5d441522d3b2a8a6f7947ad"
     tag: "1.27-alpine"
   - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
     tag: "v1.16-debian-1"
