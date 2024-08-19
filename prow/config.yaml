@@ -390,6 +390,8 @@ branch-protection:
           unmanaged: true
         docker-registry:
           unmanaged: true
+        cloud-manager-tests:
+          unmanaged: true
         telemetry-manager:
           unmanaged: true
         directory-size-exporter:
