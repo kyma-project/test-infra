@@ -28,8 +28,8 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240814-3865e7c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240814-3865e7c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240814-3865e7c0
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240814-79ddc3dd
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240814-79ddc3dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240819-fd37eb2f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240819-509240a9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240610-a221097b
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240814-c751bf5c
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240814-c751bf5c
