@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.5.0
 	cloud.google.com/go/firestore v1.16.0
 	cloud.google.com/go/logging v1.11.0
-	cloud.google.com/go/pubsub v1.41.0
+	cloud.google.com/go/pubsub v1.42.0
 	cloud.google.com/go/storage v1.43.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -176,9 +176,9 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
-	go.opentelemetry.io/otel v1.24.0 // indirect
-	go.opentelemetry.io/otel/metric v1.24.0 // indirect
-	go.opentelemetry.io/otel/trace v1.24.0 // indirect
+	go.opentelemetry.io/otel v1.28.0 // indirect
+	go.opentelemetry.io/otel/metric v1.28.0 // indirect
+	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go4.org v0.0.0-20201209231011-d4a079459e60 // indirect
