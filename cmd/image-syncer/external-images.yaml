@@ -110,8 +110,8 @@ images:
     tag: "3.12.4-slim-bullseye"
   - source: "python@sha256:3c9599f1a8a5c384e3a17231dd24a32777e26b3705386b3a0403086cbbd23868"
     tag: "3.12.2-slim-bullseye"
-  - source: "fluent/fluent-bit@sha256:98fa7ea6d2585f64f75346aa196e24f134847a7741e11a6cb3c3c0c4b20671cb"
-    tag: "3.1.3"
+  - source: "fluent/fluent-bit@sha256:def31c22bfc23002354d0cc2beb177e4da1d87c68f49e8fee76c896e8c6fdd44"
+    tag: "3.1.6" # used by the kyma telemetry module
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
     tag: "alpine3.20"
   - source: "moby/buildkit:v0.15.2-rootless"
