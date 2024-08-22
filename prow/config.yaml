@@ -329,6 +329,7 @@ branch-protection:
               - "run-e2e-tests / finish-e2e-tests"
               - "validate-labels"
               - "run-go-linter"
+              - "build-image / Build image"
           exclude:
             - "^sec-scanners-config-"
             - "^sm-integration$"
