@@ -9,7 +9,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Default to UTF-8 file.encoding
 ENV LANG C.UTF-8
 
-WORKDIR /workspace
+WORKDIR /workspace-golangci
 COPY golangci-lint.sh /golangci-lint.sh
 
 # install libgit2 for serverless components
