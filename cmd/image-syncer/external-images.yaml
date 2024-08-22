@@ -116,3 +116,6 @@ images:
     tag: "alpine3.20"
   - source: "moby/buildkit:v0.15.2-rootless"
   - source: "golangci/golangci-lint:v1.60.2"
+  - source: "node@sha256:a3816e038e05ea70d2640c845c285f49e416bdae2481a7ff94fde96647a10607"
+    tag: "22.3.0"
+    amd64Only: true

@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240820-021ecbe5"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240821-2bd57e47"
             securityContext:
               privileged: false
               seccompProfile:
@@ -51,7 +51,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240820-021ecbe5"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240821-2bd57e47"
             securityContext:
               privileged: false
               seccompProfile:
@@ -87,7 +87,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240820-5971561d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240821-eef4501e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -152,7 +152,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240820-021ecbe5"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240821-2bd57e47"
             securityContext:
               privileged: false
               seccompProfile:
