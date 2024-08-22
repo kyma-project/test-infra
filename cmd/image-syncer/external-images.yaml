@@ -115,4 +115,4 @@ images:
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
     tag: "alpine3.20"
   - source: "moby/buildkit:v0.15.2-rootless"
-  - source: "google/cloud-sdk:489.0.0"
+  - source: "golangci/golangci-lint:v1.60.2"
