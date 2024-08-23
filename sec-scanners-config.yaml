@@ -39,7 +39,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240822-7f8489d3
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240822-7f8489d3
     - gcr.io/k8s-prow/analyze:v20240731-a5d9345e59
-    - gcr.io/k8s-prow/branchprotector:v20240805-37a08f946
     - gcr.io/k8s-prow/crier:v20240805-37a08f946
     - gcr.io/k8s-prow/deck:v20240805-37a08f946
     - gcr.io/k8s-prow/gcsweb:v20240731-a5d9345e59
