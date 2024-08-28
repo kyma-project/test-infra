@@ -44,17 +44,20 @@ func main() {
 
 	projectID, err = metadata.ProjectIDWithContext(ctx)
 	if err != nil {
-		mainLogger.LogCritical("failed to retrieve GCP Project ID, error: " + err.Error())
+		const errMsg = "failed to retrieve GCP Project ID, error: %s"
+		mainLogger.LogCritical(errMsg, err.Error())
 	}
 
 	secretManagerService, err = secretmanager.NewService(ctx)
 	if err != nil {
-		mainLogger.LogCritical("failed creating Secret Manager client, error: " + err.Error())
+		const errMsg = "failed creating Secret Manager client, error: %s"
+		mainLogger.LogCritical(errMsg, err.Error())
 	}
 
 	serviceAccountService, err = gcpiam.NewService(ctx)
 	if err != nil {
-		mainLogger.LogCritical("failed creating IAM client, error: " + err.Error())
+		const errMsg = "failed creating IAM client, error: %s"
+		mainLogger.LogCritical(errMsg, err.Error())
 	}
 
 	http.HandleFunc("/", serviceAccountKeysCleaner)
