@@ -210,7 +210,7 @@ func (r Cleaner) parseErrors(errorMessages []string) error {
 		return nil
 	}
 	errorMessage := strings.Join(errorMessages, "\n")
-	return errors.New(errorMessage) //nolint:govet
+	return errors.New(errorMessage)
 }
 
 func (r Cleaner) deleteAllObjects(ctx CancelableContext, bucketName string, errChan chan error) {
