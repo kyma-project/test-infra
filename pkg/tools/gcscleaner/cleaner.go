@@ -3,12 +3,13 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	storage2 "github.com/kyma-project/test-infra/pkg/tools/gcscleaner/storage"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	storage2 "github.com/kyma-project/test-infra/pkg/tools/gcscleaner/storage"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -209,7 +210,7 @@ func (r Cleaner) parseErrors(errorMessages []string) error {
 		return nil
 	}
 	errorMessage := strings.Join(errorMessages, "\n")
-	return fmt.Errorf(errorMessage)
+	return fmt.Errorf(errorMessage) //nolint:govet
 }
 
 func (r Cleaner) deleteAllObjects(ctx CancelableContext, bucketName string, errChan chan error) {

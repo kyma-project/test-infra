@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/kyma-project/test-infra/pkg/github/client"
 	"github.com/kyma-project/test-infra/pkg/prow"
 	"github.com/kyma-project/test-infra/pkg/types"
-	"os"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -78,23 +79,27 @@ func main() {
 	githubComAccessToken := os.Getenv("BOT_GITHUB_TOKEN")
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
+		const errMsg = "failed creating sap tools github client, got error: %v"
+		log.Fatalf(fmt.Sprintf(errMsg, err))
 	}
 
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("failed creating github.com client, got error: %v", err))
+		const errMsg = "failed creating github.com client, got error: %v"
+		log.Fatalf(fmt.Sprintf(errMsg, err))
 	}
 	usersMap, err := saptoolsClient.GetUsersMap(ctx)
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("error when getting users map: got error %v", err))
+		const errMsg = "error when getting users map: got error %v"
+		log.Fatalf(fmt.Sprintf(errMsg, err))
 	}
 	authors, err := prow.GetPrAuthorForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
 			log.Infof(err.Error())
 		} else {
-			log.Fatalf(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
+			const errMsg = "error when getting pr author for presubmit: got error %v"
+			log.Fatalf(fmt.Sprintf(errMsg, err))
 		}
 	}
 
@@ -103,17 +108,20 @@ func main() {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
 			log.Infof(err.Error())
 		} else {
-			log.Fatalf(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
+			const errMsg = "error when getting org for presubmit: got error %v"
+			log.Fatalf(fmt.Sprintf(errMsg, err))
 		}
 	}
 
-	log.Infof(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
+	const infoMsg = "found %d authors in job spec env variable"
+	log.Infof(fmt.Sprintf(infoMsg, len(authors)))
 
 	for _, author := range authors {
 		// Check if author is a member of the organization.
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
 		if err != nil {
-			log.Fatalf(fmt.Sprintf("failed check if user %s is an github organisation member", author))
+			const errMsg = "failed check if user %s is an github organisation member"
+			log.Fatalf(fmt.Sprintf(errMsg, author))
 		}
 		// If the author is a member of the organization but not present in usersMap, add to missingUsers.
 		if member && !checkUserInMap(author, usersMap) {
