@@ -95,7 +95,7 @@ func main() {
 	authors, err := prow.GetPrAuthorForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
-			log.Infof(err.Error())
+			log.Info(err.Error())
 		} else {
 			const errMsg = "error when getting pr author for presubmit: got error %v"
 			log.Fatalf(errMsg, err)
@@ -105,7 +105,7 @@ func main() {
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
-			log.Infof(err.Error())
+			log.Info(err.Error())
 		} else {
 			const errMsg = "error when getting org for presubmit: got error %v"
 			log.Fatalf(errMsg, err)
