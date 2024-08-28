@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240828-1fdd0464"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240828-e42ff476"
             securityContext:
               privileged: false
               seccompProfile:
@@ -51,7 +51,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240828-1fdd0464"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240828-e42ff476"
             securityContext:
               privileged: false
               seccompProfile:
@@ -152,7 +152,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240828-1fdd0464"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240828-e42ff476"
             securityContext:
               privileged: false
               seccompProfile:
