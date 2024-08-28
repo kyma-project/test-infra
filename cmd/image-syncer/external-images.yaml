@@ -91,8 +91,8 @@ images:
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
   - source: "nginx:1.23.3"
     amd64Only: true
-  - source: "nginxinc/nginx-unprivileged@sha256:f9abf2e3f911c05e28d97b2e6826ebe83a2fb26ec5d441522d3b2a8a6f7947ad"
-    tag: "1.27-alpine"
+  - source: "nginxinc/nginx-unprivileged@sha256:0065303bfa2a20793f9b5db326e94d68bdc7a69f79822091b8db5b3ec4753491"
+    tag: "1.27-alpine3.20"
   - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
     tag: "v1.16-debian-1"
   - source: "gcr.io/istio-testing/ext-authz@sha256:8ffad059c8ad951102e5421562ac5b7cca129881903be8cbfdc5e910e49fd78e"
