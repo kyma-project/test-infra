@@ -78,27 +78,23 @@ func main() {
 	githubComAccessToken := os.Getenv("BOT_GITHUB_TOKEN")
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
 	if err != nil {
-		const errMsg = "failed creating sap tools github client, got error: %v"
-		log.Fatalf(errMsg, err)
+		log.Fatalf("failed creating sap tools github client, got error: %v", err)
 	}
 
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
-		const errMsg = "failed creating github.com client, got error: %v"
-		log.Fatalf(errMsg, err)
+		log.Fatalf("failed creating github.com client, got error: %v", err)
 	}
 	usersMap, err := saptoolsClient.GetUsersMap(ctx)
 	if err != nil {
-		const errMsg = "error when getting users map: got error %v"
-		log.Fatalf(errMsg, err)
+		log.Fatalf("error when getting users map: got error %v", err)
 	}
 	authors, err := prow.GetPrAuthorForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
 			log.Info(err.Error())
 		} else {
-			const errMsg = "error when getting pr author for presubmit: got error %v"
-			log.Fatalf(errMsg, err)
+			log.Fatalf("error when getting pr author for presubmit: got error %v", err)
 		}
 	}
 
@@ -107,8 +103,7 @@ func main() {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
 			log.Info(err.Error())
 		} else {
-			const errMsg = "error when getting org for presubmit: got error %v"
-			log.Fatalf(errMsg, err)
+			log.Fatalf("error when getting org for presubmit: got error %v", err)
 		}
 	}
 
@@ -119,8 +114,7 @@ func main() {
 		// Check if author is a member of the organization.
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
 		if err != nil {
-			const errMsg = "failed check if user %s is an github organisation member"
-			log.Fatalf(errMsg, author)
+			log.Fatalf("failed check if user %s is an github organisation member", author)
 		}
 		// If the author is a member of the organization but not present in usersMap, add to missingUsers.
 		if member && !checkUserInMap(author, usersMap) {
