@@ -18,8 +18,6 @@ linters:
     - staticcheck
     - revive # replaces golint
 issues:
-  # Show only new issues
-  new: true
   # To list all excluded by default patterns execute `golangci-lint run --help`.
   # exclude-use-default: false
   # default: 50
