@@ -29,9 +29,9 @@ func (e ErrRequiredParamNotSet) Error() string {
 // TODO: Rename, remove Template, as this is are parameters for pipeline execution.
 type OCIImageBuilderTemplateParams map[string]string
 
-// SetRepositoryURL sets required parameter RepositoryURL
-func (p OCIImageBuilderTemplateParams) SetRepositoryURL(url string) {
-	p["RepositoryURL"] = url
+// SetRepoURL sets required parameter RepositoryURL
+func (p OCIImageBuilderTemplateParams) SetRepoURL(url string) {
+	p["RepoURL"] = url
 }
 
 // SetRepoName sets required parameter RepoName
@@ -152,8 +152,8 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 		jobType string
 		ok      bool
 	)
-	if _, ok = p["RepositoryURL"]; !ok {
-		return ErrRequiredParamNotSet("RepositoryURL")
+	if _, ok = p["RepoURL"]; !ok {
+		return ErrRequiredParamNotSet("RepoURL")
 	}
 	if _, ok = p["RepoName"]; !ok {
 		return ErrRequiredParamNotSet("RepoName")
