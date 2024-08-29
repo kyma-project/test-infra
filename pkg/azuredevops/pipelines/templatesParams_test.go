@@ -16,6 +16,11 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		params = make(map[string]string)
 	})
 
+	It("sets the correct RepoURL", func() {
+		params.SetRepoURL("https://github.com/testOwner/testName")
+		Expect(params["RepoURL"]).To(Equal("https://github.com/testOwner/testName"))
+	})
+
 	It("sets the correct RepoName", func() {
 		params.SetRepoName("testName")
 		Expect(params["RepoName"]).To(Equal("testName"))
@@ -99,6 +104,7 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 	// TODO: Improve assertions with more specific matchers and values.
 	It("validates the params correctly", func() {
 		// Set all required parameters
+		params.SetRepoURL("https://github.com/testOwner/testName")
 		params.SetRepoName("testName")
 		params.SetRepoOwner("testOwner")
 		params.SetPresubmitJobType()
