@@ -3,12 +3,13 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	storage2 "github.com/kyma-project/test-infra/pkg/tools/gcscleaner/storage"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/kyma-project/test-infra/pkg/tools/gcscleaner/storage"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -43,12 +44,12 @@ func NewCancelableContext(ctx context.Context) CancelableContext {
 
 // Cleaner cleans GCP buckets
 type Cleaner struct {
-	client storage2.Client
+	client storage.Client
 	cfg    Config
 }
 
 // NewCleaner creates cleaner
-func NewCleaner(client storage2.Client, cfg Config) Cleaner {
+func NewCleaner(client storage.Client, cfg Config) Cleaner {
 	return Cleaner{
 		client: client,
 		cfg:    cfg,
@@ -119,7 +120,7 @@ func (r Cleaner) deleteBucketObject(
 	return err
 }
 
-func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string, bucketObjectChan chan storage2.BucketObject, errChan chan error) {
+func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string, bucketObjectChan chan storage.BucketObject, errChan chan error) {
 	defer close(bucketObjectChan)
 
 	bucket := r.client.Bucket(bucketName)
@@ -138,12 +139,12 @@ func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string
 				errChan <- errors.Wrap(err, "while iterating bucket object names")
 				return
 			}
-			bucketObjectChan <- storage2.NewBucketObject(attrs.Bucket(), attrs.Name())
+			bucketObjectChan <- storage.NewBucketObject(attrs.Bucket(), attrs.Name())
 		}
 	}
 }
 
-func (r Cleaner) deleteBucketObjects(ctx CancelableContext, bucketObjectChan chan storage2.BucketObject, errChan chan error) {
+func (r Cleaner) deleteBucketObjects(ctx CancelableContext, bucketObjectChan chan storage.BucketObject, errChan chan error) {
 	for bo := range bucketObjectChan {
 		if err := r.deleteBucketObject(ctx, bo.Bucket(), bo.Name()); err != nil {
 			errChan <- errors.Wrap(err, "while deleting bucket object")
@@ -209,13 +210,13 @@ func (r Cleaner) parseErrors(errorMessages []string) error {
 		return nil
 	}
 	errorMessage := strings.Join(errorMessages, "\n")
-	return fmt.Errorf(errorMessage)
+	return errors.New(errorMessage)
 }
 
 func (r Cleaner) deleteAllObjects(ctx CancelableContext, bucketName string, errChan chan error) {
 	defer close(errChan)
 
-	bucketObjectChan := make(chan storage2.BucketObject)
+	bucketObjectChan := make(chan storage.BucketObject)
 	var waitGroup sync.WaitGroup
 
 	waitGroup.Add(1)
