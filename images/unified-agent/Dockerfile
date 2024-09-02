@@ -8,6 +8,7 @@ RUN apk upgrade --no-cache; \
     ca-certificates  \
     curl \
     bash \
+    git \
     && \
     update-ca-certificates
 
