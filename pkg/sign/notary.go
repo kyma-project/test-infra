@@ -2,16 +2,16 @@ package sign
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"time"
+
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
 const (
@@ -38,13 +38,14 @@ func (e ErrBadResponse) Error() string {
 type NotaryConfig struct {
 	// Set URL to Notary server signing endpoint
 	Endpoint string `yaml:"endpoint" json:"endpoint"`
-	// SecretPath contains path to the authentication credentials used for specific notary server
-	Secret *AuthSecretConfig `yaml:"secret,omitempty" json:"secret,omitempty"`
 	// Time after connection to notary server should time out
 	Timeout time.Duration `yaml:"timeout" json:"timeout"`
 	// RetryTimeout is time between each signing request to notary in case something fails
 	// Default is 10 seconds
 	RetryTimeout time.Duration `yaml:"retry-timeout" json:"retry-timeout"`
+	// Paths to the certificate and private key for mTLS
+	CertFile string `yaml:"cert_file" json:"cert_file"`
+	KeyFile  string `yaml:"key_file" json:"key_file"`
 }
 
 // AuthSecretConfig contains auth information for notary server
@@ -176,9 +177,6 @@ func (ns NotarySigner) Sign(images []string) error {
 		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
-	if ns.authFunc != nil {
-		req = ns.authFunc(req)
-	}
 
 	retries := 5
 	var status string
@@ -212,38 +210,36 @@ func (ns NotarySigner) Sign(images []string) error {
 	return ErrBadResponse{status: status, message: string(respMsg)}
 }
 
+// NewSigner initializes a NotarySigner with mTLS authentication
 func (nc NotaryConfig) NewSigner() (Signer, error) {
 	var ns NotarySigner
 
-	// (@Ressetkk): Should this be loaded before calling signer?
-	if nc.Secret != nil {
-		f, err := os.ReadFile(nc.Secret.Path)
-		if err != nil {
-			return nil, err
-		}
-		switch nc.Secret.Type {
-		case "token":
-			ns.authFunc = AuthToken(string(f))
-		case "signify":
-			var s SignifySecret
-			err := yaml.Unmarshal(f, &s)
-			if err != nil {
-				return nil, err
-			}
-			auth, err := SignifyAuth(s)
-			if err != nil {
-				return nil, err
-			}
-			ns.authFunc = auth
-		default:
-			return nil, ErrAuthServiceNotSupported{Service: nc.Secret.Type}
-		}
+	// Load the client certificate and key for mTLS
+	cert, err := tls.LoadX509KeyPair(nc.CertFile, nc.KeyFile)
+	if err != nil {
+		return nil, fmt.Errorf("unable to load mTLS certificate and key: %w", err)
 	}
+
+	// Create a tls.Config with the certificate
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+
+	// Create an http.Transport that uses the tls.Config
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig,
+	}
+
+	// Create an HTTP client that uses the transport
+	ns.c = http.Client{
+		Transport: transport,
+		Timeout:   nc.Timeout,
+	}
+
 	ns.retryTimeout = 10 * time.Second
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
-	ns.c.Timeout = nc.Timeout
 	ns.url = nc.Endpoint
 	return ns, nil
 }
