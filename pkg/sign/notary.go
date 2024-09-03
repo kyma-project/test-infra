@@ -38,14 +38,17 @@ func (e ErrBadResponse) Error() string {
 type NotaryConfig struct {
 	// Set URL to Notary server signing endpoint
 	Endpoint string `yaml:"endpoint" json:"endpoint"`
+	// SecretPath contains path to the authentication credentials used for specific notary server
+	Secret *AuthSecretConfig `yaml:"secret,omitempty" json:"secret,omitempty"`
 	// Time after connection to notary server should time out
 	Timeout time.Duration `yaml:"timeout" json:"timeout"`
 	// RetryTimeout is time between each signing request to notary in case something fails
 	// Default is 10 seconds
 	RetryTimeout time.Duration `yaml:"retry-timeout" json:"retry-timeout"`
-	// Paths to the certificate and private key for mTLS
-	CertFile string `yaml:"cert_file" json:"cert_file"`
-	KeyFile  string `yaml:"key_file" json:"key_file"`
+
+	CertFile   string `yaml:"certFile" json:"certFile"`
+	KeyFile    string `yaml:"keyFile" json:"keyFile"`
+	Passphrase string `yaml:"passphrase" json:"passphrase"`
 }
 
 // AuthSecretConfig contains auth information for notary server
@@ -82,8 +85,7 @@ type AuthFunc func(r *http.Request) *http.Request
 // NotarySigner is a struct that implements sign.Signer interface
 // Takes care of signing requests to Notary server
 type NotarySigner struct {
-	authFunc     AuthFunc
-	c            http.Client
+	client       *http.Client
 	url          string
 	retryTimeout time.Duration
 }
@@ -95,6 +97,14 @@ func AuthToken(token string) AuthFunc {
 		r.Header.Add("Authorization", "Token "+token)
 		return r
 	}
+}
+
+func (nc NotaryConfig) LoadCertFiles() (*tls.Certificate, error) {
+	cert, err := tls.LoadX509KeyPair(nc.CertFile, nc.KeyFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load cert or key file: %w", err)
+	}
+	return &cert, nil
 }
 
 // SignifyAuth fetches the JWT token from provided API endpoint in configuration file
@@ -163,83 +173,86 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 }
 
 func (ns NotarySigner) Sign(images []string) error {
-	sImg := strings.Join(images, ", ")
 	sr, err := ns.buildSigningRequest(images)
 	if err != nil {
-		return fmt.Errorf("build sign request: %w", err)
+		return fmt.Errorf("failed to build signing request: %w", err)
 	}
-	b, err := json.Marshal(sr)
+
+	payload, err := json.Marshal(map[string]interface{}{
+		"trustedCollections": sr,
+	})
 	if err != nil {
-		return fmt.Errorf("marshal signing request: %w", err)
+		return fmt.Errorf("failed to marshal signing request: %w", err)
 	}
-	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
+
+	// Create a new HTTP request for the signing operation
+	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(payload))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create new HTTP request: %w", err)
 	}
 	req.Header.Add("Content-Type", "application/json")
 
-	retries := 5
-	var status string
-	var respMsg []byte
-	w := time.NewTicker(ns.retryTimeout)
-	defer w.Stop()
+	retries := 3 // Number of retry attempts
+	var lastErr error
+
+	// Retry loop for handling transient errors during the signing process
 	for retries > 0 {
-		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
-		// wait for ticker to run
-		<-w.C
-		resp, err := ns.c.Do(req)
+		// Execute the HTTP request
+		resp, err := ns.client.Do(req)
 		if err != nil {
-			return fmt.Errorf("notary request: %w", err)
+			lastErr = fmt.Errorf("HTTP request failed: %w", err)
+			retries--
+			if retries > 0 {
+				fmt.Printf("Request failed, retrying... (%d retries left)\n", retries)
+				time.Sleep(ns.retryTimeout) // Wait before retrying
+				continue
+			}
+			return lastErr
 		}
-		status = resp.Status
-		respMsg, err = io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("body read: %w", err)
+		defer resp.Body.Close()
+
+		// Check if the response status code indicates success
+		if resp.StatusCode != http.StatusAccepted {
+			respBody, _ := io.ReadAll(resp.Body)
+			lastErr = fmt.Errorf("signing failed, status: %s, response: %s", resp.Status, string(respBody))
+			retries--
+			if retries > 0 {
+				fmt.Printf("Received non-accepted status %d, retrying... (%d retries left)\n", resp.StatusCode, retries)
+				time.Sleep(ns.retryTimeout)
+				continue
+			}
+			return lastErr
 		}
-		switch resp.StatusCode {
-		case http.StatusOK:
-			// response was fine. Do not need anything else
-			fmt.Printf("Successfully signed images %s!\n", sImg)
-			return nil
-		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
-			return ErrBadResponse{status: status, message: string(respMsg)}
-		}
-		retries--
+
+		// If the request is successful, log the outcome and exit the loop
+		fmt.Println("Images signed successfully.")
+		return nil
 	}
-	fmt.Println("Reached all retries. Stopping.")
-	return ErrBadResponse{status: status, message: string(respMsg)}
+
+	// Return the last encountered error after all retry attempts are exhausted
+	return lastErr
 }
 
-// NewSigner initializes a NotarySigner with mTLS authentication
 func (nc NotaryConfig) NewSigner() (Signer, error) {
-	var ns NotarySigner
-
-	// Load the client certificate and key for mTLS
-	cert, err := tls.LoadX509KeyPair(nc.CertFile, nc.KeyFile)
+	cert, err := nc.LoadCertFiles()
 	if err != nil {
-		return nil, fmt.Errorf("unable to load mTLS certificate and key: %w", err)
+		return nil, err
 	}
 
-	// Create a tls.Config with the certificate
 	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
-	// Create an http.Transport that uses the tls.Config
-	transport := &http.Transport{
-		TLSClientConfig: tlsConfig,
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
+		Timeout: nc.Timeout,
 	}
 
-	// Create an HTTP client that uses the transport
-	ns.c = http.Client{
-		Transport: transport,
-		Timeout:   nc.Timeout,
-	}
-
-	ns.retryTimeout = 10 * time.Second
-	if nc.RetryTimeout > 0 {
-		ns.retryTimeout = nc.RetryTimeout
-	}
-	ns.url = nc.Endpoint
-	return ns, nil
+	return &NotarySigner{
+		client:       client,
+		url:          nc.Endpoint,
+		retryTimeout: nc.RetryTimeout,
+	}, nil
 }
