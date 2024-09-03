@@ -120,8 +120,6 @@ func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
 // from which image should be build.
 // It also contains information whether job is presubmit or postsubmit
 type GitStateConfig struct {
-	// URL of the source repository
-	RepositoryURL string
 	// Name of the source repository
 	RepositoryName string
 	// Name of the source repository's owner
@@ -159,10 +157,7 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 }
 
 func loadADOGitState() (GitStateConfig, error) {
-	repoURL, present := os.LookupEnv("REPO_URL")
-	if !present {
-		return GitStateConfig{}, fmt.Errorf("REPO_URL environment variable is not set, please set it to valid repository URL")
-	}
+	var pullNumber int
 
 	repoName, present := os.LookupEnv("REPO_NAME")
 	if !present {
@@ -182,7 +177,6 @@ func loadADOGitState() (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("image builder is running for unsupported event %s", jobType)
 	}
 
-	var pullNumber int
 	pullNumberString, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
 	if jobType == "presubmit" {
 		if !isPullNumberSet {
@@ -207,7 +201,6 @@ func loadADOGitState() (GitStateConfig, error) {
 	}
 
 	return GitStateConfig{
-		RepositoryURL:     repoURL,
 		RepositoryName:    repoName,
 		RepositoryOwner:   repoOwner,
 		JobType:           jobType,
@@ -244,7 +237,6 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 		}
 
 		return GitStateConfig{
-			RepositoryURL:     *payload.Repo.HTMLURL,
 			RepositoryName:    *payload.Repo.Name,
 			RepositoryOwner:   *payload.Repo.Owner.Login,
 			JobType:           "presubmit",
@@ -260,7 +252,6 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
 		}
 		return GitStateConfig{
-			RepositoryURL:   *payload.Repo.HTMLURL,
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "postsubmit",
@@ -273,7 +264,6 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
 		}
 		return GitStateConfig{
-			RepositoryURL:   *payload.Repo.HTMLURL,
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "workflow_dispatch",
