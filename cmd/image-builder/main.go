@@ -193,7 +193,7 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
 	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
-	templateParameters.SetRepoURL(options.gitState.RepositoryURL)
+	templateParameters.SetRepositoryURL(options.gitState.RepositoryURL)
 	templateParameters.SetRepoName(options.gitState.RepositoryName)
 	templateParameters.SetRepoOwner(options.gitState.RepositoryOwner)
 

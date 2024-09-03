@@ -159,7 +159,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem:   Prow,
 			},
 			env: map[string]string{
-				"REPO_URL":      "https://github.com/test-owner/test-repo",
 				"REPO_NAME":     "test-repo",
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "presubmit",
@@ -169,7 +168,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"PROW_JOB_ID":   "1234",
 			},
 			gitState: GitStateConfig{
-				RepositoryURL:     "https://github.com/test-owner/test-repo",
 				RepositoryName:    "test-repo",
 				RepositoryOwner:   "test-owner",
 				JobType:           "presubmit",
@@ -186,7 +184,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem:   Prow,
 			},
 			env: map[string]string{
-				"REPO_URL":      "https://github.com/test-owner/test-repo",
 				"REPO_NAME":     "test-repo",
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "periodic",
@@ -204,7 +201,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem:   Prow,
 			},
 			env: map[string]string{
-				"REPO_URL":      "https://github.com/test-owner/test-repo",
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "periodic",
 				"PULL_NUMBER":   "1234",
@@ -224,7 +220,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"GITHUB_EVENT_NAME": "pull_request_target",
 			},
 			gitState: GitStateConfig{
-				RepositoryURL:     "https://github.com/kyma-project/test-infra",
 				RepositoryName:    "test-infra",
 				RepositoryOwner:   "kyma-project",
 				JobType:           "presubmit",
@@ -244,7 +239,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"GITHUB_EVENT_NAME": "push",
 			},
 			gitState: GitStateConfig{
-				RepositoryURL:   "https://github.com/KacperMalachowski/test-infra",
 				RepositoryName:  "test-infra",
 				RepositoryOwner: "KacperMalachowski",
 				JobType:         "postsubmit",
@@ -264,7 +258,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"GITHUB_REF":        "refs/heads/main",
 			},
 			gitState: GitStateConfig{
-				RepositoryURL:   "https://github.com/KacperMalachowski/test-infra",
 				RepositoryName:  "test-infra",
 				RepositoryOwner: "KacperMalachowski",
 				JobType:         "workflow_dispatch",
@@ -315,7 +308,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem:   Prow,
 			},
 			env: map[string]string{
-				"REPO_URL":      "https://github.com/test-owner/test-repo",
 				"REPO_NAME":     "test-repo",
 				"REPO_OWNER":    "test-owner",
 				"JOB_TYPE":      "postsubmit",
@@ -324,7 +316,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 				"PROW_JOB_ID":   "1234",
 			},
 			gitState: GitStateConfig{
-				RepositoryURL:   "https://github.com/test-owner/test-repo",
 				RepositoryName:  "test-repo",
 				RepositoryOwner: "test-owner",
 				JobType:         "postsubmit",
