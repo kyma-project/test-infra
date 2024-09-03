@@ -103,8 +103,8 @@ type TokenProcessor struct {
 	logger         LoggerInterface
 }
 
-func (t *TokenProcessor) GetIssuer() Issuer {
-	return t.issuer
+func (tokenProcessor *TokenProcessor) GetIssuer() Issuer {
+	return tokenProcessor.issuer
 }
 
 // TokenProcessorOption is a function that modifies the TokenProcessor.
