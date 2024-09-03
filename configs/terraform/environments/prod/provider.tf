@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 5.6.0"
+      version = ">= 6.0.1"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -14,8 +14,7 @@ terraform {
     }
     github = {
       source = "integrations/github"
-      #version = "~> 5.0"
-      version = "~> 6.2.1"
+      version = "~> 6.2.3"
     }
   }
 }
@@ -40,6 +39,12 @@ provider "github" {
 provider "google" {
   project = var.gcp_project_id
   region  = var.gcp_region
+}
+
+provider "google" {
+  alias   = "kyma_project"
+  project = var.kyma_project_gcp_project_id
+  region  = var.kyma_project_gcp_region
 }
 
 provider "google" {
@@ -126,10 +131,4 @@ provider "kubectl" {
     data.google_container_cluster.untrusted_workload_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
   load_config_file = false
-}
-
-provider "google" {
-  alias   = "kyma_project"
-  project = var.kyma_project_gcp_project_id
-  region  = var.kyma_project_gcp_region
 }
