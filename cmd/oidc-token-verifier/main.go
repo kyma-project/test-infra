@@ -145,7 +145,7 @@ func (opts *options) extractClaims() error {
 		return err
 	}
 	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
-	os.Setenv("GITHUB_URL", tokenProcessor.GetIssuer().GetGithubURL())
+	fmt.Printf("##vso[task.setvariable variable=githubURL] %s", tokenProcessor.GetIssuer().GetGithubURL())
 
 	ctx := context.Background()
 	// Create a new provider using OIDC discovery to get the public keys.
