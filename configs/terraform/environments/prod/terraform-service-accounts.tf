@@ -3,10 +3,6 @@
 # the terraform executor manage all the resources in the Google Cloud project.
 # It also grants the terraform executor gcp service account the owner role in the workloads project.
 
-data "google_iam_workload_identity_pool" "gh_com_kyma_project" {
-  workload_identity_pool_id = var.gh_com_kyma_project_wif_pool_id
-}
-
 resource "google_service_account" "terraform_executor" {
   project      = var.terraform_executor_gcp_service_account.project_id
   account_id   = var.terraform_executor_gcp_service_account.id
@@ -91,13 +87,13 @@ resource "google_project_iam_member" "terraform_planner_workloads_project_read_a
 }
 
 resource "google_service_account_iam_member" "terraform_executor_workload_identity_user" {
-  member             = "principal://iam.googleapis.com/${data.google_iam_workload_identity_pool.gh_com_kyma_project.name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
+  member = "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_executor.email}"
 }
 
 resource "google_service_account_iam_member" "terraform_planner_workload_identity_user" {
-  member             = "principal://iam.googleapis.com/${data.google_iam_workload_identity_pool.gh_com_kyma_project.name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
+  member = "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_planner.email}"
 }
