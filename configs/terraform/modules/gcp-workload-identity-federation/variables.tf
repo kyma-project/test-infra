@@ -30,4 +30,6 @@ variable "sa_mapping" {
     attribute = string
   }))
   description = "Mapping of service accounts and corresponding workload identity federation attributes"
+  # Make sa_mapping optional argument to let user define sa mapping in other modules and config files related to the mapped service accounts.
+  default = {}
 }
