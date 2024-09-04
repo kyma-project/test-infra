@@ -2,16 +2,19 @@ package sign
 
 import (
 	"bytes"
+	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -57,10 +60,13 @@ type AuthSecretConfig struct {
 
 // SignifySecret contains configuration of secret that is used to connect to SAP signify service
 type SignifySecret struct {
-	// URL to the SAP signify endpoint
-	Endpoint string `yaml:"endpoint" json:"endpoint"`
-	// Actual secret data that will be pushed on sign request. Assumed its in JSON format
-	Payload string `yaml:"payload" json:"payload"`
+	CreatedAt      time.Time `json:"createdAt"`
+	TokenURL       string    `json:"tokenURL"`
+	CertServiceURL string    `json:"certServiceURL"`
+	ClientID       string    `json:"clientID"`
+	CertficateData string    `json:"certData"`
+	PrivateKeyData string    `json:"privateKeyData"`
+	KeyPassword    string    `json:"password"`
 }
 
 // SigningRequest contains information about all images with tags to sign using Notary
@@ -75,60 +81,33 @@ type SigningRequest struct {
 	Version string `json:"version"`
 }
 
-// AuthFunc is a small middleware function that intercepts http.Request with specific authentication method
-type AuthFunc func(r *http.Request) *http.Request
-
 // NotarySigner is a struct that implements sign.Signer interface
 // Takes care of signing requests to Notary server
 type NotarySigner struct {
-	authFunc     AuthFunc
 	c            http.Client
 	url          string
 	retryTimeout time.Duration
 }
 
-// AuthToken mutates created request, so it contains bearer token of authorized user
-// Serves as middleware function before sending request
-func AuthToken(token string) AuthFunc {
-	return func(r *http.Request) *http.Request {
-		r.Header.Add("Authorization", "Token "+token)
-		return r
-	}
-}
-
-// SignifyAuth fetches the JWT token from provided API endpoint in configuration file
-// then returns a function that populates this JWT token as Bearer in the request
-func SignifyAuth(s SignifySecret) (AuthFunc, error) {
-	endpoint := s.Endpoint
-	payload := s.Payload
-	resp, err := http.Post(endpoint, "application/json", strings.NewReader(payload))
+func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
+	// Decode the certificate and private key from base64
+	certData, err := base64.StdEncoding.DecodeString(ss.CertficateData)
 	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	var t struct {
-		AccessToken struct {
-			Token string `json:"token"`
-		} `json:"access_token"`
+		return tls.Certificate{}, fmt.Errorf("failed to decode certificate data: %w", err)
 	}
 
-	rBody, err := io.ReadAll(resp.Body)
+	keyData, err := base64.StdEncoding.DecodeString(ss.PrivateKeyData)
 	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, ErrBadResponse{status: resp.Status, message: string(rBody)}
-	}
-	if err := json.Unmarshal(rBody, &t); err != nil {
-		return nil, err
+		return tls.Certificate{}, fmt.Errorf("failed to decode private key data: %w", err)
 	}
 
-	token := t.AccessToken.Token
+	// Load the certificate and key
+	cert, err := tls.X509KeyPair(certData, keyData)
+	if err != nil {
+		return tls.Certificate{}, fmt.Errorf("failed to load certificate and key: %w", err)
+	}
 
-	return func(r *http.Request) *http.Request {
-		r.Header.Add("Authorization", "Bearer "+token)
-		return r
-	}, nil
+	return cert, nil
 }
 
 func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, error) {
@@ -162,88 +141,120 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 }
 
 func (ns NotarySigner) Sign(images []string) error {
+	// Build the signing request
 	sImg := strings.Join(images, ", ")
 	sr, err := ns.buildSigningRequest(images)
 	if err != nil {
 		return fmt.Errorf("build sign request: %w", err)
 	}
-	b, err := json.Marshal(sr)
+
+	// Marshal the signing request to JSON
+	b, err := json.Marshal(map[string]interface{}{
+		"trustedCollections": sr,
+	})
 	if err != nil {
 		return fmt.Errorf("marshal signing request: %w", err)
 	}
+
+	// Create a new POST request with the signing payload
 	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
 	if err != nil {
 		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
-	if ns.authFunc != nil {
-		req = ns.authFunc(req)
-	}
 
+	// Retry logic for sending the request
 	retries := 5
-	var status string
 	var respMsg []byte
+	var status string
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
+
 	for retries > 0 {
-		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
-		// wait for ticker to run
+		fmt.Printf("Trying to sign %s. %d retries remaining...\n", sImg, retries)
 		<-w.C
+
+		// Send the HTTP request
 		resp, err := ns.c.Do(req)
 		if err != nil {
 			return fmt.Errorf("notary request: %w", err)
 		}
-		status = resp.Status
+		defer resp.Body.Close()
+
+		// Read the response body
 		respMsg, err = io.ReadAll(resp.Body)
 		if err != nil {
 			return fmt.Errorf("body read: %w", err)
 		}
+		status = resp.Status
+
+		// Handle different response statuses
 		switch resp.StatusCode {
-		case http.StatusOK:
-			// response was fine. Do not need anything else
+		case http.StatusAccepted:
 			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
-		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
+		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest:
 			return ErrBadResponse{status: status, message: string(respMsg)}
 		}
+
 		retries--
 	}
+
+	// After retries, return the error if signing fails
 	fmt.Println("Reached all retries. Stopping.")
 	return ErrBadResponse{status: status, message: string(respMsg)}
 }
 
-func (nc NotaryConfig) NewSigner() (Signer, error) {
+func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 	var ns NotarySigner
 
-	// (@Ressetkk): Should this be loaded before calling signer?
+	// Load the secret file and initialize the signer
 	if nc.Secret != nil {
 		f, err := os.ReadFile(nc.Secret.Path)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to read secret file: %w", err)
 		}
+
 		switch nc.Secret.Type {
-		case "token":
-			ns.authFunc = AuthToken(string(f))
 		case "signify":
+			// Unmarshal the YAML secret file into SignifySecret struct
 			var s SignifySecret
 			err := yaml.Unmarshal(f, &s)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
 			}
-			auth, err := SignifyAuth(s)
+
+			// Decode certificate and key from base64
+			cert, err := s.DecodeCertAndKey()
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to decode cert and key: %w", err)
 			}
-			ns.authFunc = auth
+
+			// Set up the TLS configuration with the decoded cert
+			tlsConfig := &tls.Config{
+				Certificates: []tls.Certificate{cert},
+			}
+
+			// Create an HTTP client with TLS config
+			ns.c = http.Client{
+				Transport: &http.Transport{
+					TLSClientConfig: tlsConfig,
+				},
+				Timeout: nc.Timeout,
+			}
 		default:
 			return nil, ErrAuthServiceNotSupported{Service: nc.Secret.Type}
 		}
 	}
+
+	// Set retry timeout
 	ns.retryTimeout = 10 * time.Second
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
-	ns.c.Timeout = nc.Timeout
+
+	// Set the Notary server URL
 	ns.url = nc.Endpoint
-	return ns, nil
+
+	return &ns, nil
 }
