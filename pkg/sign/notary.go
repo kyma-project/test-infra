@@ -14,7 +14,6 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -60,13 +59,13 @@ type AuthSecretConfig struct {
 
 // SignifySecret contains configuration of secret that is used to connect to SAP signify service
 type SignifySecret struct {
-	CreatedAt      time.Time `json:"createdAt"`
-	TokenURL       string    `json:"tokenURL"`
-	CertServiceURL string    `json:"certServiceURL"`
-	ClientID       string    `json:"clientID"`
-	CertficateData string    `json:"certData"`
-	PrivateKeyData string    `json:"privateKeyData"`
-	KeyPassword    string    `json:"password"`
+	CreatedAt      float64 `json:"createdAt"`
+	TokenURL       string  `json:"tokenURL"`
+	CertServiceURL string  `json:"certServiceURL"`
+	ClientID       string  `json:"clientID"`
+	CertficateData string  `json:"certData"`
+	PrivateKeyData string  `json:"privateKeyData"`
+	KeyPassword    string  `json:"password"`
 }
 
 // SigningRequest contains information about all images with tags to sign using Notary
@@ -238,7 +237,7 @@ func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 		case "signify":
 			// Unmarshal the YAML secret file into SignifySecret struct
 			var s SignifySecret
-			err := yaml.Unmarshal(f, &s)
+			err := json.Unmarshal(f, &s)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
 			}
