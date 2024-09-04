@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-e2e-provisioning-test-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240904-df218735"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240904-b7b1521a"
                   annotations:
                     owner: "gopher"
                     description: "E2E provisioning test build on PR"
@@ -23,7 +23,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-e2e-provisioning-test-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240904-df218735"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240904-b7b1521a"
                   annotations:
                     owner: "gopher"
                     description: "E2E provisioning test build on main"
