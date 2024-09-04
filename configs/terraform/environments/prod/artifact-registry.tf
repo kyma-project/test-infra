@@ -25,7 +25,7 @@ variable "prod_docker_repository" {
     immutable_tags         = bool
     mode                   = string
     cleanup_policy_dry_run = bool
-    labels = map(string)
+    labels                 = map(string)
   })
   default = {
     name                   = "prod"
