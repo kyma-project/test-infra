@@ -17,10 +17,25 @@ module "artifact_registry" {
   public                 = each.value.public
 }
 
-resource "google_artifact_registry_repository_iam_member" "writer_service_account" {
-  project    = data.google_client_config.this.project
-  location   = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
-  repository = google_artifact_registry_repository.artifact_registry.name
-  role       = "roles/artifactregistry.repoAdmin"
-  member     = "serviceAccount:${each.value}"
+variable "prod_docker_repository" {
+  type = object({
+    name                   = string
+    location               = string
+    format                 = string
+    immutable_tags         = bool
+    mode                   = string
+    cleanup_policy_dry_run = bool
+    labels = map(string)
+  })
+  default = {
+    name                   = "prod"
+    location               = "europe"
+    format                 = "DOCKER"
+    immutable_tags         = false
+    mode                   = "STANDARD_REPOSITORY"
+    cleanup_policy_dry_run = true
+    labels = {
+      "type" = "production"
+    }
+  }
 }
