@@ -61,7 +61,7 @@ func NewVerifyCmd() *cobra.Command {
 		Use:   "verify",
 		Short: "Verify token and expected claims values",
 		RunE: func(_ *cobra.Command, _ []string) error {
-			os.Setenv("GITHUB_URL", "https://github.com")
+			fmt.Printf("##vso[task.setvariable variable=githubUrl]%s", "https://github.com")
 			//if err := opts.extractClaims(); err != nil {
 			//	return err
 			//}
