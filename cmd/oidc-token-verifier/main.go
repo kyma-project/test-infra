@@ -61,7 +61,7 @@ func NewVerifyCmd() *cobra.Command {
 		Use:   "verify",
 		Short: "Verify token and expected claims values",
 		RunE: func(_ *cobra.Command, _ []string) error {
-			fmt.Println("GITHUB_URL=https://github.com")
+			fmt.Printf("GITHUB_URL=%s\n", "https://github.com")
 			//if err := opts.extractClaims(); err != nil {
 			//	return err
 			//}
@@ -146,7 +146,7 @@ func (opts *options) extractClaims() error {
 		return err
 	}
 	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
-	os.Setenv("GITHUB_URL", tokenProcessor.GetIssuer().GetGithubURL())
+	fmt.Printf("GITHUB_URL=%s\n", tokenProcessor.GetIssuer().GetGithubURL())
 
 	ctx := context.Background()
 	// Create a new provider using OIDC discovery to get the public keys.
