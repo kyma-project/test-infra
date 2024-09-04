@@ -33,3 +33,9 @@ variable "sa_mapping" {
   # Make sa_mapping optional argument to let user define sa mapping in other modules and config files related to the mapped service accounts.
   default = {}
 }
+
+variable "attribute_condition" {
+  type        = string
+  description = "Attribute condition for workload identity pool provider"
+  default     = ""
+}

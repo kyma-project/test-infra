@@ -13,9 +13,14 @@ resource "google_iam_workload_identity_pool_provider" "main" {
   disabled                           = false
   attribute_mapping                  = var.attribute_mapping
 
+  attribute_condition {
+    expression = var.attribute_condition
+  }
+
   oidc {
     # TODO(dekiel): Add setting allowedAudiences value. https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools.providers#Oidc
-    issuer_uri = var.issuer_uri
+    issuer_uri        = var.issuer_uri
+    allowed_audiences = []
   }
 }
 

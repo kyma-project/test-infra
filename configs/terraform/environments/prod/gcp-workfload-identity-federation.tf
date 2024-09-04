@@ -13,17 +13,19 @@ module "gh_com_kyma_project_workload_identity_federation" {
   issuer_uri  = var.gh_com_kyma_project_wif_issuer_uri
 
   attribute_mapping = {
-    "google.subject"                = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow:\" + assertion.workflow"
-    "attribute.actor"               = "assertion.actor"
-    "attribute.aud"                 = "assertion.aud"
-    "attribute.repository_id"       = "assertion.repository_id"
-    "attribute.repository_owner_id" = "assertion.repository_owner_id"
-    "attribute.workflow"            = "assertion.workflow"
-    "attribute.workflow_ref"        = "assertion.workflow_ref"
-    "attribute.event_name"          = "assertion.event_name"
+    "google.subject"                  = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow:\" + assertion.workflow"
+    "attribute.actor"                 = "assertion.actor"
+    "attribute.aud"                   = "assertion.aud"
+    "attribute.repository_id"         = "assertion.repository_id"
+    "attribute.repository_owner_id"   = "assertion.repository_owner_id"
+    "attribute.workflow"              = "assertion.workflow"
+    "attribute.workflow_ref"          = "assertion.workflow_ref"
+    "attribute.event_name"            = "assertion.event_name"
     "attribute.reusable_workflow_ref" = "assertion.job_workflow_ref"
     "attribute.reusable_workflow_sha" = "assertion.job_workflow_sha"
   }
+
+  attribute_condition = var.gh_com_kyma_project_wif_attribute_condition
 
   #   sa_mapping = {
   #     "terraform_planner_pull_prod_plan" = {
