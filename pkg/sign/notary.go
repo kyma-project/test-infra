@@ -125,17 +125,22 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 		if err != nil {
 			return nil, fmt.Errorf("ref parse: %w", err)
 		}
-		i, err := remote.Image(ref)
+		img, err := remote.Image(ref)
 		if err != nil {
 			return nil, fmt.Errorf("get image: %w", err)
 		}
-		m, err := i.Manifest()
+		m, err := img.Manifest()
 		if err != nil {
 			return nil, fmt.Errorf("image manifest: %w", err)
 		}
 		sha := m.Config.Digest.Hex
 		size := m.Config.Size
-		sr = append(sr, SigningRequest{NotaryGun: base, Version: tag, ByteSize: size, SHA256: sha})
+		sr = append(sr, SigningRequest{
+			NotaryGun: base,
+			Version:   tag,
+			ByteSize:  size,
+			SHA256:    sha,
+		})
 	}
 	return sr, nil
 }
@@ -148,10 +153,24 @@ func (ns NotarySigner) Sign(images []string) error {
 		return fmt.Errorf("build sign request: %w", err)
 	}
 
-	// Marshal the signing request to JSON
-	b, err := json.Marshal(map[string]interface{}{
-		"trustedCollections": sr,
-	})
+	// Build the Signify API payload
+	payload := map[string]interface{}{
+		"trustedCollections": []map[string]interface{}{
+			{
+				"gun": sr[0].NotaryGun, // Example: "example.repo/image-project-2"
+				"targets": []map[string]interface{}{
+					{
+						"name":     sr[0].Version,  // Example: "1.0.1"
+						"byteSize": sr[0].ByteSize, // Size of the image's manifest
+						"digest":   sr[0].SHA256,   // SHA-256 of the image's manifest
+					},
+				},
+			},
+		},
+	}
+
+	// Marshal the payload to JSON
+	b, err := json.Marshal(payload)
 	if err != nil {
 		return fmt.Errorf("marshal signing request: %w", err)
 	}
@@ -254,7 +273,7 @@ func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 	}
 
 	// Set the Notary server URL
-	ns.url = nc.Endpoint
+	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
 
 	return &ns, nil
 }
