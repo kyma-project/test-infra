@@ -2,6 +2,7 @@ package sign
 
 import (
 	"fmt"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -58,7 +59,6 @@ func (sc *SignerConfig) UnmarshalYAML(value *yaml.Node) error {
 		if err := value.Decode(&c); err != nil {
 			return err
 		}
-		sc.Config = c.Config
 	default:
 		return ErrBackendNotSupported{Type: t.Type}
 	}
