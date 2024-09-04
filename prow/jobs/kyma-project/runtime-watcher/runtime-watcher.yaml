@@ -1,4 +1,5 @@
 postsubmits:
+  kyma-project/runtime-watcher:
     - name: release-runtime-watcher-build
       annotations:
         description: "build runtime watcher release image by semantic version tag"
