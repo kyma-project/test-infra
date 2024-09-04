@@ -24,6 +24,12 @@ variable "attribute_mapping" {
   description = "Workload Identity Pool  attributes mapping"
 }
 
+variable "attribute_condition" {
+  type        = string
+  description = "Attribute condition for workload identity pool provider"
+  default     = null
+}
+
 variable "sa_mapping" {
   type = map(object({
     sa_name   = string,
@@ -34,8 +40,8 @@ variable "sa_mapping" {
   default = {}
 }
 
-variable "attribute_condition" {
-  type        = string
-  description = "Attribute condition for workload identity pool provider"
-  default     = ""
+variable "allowed_audiences" {
+  type = list(string)
+  description = "List of allowed audiences for the workload identity provider"
+  default = []
 }

@@ -36,6 +36,7 @@ provider "github" {
   owner = var.kyma-incubator-github-org
 }
 
+# sap-kyma-prow project provider
 provider "google" {
   project = var.gcp_project_id
   region  = var.gcp_region

@@ -3,7 +3,6 @@ data "github_repository" "test_infra" {
   name     = var.github_test_infra_repository_name
 }
 
-# TODO(dekiel): Repalce pool_id and provider_id with variables.
 module "gh_com_kyma_project_workload_identity_federation" {
   source = "../../modules/gcp-workload-identity-federation"
 
