@@ -27,7 +27,7 @@ type SignerConfig struct {
 	// Config will be parsed based on this value.
 	Type string `yaml:"type" json:"type"`
 	// Config defines specific configuration for signing backend.
-	Config SignerFactory `yaml:"config" json:"config"`
+	Config NotaryConfig `yaml:"config" json:"config"`
 	// JobType contains list of ProwJob types that should be supported.
 	// If the list is empty, the signer is enabled for all job types.
 	// Usable only in CI mode (CI=true)
@@ -59,6 +59,7 @@ func (sc *SignerConfig) UnmarshalYAML(value *yaml.Node) error {
 		if err := value.Decode(&c); err != nil {
 			return err
 		}
+		sc.Config = c.Config
 	default:
 		return ErrBackendNotSupported{Type: t.Type}
 	}
