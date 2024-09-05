@@ -117,3 +117,5 @@ images:
   - source: "node@sha256:a3816e038e05ea70d2640c845c285f49e416bdae2481a7ff94fde96647a10607"
     tag: "22.3.0"
     amd64Only: true
+  - source: "node@sha256:1a526b97cace6b4006256570efa1a29cd1fe4b96a5301f8d48e87c5139438a45"
+    tag: "20.17-alpine3.20"
