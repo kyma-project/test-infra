@@ -102,7 +102,6 @@ images:
   - source: "gcr.io/kaniko-project/executor:v1.23.2"
   - source: "python@sha256:eb26ce0d03bcfdf8061df6b7b0ffec9201c68d04caa0ef68c4b7dc26cbcbefd3"
     tag: "3.9.19-alpine3.20"
-  - source: "python:3.12.5-alpine3.20"
   - source: "python@sha256:11d30cce970c40aee8e993d302a15f8bc8204ecab7af1bae26b3fd00eb75ada2"
     tag: "3.12-slim-bullseye"
   - source: "python@sha256:7e9400f6d73dcb6fd4ea9a2f6e5334da18631f8facb007711648d924a38cfdc6"
