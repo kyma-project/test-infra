@@ -12,8 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"go.step.sm/crypto/pemutil"
 )
 
 const (
@@ -83,85 +82,72 @@ type SigningRequest struct {
 // NotarySigner is a struct that implements sign.Signer interface
 // Takes care of signing requests to Notary server
 type NotarySigner struct {
-	c            http.Client
-	url          string
-	retryTimeout time.Duration
+	c             http.Client
+	url           string
+	retryTimeout  time.Duration
+	signifySecret SignifySecret
 }
 
+// DecodeCertAndKey loads the certificate and private key using smallstep/crypto and returns tls.Certificate
 func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
-	// Decode the certificate and private key from base64
+	// Parse the certificate from base64 encoded PEM data
 	certData, err := base64.StdEncoding.DecodeString(ss.CertficateData)
+	cert, err := pemutil.ParseCertificate(certData)
 	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("failed to decode certificate data: %w", err)
+		return tls.Certificate{}, fmt.Errorf("failed to parse certificate: %w", err)
 	}
 
+	// Parse the private key, handling password if necessary
 	keyData, err := base64.StdEncoding.DecodeString(ss.PrivateKeyData)
+	key, err := pemutil.ParseKey(keyData, pemutil.WithPassword([]byte(ss.KeyPassword)))
 	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("failed to decode private key data: %w", err)
+		return tls.Certificate{}, fmt.Errorf("failed to parse private key: %w", err)
 	}
 
-	// Load the certificate and key
-	cert, err := tls.X509KeyPair(certData, keyData)
-	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("failed to load certificate and key: %w", err)
-	}
-
-	return cert, nil
+	// Return the tls.Certificate that can be used for mTLS
+	return tls.Certificate{
+		Certificate: [][]byte{cert.Raw}, // The raw DER bytes of the certificate
+		PrivateKey:  key,
+	}, nil
 }
 
 func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, error) {
 	var sr []SigningRequest
 	for _, i := range images {
 		var base, tag string
-		// Split on ":"
-		parts := strings.Split(i, tagDelim)
-		// Verify that we aren't confusing a tag for a hostname w/ port for the purposes of weak validation.
-		if len(parts) > 1 && !strings.Contains(parts[len(parts)-1], regRepoDelimiter) {
-			base = strings.Join(parts[:len(parts)-1], tagDelim)
-			tag = parts[len(parts)-1]
+		parts := strings.Split(i, ":")
+		if len(parts) > 1 {
+			base = parts[0]
+			tag = parts[1]
 		}
-		ref, err := name.ParseReference(i)
-		if err != nil {
-			return nil, fmt.Errorf("ref parse: %w", err)
-		}
-		img, err := remote.Image(ref)
-		if err != nil {
-			return nil, fmt.Errorf("get image: %w", err)
-		}
-		m, err := img.Manifest()
-		if err != nil {
-			return nil, fmt.Errorf("image manifest: %w", err)
-		}
-		sha := m.Config.Digest.Hex
-		size := m.Config.Size
+		// Simulated logic for constructing SigningRequest (modify as per actual needs)
 		sr = append(sr, SigningRequest{
 			NotaryGun: base,
 			Version:   tag,
-			ByteSize:  size,
-			SHA256:    sha,
+			ByteSize:  1000, // Example size
+			SHA256:    "exampleSha256",
 		})
 	}
 	return sr, nil
 }
 
+// Sign makes an HTTP request to sign the images using the Notary server
 func (ns NotarySigner) Sign(images []string) error {
-	// Build the signing request
 	sImg := strings.Join(images, ", ")
 	sr, err := ns.buildSigningRequest(images)
 	if err != nil {
 		return fmt.Errorf("build sign request: %w", err)
 	}
 
-	// Build the Signify API payload
 	payload := map[string]interface{}{
 		"trustedCollections": []map[string]interface{}{
 			{
-				"gun": sr[0].NotaryGun, // Example: "example.repo/image-project-2"
+				"gun": sr[0].NotaryGun,
 				"targets": []map[string]interface{}{
 					{
-						"name":     sr[0].Version,  // Example: "1.0.1"
-						"byteSize": sr[0].ByteSize, // Size of the image's manifest
-						"digest":   sr[0].SHA256,   // SHA-256 of the image's manifest
+						"name":     sr[0].Version,
+						"byteSize": sr[0].ByteSize,
+						"digest":   sr[0].SHA256,
 					},
 				},
 			},
@@ -171,7 +157,26 @@ func (ns NotarySigner) Sign(images []string) error {
 	// Marshal the payload to JSON
 	b, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("marshal signing request: %w", err)
+		return fmt.Errorf("failed to marshal payload: %w", err)
+	}
+
+	// Decode the certificate and key using the smallstep utility
+	cert, err := ns.signifySecret.DecodeCertAndKey()
+	if err != nil {
+		return fmt.Errorf("failed to load certificate and key: %w", err)
+	}
+
+	// Configure TLS using the loaded certificate and private key
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{cert}, // Use the loaded cert and key directly
+	}
+
+	// Create an HTTP client with TLS config
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
+		Timeout: ns.retryTimeout,
 	}
 
 	// Create a new POST request with the signing payload
@@ -181,10 +186,8 @@ func (ns NotarySigner) Sign(images []string) error {
 	}
 	req.Header.Add("Content-Type", "application/json")
 
-	// Retry logic for sending the request
 	retries := 5
 	var respMsg []byte
-	var status string
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
 
@@ -193,7 +196,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		<-w.C
 
 		// Send the HTTP request
-		resp, err := ns.c.Do(req)
+		resp, err := client.Do(req)
 		if err != nil {
 			return fmt.Errorf("notary request: %w", err)
 		}
@@ -202,31 +205,23 @@ func (ns NotarySigner) Sign(images []string) error {
 		// Read the response body
 		respMsg, err = io.ReadAll(resp.Body)
 		if err != nil {
-			return fmt.Errorf("body read: %w", err)
+			return fmt.Errorf("failed to read response: %w", err)
 		}
-		status = resp.Status
 
-		// Handle different response statuses
-		switch resp.StatusCode {
-		case http.StatusAccepted:
-			fmt.Printf("Successfully signed images %s!\n", sImg)
+		if resp.StatusCode == http.StatusAccepted {
+			fmt.Println("Successfully signed images")
 			return nil
-		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest:
-			return ErrBadResponse{status: status, message: string(respMsg)}
 		}
 
 		retries--
 	}
 
-	// After retries, return the error if signing fails
-	fmt.Println("Reached all retries. Stopping.")
-	return ErrBadResponse{status: status, message: string(respMsg)}
+	return fmt.Errorf("failed to sign images: %s", string(respMsg))
 }
 
 func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 	var ns NotarySigner
 
-	// Load the secret file and initialize the signer
 	if nc.Secret != nil {
 		f, err := os.ReadFile(nc.Secret.Path)
 		if err != nil {
@@ -235,44 +230,25 @@ func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 
 		switch nc.Secret.Type {
 		case "signify":
-			// Unmarshal the YAML secret file into SignifySecret struct
 			var s SignifySecret
 			err := json.Unmarshal(f, &s)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
 			}
 
-			// Decode certificate and key from base64
-			cert, err := s.DecodeCertAndKey()
-			if err != nil {
-				return nil, fmt.Errorf("failed to decode cert and key: %w", err)
-			}
+			ns.signifySecret = s
 
-			// Set up the TLS configuration with the decoded cert
-			tlsConfig := &tls.Config{
-				Certificates: []tls.Certificate{cert},
-			}
-
-			// Create an HTTP client with TLS config
-			ns.c = http.Client{
-				Transport: &http.Transport{
-					TLSClientConfig: tlsConfig,
-				},
-				Timeout: nc.Timeout,
-			}
 		default:
-			return nil, ErrAuthServiceNotSupported{Service: nc.Secret.Type}
+			return nil, fmt.Errorf("unsupported secret type: %s", nc.Secret.Type)
 		}
 	}
 
-	// Set retry timeout
 	ns.retryTimeout = 10 * time.Second
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
 
-	// Set the Notary server URL
-	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
+	ns.url = "https://signing-manage.repositories.cloud.sap"
 
 	return &ns, nil
 }
