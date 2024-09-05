@@ -10,6 +10,8 @@
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / golang-mod / javascript / python
 # Optional vars:
 # - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
+# - INTERNAL_GITHUB_TOKEN - Token to authenticate against internal github to fetch private go modules
+# - INTERNAL_GITHUB_URL - URL for internal github to authenticate against using INTERNAL_GITHUB_TOKEN, required weh using INTERNAL_GITHUB_TOKEN
 
 set -e
 
@@ -17,6 +19,11 @@ set -e
 GO_MOD_CONFIG_PATH="/wss/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="/wss/javascript-wss-unified-agent.config"
 PYTHON_CONFIG_PATH="/wss/python-wss-unified-agent.config"
+
+if [[ ! -z "$INTERNAL_GITHUB_TOKEN" && ! -z "$INTERNAL_GITHUB_URL" ]]; then
+  git config --global url."https://${INTERNAL_GITHUB_TOKEN}:x-oauth-basic@${INTERNAL_GITHUB_URL}/".insteadOf "https://${INTERNAL_GITHUB_URL}/"
+  export GOPRIVATE=${INTERNAL_GITHUB_URL}/kyma
+fi
 
 if [[ -z "$PROJECT" ]]; then
   PROJECT="$REPO_NAME"
