@@ -2,6 +2,17 @@ name: image-syncer
 
 on:
   workflow_call:
+    inputs:
+      dry-run:
+        description: "Dry run mode"
+        required: false
+        type: boolean
+        default: false
+      debug:
+        description: "Debug mode"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   sync-images:
@@ -18,11 +29,14 @@ jobs:
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
       
+      - name: Checkout
+        uses: actions/checkout@v4
+      
       - name: Authenticate in GCP
         id: authenticate_in_gcp
         uses: google-github-actions/auth@v2
         with:
-          project_id: ${{ vars.REGISTRY_GCP_PROJECT_ID }}
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
       
       - name: Sync Images
@@ -35,4 +49,5 @@ jobs:
             /ko-app/image-syncer \
             --images-file=./external-images.yaml \
             --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS) \
-            --dry-run
+            --dry-run ${{ inputs.dry-run }}
+            --debug ${{ inputs.debug }}
