@@ -533,8 +533,7 @@ func signImages(o *options, images []string) error {
 			orgRepo = org + "/" + repo
 		}
 	}
-	orgRepo = "kyma-project/kyma"
-	o.isCI = true
+
 	if len(orgRepo) == 0 {
 		return fmt.Errorf("'orgRepo' cannot be empty")
 	}

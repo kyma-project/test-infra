@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"go.step.sm/crypto/pemutil"
 )
 
@@ -115,18 +117,28 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 	var sr []SigningRequest
 	for _, i := range images {
 		var base, tag string
-		parts := strings.Split(i, ":")
-		if len(parts) > 1 {
-			base = parts[0]
-			tag = parts[1]
+		// Split on ":"
+		parts := strings.Split(i, tagDelim)
+		// Verify that we aren't confusing a tag for a hostname w/ port for the purposes of weak validation.
+		if len(parts) > 1 && !strings.Contains(parts[len(parts)-1], regRepoDelimiter) {
+			base = strings.Join(parts[:len(parts)-1], tagDelim)
+			tag = parts[len(parts)-1]
 		}
-		// Simulated logic for constructing SigningRequest (modify as per actual needs)
-		sr = append(sr, SigningRequest{
-			NotaryGun: base,
-			Version:   tag,
-			ByteSize:  1000, // Example size
-			SHA256:    "exampleSha256",
-		})
+		ref, err := name.ParseReference(i)
+		if err != nil {
+			return nil, fmt.Errorf("ref parse: %w", err)
+		}
+		i, err := remote.Image(ref)
+		if err != nil {
+			return nil, fmt.Errorf("get image: %w", err)
+		}
+		m, err := i.Manifest()
+		if err != nil {
+			return nil, fmt.Errorf("image manifest: %w", err)
+		}
+		sha := m.Config.Digest.Hex
+		size := m.Config.Size
+		sr = append(sr, SigningRequest{NotaryGun: base, Version: tag, ByteSize: size, SHA256: sha})
 	}
 	return sr, nil
 }
@@ -139,6 +151,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		return fmt.Errorf("build sign request: %w", err)
 	}
 
+	// Prepare the payload to send in the request
 	payload := map[string]interface{}{
 		"trustedCollections": []map[string]interface{}{
 			{
@@ -166,28 +179,31 @@ func (ns NotarySigner) Sign(images []string) error {
 		return fmt.Errorf("failed to load certificate and key: %w", err)
 	}
 
-	// Configure TLS using the loaded certificate and private key
+	// Configure TLS with the decoded certificate and private key
 	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{cert}, // Use the loaded cert and key directly
+		Certificates: []tls.Certificate{cert},
+		MinVersion:   tls.VersionTLS10,
+		MaxVersion:   tls.VersionTLS13, // or whichever version is required
 	}
 
-	// Create an HTTP client with TLS config
+	// Create an HTTP client with TLS support
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: tlsConfig,
 		},
-		Timeout: ns.retryTimeout,
+		Timeout: 3000 * time.Second, // Increase the timeout as necessary
 	}
 
 	// Create a new POST request with the signing payload
 	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 	req.Header.Add("Content-Type", "application/json")
 
 	retries := 5
 	var respMsg []byte
+
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
 
@@ -198,7 +214,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		// Send the HTTP request
 		resp, err := client.Do(req)
 		if err != nil {
-			return fmt.Errorf("notary request: %w", err)
+			return fmt.Errorf("failed to send request: %w", err)
 		}
 		defer resp.Body.Close()
 
@@ -208,6 +224,7 @@ func (ns NotarySigner) Sign(images []string) error {
 			return fmt.Errorf("failed to read response: %w", err)
 		}
 
+		// Check if the request was successful
 		if resp.StatusCode == http.StatusAccepted {
 			fmt.Println("Successfully signed images")
 			return nil
@@ -248,7 +265,7 @@ func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
 		ns.retryTimeout = nc.RetryTimeout
 	}
 
-	ns.url = "https://signing-manage.repositories.cloud.sap"
+	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
 
 	return &ns, nil
 }
