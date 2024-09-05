@@ -24,33 +24,7 @@ module "gh_com_kyma_project_workload_identity_federation" {
     "attribute.reusable_workflow_ref" = "assertion.job_workflow_ref"
     "attribute.reusable_workflow_sha" = "assertion.job_workflow_sha"
   }
-
-  #   sa_mapping = {
-  #     "terraform_planner_pull_prod_plan" = {
-  #       sa_name   = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_planner.email}"
-  #       attribute = "subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_plan_workflow_name}"
-  #     },
-  #     "terraform_executor_post_prod_apply" = {
-  #       sa_name   = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_executor.email}"
-  #       attribute = "subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
-  #     }
-  #    }
 }
-
-# TODO(dekiel): Another GitHub variables related to workload identity federation are defined in github-com.tf file.
-# resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
-#   provider      = github.kyma_project
-#   repository    = "test-infra"
-#   variable_name = "GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL"
-#   value         = google_service_account.terraform_executor.email
-# }
-#
-# resource "github_actions_variable" "gcp_terraform_planner_service_account_email" {
-#   provider      = github.kyma_project
-#   repository    = "test-infra"
-#   variable_name = "GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL"
-#   value         = google_service_account.terraform_planner.email
-# }
 
 resource "github_actions_organization_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
   provider      = github.kyma_project
