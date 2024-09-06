@@ -59,13 +59,13 @@ type AuthSecretConfig struct {
 
 // SignifySecret contains configuration of secret that is used to connect to SAP signify service
 type SignifySecret struct {
-	CreatedAt      float64 `json:"createdAt"`
-	TokenURL       string  `json:"tokenURL"`
-	CertServiceURL string  `json:"certServiceURL"`
-	ClientID       string  `json:"clientID"`
-	CertficateData string  `json:"certData"`
-	PrivateKeyData string  `json:"privateKeyData"`
-	KeyPassword    string  `json:"password"`
+	CreatedAt      string `json:"createdAt"` //TODO waiting for Kacper to provide information
+	TokenURL       string `json:"tokenURL"`
+	CertServiceURL string `json:"certServiceURL"`
+	ClientID       string `json:"clientID"`
+	CertficateData string `json:"certData"`
+	PrivateKeyData string `json:"privateKeyData"`
+	KeyPassword    string `json:"password"`
 }
 
 // SigningRequest contains information about all images with tags to sign using Notary
@@ -89,7 +89,7 @@ type NotarySigner struct {
 	signifySecret SignifySecret
 }
 
-// DecodeCertAndKey loads the certificate and private key from base64-encoded strings in SignifySecret
+// DecodeCertAndKey loads the certificate and decrypted private key from base64-encoded strings in SignifySecret
 func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
 	certData, err := base64.StdEncoding.DecodeString(ss.CertficateData)
 	if err != nil {
