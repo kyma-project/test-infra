@@ -13,7 +13,7 @@ terraform {
       version = ">= 2.0.0"
     }
     github = {
-      source = "integrations/github"
+      source  = "integrations/github"
       version = "~> 6.2.3"
     }
   }
@@ -36,6 +36,7 @@ provider "github" {
   owner = var.kyma-incubator-github-org
 }
 
+# sap-kyma-prow project provider
 provider "google" {
   project = var.gcp_project_id
   region  = var.gcp_region

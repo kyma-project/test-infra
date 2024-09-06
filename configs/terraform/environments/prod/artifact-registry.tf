@@ -16,3 +16,26 @@ module "artifact_registry" {
   reader_serviceaccounts = each.value.reader_serviceaccounts
   public                 = each.value.public
 }
+
+variable "prod_docker_repository" {
+  type = object({
+    name                   = string
+    location               = string
+    format                 = string
+    immutable_tags         = bool
+    mode                   = string
+    cleanup_policy_dry_run = bool
+    labels                 = map(string)
+  })
+  default = {
+    name                   = "prod"
+    location               = "europe"
+    format                 = "DOCKER"
+    immutable_tags         = false
+    mode                   = "STANDARD_REPOSITORY"
+    cleanup_policy_dry_run = true
+    labels = {
+      "type" = "production"
+    }
+  }
+}
