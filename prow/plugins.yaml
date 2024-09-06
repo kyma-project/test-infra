@@ -29,28 +29,6 @@ plugins:
     plugins:
       - approve
       - blunderbuss
-  kyma-incubator:
-    plugins:
-      - trigger
-      - assign
-      - wip
-      - lgtm
-      - hold
-      - label
-      - help
-      - size
-      - verify-owners
-      - owners-label
-      - override
-      - retitle
-      - lifecycle
-      - transfer-issue
-      - yuks
-      - dog
-      - cat
-      - shrug
-      - pony
-      - skip
 
 external_plugins:
   kyma-project:
@@ -65,13 +43,6 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
-  kyma-incubator:
-    - name: cla-assistant
-      events:
-        - issue_comment
-        - pull_request_review
-        - pull_request_review_comment
-        - status
 
 config_updater:
   maps:
@@ -95,7 +66,6 @@ config_updater:
 triggers:
   - repos:
       - kyma-project
-      - kyma-incubator
     trusted_apps:
       - dependabot
     only_org_members: true
@@ -104,7 +74,6 @@ triggers:
 lgtm:
   - repos:
       - kyma-project
-      - kyma-incubator
     review_acts_as_lgtm: true
 
 label:

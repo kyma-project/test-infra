@@ -27,16 +27,6 @@ global:
         - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "compass-manager"
-    - name: "kyma-incubator"
-      repos:
-        - name: "sap-btp-service-operator"
-        - name: "slack-bot"
-        - name: "migrate"
-        - name: "github-dashboard"
-        - name: "kymart"
-        - name: "opensap"
-        - name: "service-catalog-tester"
-        - name: "service-catalog"
 
 # global configSet variables
 pubsub_config: &pubsub_config
