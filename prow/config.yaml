@@ -400,23 +400,6 @@ branch-protection:
         opentelemetry-collector-components:
           unmanaged: true
 
-    kyma-incubator:
-      protect: true # protect all repos & branches in kyma-incubator org
-      exclude:
-        - "^dependabot/"
-      repos:
-        reconciler:
-          protect: false
-          branches:
-            main:
-              protect: true
-            develop:
-              protect: true
-            load-test-mock:
-              protect: true
-            istio-op:
-              protect: true
-
 tide:
   sync_period: 2m
   batch_size_limit:
@@ -455,11 +438,6 @@ tide:
     kyma-project/modulectl: squash
     kyma-project/cloud-manager: squash
     kyma-project/cloud-manager-tests: squash
-    kyma-incubator/reconciler: squash
-    kyma-incubator/kymart: squash
-    kyma-incubator/github-dashboard: squash
-    kyma-incubator/opensap: squash
-    kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr
@@ -476,7 +454,6 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
-        - kyma-incubator
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -1035,23 +1012,6 @@ presets:
         readOnly: true
       - name: whitesource-userkey
         mountPath: /etc/credentials/whitesource-userkey
-        readOnly: true
-  - labels:
-      preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
-      - name: CLOUDSDK_DNS_ZONE_NAME
-        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
-      - name: GITHUB_ORG_DIR
-        value: "/home/prow/go/src/github.com/kyma-incubator"
-    volumes:
-      - name: sa-gke-kyma-integration
-        secret:
-          secretName: sa-gke-kyma-integration
-    volumeMounts:
-      - name: sa-gke-kyma-integration
-        mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
   - labels:
       preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"

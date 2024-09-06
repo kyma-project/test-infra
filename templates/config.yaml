@@ -27,16 +27,6 @@ global:
         - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "compass-manager"
-    - name: "kyma-incubator"
-      repos:
-        - name: "sap-btp-service-operator"
-        - name: "slack-bot"
-        - name: "migrate"
-        - name: "github-dashboard"
-        - name: "kymart"
-        - name: "opensap"
-        - name: "service-catalog-tester"
-        - name: "service-catalog"
 
 # global configSet variables
 pubsub_config: &pubsub_config
@@ -173,11 +163,11 @@ globalSets:
   image_wssagent_nodejs:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240905-c1b27580"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240905-3640aeb1
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240906-871bfbc0
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240905-3640aeb1
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240906-871bfbc0
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240905-3640aeb1
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240906-871bfbc0
   image_e2e-dind-k3d:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240905-c1b27580"
   # JobConfig sets
