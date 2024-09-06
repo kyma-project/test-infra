@@ -2,9 +2,11 @@ name: pull-sync-external-images
 
 on:
   pull_request_target:
+    branches:
+      - main
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "./external-images.yaml"
+      - "external-images.yaml"
 
 permissions:
   id-token: write # This is required for requesting the JWT token
