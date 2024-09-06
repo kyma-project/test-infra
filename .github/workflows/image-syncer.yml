@@ -49,5 +49,5 @@ jobs:
             /ko-app/image-syncer \
             --images-file=./external-images.yaml \
             --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS) \
-            --dry-run ${{ inputs.dry-run }}
+            --dry-run ${{ inputs.dry-run }} \
             --debug ${{ inputs.debug }}
