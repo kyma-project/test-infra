@@ -18,7 +18,6 @@
 /prow @kyma-project/prow @neighbors-dev-bot
 /prow/cluster @kyma-project/prow @neighbors-dev-bot
 /prow/images @kyma-project/prow @neighbors-dev-bot
-/prow/images/buildpack-node @kyma-project/prow @kyma-project/hasselhoff @a-thaler @lilitgh @neighbors-dev-bot
 
 /prow/jobs @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
@@ -33,11 +32,9 @@
 /prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane/control-plane-validation.yaml @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/directory-size-exporter/ @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/eventing-publisher-proxy @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/compass-console @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-incubator/ord-service @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot @kyma-project/prow
@@ -61,7 +58,6 @@
 /prow/jobs/kyma-project/compass-manager @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/control-plane @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/kyma @kyma-project/framefrog @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/warden @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot @kyma-project/prow
@@ -72,10 +68,8 @@
 /prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-incubator/slack-bot @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/test-infra @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/third-party-images @kyma-project/observability @kyma-project/operations @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
 
 /prow/scripts @kyma-project/prow @neighbors-dev-bot
 
