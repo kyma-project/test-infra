@@ -231,7 +231,7 @@ func (ns NotarySigner) Sign(images []string) error {
 	return fmt.Errorf("failed to sign images: %s", string(respMsg))
 }
 
-func (nc NotaryConfig) NewSigner() (*NotarySigner, error) {
+func (nc NotaryConfig) NewSigner() (Signer, error) {
 	var ns NotarySigner
 
 	if nc.Secret != nil {
