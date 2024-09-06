@@ -1,9 +1,5 @@
 targetRepoPrefix: "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
-  - source: "alpine@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd"
-    tag: "3.20.0"
-  - source: "alpine@sha256:b89d9c93e9ed3597455c90a0b88a8bbb5cb7188438f70953fede212a0c4394e0"
-    tag: "3.20.1"
   - source: "alpine@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5"
     tag: "3.20.2"
   - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
