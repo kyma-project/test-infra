@@ -4,6 +4,8 @@ resource "google_iam_workload_identity_pool" "main" {
   disabled                  = false
 }
 
+# TODO (dekiel): Add setting attributeCondition value. https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools.providers
+#  The attributeCondition let us control which external identities issued by provider are allowed to use the pool.
 resource "google_iam_workload_identity_pool_provider" "main" {
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.main.workload_identity_pool_id
@@ -12,6 +14,7 @@ resource "google_iam_workload_identity_pool_provider" "main" {
   attribute_mapping                  = var.attribute_mapping
 
   oidc {
+    # TODO(dekiel): Add setting allowedAudiences value. https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools.providers#Oidc
     issuer_uri = var.issuer_uri
   }
 }
