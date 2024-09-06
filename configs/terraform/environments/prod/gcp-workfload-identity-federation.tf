@@ -10,7 +10,7 @@ module "gh_com_kyma_project_workload_identity_federation" {
   pool_id     = var.gh_com_kyma_project_wif_pool_id
   provider_id = var.gh_com_kyma_project_wif_provider_id
   issuer_uri  = var.gh_com_kyma_project_wif_issuer_uri
-  # attribute_condition = var.gh_com_kyma_project_wif_attribute_condition
+  attribute_condition = var.gh_com_kyma_project_wif_attribute_condition
 
   attribute_mapping = {
     "google.subject"                  = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow:\" + assertion.workflow"
