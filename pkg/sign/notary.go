@@ -289,7 +289,7 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 		ns.retryTimeout = nc.RetryTimeout
 	}
 
-	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
+	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish" //TODO, move to kaniko build config
 
 	return &ns, nil
 }
