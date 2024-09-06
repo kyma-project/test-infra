@@ -109,64 +109,94 @@ func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
 	return cert, nil
 }
 
+// buildSigningRequest prepares the signing requests for the given images
 func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, error) {
-	var sr []SigningRequest
+	var signingRequests []SigningRequest
+
 	for _, i := range images {
 		var base, tag string
-		// Split on ":"
+
+		// Split on ":" to separate base from tag
 		parts := strings.Split(i, tagDelim)
-		// Verify that we aren't confusing a tag for a hostname w/ port for the purposes of weak validation.
 		if len(parts) > 1 && !strings.Contains(parts[len(parts)-1], regRepoDelimiter) {
 			base = strings.Join(parts[:len(parts)-1], tagDelim)
 			tag = parts[len(parts)-1]
+		} else {
+			base = i
+			tag = "latest"
 		}
+
 		ref, err := name.ParseReference(i)
 		if err != nil {
 			return nil, fmt.Errorf("ref parse: %w", err)
 		}
-		i, err := remote.Image(ref)
+		img, err := remote.Image(ref)
 		if err != nil {
 			return nil, fmt.Errorf("get image: %w", err)
 		}
-		m, err := i.Manifest()
+		m, err := img.Manifest()
 		if err != nil {
 			return nil, fmt.Errorf("image manifest: %w", err)
 		}
-		sha := m.Config.Digest.Hex
-		size := m.Config.Size
-		sr = append(sr, SigningRequest{NotaryGun: base, Version: tag, ByteSize: size, SHA256: sha})
+
+		signingRequests = append(signingRequests, SigningRequest{
+			NotaryGun: base,
+			SHA256:    m.Config.Digest.Hex,
+			ByteSize:  m.Config.Size,
+			Version:   tag,
+		})
 	}
-	return sr, nil
+
+	return signingRequests, nil
+}
+
+// buildPayload creates the payload for the signing request from a list of SigningRequests
+func (ns NotarySigner) buildPayload(sr []SigningRequest) (map[string]interface{}, error) {
+	var trustedCollections []map[string]interface{}
+
+	// Loop through all signing requests and create separate entries for each GUN
+	for _, req := range sr {
+		target := map[string]interface{}{
+			"name":     req.Version,
+			"byteSize": req.ByteSize,
+			"digest":   req.SHA256,
+		}
+
+		// Each image gets its own trusted collection based on its GUN
+		trustedCollections = append(trustedCollections, map[string]interface{}{
+			"gun":     req.NotaryGun,
+			"targets": []map[string]interface{}{target},
+		})
+	}
+
+	// Prepare the payload structure with multiple trustedCollections
+	payload := map[string]interface{}{
+		"trustedCollections": trustedCollections,
+	}
+
+	return payload, nil
 }
 
 // Sign makes an HTTP request to sign the images using the Notary server
 func (ns NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
-	sr, err := ns.buildSigningRequest(images)
+
+	// Get the signing requests
+	signingRequests, err := ns.buildSigningRequest(images)
 	if err != nil {
-		return fmt.Errorf("build sign request: %w", err)
+		return fmt.Errorf("build signing request: %w", err)
 	}
 
-	// Prepare the payload to send in the request
-	payload := map[string]interface{}{
-		"trustedCollections": []map[string]interface{}{
-			{
-				"gun": sr[0].NotaryGun,
-				"targets": []map[string]interface{}{
-					{
-						"name":     sr[0].Version,
-						"byteSize": sr[0].ByteSize,
-						"digest":   sr[0].SHA256,
-					},
-				},
-			},
-		},
+	// Build the payload from signing requests
+	payload, err := ns.buildPayload(signingRequests)
+	if err != nil {
+		return fmt.Errorf("build payload: %w", err)
 	}
 
 	// Marshal the payload to JSON
 	b, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("failed to marshal payload: %w", err)
+		return fmt.Errorf("marshal signing request: %w", err)
 	}
 
 	// Decode the certificate and key from the signifySecret structure
@@ -192,18 +222,17 @@ func (ns NotarySigner) Sign(images []string) error {
 	// Create a new POST request with the signing payload
 	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
 	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
+		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
 
 	retries := 5
+	var status string
 	var respMsg []byte
-
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
-
 	for retries > 0 {
-		fmt.Printf("Trying to sign %s. %d retries remaining...\n", sImg, retries)
+		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
 		<-w.C
 
 		// Send the HTTP request
@@ -218,13 +247,13 @@ func (ns NotarySigner) Sign(images []string) error {
 		if err != nil {
 			return fmt.Errorf("failed to read response: %w", err)
 		}
-
-		// Check if the request was successful
-		if resp.StatusCode == http.StatusAccepted {
-			fmt.Println("Successfully signed images")
+		switch resp.StatusCode {
+		case http.StatusAccepted:
+			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
+		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
+			return ErrBadResponse{status: status, message: string(respMsg)}
 		}
-
 		retries--
 	}
 
