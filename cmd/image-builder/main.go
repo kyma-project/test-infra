@@ -533,7 +533,6 @@ func signImages(o *options, images []string) error {
 			orgRepo = org + "/" + repo
 		}
 	}
-
 	if len(orgRepo) == 0 {
 		return fmt.Errorf("'orgRepo' cannot be empty")
 	}

@@ -14,7 +14,6 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"go.step.sm/crypto/pemutil"
 )
 
 const (
@@ -90,27 +89,24 @@ type NotarySigner struct {
 	signifySecret SignifySecret
 }
 
-// DecodeCertAndKey loads the certificate and private key using smallstep/crypto and returns tls.Certificate
+// DecodeCertAndKey loads the certificate and private key from base64-encoded strings in SignifySecret
 func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
-	// Parse the certificate from base64 encoded PEM data
 	certData, err := base64.StdEncoding.DecodeString(ss.CertficateData)
-	cert, err := pemutil.ParseCertificate(certData)
 	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("failed to parse certificate: %w", err)
+		return tls.Certificate{}, fmt.Errorf("failed to decode certificate: %w", err)
 	}
 
-	// Parse the private key, handling password if necessary
 	keyData, err := base64.StdEncoding.DecodeString(ss.PrivateKeyData)
-	key, err := pemutil.ParseKey(keyData, pemutil.WithPassword([]byte(ss.KeyPassword)))
 	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("failed to parse private key: %w", err)
+		return tls.Certificate{}, fmt.Errorf("failed to decode private key: %w", err)
 	}
 
-	// Return the tls.Certificate that can be used for mTLS
-	return tls.Certificate{
-		Certificate: [][]byte{cert.Raw}, // The raw DER bytes of the certificate
-		PrivateKey:  key,
-	}, nil
+	cert, err := tls.X509KeyPair(certData, keyData)
+	if err != nil {
+		return tls.Certificate{}, fmt.Errorf("unable to load cert or key: %w", err)
+	}
+
+	return cert, nil
 }
 
 func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, error) {
@@ -173,7 +169,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		return fmt.Errorf("failed to marshal payload: %w", err)
 	}
 
-	// Decode the certificate and key using the smallstep utility
+	// Decode the certificate and key from the signifySecret structure
 	cert, err := ns.signifySecret.DecodeCertAndKey()
 	if err != nil {
 		return fmt.Errorf("failed to load certificate and key: %w", err)
@@ -182,8 +178,7 @@ func (ns NotarySigner) Sign(images []string) error {
 	// Configure TLS with the decoded certificate and private key
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
-		MinVersion:   tls.VersionTLS10,
-		MaxVersion:   tls.VersionTLS13, // or whichever version is required
+		MinVersion:   tls.VersionTLS12,
 	}
 
 	// Create an HTTP client with TLS support
@@ -191,7 +186,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		Transport: &http.Transport{
 			TLSClientConfig: tlsConfig,
 		},
-		Timeout: 3000 * time.Second, // Increase the timeout as necessary
+		Timeout: ns.retryTimeout,
 	}
 
 	// Create a new POST request with the signing payload
