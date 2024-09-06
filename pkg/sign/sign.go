@@ -2,7 +2,6 @@ package sign
 
 import (
 	"fmt"
-
 	"gopkg.in/yaml.v3"
 )
 
