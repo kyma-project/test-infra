@@ -1,4 +1,4 @@
-FROM alpine:3.20.2 AS creds
+FROM alpine:3.20.3 AS creds
 
 RUN apk add --no-cache curl && \
   curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.22/docker-credential-gcr_linux_amd64-2.1.22.tar.gz" \
