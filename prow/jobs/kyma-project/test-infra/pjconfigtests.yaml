@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -59,7 +59,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -98,7 +98,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -176,7 +176,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -215,7 +215,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -254,7 +254,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -293,7 +293,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -332,7 +332,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -371,7 +371,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -410,7 +410,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -449,7 +449,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -488,7 +488,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -527,7 +527,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -566,7 +566,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -605,7 +605,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -644,7 +644,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -683,7 +683,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -722,7 +722,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240429-870ea518"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
             imagePullPolicy: Always
             securityContext:
               privileged: false
