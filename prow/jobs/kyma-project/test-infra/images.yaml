@@ -16,7 +16,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240905-3640aeb1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240909-fe70e5ff"
             securityContext:
               privileged: false
               seccompProfile:
@@ -99,7 +99,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240905-3640aeb1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240909-fe70e5ff"
             securityContext:
               privileged: false
               seccompProfile:
