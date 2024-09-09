@@ -17,25 +17,20 @@ module "artifact_registry" {
   public                 = each.value.public
 }
 
-variable "prod_docker_repository" {
-  type = object({
-    name                   = string
-    location               = string
-    format                 = string
-    immutable_tags         = bool
-    mode                   = string
-    cleanup_policy_dry_run = bool
-    labels                 = map(string)
-  })
-  default = {
-    name                   = "prod"
-    location               = "europe"
-    format                 = "DOCKER"
-    immutable_tags         = false
-    mode                   = "STANDARD_REPOSITORY"
-    cleanup_policy_dry_run = true
-    labels = {
-      "type" = "production"
-    }
+import {
+  to = google_artifact_registry_repository.prod_docker_repository
+  id = "projects/${var.kyma_project_gcp_project_id}/locations/${var.prod_docker_repository.location}/repositories/${var.prod_docker_repository.name}"
+}
+
+resource "google_artifact_registry_repository" "prod_docker_repository" {
+  provider               = google.kyma_project
+  labels                 = var.prod_docker_repository.labels
+  location               = var.prod_docker_repository.location
+  repository_id          = var.prod_docker_repository.name
+  description            = var.prod_docker_repository.description
+  format                 = var.prod_docker_repository.format
+  cleanup_policy_dry_run = var.prod_docker_repository.cleanup_policy_dry_run
+  docker_config {
+    immutable_tags = var.prod_docker_repository.immutable_tags
   }
 }

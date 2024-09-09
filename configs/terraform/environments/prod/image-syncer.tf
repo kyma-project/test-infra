@@ -1,4 +1,6 @@
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_writer" {
+  provider = google.kyma_project
+  project  = var.kyma_project_gcp_project_id
   location   = google_artifact_registry_repository.prod_docker_repository.location
   repository = google_artifact_registry_repository.prod_docker_repository.name
   role       = "roles/artifactregistry.createOnPushWriter"
