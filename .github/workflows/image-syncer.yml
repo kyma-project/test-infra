@@ -41,7 +41,7 @@ jobs:
       
       - name: Sync Images
         id: sync_images
-        uses: docker://kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
+        uses: docker://europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
         with:
           entrypoint: /ko-app/image-syncer
           args: >
