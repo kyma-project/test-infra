@@ -69,7 +69,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -157,7 +157,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -245,7 +245,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -333,7 +333,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -421,7 +421,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -509,7 +509,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -597,7 +597,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -685,7 +685,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -773,7 +773,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -861,7 +861,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -949,7 +949,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1037,7 +1037,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1125,7 +1125,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1213,7 +1213,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1301,7 +1301,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1389,7 +1389,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-62d26ea2"
             imagePullPolicy: Always
             securityContext:
               privileged: false
