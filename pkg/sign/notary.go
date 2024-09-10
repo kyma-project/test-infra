@@ -59,13 +59,10 @@ type AuthSecretConfig struct {
 
 // SignifySecret contains configuration of secret that is used to connect to SAP signify service
 type SignifySecret struct {
-	CreatedAt      string `json:"createdAt"` //TODO waiting for Kacper to provide information
-	TokenURL       string `json:"tokenURL"`
-	CertServiceURL string `json:"certServiceURL"`
-	ClientID       string `json:"clientID"`
-	CertficateData string `json:"certData"`
+	// Certificate data encoded in base64
+	CertificateData string `json:"certData"`
+	// Private key data encoded in base64
 	PrivateKeyData string `json:"privateKeyData"`
-	KeyPassword    string `json:"password"`
 }
 
 // SigningRequest contains information about all images with tags to sign using Notary
@@ -80,6 +77,24 @@ type SigningRequest struct {
 	Version string `json:"version"`
 }
 
+// Target represents the target data for signing
+type Target struct {
+	Name     string `json:"name"`
+	ByteSize int64  `json:"byteSize"`
+	Digest   string `json:"digest"`
+}
+
+// TrustedCollection represents a trusted collection for a specific image
+type TrustedCollection struct {
+	GUN     string   `json:"gun"`
+	Targets []Target `json:"targets"`
+}
+
+// SigningPayload represents the overall payload structure for the signing request
+type SigningPayload struct {
+	TrustedCollections []TrustedCollection `json:"trustedCollections"`
+}
+
 // NotarySigner is a struct that implements sign.Signer interface
 // Takes care of signing requests to Notary server
 type NotarySigner struct {
@@ -91,19 +106,22 @@ type NotarySigner struct {
 
 // DecodeCertAndKey loads the certificate and decrypted private key from base64-encoded strings in SignifySecret
 func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
-	certData, err := base64.StdEncoding.DecodeString(ss.CertficateData)
+	// Decode the base64-encoded certificate
+	certData, err := base64.StdEncoding.DecodeString(ss.CertificateData)
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to decode certificate: %w", err)
 	}
 
+	// Decode the base64-encoded private key
 	keyData, err := base64.StdEncoding.DecodeString(ss.PrivateKeyData)
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to decode private key: %w", err)
 	}
 
+	// Load the certificate and key as a TLS certificate pair
 	cert, err := tls.X509KeyPair(certData, keyData)
 	if err != nil {
-		return tls.Certificate{}, fmt.Errorf("unable to load cert or key: %w", err)
+		return tls.Certificate{}, fmt.Errorf("unable to load certificate or key: %w", err)
 	}
 
 	return cert, nil
@@ -121,9 +139,6 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 		if len(parts) > 1 && !strings.Contains(parts[len(parts)-1], regRepoDelimiter) {
 			base = strings.Join(parts[:len(parts)-1], tagDelim)
 			tag = parts[len(parts)-1]
-		} else {
-			base = i
-			tag = "latest"
 		}
 
 		ref, err := name.ParseReference(i)
@@ -134,15 +149,15 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 		if err != nil {
 			return nil, fmt.Errorf("get image: %w", err)
 		}
-		m, err := img.Manifest()
+		manifest, err := img.Manifest()
 		if err != nil {
-			return nil, fmt.Errorf("image manifest: %w", err)
+			return nil, fmt.Errorf("failed getting image manifest: %w", err)
 		}
 
 		signingRequests = append(signingRequests, SigningRequest{
 			NotaryGun: base,
-			SHA256:    m.Config.Digest.Hex,
-			ByteSize:  m.Config.Size,
+			SHA256:    manifest.Config.Digest.Hex,
+			ByteSize:  manifest.Config.Size,
 			Version:   tag,
 		})
 	}
@@ -151,27 +166,29 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 }
 
 // buildPayload creates the payload for the signing request from a list of SigningRequests
-func (ns NotarySigner) buildPayload(sr []SigningRequest) (map[string]interface{}, error) {
-	var trustedCollections []map[string]interface{}
+func (ns NotarySigner) buildPayload(sr []SigningRequest) (SigningPayload, error) {
+	var trustedCollections []TrustedCollection
 
 	// Loop through all signing requests and create separate entries for each GUN
 	for _, req := range sr {
-		target := map[string]interface{}{
-			"name":     req.Version,
-			"byteSize": req.ByteSize,
-			"digest":   req.SHA256,
+		target := Target{
+			Name:     req.Version,
+			ByteSize: req.ByteSize,
+			Digest:   req.SHA256,
 		}
 
 		// Each image gets its own trusted collection based on its GUN
-		trustedCollections = append(trustedCollections, map[string]interface{}{
-			"gun":     req.NotaryGun,
-			"targets": []map[string]interface{}{target},
-		})
+		trustedCollection := TrustedCollection{
+			GUN:     req.NotaryGun,
+			Targets: []Target{target},
+		}
+
+		trustedCollections = append(trustedCollections, trustedCollection)
 	}
 
 	// Prepare the payload structure with multiple trustedCollections
-	payload := map[string]interface{}{
-		"trustedCollections": trustedCollections,
+	payload := SigningPayload{
+		TrustedCollections: trustedCollections,
 	}
 
 	return payload, nil
@@ -240,6 +257,7 @@ func (ns NotarySigner) Sign(images []string) error {
 		if err != nil {
 			return fmt.Errorf("failed to send request: %w", err)
 		}
+		status = resp.Status
 		defer resp.Body.Close()
 
 		// Read the response body
@@ -252,7 +270,7 @@ func (ns NotarySigner) Sign(images []string) error {
 			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
-			return ErrBadResponse{status: status, message: string(respMsg)}
+			return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
 		}
 		retries--
 	}
@@ -288,6 +306,7 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
+	ns.c.Timeout = nc.Timeout
 
 	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish" //TODO, move to kaniko build config
 
