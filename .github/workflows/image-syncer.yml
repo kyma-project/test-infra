@@ -41,13 +41,11 @@ jobs:
       
       - name: Sync Images
         id: sync_images
-        uses: addnab/docker-run-action@3b7e5e2681a0bda95ee4ce0645c28ca1e78ce9ee
+        uses: docker://kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
         with:
-          image: kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
-          registry: europe-docker.pkg.dev
-          run: |
-            /ko-app/image-syncer \
-            --images-file=./external-images.yaml \
-            --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS) \
-            --dry-run ${{ inputs.dry-run }} \
+          entrypoint: /ko-app/image-syncer
+          args: >
+            --images-file=/github/workspace/external-images.yaml
+            --target-repo-auth-key=/github/workspace/${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+            --dry-run ${{ inputs.dry-run }}
             --debug ${{ inputs.debug }}
