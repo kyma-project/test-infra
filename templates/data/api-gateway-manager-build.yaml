@@ -16,7 +16,7 @@ templates:
             jobs:
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: rel-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240910-ea55db09"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240910-8193f426"
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager image build"
