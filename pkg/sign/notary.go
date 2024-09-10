@@ -270,12 +270,12 @@ func (ns NotarySigner) Sign(images []string) error {
 			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
-			return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
+			return ErrBadResponse{status: status, message: string(respMsg)}
 		}
 		retries--
 	}
 
-	return fmt.Errorf("failed to sign images: %s", string(respMsg))
+	return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
 }
 
 func (nc NotaryConfig) NewSigner() (Signer, error) {
