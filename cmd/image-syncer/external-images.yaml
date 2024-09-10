@@ -81,9 +81,9 @@ images:
     amd64Only: true
   - source: "i331641/kyma-perf:v1"
     amd64Only: true
-  - source: "ghcr.io/kedacore/keda:2.14.0"
-  - source: "ghcr.io/kedacore/keda-admission-webhooks:2.14.0"
-  - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.14.0"
+  - source: "ghcr.io/kedacore/keda:2.15.1"
+  - source: "ghcr.io/kedacore/keda-admission-webhooks:2.15.1"
+  - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.15.1"
   - source: "nginx:1.23.3"
     amd64Only: true
   - source: "nginxinc/nginx-unprivileged@sha256:0065303bfa2a20793f9b5db326e94d68bdc7a69f79822091b8db5b3ec4753491"
