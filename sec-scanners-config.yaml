@@ -28,15 +28,15 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20240909-fe70e5ff
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240909-fe70e5ff
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240909-6bfd0d8d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240909-fe70e5ff
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240910-6c77a4ea
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240819-81152f80
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240910-ad0bd665
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240910-ad0bd665
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240910-32498c44
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240910-32498c44
     - gcr.io/k8s-prow/analyze:v20240731-a5d9345e59
     - gcr.io/k8s-prow/crier:v20240805-37a08f946
     - gcr.io/k8s-prow/deck:v20240805-37a08f946
