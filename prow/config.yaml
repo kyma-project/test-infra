@@ -456,6 +456,8 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+      excludedRepos:
+        - kyma-project/terraform-module
       reviewApprovedRequired: true
     - labels:
         - lgtm
