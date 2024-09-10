@@ -387,6 +387,8 @@ branch-protection:
           unmanaged: true
         keda-manager:
           unmanaged: true
+        terraform-module:
+          unmanaged: true
         warden:
           unmanaged: true
         docker-registry:
@@ -1178,24 +1180,6 @@ presets:
           secretKeyRef:
             name: kcp-client-credentials
             key: KCP_OIDC_CLIENT_SECRET
-  - labels:
-      preset-serverless-git-auth: "true"
-    env:
-      - name: GH_AUTH_PRIVATE_KEY
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: GH_AUTH_PRIVATE_KEY
-      - name: AZURE_DEVOPS_AUTH_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: AZURE_DEVOPS_AUTH_USERNAME
-      - name: AZURE_DEVOPS_AUTH_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: AZURE_DEVOPS_AUTH_PASSWORD
   - labels:
       preset-kcp-client-dev-envs: "true"
     env:
