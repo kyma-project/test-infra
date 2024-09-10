@@ -30,7 +30,7 @@ var (
 		Name:                   "github-tools-sap",
 		IssuerURL:              "https://github.tools.sap/_services/token",
 		JWKSURL:                "https://github.tools.sap/_services/token/.well-known/jwks",
-		ExpectedJobWorkflowRef: "kyma/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
+		ExpectedJobWorkflowRef: "kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main",
 		GithubURL:              "https://github.tools.sap",
 	}
 	TrustedOIDCIssuers = map[string]Issuer{GithubOIDCIssuer.IssuerURL: GithubOIDCIssuer, GithubToolsSAPOIDCIssuer.IssuerURL: GithubToolsSAPOIDCIssuer}
