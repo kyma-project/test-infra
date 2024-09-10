@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.5.0
 	cloud.google.com/go/firestore v1.16.0
 	cloud.google.com/go/logging v1.11.0
-	cloud.google.com/go/pubsub v1.42.0
+	cloud.google.com/go/pubsub v1.43.0
 	cloud.google.com/go/storage v1.43.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -195,7 +195,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
 	google.golang.org/genproto v0.0.0-20240903143218-8af14fe29dc1 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240827150818-7e3bb234dfed // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
 	google.golang.org/grpc v1.66.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
