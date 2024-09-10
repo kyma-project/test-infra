@@ -457,7 +457,13 @@ tide:
       orgs:
         - kyma-project
       excludedRepos:
+        - kyma-project/cli
+        - kyma-project/serverless
+        - kyma-project/keda-manager
         - kyma-project/terraform-module
+        - kyma-project/warden
+        - kyma-project/docker-registry
+        - kyma-project/hydroform
       reviewApprovedRequired: true
     - labels:
         - lgtm
