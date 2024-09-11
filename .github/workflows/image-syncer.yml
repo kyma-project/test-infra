@@ -67,7 +67,13 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
-          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOADO_IDENTITY_FEDERATION_PROVIDER }}
+      
+      - name: Set read-only GCP credentials
+        id: set_gcp_credentials
+        run: |
+          chmod 444 $GOOGLE_APPLICATION_CREDENTIALS
+          ls -ld $GOOGLE_APPLICATION_CREDENTIALS
       
       - name: Sync Images
         id: sync_images
