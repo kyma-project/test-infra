@@ -47,7 +47,8 @@ jobs:
           if [ "${{ github.event_name }}" == 'push' ]; then
             echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
-            echo "DRY_RUN=false" >> $GITHUB_OUTPUT
+            echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
+            echo "DRY_RUN=true" >> $GITHUB_OUTPUT
           fi
       
       - name: Authenticate in GCP
