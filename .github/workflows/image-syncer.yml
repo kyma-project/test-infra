@@ -29,8 +29,38 @@ jobs:
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
       
-      - name: Checkout
+      # Verify if the pull request merge commit is available and pr is mergeable.
+      # If this is not true, fail the workflow because we have no correct merge commit to work with.
+      - name: Verify merge commit
+        id: verify_merge_commit
+        run: |
+          if [ "${{ github.event.pull_request.mergeable }}" != true ]; then
+            echo "::error title=PR commit merge error ::Pull request does not have a merge commit. Skipping the workflow."
+            exit 0
+          fi
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+      
+      - name: Checkout target branch
+        id: checkout_target_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'push' }}
+      
+      - name: Set dry-run flag
+        id: set_dry_run_flag
+        run: |
+          if [ "${{ github.event_name }}" == 'push' ]; then
+            echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
+            echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
+            echo "DRY_RUN=true" >> $GITHUB_OUTPUT
+          fi
       
       - name: Authenticate in GCP
         id: authenticate_in_gcp
@@ -47,5 +77,5 @@ jobs:
           args: >
             --images-file=/github/workspace/external-images.yaml
             --target-repo-auth-key=/github/workspace/${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-            --dry-run ${{ inputs.dry-run }}
-            --debug ${{ inputs.debug }}
+            --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
+            --debug=${{ inputs.debug }}
