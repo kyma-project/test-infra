@@ -28,9 +28,27 @@ jobs:
         run: |
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
-      
-      - name: Checkout
+
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+      
+      - name: Checkout target branch
+        id: checkout_target_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'push' }}
+      
+      - name: Set dry-run flag
+        id: set_dry_run_flag
+        run: |
+          if [ "${{ github.event_name }}" == 'push' ]; then
+            echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
+            echo "DRY_RUN=false" >> $GITHUB_OUTPUT
+          fi
       
       - name: Authenticate in GCP
         id: authenticate_in_gcp
@@ -47,5 +65,5 @@ jobs:
           args: >
             --images-file=/github/workspace/external-images.yaml
             --target-repo-auth-key=/github/workspace/${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-            --dry-run ${{ inputs.dry-run }}
-            --debug ${{ inputs.debug }}
+            --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
+            --debug=${{ inputs.debug }}
