@@ -1,5 +1,5 @@
 resource "google_container_cluster" "trusted_workload" {
-  provider = google-beta
+  provider                 = google-beta
   name                     = "trusted-workload-kyma-prow"
   location                 = var.gcp_region
   remove_default_node_pool = true
@@ -8,7 +8,7 @@ resource "google_container_cluster" "trusted_workload" {
     channel = "REGULAR"
   }
   cluster_autoscaling {
-    enabled = false
+    enabled             = false
     autoscaling_profile = "OPTIMIZE_UTILIZATION"
   }
   enable_shielded_nodes = true
@@ -47,24 +47,24 @@ resource "google_container_node_pool" "prowjobs_pool" {
     }
   }
   management {
-    auto_repair = true
+    auto_repair  = true
     auto_upgrade = true
   }
 }
 
 resource "google_container_node_pool" "components_pool" {
   cluster = google_container_cluster.trusted_workload.id
-  name = "components-pool"
+  name    = "components-pool"
   autoscaling {
-    max_node_count = 1
-    min_node_count = 1
+    max_node_count  = 1
+    min_node_count  = 1
     location_policy = "ANY"
   }
   node_config {
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
-    preemptible = true
+    preemptible  = true
     machine_type = "n1-standard-2"
     metadata = {
       disable-legacy-endpoints = "true"
@@ -79,7 +79,7 @@ resource "google_container_node_pool" "components_pool" {
     }
   }
   management {
-    auto_repair = true
+    auto_repair  = true
     auto_upgrade = true
   }
 }

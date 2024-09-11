@@ -387,6 +387,8 @@ branch-protection:
           unmanaged: true
         keda-manager:
           unmanaged: true
+        terraform-module:
+          unmanaged: true
         warden:
           unmanaged: true
         docker-registry:
@@ -399,23 +401,6 @@ branch-protection:
           unmanaged: true
         opentelemetry-collector-components:
           unmanaged: true
-
-    kyma-incubator:
-      protect: true # protect all repos & branches in kyma-incubator org
-      exclude:
-        - "^dependabot/"
-      repos:
-        reconciler:
-          protect: false
-          branches:
-            main:
-              protect: true
-            develop:
-              protect: true
-            load-test-mock:
-              protect: true
-            istio-op:
-              protect: true
 
 tide:
   sync_period: 2m
@@ -455,11 +440,6 @@ tide:
     kyma-project/modulectl: squash
     kyma-project/cloud-manager: squash
     kyma-project/cloud-manager-tests: squash
-    kyma-incubator/reconciler: squash
-    kyma-incubator/kymart: squash
-    kyma-incubator/github-dashboard: squash
-    kyma-incubator/opensap: squash
-    kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr
@@ -476,7 +456,14 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
-        - kyma-incubator
+      excludedRepos:
+        - kyma-project/cli
+        - kyma-project/serverless
+        - kyma-project/keda-manager
+        - kyma-project/terraform-module
+        - kyma-project/warden
+        - kyma-project/docker-registry
+        - kyma-project/hydroform
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -1037,23 +1024,6 @@ presets:
         mountPath: /etc/credentials/whitesource-userkey
         readOnly: true
   - labels:
-      preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
-      - name: CLOUDSDK_DNS_ZONE_NAME
-        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
-      - name: GITHUB_ORG_DIR
-        value: "/home/prow/go/src/github.com/kyma-incubator"
-    volumes:
-      - name: sa-gke-kyma-integration
-        secret:
-          secretName: sa-gke-kyma-integration
-    volumeMounts:
-      - name: sa-gke-kyma-integration
-        mountPath: /etc/credentials/sa-gke-kyma-integration
-        readOnly: true
-  - labels:
       preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -1218,24 +1188,6 @@ presets:
           secretKeyRef:
             name: kcp-client-credentials
             key: KCP_OIDC_CLIENT_SECRET
-  - labels:
-      preset-serverless-git-auth: "true"
-    env:
-      - name: GH_AUTH_PRIVATE_KEY
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: GH_AUTH_PRIVATE_KEY
-      - name: AZURE_DEVOPS_AUTH_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: AZURE_DEVOPS_AUTH_USERNAME
-      - name: AZURE_DEVOPS_AUTH_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: serverless-git-auth
-            key: AZURE_DEVOPS_AUTH_PASSWORD
   - labels:
       preset-kcp-client-dev-envs: "true"
     env:

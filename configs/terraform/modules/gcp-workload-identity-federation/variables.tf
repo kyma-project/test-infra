@@ -24,10 +24,24 @@ variable "attribute_mapping" {
   description = "Workload Identity Pool  attributes mapping"
 }
 
+variable "attribute_condition" {
+  type        = string
+  description = "Attribute condition for workload identity pool provider"
+  default     = null
+}
+
 variable "sa_mapping" {
   type = map(object({
     sa_name   = string,
     attribute = string
   }))
   description = "Mapping of service accounts and corresponding workload identity federation attributes"
+  # Make sa_mapping optional argument to let user define sa mapping in other modules and config files related to the mapped service accounts.
+  default = {}
+}
+
+variable "allowed_audiences" {
+  type = list(string)
+  description = "List of allowed audiences for the workload identity provider"
+  default = []
 }

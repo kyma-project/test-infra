@@ -1,0 +1,51 @@
+name: image-syncer
+
+on:
+  workflow_call:
+    inputs:
+      dry-run:
+        description: "Dry run mode"
+        required: false
+        type: boolean
+        default: false
+      debug:
+        description: "Debug mode"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sync-images:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    name: Sync images
+    steps:
+      - name: Verify repository owner
+        id: verify_repo_owner
+        if: ${{ github.repository_owner != 'kyma-project' }}
+        run: |
+          echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
+          exit 1
+      
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Authenticate in GCP
+        id: authenticate_in_gcp
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+      
+      - name: Sync Images
+        id: sync_images
+        uses: docker://europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
+        with:
+          entrypoint: /ko-app/image-syncer
+          args: >
+            --images-file=/github/workspace/external-images.yaml
+            --target-repo-auth-key=/github/workspace/${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+            --dry-run ${{ inputs.dry-run }}
+            --debug ${{ inputs.debug }}

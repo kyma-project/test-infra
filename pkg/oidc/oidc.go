@@ -24,12 +24,14 @@ var (
 		IssuerURL:              "https://token.actions.githubusercontent.com",
 		JWKSURL:                "https://token.actions.githubusercontent.com/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
+		GithubURL:              "https://github.com",
 	}
 	GithubToolsSAPOIDCIssuer = Issuer{
 		Name:                   "github-tools-sap",
 		IssuerURL:              "https://github.tools.sap/_services/token",
 		JWKSURL:                "https://github.tools.sap/_services/token/.well-known/jwks",
-		ExpectedJobWorkflowRef: "kyma/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
+		ExpectedJobWorkflowRef: "kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main",
+		GithubURL:              "https://github.tools.sap",
 	}
 	TrustedOIDCIssuers = map[string]Issuer{GithubOIDCIssuer.IssuerURL: GithubOIDCIssuer, GithubToolsSAPOIDCIssuer.IssuerURL: GithubToolsSAPOIDCIssuer}
 )
@@ -79,6 +81,11 @@ type Issuer struct {
 	IssuerURL              string `json:"issuer_url" yaml:"issuer_url"`
 	JWKSURL                string `json:"jwks_url" yaml:"jwks_url"`
 	ExpectedJobWorkflowRef string `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
+	GithubURL              string `json:"github_url" yaml:"github_url"`
+}
+
+func (i Issuer) GetGithubURL() string {
+	return i.GithubURL
 }
 
 // VerifierConfig is the configuration for a verifier.
@@ -94,6 +101,10 @@ type TokenProcessor struct {
 	issuer         Issuer
 	verifierConfig VerifierConfig
 	logger         LoggerInterface
+}
+
+func (tokenProcessor *TokenProcessor) GetIssuer() Issuer {
+	return tokenProcessor.issuer
 }
 
 // TokenProcessorOption is a function that modifies the TokenProcessor.

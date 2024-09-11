@@ -14,51 +14,9 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
-              - jobConfig: # builds a docker image of the api-gateway-manager tagged with the PR name
-                  name: pull-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240829-9a504e1b"
-                  annotations:
-                    owner: "goat"
-                    description: "API Gateway Manager image build on PR for "
-                  skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
-                  args:
-                    - "--name=api-gateway-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+(-.*)?$
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig: # builds a docker image of the api-gateway-manager
-                  name: post-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240829-9a504e1b"
-                  annotations:
-                    owner: "goat"
-                    description: "API Gateway Manager image build"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=api-gateway-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
-                  branches:
-                    - ^main$
-                  optional: false
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - "job_post"
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: rel-api-gateway-manager-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240829-9a504e1b"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240910-8193f426"
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager image build"
