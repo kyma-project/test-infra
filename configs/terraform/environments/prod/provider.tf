@@ -31,11 +31,6 @@ provider "github" {
   owner = var.kyma-project-github-org
 }
 
-provider "github" {
-  alias = "kyma_incubator"
-  owner = var.kyma-incubator-github-org
-}
-
 # sap-kyma-prow project provider
 provider "google" {
   project = var.gcp_project_id
