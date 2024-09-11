@@ -28,14 +28,14 @@ jobs:
         run: |
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
-      
-      # Verify if the pull request merge commit is available and pr is mergeable.
+
+      # Verify if the pull request merge commit sha is available.
       # If this is not true, fail the workflow because we have no correct merge commit to work with.
-      - name: Verify merge commit
-        id: verify_merge_commit
+      - name: Verify merge commit sha
+        id: verify_merge_commit_sha
         run: |
-          if [ "${{ github.event.pull_request.mergeable }}" != true ]; then
-            echo "::error title=PR commit merge error ::Pull request does not have a merge commit. Skipping the workflow."
+          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
+            echo "::error title=PR commit merge error ::Pull request does not have a merge commit sha. Skipping the workflow."
             exit 1
           fi
         if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
