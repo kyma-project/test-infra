@@ -1,10 +1,9 @@
 name: pull-sync-external-images
 
 on:
-  pull_request_target:
+  push:
     branches:
       - main
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
       - "external-images.yaml"
 
@@ -16,4 +15,5 @@ jobs:
   sync-external-images:
     uses: kyma-project/test-infra/.github/workflows/image-syncer.yml@main
     with:
-      debug: true
+      dry-run: false
+      debug: false
