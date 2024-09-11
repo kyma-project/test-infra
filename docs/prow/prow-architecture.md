@@ -43,7 +43,7 @@ Tide is a Prow component that automatically checks the acceptance criteria again
 
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
-For more information about installed plugins in the `kyma-project` and `kyma-incubator` organisations, refer to the [plugins.yaml](../../prow/plugins.yaml) file.
+For more information about installed plugins in the `kyma-project` organisation, refer to the [plugins.yaml](../../prow/plugins.yaml) file.
 
 ## Prow Jobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific Prow job resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.
