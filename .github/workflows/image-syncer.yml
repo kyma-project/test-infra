@@ -78,7 +78,7 @@ jobs:
           --env GOOGLE_APPLICATION_CREDENTIALS
           --entrypoint /ko-app/image-syncer
           --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
-          --volume "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}":"/gcp-creds.json"
+          --volume "$GOOGLE_APPLICATION_CREDENTIALS":"/gcp-creds.json"
           europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
           --images-file=/github/workspace/external-images.yaml
           --target-repo-auth-key=/gcp-creds.json
