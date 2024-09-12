@@ -1,0 +1,16 @@
+name: push-build-rotate-signify-certificate
+#  description: "Build rotate-signify-certificate image for rotating signify certificates.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/cloud-run/rotate-signify-certificate/**"
+ 
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: test-infra/rotatesignifycertificate
+      dockerfile: cmd/cloud-run/rotate-signify-certificate/Dockerfile
+      context: .

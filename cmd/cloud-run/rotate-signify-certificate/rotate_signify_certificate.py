@@ -266,7 +266,7 @@ def get_secret(secret_id: str):
     """Get latest secret version from secret manager"""
     client = secretmanager.SecretManagerServiceClient()
 
-    response = client.access_secret_version(name=f"{secret_id}/versions/15")
+    response = client.access_secret_version(name=f"{secret_id}/versions/latest")
     secret_value = response.payload.data.decode("UTF-8")
 
     return json.loads(secret_value)
