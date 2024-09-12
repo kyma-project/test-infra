@@ -11,6 +11,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
 const (
@@ -125,6 +128,70 @@ type Manifest struct {
 	}
 }
 
+// SimpleImage is a basic implementation of the Image interface
+type SimpleImage struct {
+	ManifestData Manifest
+}
+
+// Manifest returns the manifest data for the image
+func (si *SimpleImage) Manifest() (*Manifest, error) {
+	return &si.ManifestData, nil
+}
+
+// GetImage fetches the image manifest from a container registry
+func GetImage(ref Reference) (Image, error) {
+	r, ok := ref.(name.Reference)
+	if !ok {
+		return nil, fmt.Errorf("invalid reference type")
+	}
+
+	// Fetch the image from the registry
+	img, err := remote.Image(r)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch image: %w", err)
+	}
+
+	// Extract manifest from the image
+	manifest, err := img.Manifest()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get manifest: %w", err)
+	}
+
+	// Return the image, which implements the Image interface
+	return &SimpleImage{
+		ManifestData: Manifest{
+			Config: struct {
+				Digest struct {
+					Hex string
+				}
+				Size int64
+			}{
+				Digest: struct {
+					Hex string
+				}{
+					Hex: manifest.Config.Digest.Hex,
+				},
+				Size: manifest.Config.Size,
+			},
+		},
+	}, nil
+}
+
+// SimpleReference is a basic implementation of the Reference interface
+type SimpleReference struct {
+	Image string
+	Tag   string
+}
+
+func ParseReference(image string) (Reference, error) {
+	ref, err := name.ParseReference(image)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse image reference: %w", err)
+	}
+
+	return ref, nil
+}
+
 // DecodeCertAndKey loads the certificate and decrypted private key from base64-encoded strings in SignifySecret
 func (ss *SignifySecret) DecodeCertAndKey() (tls.Certificate, error) {
 	// Decode the base64-encoded certificate
@@ -219,16 +286,7 @@ func (ns NotarySigner) buildPayload(sr []SigningRequest) (SigningPayload, error)
 func (ns NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
-	if ns.BuildSigningReqFunc == nil {
-		ns.BuildSigningReqFunc = ns.buildSigningRequest
-	}
-
-	if ns.BuildPayloadFunc == nil {
-		ns.BuildPayloadFunc = ns.buildPayload
-	}
-
-	// Get the signing requests
-	signingRequests, err := ns.BuildSigningReqFunc(images)
+	signingRequests, err := ns.buildSigningRequest(images)
 	if err != nil {
 		return fmt.Errorf("build signing request: %w", err)
 	}
@@ -254,19 +312,14 @@ func (ns NotarySigner) Sign(images []string) error {
 	// Configure TLS with the decoded certificate and private key
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
-		MinVersion:   tls.VersionTLS12,
 	}
 
-	// Ensure we are using the injected HTTP client with the mocked transport
-	client := ns.c
-	if client == nil {
-		// Default to real client if not injected
-		client = &http.Client{
-			Transport: &http.Transport{
-				TLSClientConfig: tlsConfig,
-			},
-			Timeout: ns.retryTimeout,
-		}
+	// Create an HTTP client with the custom TLS configuration and timeout
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
+		Timeout: ns.retryTimeout,
 	}
 
 	// Create a new POST request with the signing payload
@@ -313,11 +366,23 @@ func (ns NotarySigner) Sign(images []string) error {
 
 // NewSigner creates a new NotarySigner based on the configuration.
 func (nc NotaryConfig) NewSigner() (Signer, error) {
-	var ns NotarySigner
+	ns := NotarySigner{
+		c:                  &http.Client{},
+		retryTimeout:       10 * time.Second,
+		url:                "https://signing-manage.repositories.cloud.sap/trusted-collections/publish",
+		ParseReferenceFunc: ParseReference, // Using the new ParseReference function
+		GetImageFunc:       GetImage,       // Using the new GetImage function
+	}
 
-	// Ensure nc.Secret is not nil
+	ns.BuildPayloadFunc = ns.buildPayload
+	ns.DecodeCertFunc = ns.signifySecret.DecodeCertAndKey
+	ns.c.Timeout = nc.Timeout
+
+	if nc.RetryTimeout > 0 {
+		ns.retryTimeout = nc.RetryTimeout
+	}
+
 	if nc.Secret != nil {
-		// Check secret type before reading the file
 		switch nc.Secret.Type {
 		case "signify":
 			// Use injected ReadFileFunc or default to os.ReadFile
@@ -325,14 +390,11 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 			if readFileFunc == nil {
 				readFileFunc = os.ReadFile
 			}
-
-			// Read the secret file
 			f, err := readFileFunc(nc.Secret.Path)
 			if err != nil {
 				return nil, fmt.Errorf("failed to read secret file: %w", err)
 			}
 
-			// Unmarshal signify secret
 			var s SignifySecret
 			err = json.Unmarshal(f, &s)
 			if err != nil {
@@ -345,17 +407,6 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 			return nil, fmt.Errorf("unsupported secret type: %s", nc.Secret.Type)
 		}
 	}
-
-	// Initialize the HTTP client
-	ns.c = &http.Client{}
-
-	ns.retryTimeout = 10 * time.Second
-	if nc.RetryTimeout > 0 {
-		ns.retryTimeout = nc.RetryTimeout
-	}
-	ns.c.Timeout = nc.Timeout
-
-	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
 
 	return &ns, nil
 }
