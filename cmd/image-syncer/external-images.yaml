@@ -1,7 +1,7 @@
 targetRepoPrefix: "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
-  - source: "alpine@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5"
-    tag: "3.20.2"
+  - source: "alpine@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d"
+    tag: "3.20.3"
   - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
     amd64Only: true
   - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
@@ -96,14 +96,12 @@ images:
   - source: "registry@sha256:12120425f07de11a1b899e418d4b0ea174c8d4d572d45bdb640f93bc7ca06a3d"
     tag: "2.8.3-v1" # latest: 3.0.0-beta.1 <- wait for a fully supported release
   - source: "gcr.io/kaniko-project/executor:v1.23.2"
-  - source: "python@sha256:eb26ce0d03bcfdf8061df6b7b0ffec9201c68d04caa0ef68c4b7dc26cbcbefd3"
-    tag: "3.9.19-alpine3.20"
+  - source: "python@sha256:97b255a01c06e7964a57b1c3c67124c99db48de6ba529ef56b1500e4527f5f3c"
+    tag: "3.9.20-alpine3.20"
+  - source: "python@sha256:e0e4d3db19333a970e7acfdcb8863efe065be6c3038ef5018694f98162bffec0"
+    tag: "3.12.6-alpine3.20"
   - source: "python@sha256:11d30cce970c40aee8e993d302a15f8bc8204ecab7af1bae26b3fd00eb75ada2"
     tag: "3.12-slim-bullseye"
-  - source: "python@sha256:7e9400f6d73dcb6fd4ea9a2f6e5334da18631f8facb007711648d924a38cfdc6"
-    tag: "3.12.4-slim-bullseye"
-  - source: "python@sha256:3c9599f1a8a5c384e3a17231dd24a32777e26b3705386b3a0403086cbbd23868"
-    tag: "3.12.2-slim-bullseye"
   - source: "fluent/fluent-bit@sha256:def31c22bfc23002354d0cc2beb177e4da1d87c68f49e8fee76c896e8c6fdd44"
     tag: "3.1.6" # used by the kyma telemetry module
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
