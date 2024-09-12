@@ -11,11 +11,21 @@ images:
   # Golang image is pinned because it is force updated in the upstream
   - source: "golang@sha256:ac67716dd016429be8d4c2c53a248d7bcdf06d34127d3dc451bda6aa5a87bc06"
     tag: "1.23.1-alpine3.20"
+  - source: "grafana/grafana-image-renderer:3.2.1"
+    amd64Only: true
+  - source: "hudymi/mockice:0.1.3"
+    amd64Only: true
   - source: "istio/pilot:1.22.3-distroless"
   - source: "istio/proxyv2:1.22.3-distroless"
   - source: "istio/install-cni:1.22.3-distroless"
   - source: "jettech/kube-webhook-certgen:v1.5.0"
+  - source: "kennethreitz/httpbin:latest"
+    amd64Only: true
+  - source: "oryd/hydra-maester:v0.0.25"
+    amd64Only: true
   - source: "oryd/hydra:v1.11.8"
+  - source: "oryd/oathkeeper-maester:v0.1.5"
+    amd64Only: true
   - source: "oryd/oathkeeper:v0.38.25-beta.1"
   - source: "postgres@sha256:86c55091a74b9efe95396f65ddd83f0067ff47c3f09993621d6f94c835856445"
     tag: "11.21-alpine3.18"
@@ -33,6 +43,10 @@ images:
   - source: "quay.io/prometheus/prometheus:v2.45.0"
   - source: "natsio/nats-box:0.14.1"
   - source: "natsio/prometheus-nats-exporter:0.14.0"
+  - source: "mockserver/mockserver:mockserver-5.11.2"
+    amd64Only: true
+  - source: "i331641/kyma-perf:v1"
+    amd64Only: true
   - source: "ghcr.io/kedacore/keda:2.15.1"
   - source: "ghcr.io/kedacore/keda-admission-webhooks:2.15.1"
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.15.1"
