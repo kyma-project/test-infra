@@ -11,9 +11,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
 const (
@@ -47,6 +44,9 @@ type NotaryConfig struct {
 	// RetryTimeout is time between each signing request to notary in case something fails
 	// Default is 10 seconds
 	RetryTimeout time.Duration `yaml:"retry-timeout" json:"retry-timeout"`
+
+	// ReadFileFunc allows injecting a custom file reading function, defaults to os.ReadFile.
+	ReadFileFunc func(string) ([]byte, error)
 }
 
 // AuthSecretConfig contains auth information for notary server
@@ -98,10 +98,29 @@ type SigningPayload struct {
 // NotarySigner is a struct that implements sign.Signer interface
 // Takes care of signing requests to Notary server
 type NotarySigner struct {
-	c             http.Client
-	url           string
-	retryTimeout  time.Duration
-	signifySecret SignifySecret
+	c                   *http.Client
+	url                 string
+	retryTimeout        time.Duration
+	signifySecret       SignifySecret
+	ParseReferenceFunc  func(image string) (Reference, error)
+	GetImageFunc        func(ref Reference) (Image, error)
+	DecodeCertFunc      func() (tls.Certificate, error)
+	BuildSigningReqFunc func([]string) ([]SigningRequest, error)
+	BuildPayloadFunc    func([]SigningRequest) (SigningPayload, error)
+}
+
+type Reference interface{}
+type Image interface {
+	Manifest() (*Manifest, error)
+}
+
+type Manifest struct {
+	Config struct {
+		Digest struct {
+			Hex string
+		}
+		Size int64
+	}
 }
 
 // DecodeCertAndKey loads the certificate and decrypted private key from base64-encoded strings in SignifySecret
@@ -141,11 +160,11 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 			tag = parts[len(parts)-1]
 		}
 
-		ref, err := name.ParseReference(i)
+		ref, err := ns.ParseReferenceFunc(i)
 		if err != nil {
 			return nil, fmt.Errorf("ref parse: %w", err)
 		}
-		img, err := remote.Image(ref)
+		img, err := ns.GetImageFunc(ref)
 		if err != nil {
 			return nil, fmt.Errorf("get image: %w", err)
 		}
@@ -199,13 +218,13 @@ func (ns NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
 	// Get the signing requests
-	signingRequests, err := ns.buildSigningRequest(images)
+	signingRequests, err := ns.BuildSigningReqFunc(images)
 	if err != nil {
 		return fmt.Errorf("build signing request: %w", err)
 	}
 
 	// Build the payload from signing requests
-	payload, err := ns.buildPayload(signingRequests)
+	payload, err := ns.BuildPayloadFunc(signingRequests)
 	if err != nil {
 		return fmt.Errorf("build payload: %w", err)
 	}
@@ -217,7 +236,7 @@ func (ns NotarySigner) Sign(images []string) error {
 	}
 
 	// Decode the certificate and key from the signifySecret structure
-	cert, err := ns.signifySecret.DecodeCertAndKey()
+	cert, err := ns.DecodeCertFunc()
 	if err != nil {
 		return fmt.Errorf("failed to load certificate and key: %w", err)
 	}
@@ -228,12 +247,16 @@ func (ns NotarySigner) Sign(images []string) error {
 		MinVersion:   tls.VersionTLS12,
 	}
 
-	// Create an HTTP client with TLS support
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: tlsConfig,
-		},
-		Timeout: ns.retryTimeout,
+	// Ensure we are using the injected HTTP client with the mocked transport
+	client := ns.c
+	if client == nil {
+		// Default to real client if not injected
+		client = &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: tlsConfig,
+			},
+			Timeout: ns.retryTimeout,
+		}
 	}
 
 	// Create a new POST request with the signing payload
@@ -270,7 +293,7 @@ func (ns NotarySigner) Sign(images []string) error {
 			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
-			return ErrBadResponse{status: status, message: string(respMsg)}
+			return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
 		}
 		retries--
 	}
@@ -278,19 +301,30 @@ func (ns NotarySigner) Sign(images []string) error {
 	return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
 }
 
+// NewSigner creates a new NotarySigner based on the configuration.
 func (nc NotaryConfig) NewSigner() (Signer, error) {
 	var ns NotarySigner
 
+	// Ensure nc.Secret is not nil
 	if nc.Secret != nil {
-		f, err := os.ReadFile(nc.Secret.Path)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read secret file: %w", err)
-		}
-
+		// Check secret type before reading the file
 		switch nc.Secret.Type {
 		case "signify":
+			// Use injected ReadFileFunc or default to os.ReadFile
+			readFileFunc := nc.ReadFileFunc
+			if readFileFunc == nil {
+				readFileFunc = os.ReadFile
+			}
+
+			// Read the secret file
+			f, err := readFileFunc(nc.Secret.Path)
+			if err != nil {
+				return nil, fmt.Errorf("failed to read secret file: %w", err)
+			}
+
+			// Unmarshal signify secret
 			var s SignifySecret
-			err := json.Unmarshal(f, &s)
+			err = json.Unmarshal(f, &s)
 			if err != nil {
 				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
 			}
@@ -302,13 +336,16 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 		}
 	}
 
+	// Initialize the HTTP client
+	ns.c = &http.Client{}
+
 	ns.retryTimeout = 10 * time.Second
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
 	ns.c.Timeout = nc.Timeout
 
-	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish" //TODO, move to kaniko build config
+	ns.url = "https://signing-manage-stage.repositories.cloud.sap/trusted-collections/publish"
 
 	return &ns, nil
 }
