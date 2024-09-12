@@ -6,7 +6,6 @@ images:
   - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
     tag: "1.34.1-v1"
   - source: "curlimages/curl:7.78.0"
-  - source: "cypress/included:9.5.0" # 10.3.0+, latest is 12.0.1
   - source: "gcr.io/google-containers/pause:3.2"
   - source: "goreleaser/goreleaser:v1.11.5"
   # Golang image is pinned because it is force updated in the upstream
