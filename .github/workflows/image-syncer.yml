@@ -82,12 +82,6 @@ jobs:
           docker run
           --workdir /github/workspace
           --rm
-          --env GOOGLE_APPLICATION_CREDENTIALS
-          --entrypoint /ko-app/image-syncer
           --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
           --volume "$GOOGLE_APPLICATION_CREDENTIALS:/gcp-creds.json:ro,Z"
-          europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
-          --images-file=/github/workspace/external-images.yaml
-          --target-repo-auth-key=/gcp-creds.json
-          --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
-          --debug=${{ inputs.debug }}
+          europe-docker.pkg.dev/kyma-project/dev/test-infra/token-test
