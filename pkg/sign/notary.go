@@ -219,6 +219,14 @@ func (ns NotarySigner) buildPayload(sr []SigningRequest) (SigningPayload, error)
 func (ns NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
+	if ns.BuildSigningReqFunc == nil {
+		ns.BuildSigningReqFunc = ns.buildSigningRequest
+	}
+
+	if ns.BuildPayloadFunc == nil {
+		ns.BuildPayloadFunc = ns.buildPayload
+	}
+
 	// Get the signing requests
 	signingRequests, err := ns.BuildSigningReqFunc(images)
 	if err != nil {
