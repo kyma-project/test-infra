@@ -45,8 +45,6 @@ images:
   - source: "natsio/prometheus-nats-exporter:0.14.0"
   - source: "mockserver/mockserver:mockserver-5.11.2"
     amd64Only: true
-  - source: "i331641/kyma-perf:v1"
-    amd64Only: true
   - source: "ghcr.io/kedacore/keda:2.15.1"
   - source: "ghcr.io/kedacore/keda-admission-webhooks:2.15.1"
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.15.1"
