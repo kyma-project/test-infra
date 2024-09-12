@@ -15,6 +15,8 @@ import (
 
 const (
 	TypeNotaryBackend = "notary"
+	tagDelim          = ":"
+	regRepoDelimiter  = "/"
 )
 
 type ErrBadResponse struct {

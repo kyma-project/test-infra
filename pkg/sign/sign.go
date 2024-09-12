@@ -2,13 +2,8 @@ package sign
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v3"
-)
 
-const (
-	tagDelim         = ":"
-	digestDelim      = "@"
-	regRepoDelimiter = "/"
+	"gopkg.in/yaml.v3"
 )
 
 type ErrBackendNotSupported struct {
