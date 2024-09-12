@@ -15,7 +15,6 @@ images:
   - source: "istio/proxyv2:1.22.3-distroless"
   - source: "istio/install-cni:1.22.3-distroless"
   - source: "jettech/kube-webhook-certgen:v1.5.0"
-  - source: "kennethreitz/httpbin:latest"
   - source: "oryd/hydra-maester:v0.0.25"
   - source: "oryd/hydra:v1.11.8"
   - source: "oryd/oathkeeper-maester:v0.1.5"
