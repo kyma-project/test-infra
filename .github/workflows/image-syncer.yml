@@ -68,6 +68,7 @@ jobs:
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
       
       - name: Set read-only GCP credentials
         id: set_gcp_credentials
