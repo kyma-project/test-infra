@@ -96,8 +96,8 @@ func setupBuildSigningRequestTests() {
 		BeforeEach(func() {
 			// Set up NotarySigner with mock functions
 			ns = NotarySigner{
-				ParseReferenceFunc: mockParseReference,
-				GetImageFunc:       mockGetImage,
+				ParseReferenceFunc: MockParseReference,
+				GetImageFunc:       MockGetImage,
 			}
 		})
 

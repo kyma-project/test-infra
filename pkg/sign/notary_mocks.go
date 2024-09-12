@@ -34,10 +34,10 @@ func (m *MockImage) Manifest() (*Manifest, error) {
 	}, nil
 }
 
-func mockParseReference(_ string) (Reference, error) {
+func MockParseReference(_ string) (Reference, error) {
 	return &MockReference{}, nil
 }
 
-func mockGetImage(_ Reference) (Image, error) {
+func MockGetImage(_ Reference) (Image, error) {
 	return &MockImage{}, nil
 }
