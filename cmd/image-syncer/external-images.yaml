@@ -33,7 +33,6 @@ images:
   - source: "quay.io/prometheus/prometheus:v2.45.0"
   - source: "natsio/nats-box:0.14.1"
   - source: "natsio/prometheus-nats-exporter:0.14.0"
-  - source: "i331641/kyma-perf:v1"
   - source: "ghcr.io/kedacore/keda:2.15.1"
   - source: "ghcr.io/kedacore/keda-admission-webhooks:2.15.1"
   - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.15.1"
