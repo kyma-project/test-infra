@@ -283,9 +283,11 @@ func (ns NotarySigner) buildPayload(sr []SigningRequest) (SigningPayload, error)
 }
 
 // Sign makes an HTTP request to sign the images using the Notary server
+// Sign makes an HTTP request to sign the images using the Notary server
 func (ns NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
+	// Build signing requests for the given images
 	signingRequests, err := ns.buildSigningRequest(images)
 	if err != nil {
 		return fmt.Errorf("build signing request: %w", err)
@@ -314,12 +316,14 @@ func (ns NotarySigner) Sign(images []string) error {
 		Certificates: []tls.Certificate{cert},
 	}
 
-	// Create an HTTP client with the custom TLS configuration and timeout
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: tlsConfig,
-		},
-		Timeout: ns.retryTimeout,
+	// Only initialize the HTTP client if it hasn't already been initialized (useful for tests)
+	if ns.c == nil {
+		ns.c = &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: tlsConfig,
+			},
+			Timeout: ns.retryTimeout,
+		}
 	}
 
 	// Create a new POST request with the signing payload
@@ -334,14 +338,18 @@ func (ns NotarySigner) Sign(images []string) error {
 	var respMsg []byte
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
+
+	// Retry logic
 	for retries > 0 {
 		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
 		<-w.C
 
 		// Send the HTTP request
-		resp, err := client.Do(req)
+		resp, err := ns.c.Do(req)
 		if err != nil {
-			return fmt.Errorf("failed to send request: %w", err)
+			fmt.Printf("Request failed with error: %v\n", err)
+			retries--
+			continue // Retry on failure
 		}
 		status = resp.Status
 		defer resp.Body.Close()
@@ -358,30 +366,32 @@ func (ns NotarySigner) Sign(images []string) error {
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
 			return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
 		}
+
 		retries--
 	}
 
-	return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: status, message: string(respMsg)})
+	return fmt.Errorf("failed to sign images after retries: %w", ErrBadResponse{status: status, message: string(respMsg)})
 }
 
 // NewSigner creates a new NotarySigner based on the configuration.
+// NewSigner creates a new NotarySigner based on the configuration.
 func (nc NotaryConfig) NewSigner() (Signer, error) {
 	ns := NotarySigner{
-		c:                  &http.Client{},
 		retryTimeout:       10 * time.Second,
 		url:                "https://signing-manage.repositories.cloud.sap/trusted-collections/publish",
-		ParseReferenceFunc: ParseReference, // Using the new ParseReference function
-		GetImageFunc:       GetImage,       // Using the new GetImage function
+		ParseReferenceFunc: ParseReference,
+		GetImageFunc:       GetImage,
 	}
 
 	ns.BuildPayloadFunc = ns.buildPayload
 	ns.DecodeCertFunc = ns.signifySecret.DecodeCertAndKey
-	ns.c.Timeout = nc.Timeout
 
+	// Set retry timeout if configured
 	if nc.RetryTimeout > 0 {
 		ns.retryTimeout = nc.RetryTimeout
 	}
 
+	// Load secret if provided
 	if nc.Secret != nil {
 		switch nc.Secret.Type {
 		case "signify":
@@ -405,6 +415,13 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 
 		default:
 			return nil, fmt.Errorf("unsupported secret type: %s", nc.Secret.Type)
+		}
+	}
+
+	// Only create a new HTTP client if one isn't provided (for example, in tests)
+	if ns.c == nil {
+		ns.c = &http.Client{
+			Timeout: nc.Timeout,
 		}
 	}
 
