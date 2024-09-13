@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240910-541771db"
             securityContext:
               privileged: false
               seccompProfile:
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
       spec:
         automountServiceAccountToken: true
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240828-67b18f86"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240910-83aca12b"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

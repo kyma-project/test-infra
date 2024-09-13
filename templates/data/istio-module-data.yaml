@@ -15,7 +15,7 @@ templates:
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240829-9a504e1b"
+            image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240912-fcc91334"
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -43,13 +43,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240829-a38a9d2f"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240910-541771db"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240829-a38a9d2f"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240910-541771db"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -102,75 +102,3 @@ templates:
                   local:
                     - job_default
                     - job_build
-              - jobConfig:
-                  name: pull-istio-operator-build
-                  annotations:
-                    owner: goat
-                    description: build istio operator image
-                  args:
-                    - "--name=istio-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - "--build-arg=VERSION=PR-$(PULL_NUMBER)"
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                  local:
-                    - job_default
-                    - job_build
-                    - job_skip_config
-              - jobConfig:
-                  name: post-istio-operator-build
-                  annotations:
-                    owner: goat
-                    description: build istio operator image
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=istio-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - "--tag=$(PULL_BASE_SHA)"
-                    - "--build-arg=VERSION=$(PULL_BASE_REF)"
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - jobConfig_slack_goat
-                  local:
-                    - job_default
-                    - job_build
-                    - job_skip_config
-              - jobConfig:
-                  name: post-istio-operator-experimental-build
-                  annotations:
-                    owner: goat
-                    description: build istio operator experimental image
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=istio-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - "--tag=$(PULL_BASE_SHA)-experimental"
-                    - "--build-arg=VERSION=$(PULL_BASE_REF)-experimental"
-                    - "--build-arg=GO_BUILD_TAGS=experimental"
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - jobConfig_slack_goat
-                  local:
-                    - job_default
-                    - job_build
-                    - job_skip_config

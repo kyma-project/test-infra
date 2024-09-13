@@ -1,0 +1,92 @@
+name: image-syncer
+
+on:
+  workflow_call:
+    inputs:
+      dry-run:
+        description: "Dry run mode"
+        required: false
+        type: boolean
+        default: false
+      debug:
+        description: "Debug mode"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sync-images:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    name: Sync images
+    steps:
+      - name: Verify repository owner
+        id: verify_repo_owner
+        if: ${{ github.repository_owner != 'kyma-project' }}
+        run: |
+          echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
+          exit 1
+
+      # Verify if the pull request merge commit sha is available.
+      # If this is not true, fail the workflow because we have no correct merge commit to work with.
+      - name: Verify merge commit sha
+        id: verify_merge_commit_sha
+        run: |
+          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
+            echo "::error title=PR commit merge error ::Pull request does not have a merge commit sha. Skipping the workflow."
+            exit 1
+          fi
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+      
+      - name: Checkout target branch
+        id: checkout_target_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'push' }}
+      
+      - name: Set dry-run flag
+        id: set_dry_run_flag
+        run: |
+          if [ "${{ github.event_name }}" == 'push' ]; then
+            echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
+            echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
+            echo "DRY_RUN=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Authenticate in GCP
+        id: authenticate_in_gcp
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
+      
+      - name: Set read-only GCP credentials
+        id: set_gcp_credentials
+        run: |
+          chmod 444 $GOOGLE_APPLICATION_CREDENTIALS
+          ls -ld $GOOGLE_APPLICATION_CREDENTIALS
+      
+      - name: Sync Images
+        id: sync_images
+        run: >
+          docker run
+          --workdir /github/workspace
+          --rm
+          --entrypoint /ko-app/image-syncer
+          --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
+          --volume "$GOOGLE_APPLICATION_CREDENTIALS:/gcp-creds.json:ro,Z"
+          europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
+          --images-file=/github/workspace/external-images.yaml
+          --target-repo-auth-key=/gcp-creds.json
+          --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
+          --debug=${{ inputs.debug }}

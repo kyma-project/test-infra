@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -69,7 +69,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -157,7 +157,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -245,7 +245,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -284,7 +284,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -333,95 +333,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-project/cli:
-    - name: pull-cli-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for cli"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-cli-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-cli-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for cli"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-cli-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -460,7 +372,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -509,7 +421,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -548,7 +460,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -597,7 +509,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -636,7 +548,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -685,95 +597,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-project/private-fn-for-e2e-serverless-tests:
-    - name: pull-private-fn-for-e2e-serverless-tests-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for private-fn-for-e2e-serverless-tests"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-private-fn-for-e2e-serverless-tests-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for private-fn-for-e2e-serverless-tests"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -812,7 +636,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -861,7 +685,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -900,7 +724,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -949,7 +773,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -988,7 +812,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1037,7 +861,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1076,7 +900,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1125,95 +949,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-project/keda-manager:
-    - name: pull-keda-manager-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for keda-manager"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-keda-manager-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-keda-manager-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for keda-manager"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-keda-manager-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1252,7 +988,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1301,7 +1037,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1340,7 +1076,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1389,7 +1125,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1428,7 +1164,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1477,7 +1213,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1516,7 +1252,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1565,7 +1301,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1604,7 +1340,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240909-fe70e5ff"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1653,711 +1389,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/sap-btp-service-operator:
-    - name: pull-sap-btp-service-operator-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for sap-btp-service-operator"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-sap-btp-service-operator-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for sap-btp-service-operator"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/slack-bot:
-    - name: pull-slack-bot-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for slack-bot"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-slack-bot-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-slack-bot-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for slack-bot"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-slack-bot-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/migrate:
-    - name: pull-migrate-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for migrate"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-migrate-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-migrate-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for migrate"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-migrate-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/github-dashboard:
-    - name: pull-github-dashboard-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for github-dashboard"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-github-dashboard-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for github-dashboard"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-github-dashboard-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/kymart:
-    - name: pull-kymart-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for kymart"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kymart-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-kymart-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for kymart"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kymart-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/opensap:
-    - name: pull-opensap-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for opensap"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-opensap-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-opensap-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for opensap"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-opensap-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/service-catalog-tester:
-    - name: pull-service-catalog-tester-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for service-catalog-tester"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-service-catalog-tester-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for service-catalog-tester"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/ash"
-            args:
-              - "-c"
-              - "if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
-  kyma-incubator/service-catalog:
-    - name: pull-service-catalog-pjtester
-      annotations:
-        description: "Schedule prowjobs tests using pjtester for service-catalog"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-service-catalog-pjtester"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240829-e24fde04"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ko-app/pjtester"
-            args:
-              - "--github-token-path=/etc/github/oauth"
-            env:
-              - name: KUBECONFIG_PATH
-                value: "/etc/kubeconfig/pjtester/config"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-            volumeMounts:
-              - name: oauth
-                mountPath: /etc/github
-                readOnly: true
-              - name: pjtester-kubeconfig
-                mountPath: /etc/kubeconfig/pjtester
-                readOnly: true
-        volumes:
-          - name: oauth
-            secret:
-              secretName: pjtester-github-oauth-token
-          - name: pjtester-kubeconfig
-            secret:
-              secretName: pjtester-kubeconfig
-    - name: pull-service-catalog-vpathguard
-      annotations:
-        description: "Run pjtester vpathguard for service-catalog"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-service-catalog-vpathguard"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(vpath/pjtester.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240829-a38a9d2f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20240910-541771db"
             imagePullPolicy: Always
             securityContext:
               privileged: false

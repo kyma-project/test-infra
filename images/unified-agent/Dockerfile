@@ -1,4 +1,4 @@
-FROM alpine:3.20.2
+FROM alpine:3.20.3
 
 ARG UNIFIED_AGENT_VERSION=v24.7.1
 
@@ -8,6 +8,7 @@ RUN apk upgrade --no-cache; \
     ca-certificates  \
     curl \
     bash \
+    git \
     && \
     update-ca-certificates
 

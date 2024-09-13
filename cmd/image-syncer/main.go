@@ -246,6 +246,7 @@ func main() {
 				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
 			}
 
+			// This error looks like some leftover.
 			if err != nil {
 				log.WithError(err).Fatal("Failed to create signer instance")
 			}
