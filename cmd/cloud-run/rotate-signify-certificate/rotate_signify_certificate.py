@@ -163,9 +163,8 @@ def prepare_new_secret(
 
 def extract_message_data(pubsub_message: Any) -> Any:
     """Extracts secret rotation message from the Pub/Sub message."""
-    if pubsub_message["attributes"]["eventType"] != "SECRET_ROTATE":
-        # pylint: disable=broad-exception-raised
-        raise Exception("Unsupported event type")
+    if pubsub_message.get("attributes", {}).get("eventType") != "SECRET_ROTATE":
+        raise ValueError("Unsupported event type")
 
     data = base64.b64decode(pubsub_message["data"])
     return json.loads(data)
