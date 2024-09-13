@@ -24,7 +24,7 @@ application_name: str = os.getenv("APPLICATION_NAME", "")
 
 # TODO(kacpermalachowski): Move it to common package
 class LogEntry(dict):
-    """LogEntry simplifies logging by returning JSON string"""
+    """Simplifies logging by returning a JSON string."""
 
     def __str__(self):
         return json.dumps(self)
@@ -33,7 +33,7 @@ class LogEntry(dict):
 # pylint: disable-msg=too-many-locals
 @app.route("/", methods=["POST"])
 def rotate_signify_secret() -> Response:
-    """HTTP webhook handler for rotating signify secrets"""
+    """HTTP webhook handler for rotating Signify secrets."""
     log_fields: Dict[str, Any] = prepare_log_fields()
     log_fields["labels"]["io.kyma.app"] = "signify-certificate-rotate"
 
@@ -136,7 +136,7 @@ def prepare_new_secret(
     secret_data: Dict[str, Any],
     created_at: str,
 ) -> Dict[str, Any]:
-    """Prepare new secret data"""
+    """Prepares new secret data with updated certificates and private key."""
 
     # format certificates
     certs_string = ""
@@ -162,7 +162,7 @@ def prepare_new_secret(
 
 
 def extract_message_data(pubsub_message: Any) -> Any:
-    """Extract secret rotate emssage from pubsub message"""
+    """Extracts secret rotation message from the Pub/Sub message."""
     if pubsub_message["attributes"]["eventType"] != "SECRET_ROTATE":
         # pylint: disable=broad-exception-raised
         raise Exception("Unsupported event type")
@@ -172,7 +172,7 @@ def extract_message_data(pubsub_message: Any) -> Any:
 
 
 def decrypt_private_key(private_key_data: bytes, password: bytes) -> bytes:
-    """Decrypr encrypted private key"""
+    """Decrypts an encrypted private key."""
     # pylint: disable=line-too-long
     private_key = serialization.load_pem_private_key(private_key_data, password)
 
@@ -230,23 +230,22 @@ def prepare_log_fields() -> Dict[str, Any]:
 
 # TODO(kacpermalachowski): Move it to common package
 def get_pubsub_message():
-    """get_pubsub_message unpacks pubsub message and does basic type checks"""
+    """Parses the Pub/Sub message from the request."""
     envelope = request.get_json()
     if not envelope:
         # pylint: disable=broad-exception-raised
-        raise Exception("no Pub/Sub message received")
+        raise ValueError("No Pub/Sub message received")
 
     if not isinstance(envelope, dict) or "message" not in envelope:
         # pylint: disable=broad-exception-raised
-        raise Exception("invalid Pub/Sub message format")
+        raise ValueError("Invalid Pub/Sub message format")
 
-    pubsub_message = envelope["message"]
-    return pubsub_message
+    return envelope["message"]
 
 
 # TODO(kacpermalachowski): Move it to common package
 def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
-    """prepare_error_response return error response with stacktrace"""
+    """Prepares an error response with logging."""
     _, exc_value, _ = sys.exc_info()
     stacktrace = repr(traceback.format_exception(exc_value))
     print(
@@ -263,7 +262,7 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
 
 
 def get_secret(secret_id: str):
-    """Get latest secret version from secret manager"""
+    """Retrieves the latest version of the secret from Secret Manager"""
     client = secretmanager.SecretManagerServiceClient()
 
     response = client.access_secret_version(name=f"{secret_id}/versions/latest")
@@ -273,7 +272,7 @@ def get_secret(secret_id: str):
 
 
 def set_secret(secret_id: str, data: str):
-    """Sets new secret version in secret manager"""
+    """Adds a new version of the secret in Secret Manager."""
     client = secretmanager.SecretManagerServiceClient()
 
     client.add_secret_version(parent=secret_id, payload={"data": data.encode()})
