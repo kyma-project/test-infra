@@ -328,9 +328,6 @@ func (ns *NotarySigner) Sign(images []string) error {
 		if transport, ok := ns.c.Transport.(*http.Transport); ok {
 			// Set the TLSConfig
 			transport.TLSClientConfig = tlsConfig
-		} else {
-			// Cannot set TLSConfig, perhaps it's a mock transport
-			// In tests, this is acceptable
 		}
 	}
 
