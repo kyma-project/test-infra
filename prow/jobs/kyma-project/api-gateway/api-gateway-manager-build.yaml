@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240909-fe70e5ff"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240912-fcc91334"
             securityContext:
               privileged: false
               seccompProfile:
