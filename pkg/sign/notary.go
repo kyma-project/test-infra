@@ -283,8 +283,7 @@ func (ns NotarySigner) buildPayload(sr []SigningRequest) (SigningPayload, error)
 }
 
 // Sign makes an HTTP request to sign the images using the Notary server
-// Sign makes an HTTP request to sign the images using the Notary server
-func (ns NotarySigner) Sign(images []string) error {
+func (ns *NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
 	// Build signing requests for the given images
@@ -316,13 +315,22 @@ func (ns NotarySigner) Sign(images []string) error {
 		Certificates: []tls.Certificate{cert},
 	}
 
-	// Only initialize the HTTP client if it hasn't already been initialized (useful for tests)
+	// Initialize the HTTP client if not already initialized
 	if ns.c == nil {
 		ns.c = &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: tlsConfig,
 			},
 			Timeout: ns.retryTimeout,
+		}
+	} else {
+		// Update the TLSConfig in the existing Transport if possible
+		if transport, ok := ns.c.Transport.(*http.Transport); ok {
+			// Set the TLSConfig
+			transport.TLSClientConfig = tlsConfig
+		} else {
+			// Cannot set TLSConfig, perhaps it's a mock transport
+			// In tests, this is acceptable
 		}
 	}
 
@@ -336,20 +344,21 @@ func (ns NotarySigner) Sign(images []string) error {
 	retries := 5
 	var status string
 	var respMsg []byte
-	w := time.NewTicker(ns.retryTimeout)
-	defer w.Stop()
 
-	// Retry logic
+	// Exponential backoff settings
+	backoff := time.Second // Start with 1 second
+
 	for retries > 0 {
 		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
-		<-w.C
 
 		// Send the HTTP request
 		resp, err := ns.c.Do(req)
 		if err != nil {
-			fmt.Printf("Request failed with error: %v\n", err)
+			fmt.Printf("Request failed with error: %v. Retrying after %v...\n", err, backoff)
 			retries--
-			continue // Retry on failure
+			time.Sleep(backoff) // Wait for the backoff duration
+			backoff *= 2        // Exponential backoff (double the time each retry)
+			continue            // Retry on failure
 		}
 		status = resp.Status
 		defer resp.Body.Close()
@@ -359,6 +368,8 @@ func (ns NotarySigner) Sign(images []string) error {
 		if err != nil {
 			return fmt.Errorf("failed to read response: %w", err)
 		}
+
+		// Check response status
 		switch resp.StatusCode {
 		case http.StatusAccepted:
 			fmt.Printf("Successfully signed images %s!\n", sImg)
@@ -373,7 +384,6 @@ func (ns NotarySigner) Sign(images []string) error {
 	return fmt.Errorf("failed to sign images after retries: %w", ErrBadResponse{status: status, message: string(respMsg)})
 }
 
-// NewSigner creates a new NotarySigner based on the configuration.
 // NewSigner creates a new NotarySigner based on the configuration.
 func (nc NotaryConfig) NewSigner() (Signer, error) {
 	ns := NotarySigner{
@@ -411,11 +421,14 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
 			}
 
+			// Ensure signifySecret is properly initialized
 			ns.signifySecret = s
 
 		default:
 			return nil, fmt.Errorf("unsupported secret type: %s", nc.Secret.Type)
 		}
+	} else {
+		return nil, fmt.Errorf("no secret configuration provided")
 	}
 
 	// Only create a new HTTP client if one isn't provided (for example, in tests)
