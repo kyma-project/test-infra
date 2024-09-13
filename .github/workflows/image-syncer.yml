@@ -84,7 +84,6 @@ jobs:
           docker run
           --workdir /github/workspace
           --rm
-          --entrypoint /ko-app/image-syncer
           --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
           --volume "$GOOGLE_APPLICATION_CREDENTIALS:/gcp-creds.json:ro,Z"
           europe-docker.pkg.dev/kyma-project/dev/test-infra/image-syncer:latest
