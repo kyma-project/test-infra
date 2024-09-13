@@ -120,7 +120,7 @@ def fetch_new_certificate(
         headers={
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
-            "Accept": "applicaiton/json",
+            "Accept": "application/json",
         },
         data=crt_create_payload,
         timeout=10,
