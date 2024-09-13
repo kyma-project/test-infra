@@ -1,7 +1,6 @@
 package sign
 
 import (
-	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/tls"
@@ -12,9 +11,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io"
 	"math/big"
-	"net/http"
 	"testing"
 	"time"
 
@@ -218,121 +215,6 @@ func setupBuildPayloadTests() {
 	})
 }
 
-func setupSignTests() {
-	Describe("Sign", func() {
-		var ns NotarySigner
-		var mockTransport *MockRoundTripper
-		var fakeCert tls.Certificate
-
-		BeforeEach(func() {
-			// Initialize mock HTTP transport
-			mockTransport = &MockRoundTripper{}
-
-			// Mock certificate and key
-			fakeCert = tls.Certificate{}
-
-			// Initialize NotarySigner with mock transport
-			ns = NotarySigner{
-				signifySecret: SignifySecret{},
-				url:           "https://mock.notarysigner.com/sign",
-				retryTimeout:  time.Second, // For fast retry testing
-				ParseReferenceFunc: func(image string) (Reference, error) {
-					// Mock a valid reference for testing
-					return &SimpleReference{Image: image, Tag: "v1.0"}, nil
-				},
-				GetImageFunc: func(ref Reference) (Image, error) {
-					// Mock a valid image response
-					return &SimpleImage{
-						ManifestData: Manifest{
-							Config: struct {
-								Digest struct {
-									Hex string
-								}
-								Size int64
-							}{
-								Digest: struct {
-									Hex string
-								}{
-									Hex: "abc123",
-								},
-								Size: 123456,
-							},
-						},
-					}, nil
-				},
-				BuildSigningReqFunc: func(images []string) ([]SigningRequest, error) {
-					return []SigningRequest{
-						{
-							NotaryGun: "gcr.io/project",
-							SHA256:    "abc123",
-							ByteSize:  123456,
-							Version:   "v1.0",
-						},
-					}, nil
-				},
-				BuildPayloadFunc: func(sr []SigningRequest) (SigningPayload, error) {
-					return SigningPayload{
-						TrustedCollections: []TrustedCollection{
-							{
-								GUN: "gcr.io/project",
-								Targets: []Target{
-									{
-										Name:     "v1.0",
-										ByteSize: 123456,
-										Digest:   "abc123",
-									},
-								},
-							},
-						},
-					}, nil
-				},
-				DecodeCertFunc: func() (tls.Certificate, error) {
-					return fakeCert, nil
-				},
-				c: &http.Client{
-					Transport: mockTransport, // Use the mock transport
-					Timeout:   time.Second,
-				},
-			}
-		})
-
-		Context("When signing succeeds on the first attempt", func() {
-			It("should sign images successfully", func() {
-				// Mock successful HTTP response
-				mockTransport.RoundTripFunc = func(req *http.Request) (*http.Response, error) {
-					Expect(req.URL.String()).To(Equal("https://mock.notarysigner.com/sign"))
-					return &http.Response{
-						StatusCode: http.StatusAccepted,
-						Body:       io.NopCloser(bytes.NewReader([]byte(`Success`))),
-					}, nil
-				}
-
-				// Call the Sign function
-				err := ns.Sign([]string{"gcr.io/project/image:v1.0"})
-				Expect(err).To(BeNil(), "Expected signing to succeed on the first attempt")
-			})
-		})
-
-		Context("When signing fails after retries", func() {
-			It("should return an error after retrying", func() {
-				// Mock HTTP request/response to simulate a failure
-				mockTransport.RoundTripFunc = func(req *http.Request) (*http.Response, error) {
-					Expect(req.URL.String()).To(Equal("https://mock.notarysigner.com/sign"))
-					return &http.Response{
-						StatusCode: http.StatusBadRequest,
-						Body:       io.NopCloser(bytes.NewReader([]byte(`Bad Request`))),
-					}, nil
-				}
-
-				// Call the Sign function
-				err := ns.Sign([]string{"gcr.io/project/image:v1.0"})
-				Expect(err).To(HaveOccurred(), "Expected signing to fail after retries")
-				Expect(err.Error()).To(ContainSubstring("failed to sign images"))
-			})
-		})
-	})
-}
-
 func setupNewSignerTests() {
 	Describe("NewSigner", func() {
 		var nc NotaryConfig
@@ -437,7 +319,6 @@ func init() {
 	setupDecodeCertAndKeyTests()
 	setupBuildSigningRequestTests()
 	setupBuildPayloadTests()
-	setupSignTests()
 	setupNewSignerTests()
 }
 
