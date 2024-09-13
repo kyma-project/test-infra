@@ -70,7 +70,7 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           token_format: "access_token"
           request_reason: "${{ github.repository_owner }}/${{ github.repository }}/${{ github.workflow }}/${{ github.run_id }}"
-      #   service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
+          service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
       
       - name: Set read-only GCP credentials
         id: set_gcp_credentials
