@@ -92,7 +92,7 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
   repository_id = "dockerhub-mirror"
   description   = "Remote repository mirroring Docker Hub"
   format        = "DOCKER"
-  location      = var.gcp_region
+  location      = "europe"
   mode          = "REMOTE_REPOSITORY"
 
   remote_repository_config {
@@ -104,8 +104,10 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
+  provider   = google.kyma_project
+  project    = var.kyma_project_gcp_project_id
+  location   = google_artifact_registry_repository.dockerhub_mirror.location
   repository = google_artifact_registry_repository.dockerhub_mirror.name
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
-  project    = "kyma-project"
 }
