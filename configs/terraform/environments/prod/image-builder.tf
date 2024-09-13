@@ -106,5 +106,5 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
   repository = google_artifact_registry_repository.dockerhub_mirror.name
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:kyma-oci-image-builder@sap-kyma-prow.iam.gserviceaccount.com"
+  member     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
 }
