@@ -30,7 +30,6 @@ class LogEntry(dict):
         return json.dumps(self)
 
 
-# pylint: disable-msg=too-many-locals
 @app.route("/", methods=["POST"])
 def rotate_signify_secret() -> Response:
     """HTTP webhook handler for rotating Signify secrets."""
@@ -47,13 +46,8 @@ def rotate_signify_secret() -> Response:
 
         secret_data = get_secret(secret_rotate_msg["name"])
 
-        token_url = secret_data["tokenURL"]
-        client_id = secret_data["clientID"]
-        cert_service_url = secret_data["certServiceURL"]
         old_cert_data = base64.b64decode(secret_data["certData"])
         old_pk_data = base64.b64decode(secret_data["privateKeyData"])
-
-        old_cert = x509.load_pem_x509_certificate(old_cert_data)
 
         if "password" in secret_data and secret_data["password"] != "":
             old_pk_data = decrypt_private_key(
@@ -62,20 +56,14 @@ def rotate_signify_secret() -> Response:
 
         new_private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
 
-        csr = (
-            x509.CertificateSigningRequestBuilder()
-            .subject_name(old_cert.subject)
-            .sign(new_private_key, hashes.SHA256())
-        )
-
         access_token = fetch_access_token(
-            old_cert_data, old_pk_data, token_url, client_id
+            old_cert_data, old_pk_data, secret_data["tokenURL"], secret_data["clientID"]
         )
 
         created_at = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         new_certs: List[x509.Certificate] = fetch_new_certificate(
-            csr, access_token, cert_service_url
+            old_cert_data, new_private_key, access_token, secret_data["certServiceURL"]
         )
 
         new_secret_data = prepare_new_secret(
@@ -95,15 +83,25 @@ def rotate_signify_secret() -> Response:
         )
 
         return "Certificate rotated successfully"
-    # pylint: disable=broad-exception-caught
-    except Exception as exc:
+    except ValueError as exc:
         return prepare_error_response(exc, log_fields)
 
 
 def fetch_new_certificate(
-    csr: x509.CertificateSigningRequest, access_token: str, certificate_service_url: str
+    cert_data: bytes,
+    private_key: rsa.RSAPrivateKey,
+    access_token: str,
+    certificate_service_url: str,
 ):
     """Fetch new certificates from given certificate service"""
+    old_cert = x509.load_pem_x509_certificate(cert_data)
+
+    csr = (
+        x509.CertificateSigningRequestBuilder()
+        .subject_name(old_cert.subject)
+        .sign(private_key, hashes.SHA256())
+    )
+
     crt_create_payload = json.dumps(
         {
             "csr": {
