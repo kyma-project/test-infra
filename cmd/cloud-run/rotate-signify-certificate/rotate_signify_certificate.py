@@ -17,9 +17,9 @@ from cryptography.hazmat.primitives.serialization import pkcs7, Encoding, Privat
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 app = Flask(__name__)
-project_id: str = os.getenv("PROJECT_ID", "")
-component_name: str = os.getenv("COMPONENT_NAME", "")
-application_name: str = os.getenv("APPLICATION_NAME", "")
+project_id: str = os.getenv("PROJECT_ID")
+component_name: str = os.getenv("COMPONENT_NAME", "signify-certificate-rotator")
+application_name: str = os.getenv("APPLICATION_NAME", "secret-rotator")
 
 
 # TODO(kacpermalachowski): Move it to common package
@@ -37,6 +37,9 @@ def rotate_signify_secret() -> Response:
     log_fields["labels"]["io.kyma.app"] = "signify-certificate-rotate"
 
     try:
+        if project_id is None:
+            raise ValueError("Unknown project id")
+
         pubsub_message = get_pubsub_message()
 
         secret_rotate_msg = extract_message_data(pubsub_message)
