@@ -1,0 +1,25 @@
+name: pull-build-image-syncer.yml
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/image-syncer/*.go"
+      - "cmd/image-syncer/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-syncer
+      dockerfile: cmd/image-syncer/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

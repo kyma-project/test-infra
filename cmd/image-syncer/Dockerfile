@@ -1,16 +1,17 @@
 # Stage 1: Build the Go app
-FROM golang:1.23-alpine as builder
+FROM golang:1.23.1-alpine3.20 as builder
 
-# Set the Current Working Directory inside the container
+# Install certificate authorities
+RUN apk update && apk add --no-cache ca-certificates
+
 WORKDIR /app
 
-# Copy go mod and sum files
 COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-# Copy the source from the cmd/image-syncer directory to the Working Directory inside the container
+# Copy the source to the Working Directory inside the container
 COPY . .
 
 WORKDIR /app/cmd/image-syncer
@@ -21,8 +22,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 # Stage 2: Create the final image from scratch
 FROM scratch
 
+LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/image-syncer
+
 # Copy the built Go app from the builder stage
 COPY --from=builder /app/cmd/image-syncer/main /image-syncer
 
+# Copy CA certificates
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 # Command to run the executable
-CMD ["/image-syncer"]
+ENTRYPOINT ["/image-syncer"]
