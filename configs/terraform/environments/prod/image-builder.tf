@@ -87,3 +87,27 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
   variable_name = "IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME"
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
+
+resource "google_artifact_registry_repository" "dockerhub_mirror" {
+  repository_id = "dockerhub-mirror"
+  description   = "Remote repository mirroring Docker Hub"
+  format        = "DOCKER"
+  location      = "europe"
+  mode          = "REMOTE_REPOSITORY"
+
+  remote_repository_config {
+    description = "Mirror of Docker Hub"
+    docker_repository {
+      public_repository = "DOCKER_HUB"
+    }
+  }
+}
+
+resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
+  provider   = google.kyma_project
+  project    = var.kyma_project_gcp_project_id
+  location   = google_artifact_registry_repository.dockerhub_mirror.location
+  repository = google_artifact_registry_repository.dockerhub_mirror.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
+}
