@@ -229,6 +229,7 @@ func main() {
 		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
 		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
+			var authCfg []byte
 			logLevel := logrus.InfoLevel
 			if cfg.Debug {
 				logLevel = logrus.DebugLevel
@@ -242,9 +243,11 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
-			authCfg, err := os.ReadFile(cfg.TargetKeyFile)
-			if err != nil {
-				log.WithError(err).Fatal("Could not open target auth key JSON")
+			if cfg.TargetKeyFile != "" {
+				authCfg, err = os.ReadFile(cfg.TargetKeyFile)
+				if err != nil {
+					log.WithError(err).Fatal("Could not open target auth key JSON")
+				}
 			}
 
 			if cfg.DryRun {
