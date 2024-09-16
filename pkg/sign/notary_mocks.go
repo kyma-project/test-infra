@@ -39,7 +39,7 @@ func MockParseReference(image string) (Reference, error) {
 }
 
 // MockGetImage is a mock function for GetImageFunc
-func MockGetImage(ref Reference) (Image, error) {
+func MockGetImage(_ Reference) (Image, error) {
 	// We return a mocked Image object with predefined values
 	return &SimpleImage{
 		ManifestData: Manifest{
