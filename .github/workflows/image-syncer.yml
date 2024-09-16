@@ -68,6 +68,8 @@ jobs:
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          token_format: "access_token"
+          request_reason: "${{ github.repository_owner }}/${{ github.repository }}/${{ github.workflow }}/${{ github.run_id }}"
           service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
       
       - name: Set read-only GCP credentials
@@ -82,11 +84,10 @@ jobs:
           docker run
           --workdir /github/workspace
           --rm
-          --entrypoint /ko-app/image-syncer
           --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
           --volume "$GOOGLE_APPLICATION_CREDENTIALS:/gcp-creds.json:ro,Z"
-          europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240822-9b523f40
+          europe-docker.pkg.dev/kyma-project/dev/test-infra/image-syncer:latest
           --images-file=/github/workspace/external-images.yaml
-          --target-repo-auth-key=/gcp-creds.json
+          --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
           --debug=${{ inputs.debug }}

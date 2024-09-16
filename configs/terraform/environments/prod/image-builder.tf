@@ -94,7 +94,7 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
   repository_id = var.dockerhub_mirror_repository_id
   description   = var.dockerhub_mirror_description
   format        = "DOCKER"
-  location      = var.dockerhub_mirror_location
+  location      = "europe"
   mode          = "REMOTE_REPOSITORY"
 
   remote_repository_config {
