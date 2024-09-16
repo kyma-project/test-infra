@@ -118,7 +118,7 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
-  provider   = google.gcp_project_id
+  provider   = google.kyma_project_gcp_project_id
   project    = var.kyma_project_gcp_project_id
   location   = var.dockerhub_mirror_location
   repository = var.dockerhub_mirror_repository_id
