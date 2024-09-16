@@ -13,7 +13,6 @@ func (m *MockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return m.RoundTripFunc(req)
 }
 
-type MockReference struct{}
 type MockImage struct{}
 
 func (m *MockImage) Manifest() (*Manifest, error) {
@@ -34,10 +33,29 @@ func (m *MockImage) Manifest() (*Manifest, error) {
 	}, nil
 }
 
-func MockParseReference(_ string) (Reference, error) {
-	return &MockReference{}, nil
+// MockParseReference jest funkcją mockującą dla ParseReferenceFunc
+func MockParseReference(image string) (Reference, error) {
+	return image, nil // W prostym przypadku zwracamy sam string jako Reference
 }
 
-func MockGetImage(_ Reference) (Image, error) {
-	return &MockImage{}, nil
+// MockGetImage jest funkcją mockującą dla GetImageFunc
+func MockGetImage(ref Reference) (Image, error) {
+	// Zwracamy mockowany obiekt Image z predefiniowanymi wartościami
+	return &SimpleImage{
+		ManifestData: Manifest{
+			Config: struct {
+				Digest struct {
+					Hex string
+				}
+				Size int64
+			}{
+				Digest: struct {
+					Hex string
+				}{
+					Hex: "abc123def456",
+				},
+				Size: 12345678,
+			},
+		},
+	}, nil
 }

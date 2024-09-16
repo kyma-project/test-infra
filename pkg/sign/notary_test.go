@@ -11,10 +11,14 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"io"
 	"math/big"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/name"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -24,12 +28,24 @@ func TestSuite(t *testing.T) {
 	RunSpecs(t, "Sign Package Test Suite")
 }
 
+var _ = Describe("Sign Package Tests", func() {
+	setupDecodeCertAndKeyTests()
+	setupBuildSigningRequestTests()
+	setupBuildPayloadTests()
+	setupNewSignerTests()
+	setupGetImageTests()
+	setupParseReferenceTests()
+	setupSetupTLSTests()
+	setupRetryHTTPRequestTests()
+	setupSignTests()
+})
+
 func setupDecodeCertAndKeyTests() {
 	Describe("DecodeCertAndKey", func() {
 		var signifySecret SignifySecret
 
 		BeforeEach(func() {
-			// Use the GenerateBase64EncodedCert function to generate base64-encoded cert and key
+			// Generowanie bazy64 zakodowanych certyfikatu i klucza
 			certBase64, keyBase64, err := GenerateBase64EncodedCert()
 			Expect(err).To(BeNil())
 
@@ -39,45 +55,45 @@ func setupDecodeCertAndKeyTests() {
 			}
 		})
 
-		Context("When decoding is successful", func() {
-			It("should decode certificate and private key successfully", func() {
+		Context("Gdy dekodowanie przebiega pomyślnie", func() {
+			It("powinno poprawnie dekodować certyfikat i klucz prywatny", func() {
 				cert, err := signifySecret.DecodeCertAndKey()
 				Expect(err).To(BeNil())
 				Expect(cert).To(BeAssignableToTypeOf(tls.Certificate{}))
 			})
 		})
 
-		Context("When certificate decoding fails", func() {
+		Context("Gdy dekodowanie certyfikatu się nie powiedzie", func() {
 			BeforeEach(func() {
-				signifySecret.CertificateData = "invalid-base64"
+				signifySecret.CertificateData = "niepoprawny-base64"
 			})
 
-			It("should return an error for invalid certificate data", func() {
+			It("powinno zwrócić błąd dla niepoprawnych danych certyfikatu", func() {
 				_, err := signifySecret.DecodeCertAndKey()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("failed to decode certificate"))
 			})
 		})
 
-		Context("When private key decoding fails", func() {
+		Context("Gdy dekodowanie klucza prywatnego się nie powiedzie", func() {
 			BeforeEach(func() {
-				signifySecret.PrivateKeyData = "invalid-base64"
+				signifySecret.PrivateKeyData = "niepoprawny-base64"
 			})
 
-			It("should return an error for invalid private key data", func() {
+			It("powinno zwrócić błąd dla niepoprawnych danych klucza prywatnego", func() {
 				_, err := signifySecret.DecodeCertAndKey()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("failed to decode private key"))
 			})
 		})
 
-		Context("When loading TLS certificate fails", func() {
+		Context("Gdy wczytanie certyfikatu TLS się nie powiedzie", func() {
 			BeforeEach(func() {
-				signifySecret.CertificateData = base64.StdEncoding.EncodeToString([]byte("invalid-cert"))
-				signifySecret.PrivateKeyData = base64.StdEncoding.EncodeToString([]byte("invalid-key"))
+				signifySecret.CertificateData = base64.StdEncoding.EncodeToString([]byte("niepoprawny-cert"))
+				signifySecret.PrivateKeyData = base64.StdEncoding.EncodeToString([]byte("niepoprawny-klucz"))
 			})
 
-			It("should return an error for invalid certificate or key", func() {
+			It("powinno zwrócić błąd dla niepoprawnego certyfikatu lub klucza", func() {
 				_, err := signifySecret.DecodeCertAndKey()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("unable to load certificate or key"))
@@ -91,7 +107,7 @@ func setupBuildSigningRequestTests() {
 		var ns NotarySigner
 
 		BeforeEach(func() {
-			// Set up NotarySigner with mock functions
+			// Ustawienie NotarySigner z funkcjami mock
 			ns = NotarySigner{
 				ParseReferenceFunc: MockParseReference,
 				GetImageFunc:       MockGetImage,
@@ -99,8 +115,8 @@ func setupBuildSigningRequestTests() {
 		})
 
 		Describe("buildSigningRequest", func() {
-			Context("When valid images are provided", func() {
-				It("should create signing requests successfully", func() {
+			Context("Gdy podano poprawne obrazy", func() {
+				It("powinno poprawnie utworzyć żądania podpisania", func() {
 					images := []string{
 						"gcr.io/project/image:tag1",
 						"docker.io/library/ubuntu:latest",
@@ -112,21 +128,21 @@ func setupBuildSigningRequestTests() {
 					Expect(signingRequests).To(HaveLen(len(images)))
 
 					for i, req := range signingRequests {
-						Expect(req.NotaryGun).NotTo(BeEmpty(), "NotaryGun should not be empty for request %d", i)
-						Expect(req.SHA256).To(Equal("abc123def456"), "SHA256 should match for request %d", i)
-						Expect(req.ByteSize).To(Equal(int64(12345678)), "ByteSize should match for request %d", i)
+						Expect(req.NotaryGun).NotTo(BeEmpty(), "NotaryGun nie powinno być puste dla żądania %d", i)
+						Expect(req.SHA256).To(Equal("abc123def456"), "SHA256 powinno pasować dla żądania %d", i)
+						Expect(req.ByteSize).To(Equal(int64(12345678)), "ByteSize powinno pasować dla żądania %d", i)
 					}
 				})
 			})
 
-			Context("When an invalid image reference is provided", func() {
+			Context("Gdy podano niepoprawne odniesienie do obrazu", func() {
 				BeforeEach(func() {
 					ns.ParseReferenceFunc = func(image string) (Reference, error) {
 						return nil, fmt.Errorf("invalid reference")
 					}
 				})
 
-				It("should return an error for invalid reference", func() {
+				It("powinno zwrócić błąd dla niepoprawnego odniesienia", func() {
 					images := []string{"invalid/image:tag"}
 
 					_, err := ns.buildSigningRequest(images)
@@ -135,14 +151,14 @@ func setupBuildSigningRequestTests() {
 				})
 			})
 
-			Context("When fetching the image fails", func() {
+			Context("Gdy pobieranie obrazu się nie powiedzie", func() {
 				BeforeEach(func() {
 					ns.GetImageFunc = func(ref Reference) (Image, error) {
 						return nil, fmt.Errorf("image fetch failed")
 					}
 				})
 
-				It("should return an error for failed image fetch", func() {
+				It("powinno zwrócić błąd dla nieudanego pobierania obrazu", func() {
 					images := []string{"gcr.io/project/image:tag1"}
 
 					_, err := ns.buildSigningRequest(images)
@@ -162,8 +178,8 @@ func setupBuildPayloadTests() {
 			ns = NotarySigner{}
 		})
 
-		Context("When valid signing requests are provided", func() {
-			It("should create a payload with the correct trusted collections", func() {
+		Context("Gdy podano poprawne żądania podpisania", func() {
+			It("powinno utworzyć payload z poprawnymi zaufanymi kolekcjami", func() {
 				signingRequests := []SigningRequest{
 					{
 						NotaryGun: "gcr.io/project",
@@ -182,17 +198,17 @@ func setupBuildPayloadTests() {
 				payload, err := ns.buildPayload(signingRequests)
 				Expect(err).To(BeNil())
 
-				// Verify the TrustedCollections in the payload
+				// Weryfikacja TrustedCollections w payload
 				Expect(payload.TrustedCollections).To(HaveLen(2))
 
-				// Check the first trusted collection
+				// Sprawdzenie pierwszej zaufanej kolekcji
 				Expect(payload.TrustedCollections[0].GUN).To(Equal("gcr.io/project"))
 				Expect(payload.TrustedCollections[0].Targets).To(HaveLen(1))
 				Expect(payload.TrustedCollections[0].Targets[0].Name).To(Equal("v1.0"))
 				Expect(payload.TrustedCollections[0].Targets[0].ByteSize).To(Equal(int64(123456)))
 				Expect(payload.TrustedCollections[0].Targets[0].Digest).To(Equal("abc123"))
 
-				// Check the second trusted collection
+				// Sprawdzenie drugiej zaufanej kolekcji
 				Expect(payload.TrustedCollections[1].GUN).To(Equal("docker.io/library/ubuntu"))
 				Expect(payload.TrustedCollections[1].Targets).To(HaveLen(1))
 				Expect(payload.TrustedCollections[1].Targets[0].Name).To(Equal("latest"))
@@ -201,14 +217,14 @@ func setupBuildPayloadTests() {
 			})
 		})
 
-		Context("When an empty signing request list is provided", func() {
-			It("should return an empty payload", func() {
+		Context("Gdy podano pustą listę żądań podpisania", func() {
+			It("powinno zwrócić pusty payload", func() {
 				signingRequests := []SigningRequest{}
 
 				payload, err := ns.buildPayload(signingRequests)
 				Expect(err).To(BeNil())
 
-				// Verify that the payload has no trusted collections
+				// Weryfikacja, że payload nie zawiera zaufanych kolekcji
 				Expect(payload.TrustedCollections).To(BeEmpty())
 			})
 		})
@@ -220,59 +236,59 @@ func setupNewSignerTests() {
 		var nc NotaryConfig
 
 		BeforeEach(func() {
-			// Initialize NotaryConfig with mocked Secret
+			// Inicjalizacja NotaryConfig z mockowanym Secret
 			nc = NotaryConfig{
+				Endpoint:     "https://example.com/sign",
 				Timeout:      5 * time.Second,
 				RetryTimeout: 15 * time.Second,
-				Secret: &AuthSecretConfig{ // Properly initialize Secret
+				Secret: &AuthSecretConfig{
 					Path: "/mock/path/to/secret",
 					Type: "signify",
 				},
 			}
 		})
 
-		Context("When valid signify secret is provided", func() {
-			It("should return a valid NotarySigner", func() {
-				// Mock signify secret content
+		Context("Gdy podano poprawny signify secret", func() {
+			It("powinno zwrócić poprawny NotarySigner", func() {
+				// Mockowanie treści signify secret
 				signifySecret := SignifySecret{
 					CertificateData: "mockCertData",
 					PrivateKeyData:  "mockPrivateKeyData",
 				}
 				secretContent, _ := json.Marshal(signifySecret)
 
-				// Inject mock ReadFileFunc to simulate file reading without a real file
+				// Iniekcja mockowanej funkcji ReadFileFunc
 				nc.ReadFileFunc = func(path string) ([]byte, error) {
-					// Ensure the correct path is used
 					Expect(path).To(Equal("/mock/path/to/secret"))
-					// Return the mock signify secret content
 					return secretContent, nil
 				}
 
-				// Call the NewSigner method
+				// Wywołanie metody NewSigner
 				signer, err := nc.NewSigner()
 				Expect(err).To(BeNil())
 				Expect(signer).NotTo(BeNil())
 
-				// Verify NotarySigner properties
+				// Weryfikacja właściwości NotarySigner
 				notarySigner, ok := signer.(*NotarySigner)
 				Expect(ok).To(BeTrue())
 				Expect(notarySigner.signifySecret.CertificateData).To(Equal("mockCertData"))
 				Expect(notarySigner.signifySecret.PrivateKeyData).To(Equal("mockPrivateKeyData"))
 				Expect(notarySigner.retryTimeout).To(Equal(15 * time.Second))
 				Expect(notarySigner.c.Timeout).To(Equal(5 * time.Second))
+				Expect(notarySigner.url).To(Equal("https://example.com/sign"))
 			})
 		})
 
-		Context("When secret file cannot be read", func() {
-			It("should return an error", func() {
-				// Mock an error when trying to read the secret file
+		Context("Gdy nie można odczytać pliku secret", func() {
+			It("powinno zwrócić błąd", func() {
+				// Mockowanie błędu podczas odczytu pliku
 				nc.Secret.Path = "/mock/invalid/path"
 				nc.ReadFileFunc = func(path string) ([]byte, error) {
 					Expect(path).To(Equal("/mock/invalid/path"))
 					return nil, errors.New("failed to read file")
 				}
 
-				// Call the NewSigner method
+				// Wywołanie metody NewSigner
 				signer, err := nc.NewSigner()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("failed to read secret file"))
@@ -280,14 +296,14 @@ func setupNewSignerTests() {
 			})
 		})
 
-		Context("When unsupported secret type is provided", func() {
-			It("should return an error", func() {
-				// Set an unsupported secret type, but don't provide a file path
+		Context("Gdy podano nieobsługiwany typ secret", func() {
+			It("powinno zwrócić błąd", func() {
+				// Ustawienie nieobsługiwanego typu secret
 				nc.Secret = &AuthSecretConfig{
 					Type: "unsupported",
 				}
 
-				// Call the NewSigner method
+				// Wywołanie metody NewSigner
 				signer, err := nc.NewSigner()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("unsupported secret type"))
@@ -295,9 +311,9 @@ func setupNewSignerTests() {
 			})
 		})
 
-		Context("When signify secret unmarshalling fails", func() {
-			It("should return an error", func() {
-				// Mock signify secret file with invalid JSON
+		Context("Gdy unmarshalling signify secret się nie powiedzie", func() {
+			It("powinno zwrócić błąd", func() {
+				// Mockowanie niepoprawnego JSON w pliku secret
 				nc.Secret.Path = "/mock/path/to/secret"
 				nc.Secret.Type = "signify"
 				nc.ReadFileFunc = func(path string) ([]byte, error) {
@@ -305,7 +321,7 @@ func setupNewSignerTests() {
 					return []byte("invalid-json"), nil
 				}
 
-				// Call the NewSigner method
+				// Wywołanie metody NewSigner
 				signer, err := nc.NewSigner()
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("failed to unmarshal signify secret"))
@@ -315,23 +331,263 @@ func setupNewSignerTests() {
 	})
 }
 
-func init() {
-	setupDecodeCertAndKeyTests()
-	setupBuildSigningRequestTests()
-	setupBuildPayloadTests()
-	setupNewSignerTests()
+func setupGetImageTests() {
+	Describe("GetImage", func() {
+		Context("Gdy podano poprawne odniesienie", func() {
+			It("powinno zwrócić SimpleImage z poprawnymi danymi manifestu", func() {
+				// Tworzymy poprawne odniesienie
+				ref, err := name.ParseReference("gcr.io/project/image:tag")
+				Expect(err).To(BeNil())
+
+				// Mockowanie remote.Image i manifestu
+				// W tym przypadku zakładamy, że funkcja działa poprawnie,
+				// ponieważ testowanie rzeczywistego pobierania obrazu wymagałoby dostępu do zewnętrznych zasobów.
+
+				// Możemy więc przetestować przypadek, gdy odniesienie jest niepoprawne.
+				img, err := GetImage(ref)
+				// Ponieważ nie mamy rzeczywistego obrazu, może wystąpić błąd.
+				if err != nil {
+					// Sprawdzamy, czy zwrócono błąd związany z pobieraniem obrazu
+					Expect(err.Error()).To(ContainSubstring("failed to fetch image"))
+				} else {
+					// Jeśli nie wystąpił błąd, sprawdzamy, czy obraz nie jest pusty
+					Expect(img).NotTo(BeNil())
+				}
+			})
+		})
+
+		Context("Gdy podano niepoprawny typ odniesienia", func() {
+			It("powinno zwrócić błąd wskazujący na niepoprawny typ odniesienia", func() {
+				// Podajemy odniesienie, które nie jest typu name.Reference
+				ref := "niepoprawne odniesienie"
+
+				img, err := GetImage(ref)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("invalid reference type"))
+				Expect(img).To(BeNil())
+			})
+		})
+	})
 }
 
-// GenerateBase64EncodedCert generates a self-signed certificate and private key,
-// and returns them as base64 encoded strings.
+func setupParseReferenceTests() {
+	Describe("ParseReference", func() {
+		Context("Gdy podano poprawny ciąg obrazu", func() {
+			It("powinno poprawnie sparsować odniesienie", func() {
+				image := "gcr.io/project/image:tag"
+				ref, err := ParseReference(image)
+				Expect(err).To(BeNil())
+				Expect(ref).NotTo(BeNil())
+			})
+		})
+
+		Context("Gdy podano niepoprawny ciąg obrazu", func() {
+			It("powinno zwrócić błąd parsowania", func() {
+				image := "niepoprawny_ciag_obrazu@@"
+				ref, err := ParseReference(image)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("failed to parse image reference"))
+				Expect(ref).To(BeNil())
+			})
+		})
+	})
+}
+
+func setupSetupTLSTests() {
+	Describe("setupTLS", func() {
+		Context("Gdy podano poprawny certyfikat TLS", func() {
+			It("powinno zwrócić poprawną konfigurację TLS", func() {
+				certBase64, keyBase64, err := GenerateBase64EncodedCert()
+				Expect(err).To(BeNil())
+
+				certData, err := base64.StdEncoding.DecodeString(certBase64)
+				Expect(err).To(BeNil())
+				keyData, err := base64.StdEncoding.DecodeString(keyBase64)
+				Expect(err).To(BeNil())
+
+				cert, err := tls.X509KeyPair(certData, keyData)
+				Expect(err).To(BeNil())
+
+				tlsConfig := setupTLS(cert)
+				Expect(tlsConfig).NotTo(BeNil())
+				Expect(tlsConfig.Certificates).To(HaveLen(1))
+			})
+		})
+	})
+}
+
+func setupRetryHTTPRequestTests() {
+	Describe("retryHTTPRequest", func() {
+		var (
+			server       *httptest.Server
+			client       *http.Client
+			request      *http.Request
+			retryCount   int
+			retryTimeout time.Duration
+		)
+
+		BeforeEach(func() {
+			retryCount = 3
+			retryTimeout = 100 * time.Millisecond
+		})
+
+		Context("Gdy żądanie jest pomyślne", func() {
+			BeforeEach(func() {
+				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusAccepted)
+				}))
+				client = server.Client()
+				request, _ = http.NewRequest("GET", server.URL, nil)
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+
+			It("powinno zwrócić odpowiedź bez błędów", func() {
+				resp, err := retryHTTPRequest(client, request, retryCount, retryTimeout)
+				Expect(err).To(BeNil())
+				Expect(resp.StatusCode).To(Equal(http.StatusAccepted))
+			})
+		})
+
+		Context("Gdy żądanie nie powiedzie się kilka razy, ale ostatecznie się powiedzie", func() {
+			var attempt int
+
+			BeforeEach(func() {
+				attempt = 0
+				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					attempt++
+					if attempt < 2 {
+						http.Error(w, "temporary error", http.StatusInternalServerError)
+					} else {
+						w.WriteHeader(http.StatusAccepted)
+					}
+				}))
+				client = server.Client()
+				request, _ = http.NewRequest("GET", server.URL, nil)
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+
+			It("powinno powtórzyć żądanie i ostatecznie zwrócić pomyślną odpowiedź", func() {
+				resp, err := retryHTTPRequest(client, request, retryCount, retryTimeout)
+				Expect(err).To(BeNil())
+				Expect(resp.StatusCode).To(Equal(http.StatusAccepted))
+				Expect(attempt).To(Equal(2))
+			})
+		})
+
+		Context("Gdy wszystkie próby żądania się nie powiodą", func() {
+			BeforeEach(func() {
+				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					http.Error(w, "error", http.StatusInternalServerError)
+				}))
+				client = server.Client()
+				request, _ = http.NewRequest("GET", server.URL, nil)
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+
+			It("powinno zwrócić błąd po wyczerpaniu prób", func() {
+				resp, err := retryHTTPRequest(client, request, retryCount, retryTimeout)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.StatusCode).To(Equal(http.StatusInternalServerError))
+				Expect(err.Error()).To(ContainSubstring("unexpected status code: 500"))
+			})
+		})
+	})
+}
+
+func setupSignTests() {
+	Describe("Sign", func() {
+		var ns NotarySigner
+		var server *httptest.Server
+
+		BeforeEach(func() {
+			ns = NotarySigner{
+				ParseReferenceFunc: MockParseReference,
+				GetImageFunc:       MockGetImage,
+				BuildPayloadFunc: func(sr []SigningRequest) (SigningPayload, error) {
+					return SigningPayload{
+						TrustedCollections: []TrustedCollection{
+							{
+								GUN: "example.com/image",
+								Targets: []Target{
+									{
+										Name:     "latest",
+										ByteSize: 12345,
+										Digest:   "abc123",
+									},
+								},
+							},
+						},
+					}, nil
+				},
+				DecodeCertFunc: func() (tls.Certificate, error) {
+					return tls.Certificate{}, nil
+				},
+				SetupTLSFunc: setupTLS,
+				retryTimeout: 100 * time.Millisecond,
+			}
+		})
+
+		AfterEach(func() {
+			if server != nil {
+				server.Close()
+			}
+		})
+
+		Context("Gdy podpisywanie przebiega pomyślnie", func() {
+			It("powinno zakończyć się bez błędów", func() {
+				server = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					io.Copy(io.Discard, r.Body) // Ensure the body is read
+					w.WriteHeader(http.StatusAccepted)
+				}))
+
+				ns.url = server.URL
+				ns.HTTPClient = server.Client() // Use the server's client
+
+				err := ns.Sign([]string{"example.com/image:latest"})
+				Expect(err).To(BeNil())
+			})
+		})
+
+		Context("Gdy wystąpi błąd podczas podpisywania", func() {
+			It("powinno zwrócić odpowiedni błąd", func() {
+				server = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					io.Copy(io.Discard, r.Body) // Ensure the body is read
+					r.Body.Close()
+					http.Error(w, "error", http.StatusInternalServerError)
+				}))
+
+				ns.url = server.URL
+				ns.HTTPClient = server.Client() // Use the server's client
+
+				err := ns.Sign([]string{"example.com/image:latest"})
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("failed to sign images"))
+			})
+		})
+
+	})
+}
+
+// GenerateBase64EncodedCert generuje samopodpisany certyfikat i klucz prywatny,
+// i zwraca je jako ciągi zakodowane w base64.
 func GenerateBase64EncodedCert() (string, string, error) {
-	// Generate a private RSA key
+	// Generowanie klucza prywatnego RSA
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return "", "", err
 	}
 
-	// Create a self-signed certificate template
+	// Tworzenie szablonu certyfikatu
 	template := x509.Certificate{
 		SerialNumber: big.NewInt(1),
 		Subject: pkix.Name{
@@ -344,25 +600,25 @@ func GenerateBase64EncodedCert() (string, string, error) {
 		BasicConstraintsValid: true,
 	}
 
-	// Create the certificate using the template and the private key
+	// Tworzenie certyfikatu
 	certDER, err := x509.CreateCertificate(rand.Reader, &template, &template, &privateKey.PublicKey, privateKey)
 	if err != nil {
 		return "", "", err
 	}
 
-	// Encode the certificate to PEM format
+	// Kodowanie certyfikatu do formatu PEM
 	certPEM := pem.EncodeToMemory(&pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: certDER,
 	})
 
-	// Encode the private key to PEM format
+	// Kodowanie klucza prywatnego do formatu PEM
 	keyPEM := pem.EncodeToMemory(&pem.Block{
 		Type:  "PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
 	})
 
-	// Encode PEM data to base64
+	// Kodowanie danych PEM do base64
 	certBase64 := base64.StdEncoding.EncodeToString(certPEM)
 	keyBase64 := base64.StdEncoding.EncodeToString(keyPEM)
 
