@@ -306,7 +306,7 @@ func setupNewSignerTests() {
 				// Call NewSigner method
 				signer, err := nc.NewSigner()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("unsupported secret type"))
+				Expect(err.Error()).To(ContainSubstring("'unsupported' auth service not supported"))
 				Expect(signer).To(BeNil())
 			})
 		})

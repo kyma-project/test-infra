@@ -249,17 +249,17 @@ func (ns NotarySigner) Sign(images []string) error {
 
 	signingRequests, err := ns.buildSigningRequest(images)
 	if err != nil {
-		return fmt.Errorf("build signing request: %w", err)
+		return ErrBadResponse{status: "400", message: fmt.Sprintf("build signing request: %v", err)}
 	}
 
 	payload, err := ns.BuildPayloadFunc(signingRequests)
 	if err != nil {
-		return fmt.Errorf("build payload: %w", err)
+		return ErrBadResponse{status: "400", message: fmt.Sprintf("build payload: %v", err)}
 	}
 
 	b, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("marshal signing request: %w", err)
+		return ErrBadResponse{status: "400", message: fmt.Sprintf("marshal signing request: %v", err)}
 	}
 
 	var client *http.Client
@@ -268,7 +268,7 @@ func (ns NotarySigner) Sign(images []string) error {
 	} else {
 		cert, err := ns.DecodeCertFunc()
 		if err != nil {
-			return fmt.Errorf("failed to load certificate and key: %w", err)
+			return ErrBadResponse{status: "400", message: fmt.Sprintf("failed to load certificate and key: %v", err)}
 		}
 
 		tlsConfig := ns.SetupTLSFunc(cert)
@@ -282,19 +282,22 @@ func (ns NotarySigner) Sign(images []string) error {
 
 	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
 	if err != nil {
-		return err
+		return ErrBadResponse{status: "500", message: fmt.Sprintf("failed to create HTTP request: %v", err)}
 	}
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := retryHTTPRequest(client, req, 5, ns.retryTimeout)
 	if err != nil {
-		return fmt.Errorf("request failed: %w", err)
+		return ErrBadResponse{status: "500", message: fmt.Sprintf("request failed: %v", err)}
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusAccepted {
 		respMsg, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("failed to sign images: %w", ErrBadResponse{status: resp.Status, message: string(respMsg)})
+		return ErrBadResponse{
+			status:  resp.Status,
+			message: fmt.Sprintf("failed to sign images: %s", string(respMsg)),
+		}
 	}
 
 	fmt.Printf("Successfully signed images %s!\n", sImg)
@@ -311,7 +314,7 @@ func retryHTTPRequest(client *http.Client, req *http.Request, retries int, retry
 		var err error
 		bodyBytes, err = io.ReadAll(req.Body)
 		if err != nil {
-			return nil, fmt.Errorf("failed to read request body: %w", err)
+			return nil, ErrBadResponse{status: "400", message: fmt.Sprintf("failed to read request body: %v", err)}
 		}
 		req.Body.Close()
 	}
@@ -338,7 +341,7 @@ func retryHTTPRequest(client *http.Client, req *http.Request, retries int, retry
 		}
 		time.Sleep(retryInterval)
 	}
-	return lastResp, fmt.Errorf("request failed after retries: %w", lastErr)
+	return lastResp, ErrBadResponse{status: "500", message: fmt.Sprintf("request failed after retries: %v", lastErr)}
 }
 
 func setupTLS(cert tls.Certificate) *tls.Config {
@@ -375,18 +378,18 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 
 			f, err := readFileFunc(nc.Secret.Path)
 			if err != nil {
-				return nil, fmt.Errorf("failed to read secret file: %w", err)
+				return nil, ErrBadResponse{status: "400", message: fmt.Sprintf("failed to read secret file: %v", err)}
 			}
 
 			var s SignifySecret
 			err = json.Unmarshal(f, &s)
 			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal signify secret: %w", err)
+				return nil, ErrBadResponse{status: "400", message: fmt.Sprintf("failed to unmarshal signify secret: %v", err)}
 			}
 
 			ns.signifySecret = s
 		default:
-			return nil, fmt.Errorf("unsupported secret type: %s", nc.Secret.Type)
+			return nil, ErrAuthServiceNotSupported{Service: nc.Secret.Type}
 		}
 	}
 
