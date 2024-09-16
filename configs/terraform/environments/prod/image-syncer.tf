@@ -1,6 +1,6 @@
 resource "google_service_account" "image_syncer_reader" {
   account_id  = var.image_syncer_reader_service_account_name
-  description = "Service account for image-syncer github reusable workflow called on pull request event."
+  description = "Service account for image-syncer github reusable workflow called on pull request event. This service account is used to pull images from the prod Docker repository. It must not have the ability to push images to the prod Docker repository."
 }
 
 resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user" {
@@ -19,7 +19,7 @@ resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_rep
 
 resource "google_service_account" "image_syncer_writer" {
   account_id  = var.image_syncer_writer_service_account_name
-  description = "Service account for image-syncer github reusable workflow called on push event."
+  description = "Service account for image-syncer github reusable workflow called on push event. This service account is used to push images to the prod Docker repository."
 }
 
 resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user" {
