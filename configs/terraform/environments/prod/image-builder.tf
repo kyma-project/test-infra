@@ -89,10 +89,12 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
 }
 
 resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  repository_id = "dockerhub-mirror"
-  description   = "Remote repository mirroring Docker Hub"
+  provider      = google.kyma_project
+  project       = var.kyma_project_gcp_project_id
+  repository_id = var.dockerhub_mirror_repository_id
+  description   = var.dockerhub_mirror_description
   format        = "DOCKER"
-  location      = "europe"
+  location      = var.dockerhub_mirror_location
   mode          = "REMOTE_REPOSITORY"
 
   remote_repository_config {
@@ -101,13 +103,33 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
       public_repository = "DOCKER_HUB"
     }
   }
+
+  cleanup_policies {
+    id = "cleanup-old-images"
+
+    action {
+      type = "DELETE"
+    }
+
+    condition {
+      field    = "age"
+      operator = "GREATER_THAN"
+      values   = [var.dockerhub_mirror_cleanup_age]  # e.g., "730d" for 730 days
+    }
+
+    condition {
+      field    = "tagState"
+      operator = "EQUALS"
+      values   = ["ANY"]
+    }
+  }
 }
 
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
   provider   = google.kyma_project
   project    = var.kyma_project_gcp_project_id
-  location   = google_artifact_registry_repository.dockerhub_mirror.location
-  repository = google_artifact_registry_repository.dockerhub_mirror.name
+  location   = var.dockerhub_mirror_location
+  repository = var.dockerhub_mirror_repository_id
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
+  member     = var.dockerhub_mirror_member
 }
