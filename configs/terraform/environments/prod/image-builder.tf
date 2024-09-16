@@ -104,23 +104,15 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
     }
   }
 
+  cleanup_policy_dry_run = false
+
   cleanup_policies {
     id = "cleanup-old-images"
-
-    action {
-      type = "DELETE"
-    }
+    action = "DELETE"
 
     condition {
-      field    = "age"
-      operator = "GREATER_THAN"
-      values   = [var.dockerhub_mirror_cleanup_age]  # e.g., "730d" for 730 days
-    }
-
-    condition {
-      field    = "tagState"
-      operator = "EQUALS"
-      values   = ["ANY"]
+      older_than = var.dockerhub_mirror_cleanup_age  # e.g., "63072000s" for 730 days
+      tag_state  = "ANY"
     }
   }
 }
