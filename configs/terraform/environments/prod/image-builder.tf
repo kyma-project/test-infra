@@ -89,12 +89,10 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
 }
 
 resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  provider      = google.kyma_project
-  project       = var.kyma_project_gcp_project_id
   repository_id = var.dockerhub_mirror_repository_id
   description   = var.dockerhub_mirror_description
   format        = "DOCKER"
-  location      = "europe"
+  location      = var.dockerhub_mirror_location
   mode          = "REMOTE_REPOSITORY"
 
   remote_repository_config {
@@ -111,7 +109,7 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
     action = "DELETE"
 
     condition {
-      older_than = var.dockerhub_mirror_cleanup_age  # e.g., "63072000s" for 730 days
+      older_than = var.dockerhub_mirror_cleanup_age
       tag_state  = "ANY"
     }
   }
