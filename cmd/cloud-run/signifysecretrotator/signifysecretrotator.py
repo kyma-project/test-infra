@@ -9,12 +9,12 @@ import tempfile
 import traceback
 from typing import Any, Dict, List
 import requests
-from google.cloud import secretmanager
 from flask import Flask, Response, request, make_response
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.serialization import pkcs7, Encoding, PrivateFormat
 from cryptography.hazmat.primitives.asymmetric import rsa
+from secretmanager import client
 
 app = Flask(__name__)
 project_id: str = os.getenv("PROJECT_ID")
@@ -37,6 +37,8 @@ def rotate_signify_secret() -> Response:
     log_fields["labels"]["io.kyma.app"] = "signify-certificate-rotate"
 
     try:
+        sm_client = client.SecretManagerClient()
+
         if project_id is None:
             raise ValueError("Unknown project id")
 
@@ -47,7 +49,7 @@ def rotate_signify_secret() -> Response:
         if secret_rotate_msg["labels"]["type"] != "signify":
             return prepare_error_response("Unsupported resource type", log_fields)
 
-        secret_data = get_secret(secret_rotate_msg["name"])
+        secret_data = sm_client.get_secret(secret_rotate_msg["name"])
 
         old_cert_data = base64.b64decode(secret_data["certData"])
         old_pk_data = base64.b64decode(secret_data["privateKeyData"])
@@ -261,18 +263,10 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
     return resp
 
 
-def get_secret(secret_id: str):
-    """Retrieves the latest version of the secret from Secret Manager"""
-    client = secretmanager.SecretManagerServiceClient()
-
-    response = client.access_secret_version(name=f"{secret_id}/versions/latest")
-    secret_value = response.payload.data.decode("UTF-8")
-
-    return json.loads(secret_value)
-
-
 def set_secret(secret_id: str, data: str):
     """Adds a new version of the secret in Secret Manager."""
-    client = secretmanager.SecretManagerServiceClient()
+    pass
 
-    client.add_secret_version(parent=secret_id, payload={"data": data.encode()})
+def setup_app():
+    print("test")
+    pass
