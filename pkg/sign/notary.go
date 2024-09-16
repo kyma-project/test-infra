@@ -356,6 +356,7 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 		SetupTLSFunc:       setupTLS,
 	}
 
+	ns.url = "https://signing-manage.repositories.cloud.sap/trusted-collections/publish\n"
 	ns.BuildPayloadFunc = ns.buildPayload
 	ns.DecodeCertFunc = ns.signifySecret.DecodeCertAndKey
 
