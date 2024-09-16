@@ -359,7 +359,7 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 	ns.BuildPayloadFunc = ns.buildPayload
 	ns.DecodeCertFunc = ns.signifySecret.DecodeCertAndKey
 
-	// Konfiguracja klienta HTTP
+	// HTTP client configuration
 	ns.c = &http.Client{
 		Timeout: nc.Timeout,
 	}

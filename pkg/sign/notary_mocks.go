@@ -33,14 +33,14 @@ func (m *MockImage) Manifest() (*Manifest, error) {
 	}, nil
 }
 
-// MockParseReference jest funkcją mockującą dla ParseReferenceFunc
+// MockParseReference is a mock function for ParseReferenceFunc
 func MockParseReference(image string) (Reference, error) {
-	return image, nil // W prostym przypadku zwracamy sam string jako Reference
+	return image, nil // In a simple case, we return the string itself as Reference
 }
 
-// MockGetImage jest funkcją mockującą dla GetImageFunc
+// MockGetImage is a mock function for GetImageFunc
 func MockGetImage(ref Reference) (Image, error) {
-	// Zwracamy mockowany obiekt Image z predefiniowanymi wartościami
+	// We return a mocked Image object with predefined values
 	return &SimpleImage{
 		ManifestData: Manifest{
 			Config: struct {
