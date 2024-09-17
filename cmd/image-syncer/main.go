@@ -7,12 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kyma-project/test-infra/pkg/imagesync"
-
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
+	"github.com/kyma-project/test-infra/pkg/imagesync"
 	"github.com/pkg/errors"
 
 	"github.com/jamiealquiza/envy"
@@ -28,6 +27,7 @@ var (
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
+	AccessToken    string
 	DryRun        bool
 	Debug         bool
 }
@@ -180,7 +180,12 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 
 // SyncImages is a main syncing function that takes care of copying images.
 func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, authCfg []byte) error {
-	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+	var auth authn.Authenticator
+	if cfg.TargetKeyFile != "" {
+		auth = &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+	} else {
+		auth = &authn.Bearer{Token: string(authCfg)}
+	}
 	for _, img := range images.Images {
 		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
 		imageType := "Index"
@@ -224,6 +229,7 @@ func main() {
 		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
 		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
+			var authCfg []byte
 			logLevel := logrus.InfoLevel
 			if cfg.Debug {
 				logLevel = logrus.DebugLevel
@@ -237,9 +243,11 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
-			authCfg, err := os.ReadFile(cfg.TargetKeyFile)
-			if err != nil {
-				log.WithError(err).Fatal("Could not open target auth key JSON")
+			if cfg.TargetKeyFile != "" {
+				authCfg, err = os.ReadFile(cfg.TargetKeyFile)
+				if err != nil {
+					log.WithError(err).Fatal("Could not open target auth key JSON")
+				}
 			}
 
 			if cfg.DryRun {
@@ -260,11 +268,12 @@ func main() {
 
 	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "Specifies the path to the YAML file that contains list of images")
 	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "Specifies the JSON key file used for authorization to the target repository")
+	rootCmd.PersistentFlags().StringVarP(&cfg.AccessToken, "access-token", "a", "", "Specifies the access token used for authorization to the target repository")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("images-file")
-	rootCmd.MarkPersistentFlagRequired("target-repo-auth-key")
+	rootCmd.MarkFlagsOneRequired("target-repo-auth-key", "access-token")
 	envy.ParseCobra(rootCmd, envy.CobraConfig{Prefix: "SYNCER", Persistent: true, Recursive: false})
 
 	if err := rootCmd.Execute(); err != nil {
