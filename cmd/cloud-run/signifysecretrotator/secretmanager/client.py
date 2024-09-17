@@ -31,7 +31,7 @@ class SecretManagerClient:
         secret_name = f"{secret_id}/versions/{secret_version}"
 
         response: secretmanager.AccessSecretVersionResponse = (
-            self.client.access_secret_version(secret_name=secret_name)
+            self.client.access_secret_version(name=secret_name)
         )
         secret_value = response.payload.data.decode()
 

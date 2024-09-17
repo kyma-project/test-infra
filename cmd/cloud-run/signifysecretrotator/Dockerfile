@@ -5,8 +5,8 @@ ENV PYTHONUNBUFFERED True
 
 WORKDIR /app
 
-COPY ./cmd/cloud-run/slack-message-sender/**/*.py .
-COPY ./cmd/cloud-run/slack-message-sender/requirements.txt .
+COPY ./cmd/cloud-run/signifysecretrotator/**/*.py .
+COPY ./cmd/cloud-run/signifysecretrotator/requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt && \
 	apk add --no-cache ca-certificates

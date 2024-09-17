@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from secretmanager import client
 
 app = Flask(__name__)
-project_id: str = os.getenv("PROJECT_ID")
+project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
 component_name: str = os.getenv("COMPONENT_NAME", "signify-certificate-rotator")
 application_name: str = os.getenv("APPLICATION_NAME", "secret-rotator")
 
@@ -74,6 +74,8 @@ def rotate_signify_secret() -> Response:
         new_secret_data = prepare_new_secret(
             new_certs, new_private_key, secret_data, created_at
         )
+
+        sm_client.set_secret(secret_rotate_msg["name"], json.dumps(new_secret_data))
 
         print(
             LogEntry(
