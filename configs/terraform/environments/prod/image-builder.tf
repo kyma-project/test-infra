@@ -118,8 +118,8 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
   provider   = google.kyma_project
   project    = var.kyma_project_gcp_project_id
-  location   = var.dockerhub_mirror_location
-  repository = var.dockerhub_mirror_repository_id
+   location   = google_artifact_registry_repository.dockerhub_mirror.location
+   repository = google_artifact_registry_repository.dockerhub_mirror.repository_id
   role       = "roles/artifactregistry.reader"
   member     = var.dockerhub_mirror_member
 }
