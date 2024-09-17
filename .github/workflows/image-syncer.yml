@@ -52,6 +52,8 @@ jobs:
         uses: actions/checkout@v4
         if: ${{ github.event_name == 'push' }}
       
+      # Set the dry-run flag based on the event type.
+      # Dry-run flag is enforced for workflow runs triggered by pull requests.
       - name: Set dry-run flag
         id: set_dry_run_flag
         run: |
@@ -61,7 +63,25 @@ jobs:
             echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
             echo "DRY_RUN=true" >> $GITHUB_OUTPUT
           fi
-      
+
+      # Get the image-syncer service account based on the event type.
+      # Service account is used to authenticate in GCP.
+      # Different service accounts have different permissions.
+      # Workflow running for pull request must not have write permissions.
+      - name: Get image-syncer gcp service account
+        id: get_image_syncer_gcp_service_account
+        run: |
+          if [ "${{ github.event_name }}" == 'push' ]; then
+            echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ]; then
+            echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_READER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
+          else
+            echo "::error title=Unsupported event::Unsupported event: ${{ github.event_name }}"
+            exit 1
+          fi
+
+      # Using access-token as it can be used directly as a bearer token.
+      #
       - name: Authenticate in GCP
         id: authenticate_in_gcp
         uses: google-github-actions/auth@v2
@@ -70,13 +90,8 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           token_format: "access_token"
           request_reason: "${{ github.repository_owner }}/${{ github.repository }}/${{ github.workflow }}/${{ github.run_id }}"
-          service_account: "image-syncer-reader@sap-kyma-prow.iam.gserviceaccount.com"
-      
-      - name: Set read-only GCP credentials
-        id: set_gcp_credentials
-        run: |
-          chmod 444 $GOOGLE_APPLICATION_CREDENTIALS
-          ls -ld $GOOGLE_APPLICATION_CREDENTIALS
+          # service_account is required for the token_format "access_token"
+          service_account: ${{ steps.get_image_syncer_gcp_service_account.outputs.IMAGE_SYNCER_SA_EMAIL }}
       
       - name: Sync Images
         id: sync_images
@@ -84,8 +99,7 @@ jobs:
           docker run
           --workdir /github/workspace
           --rm
-          --volume "/home/runner/work/test-infra/test-infra":"/github/workspace"
-          --volume "$GOOGLE_APPLICATION_CREDENTIALS:/gcp-creds.json:ro,Z"
+          --volume "$GITHUB_WORKSPACE:/github/workspace"
           europe-docker.pkg.dev/kyma-project/dev/test-infra/image-syncer:latest
           --images-file=/github/workspace/external-images.yaml
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
