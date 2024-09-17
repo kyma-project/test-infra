@@ -1,2 +1,0 @@
-[console_scripts]
-signify-secret-rotator = signifysecretrotator.signifysecretrotator:setup_app

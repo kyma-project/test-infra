@@ -13,6 +13,3 @@ __debug_bin
 
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json
-
-# Ignore egg info from local package isntallation
-*.egg-info/*

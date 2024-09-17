@@ -75,10 +75,6 @@ def rotate_signify_secret() -> Response:
             new_certs, new_private_key, secret_data, created_at
         )
 
-        set_secret(
-            secret_id=secret_rotate_msg["name"], data=json.dumps(new_secret_data)
-        )
-
         print(
             LogEntry(
                 severity="INFO",
@@ -191,7 +187,10 @@ def fetch_access_token(
     # Use temporary file for old cert and key because requests library needs file paths,
     # it's not a security concern because the code is running in known environment controlled by us
     # pylint: disable=line-too-long
-    with tempfile.NamedTemporaryFile() as old_cert_file, tempfile.NamedTemporaryFile() as old_key_file:
+    with (
+        tempfile.NamedTemporaryFile() as old_cert_file,
+        tempfile.NamedTemporaryFile() as old_key_file,
+    ):
 
         old_cert_file.write(certificate)
         old_cert_file.flush()
@@ -262,10 +261,6 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
     resp.status_code = 500
     return resp
 
-
-def set_secret(secret_id: str, data: str):
-    """Adds a new version of the secret in Secret Manager."""
-    pass
 
 def setup_app():
     print("test")
