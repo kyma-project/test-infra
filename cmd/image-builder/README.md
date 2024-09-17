@@ -159,13 +159,14 @@ The authentication to the Signify API has been updated from using `role id/secre
 - **mTLS Authentication**: Image Builder now uses a client certificate/private key pair for authentication with the Signify API. These credentials are valid for 7 days, after which they must be rotated.
 - **Automated Rotation**: The certificate rotation must occur every 7 days. The new certificate/private key pair must be generated using the previous pair before they expire.
 
-The Signify API's structure has also been updated. For more information, refer to the official [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
+The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
 
-> **Note**: Images are only signed when built on `push` and `workflow_dispatch` events. Pull request images are not signed.
+> [!NOTE]
+> Images are only signed when built on `push` and `workflow_dispatch` events. Pull request images are not signed.
 
 ### Signify API Changes
 
-The JSON structure for signing has changed slightly. You can review the new structure and examples in the [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
+The JSON structure for signing has changed. See the new structure and examples in the [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
 
 
 ## Named Tags
