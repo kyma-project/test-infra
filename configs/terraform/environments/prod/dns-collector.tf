@@ -3,7 +3,7 @@
 resource "google_service_account" "sa_gke_kyma_integration" {
   account_id   = "sa-gke-kyma-integration"
   display_name = "sa-gke-kyma-integration"
-  description  = "Service account is used by Prow to integrate with GKE."
+  description  = "Service account is used by Prow to integrate with GKE. Will be removed with Prow"
 }
 
 resource "google_project_iam_binding" "dns_collector_container_analysis_occurrences_viewer" {

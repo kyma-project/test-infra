@@ -73,7 +73,7 @@ resource "google_cloud_scheduler_job" "service_account_keys_cleaner" {
 
   http_target {
     http_method = "GET"
-    uri         = format("%s?project=%s&age=%s", google_cloud_run_service.service_account_keys_cleaner.status[0].url, data.google_project.project.project_id, var.service_account_key_latest_version_min_age)
+    uri         = format("%s/?project=%s&age=%s", google_cloud_run_service.service_account_keys_cleaner.status[0].url, data.google_project.project.project_id, var.service_account_key_latest_version_min_age)
 
     oidc_token {
       service_account_email = var.secrets_rotator_sa_email
