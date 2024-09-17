@@ -52,7 +52,7 @@ images:
     tag: "3.12.6-alpine3.20"
   - source: "python@sha256:11d30cce970c40aee8e993d302a15f8bc8204ecab7af1bae26b3fd00eb75ada2"
     tag: "3.12-slim-bullseye"
-  - source: "fluent/fluent-bit@sha256-07fca61bc44c2c08f7a13e191729bd4a452f02d8cd39e2bbbe905e6fd6b9ebc6"
+  - source: "fluent/fluent-bit@sha256:07fca61bc44c2c08f7a13e191729bd4a452f02d8cd39e2bbbe905e6fd6b9ebc6"
     tag: "3.1.8" # used by the kyma telemetry module
   - source: "node@sha256:ba898e86c2cc720c8cf2ae05f8d2d4697fe0c8ca3e920d6fbf14a6cbf50bb9ca"
     tag: "alpine3.20"
