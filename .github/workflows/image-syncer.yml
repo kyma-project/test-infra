@@ -91,7 +91,7 @@ jobs:
           token_format: "access_token"
           request_reason: "${{ github.repository_owner }}/${{ github.repository }}/${{ github.workflow }}/${{ github.run_id }}"
           # service_account is required for the token_format "access_token"
-          service_account: ${{ steps.set_image_syncer_gcp_service_account.outputs.IMAGE_SYNCER_SA_EMAIL }}
+          service_account: ${{ steps.get_image_syncer_gcp_service_account.outputs.IMAGE_SYNCER_SA_EMAIL }}
       
       - name: Sync Images
         id: sync_images
