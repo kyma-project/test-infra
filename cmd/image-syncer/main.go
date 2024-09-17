@@ -27,7 +27,7 @@ var (
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
-	AccesToken    string
+	AccessToken    string
 	DryRun        bool
 	Debug         bool
 }
@@ -268,7 +268,7 @@ func main() {
 
 	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "Specifies the path to the YAML file that contains list of images")
 	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "Specifies the JSON key file used for authorization to the target repository")
-	rootCmd.PersistentFlags().StringVarP(&cfg.AccesToken, "access-token", "a", "", "Specifies the access token used for authorization to the target repository")
+	rootCmd.PersistentFlags().StringVarP(&cfg.AccessToken, "access-token", "a", "", "Specifies the access token used for authorization to the target repository")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
