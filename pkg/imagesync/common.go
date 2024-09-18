@@ -2,8 +2,7 @@ package imagesync
 
 // SyncDef stores synchronisation definition
 type SyncDef struct {
-	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
-	Images           []Image
+	Images []Image
 }
 
 // Image stores image location
