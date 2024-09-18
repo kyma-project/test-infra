@@ -36,17 +36,11 @@ def rotate_signify_secret() -> Response:
     try:
         sm_client = client.SecretManagerClient()
 
-        if project_id is None:
-            raise ValueError("Unknown project id")
+        pubsub_message: Dict[str, Any] = get_pubsub_message()
 
-        pubsub_message = get_pubsub_message()
+        secret_rotate_msg: Dict[str, Any] = extract_message_data(pubsub_message)
 
-        secret_rotate_msg = extract_message_data(pubsub_message)
-
-        # Pub/Sub topic handle multiple secret rotator components
-        # verify if we should handle that message
-        if secret_rotate_msg["labels"]["type"] != secret_rotate_message_type:
-            return prepare_error_response("Unsupported event type", logger)
+        validate_message(secret_rotate_msg)
 
         secret_data: Dict[str, Any] = sm_client.get_secret(secret_rotate_msg["name"])
 
@@ -90,8 +84,17 @@ def rotate_signify_secret() -> Response:
         logger.log_info(f"Certificate rotated successfully at {created_at}")
 
         return "Certificate rotated successfully"
-    except (HTTPError, ValueError) as exc:
+    except (HTTPError, ValueError, TypeError) as exc:
         return prepare_error_response(exc, logger)
+
+
+def validate_message(message: dict[str, Any]) -> None:
+    """Raises error when received message struct is invalid"""
+
+    # Pub/Sub topic handle multiple secret rotator components
+    # verify if we should handle that message
+    if message.get("labels", {}).get("type") != secret_rotate_message_type:
+        raise TypeError("Invalid or unknown type value")
 
 
 def prepare_new_secret(
