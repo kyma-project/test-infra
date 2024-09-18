@@ -258,7 +258,6 @@ tide:
     kyma-project/test-infra: squash
     kyma-project/busola: squash
     kyma-project/control-plane: squash
-    kyma-project/third-party-images: squash
     kyma-project/hydroform: squash
     kyma-project/cli: squash
     kyma-project/community: squash

@@ -193,45 +193,6 @@ presubmits: # runs on PRs
                 memory: 100M
                 cpu: 200m
   
-  kyma-project/third-party-images:
-    - name: pull-third-party-images-pjconfigtest
-      annotations:
-        description: "Run ginkgo suite tests for prowjobs definitions for third-party-images"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-third-party-images-pjconfigtest"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20240909-95731ea6"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/ginkgo"
-            args:
-              - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-  
   kyma-project/community:
     - name: pull-community-pjconfigtest
       annotations:

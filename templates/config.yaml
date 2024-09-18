@@ -12,7 +12,6 @@ global:
         - name: "busola"
         - name: "control-plane"
         - name: "lifecycle-manager"
-        - name: "third-party-images"
         - name: "community"
         - name: "examples"
         - name: "api-gateway"
