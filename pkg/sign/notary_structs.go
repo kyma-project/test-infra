@@ -28,7 +28,6 @@ type NotaryConfig struct {
 	Secret       *AuthSecretConfig `yaml:"secret,omitempty" json:"secret,omitempty"`
 	Timeout      time.Duration     `yaml:"timeout" json:"timeout"`
 	RetryTimeout time.Duration     `yaml:"retry-timeout" json:"retry-timeout"`
-	ReadFileFunc func(string) ([]byte, error)
 }
 
 type AuthSecretConfig struct {

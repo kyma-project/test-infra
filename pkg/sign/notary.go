@@ -284,12 +284,8 @@ func RetryHTTPRequest(client HTTPClientInterface, req *http.Request, retries int
 
 // NewSigner constructs a new NotarySigner with dependencies injected.
 func (nc *NotaryConfig) NewSigner() (Signer, error) {
-	// Read Signify secret
-	readFileFunc := nc.ReadFileFunc
-	if readFileFunc == nil {
-		readFileFunc = os.ReadFile
-	}
-	secretFileContent, err := readFileFunc(nc.Secret.Path)
+	// Read Signify secret from the path directly
+	secretFileContent, err := os.ReadFile(nc.Secret.Path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read secret file: %v", err)
 	}

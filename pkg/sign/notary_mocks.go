@@ -129,10 +129,10 @@ func (m *MockImage) Digest() (v1.Hash, error) {
 	return v1.Hash{}, nil
 }
 
-func (m *MockImage) LayerByDigest(hash v1.Hash) (v1.Layer, error) {
+func (m *MockImage) LayerByDigest(v1.Hash) (v1.Layer, error) {
 	return nil, nil
 }
 
-func (m *MockImage) LayerByDiffID(hash v1.Hash) (v1.Layer, error) {
+func (m *MockImage) LayerByDiffID(v1.Hash) (v1.Layer, error) {
 	return nil, nil
 }
