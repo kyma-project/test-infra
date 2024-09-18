@@ -9,7 +9,7 @@ from flask import Request
 class LogEntry(dict):
     """Simplifies logging by returning a JSON string."""
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self)
 
 
@@ -36,7 +36,7 @@ class Logger:
                     f"projects/{project_id}/traces/{trace[0]}"
                 )
 
-    def log_error(self, message: str):
+    def log_error(self, message: str) -> None:
         """Print log error message
 
         Args:
@@ -44,7 +44,7 @@ class Logger:
         """
         self._log(message, "ERROR")
 
-    def log_info(self, message: str):
+    def log_info(self, message: str) -> None:
         """Print log info message
 
         Args:
@@ -52,7 +52,7 @@ class Logger:
         """
         self._log(message, "INFO")
 
-    def _log(self, message: str, severity: str):
+    def _log(self, message: str, severity: str) -> None:
         entry = LogEntry(severity=severity, message=message, **self.log_fields)
 
         print(entry)

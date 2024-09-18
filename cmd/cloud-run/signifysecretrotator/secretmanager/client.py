@@ -40,7 +40,7 @@ class SecretManagerClient:
 
         return secret_value
 
-    def set_secret(self, secret_id: str, data: str):
+    def set_secret(self, secret_id: str, data: str) -> None:
         """Adds new secret version with given data
 
         Args:

@@ -23,7 +23,7 @@ class TestSignifyClient(unittest.TestCase):
     Unit tests for the SignifyClient class.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
         Set up method to initialize the SignifyClient object and necessary data for tests.
         """
@@ -34,16 +34,16 @@ class TestSignifyClient(unittest.TestCase):
             certificate_service_url=self.certificate_service_url,
             client_id="fake_client_id",
         )
-        self.certificate = base64.b64decode(
+        self.certificate: bytes = base64.b64decode(
             test_fixtures.mocked_secret_data["certData"]
         )
-        self.private_key = rsa.generate_private_key(
+        self.private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
             public_exponent=65537, key_size=2048
         )
         self.access_token = "fake_access_token"
 
     @patch("requests.post")
-    def test_fetch_access_token_success(self, mock_post):
+    def test_fetch_access_token_success(self, mock_post) -> None:
         """
         Test successful fetch of access token.
 
@@ -66,7 +66,7 @@ class TestSignifyClient(unittest.TestCase):
         mock_post.assert_called_once()
 
     @patch("requests.post")
-    def test_fetch_access_token_failed_status_code(self, mock_post):
+    def test_fetch_access_token_failed_status_code(self, mock_post) -> None:
         """
         Test fetch of access token when the response status code is not 200.
         """
@@ -85,7 +85,7 @@ class TestSignifyClient(unittest.TestCase):
         mock_post.assert_called_once()
 
     @patch("requests.post")
-    def test_fetch_access_token_unexpected_response(self, mock_post):
+    def test_fetch_access_token_unexpected_response(self, mock_post) -> None:
         """
         Test fetch of access token when the response does not contain the expected structure.
         """
@@ -104,7 +104,7 @@ class TestSignifyClient(unittest.TestCase):
         mock_post.assert_called_once()
 
     @patch("requests.post")
-    def test_fetch_new_certificate_success(self, mock_post):
+    def test_fetch_new_certificate_success(self, mock_post) -> None:
         """
         Test successful fetch of a new certificate.
         """
@@ -121,7 +121,7 @@ class TestSignifyClient(unittest.TestCase):
         mock_post.assert_called_once()
 
     @patch("requests.post")
-    def test_fetch_new_certificate_failed_status_code(self, mock_post):
+    def test_fetch_new_certificate_failed_status_code(self, mock_post) -> None:
         """
         Test fetch of a new certificate when the response status code is not 200.s
         """

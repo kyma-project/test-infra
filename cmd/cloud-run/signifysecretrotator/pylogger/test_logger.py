@@ -13,7 +13,7 @@ class TestLogger(unittest.TestCase):
     """Tests for logger class"""
 
     @patch("flask.Request")
-    def test_logger_initialization(self, mock_request):
+    def test_logger_initialization(self, mock_request) -> None:
         """Test logger initialization"""
         mock_request = mock_request()
         mock_request.headers.get.return_value = "trace-id/other-info"
@@ -26,7 +26,7 @@ class TestLogger(unittest.TestCase):
         )
         self.assertTrue("logging.googleapi.com/trace" in logger.log_fields)
 
-    def test_logger_initialization_without_request(self):
+    def test_logger_initialization_without_request(self) -> None:
         """Test logger initialization without flas request"""
         logger = Logger("component1", "application1")
 
@@ -37,7 +37,7 @@ class TestLogger(unittest.TestCase):
         self.assertFalse("logging.googleapi.com/trace" in logger.log_fields)
 
     @patch("builtins.print")
-    def test_log_error(self, mock_print):
+    def test_log_error(self, mock_print) -> None:
         """Test log_error method"""
         logger = Logger("component1", "application1")
         logger.log_error("An error occurred")
@@ -52,7 +52,7 @@ class TestLogger(unittest.TestCase):
         mock_print.assert_called_once_with(expected_output)
 
     @patch("builtins.print")
-    def test_log_info(self, mock_print):
+    def test_log_info(self, mock_print) -> None:
         """Test log_info method"""
         logger = Logger("component1", "application1")
         logger.log_info("Information message")
@@ -66,7 +66,7 @@ class TestLogger(unittest.TestCase):
 
         mock_print.assert_called_once_with(expected_output)
 
-    def test_log_entry_str(self):
+    def test_log_entry_str(self) -> None:
         """Test log entry to json"""
         log_entry = LogEntry(
             severity="INFO", message="Test", component="test_component"

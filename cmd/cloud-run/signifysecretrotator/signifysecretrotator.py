@@ -48,7 +48,7 @@ def rotate_signify_secret() -> Response:
         if secret_rotate_msg["labels"]["type"] != secret_rotate_message_type:
             return prepare_error_response("Unsupported event type", logger)
 
-        secret_data = sm_client.get_secret(secret_rotate_msg["name"])
+        secret_data: Dict[str, Any] = sm_client.get_secret(secret_rotate_msg["name"])
 
         signify_client = SignifyClient(
             token_url=secret_data["tokenURL"],
@@ -56,22 +56,24 @@ def rotate_signify_secret() -> Response:
             client_id=secret_data["clientID"],
         )
 
-        old_cert_data = base64.b64decode(secret_data["certData"])
-        old_pk_data = base64.b64decode(secret_data["privateKeyData"])
+        old_cert_data: bytes = base64.b64decode(secret_data["certData"])
+        old_pk_data: bytes = base64.b64decode(secret_data["privateKeyData"])
 
         if "password" in secret_data and secret_data["password"] != "":
             old_pk_data = decrypt_private_key(
                 old_pk_data, secret_data["password"].encode()
             )
 
-        new_private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
+        new_private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
+            public_exponent=65537, key_size=4096
+        )
 
-        access_token = signify_client.fetch_access_token(
+        access_token: str = signify_client.fetch_access_token(
             certificate=old_cert_data,
             private_key=old_pk_data,
         )
 
-        created_at = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        created_at: str = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         new_certs: List[x509.Certificate] = signify_client.fetch_new_certificate(
             cert_data=old_cert_data,
@@ -79,7 +81,7 @@ def rotate_signify_secret() -> Response:
             access_token=access_token,
         )
 
-        new_secret_data = prepare_new_secret(
+        new_secret_data: Dict[str, Any] = prepare_new_secret(
             new_certs, new_private_key, secret_data, created_at
         )
 
@@ -103,14 +105,14 @@ def prepare_new_secret(
     """Prepares new secret data with updated certificates and private key."""
 
     # format certificates
-    certs_string = ""
+    certs_string: str = ""
 
     for cert in certificates:
         certs_string += f"subject={cert.subject.rfc4514_string()}\n"
         certs_string += f"issuer={cert.issuer.rfc4514_string()}\n"
         certs_string += f"{cert.public_bytes(Encoding.PEM).decode()}\n"
 
-    private_key_bytes = private_key.private_bytes(
+    private_key_bytes: bytes = private_key.private_bytes(
         Encoding.PEM, PrivateFormat.PKCS8, serialization.NoEncryption()
     )
 
@@ -144,7 +146,7 @@ def decrypt_private_key(private_key_data: bytes, password: bytes) -> bytes:
 
 
 # TODO(kacpermalachowski): Move it to common package
-def get_pubsub_message():
+def get_pubsub_message() -> Dict[str, Any]:
     """Parses the Pub/Sub message from the request."""
     envelope = request.get_json()
     if not envelope:

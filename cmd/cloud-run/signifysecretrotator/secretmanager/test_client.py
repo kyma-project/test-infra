@@ -2,7 +2,7 @@
 
 import json
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from google.cloud import secretmanager
 
 # pylint: disable=import-error
@@ -13,7 +13,7 @@ from client import SecretManagerClient
 class TestSecretManagerClient(unittest.TestCase):
     """Tests for secret manager client"""
 
-    def setUp(self):
+    def setUp(self) -> None:
         access_secret_patcher = patch.object(
             secretmanager.SecretManagerServiceClient, "access_secret_version"
         )
@@ -21,15 +21,19 @@ class TestSecretManagerClient(unittest.TestCase):
             secretmanager.SecretManagerServiceClient, "add_secret_version"
         )
 
-        self.mock_access_secret_version = access_secret_patcher.start()
-        self.mock_add_secret_version = add_secret_version_patcher.start()
+        self.mock_access_secret_version: MagicMock | AsyncMock = (
+            access_secret_patcher.start()
+        )
+        self.mock_add_secret_version: MagicMock | AsyncMock = (
+            add_secret_version_patcher.start()
+        )
 
         self.addCleanup(access_secret_patcher.stop)
         self.addCleanup(add_secret_version_patcher.stop)
 
         self.client = SecretManagerClient()
 
-    def test_get_secret_json(self):
+    def test_get_secret_json(self) -> None:
         """Tests fetching json secret data"""
         # Arrange
         mock_response = MagicMock()
@@ -45,7 +49,7 @@ class TestSecretManagerClient(unittest.TestCase):
             secret_name="projects/test-project/secrets/test-secret/versions/latest"
         )
 
-    def test_get_secret_plain_string(self):
+    def test_get_secret_plain_string(self) -> None:
         """Tests fetching string secret data"""
         # Arrange
         mock_response = MagicMock()
@@ -63,7 +67,7 @@ class TestSecretManagerClient(unittest.TestCase):
             secret_name="projects/test-project/secrets/test-secret/versions/latest"
         )
 
-    def test_set_secret(self):
+    def test_set_secret(self) -> None:
         """Tests setting a new secret version"""
         # Arrange
         secret_id = "projects/test-project/secrets/test-secret"
@@ -73,7 +77,7 @@ class TestSecretManagerClient(unittest.TestCase):
         self.client.set_secret(secret_id, secret_data)
 
         # Assert
-        payload = {"data": secret_data.encode()}
+        payload: dict[str, bytes] = {"data": secret_data.encode()}
         self.mock_add_secret_version.assert_called_once_with(
             parent=secret_id, payload=payload
         )
