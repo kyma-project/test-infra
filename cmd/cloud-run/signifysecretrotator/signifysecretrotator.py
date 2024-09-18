@@ -90,9 +90,7 @@ def rotate_signify_secret() -> Response:
         logger.log_info(f"Certificate rotated successfully at {created_at}")
 
         return "Certificate rotated successfully"
-    except HTTPError as exc:
-        return prepare_error_response(exc, logger)
-    except ValueError as exc:
+    except (HTTPError, ValueError) as exc:
         return prepare_error_response(exc, logger)
 
 
