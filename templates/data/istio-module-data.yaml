@@ -102,3 +102,24 @@ templates:
                   local:
                     - job_default
                     - job_build
+              - jobConfig:
+                  name: pull-istio-operator-build
+                  annotations:
+                    owner: goat
+                    description: build istio operator image
+                  args:
+                    - "--name=istio-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - "--build-arg=VERSION=PR-$(PULL_NUMBER)"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
+                  inheritedConfigs:
+                    global:
+                      - jobConfig_presubmit
+                    local:
+                      - job_default
+                      - job_build
+                      - job_skip_config
