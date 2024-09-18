@@ -62,7 +62,7 @@ def rotate_signify_secret() -> Response:
 
         new_private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
             # Public exponent is standarised as 65537
-            # see: https://www.daemonology.net/blog/2009-06-11-cryptographic-right-answers.html
+            # see: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key
             public_exponent=65537,
             key_size=rsa_key_size,
         )
