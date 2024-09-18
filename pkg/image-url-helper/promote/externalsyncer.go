@@ -27,7 +27,7 @@ func PrintExternalSyncerYaml(images common.ComponentImageMap, targetContainerReg
 }
 
 // convertImageslist takes in a list of images, target repository & tag and creates a SyncDef structure that can be later marshalled and used by the image-syncer tool
-func convertImageslist(images common.ComponentImageMap, targetContainerRegistry, targetTag string) imagesyncer.SyncDef {
+func convertImageslist(images common.ComponentImageMap, targetTag string) imagesyncer.SyncDef {
 
 	imageNames := make([]string, 0)
 	for _, image := range images {
