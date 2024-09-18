@@ -1,4 +1,4 @@
-name: pull-sync-external-images
+name: push-sync-external-images
 
 on:
   push:

@@ -6,7 +6,7 @@ resource "google_service_account" "image_syncer_reader" {
 resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user" {
   service_account_id = google_service_account.image_syncer_reader.name
   role               = "roles/iam.serviceAccountUser"
-  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request:repository_owner_id:${data.github_organization.kyma-project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma-project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_writer" {
