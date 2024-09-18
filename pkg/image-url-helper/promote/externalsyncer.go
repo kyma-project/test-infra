@@ -3,9 +3,10 @@ package promote
 import (
 	"bytes"
 	"fmt"
+	"sort"
+
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 	imagesyncer "github.com/kyma-project/test-infra/pkg/imagesync"
-	"sort"
 
 	"gopkg.in/yaml.v3"
 )
@@ -35,7 +36,6 @@ func convertImageslist(images common.ComponentImageMap, targetContainerRegistry,
 	sort.Strings(imageNames)
 
 	syncDef := imagesyncer.SyncDef{}
-	syncDef.TargetRepoPrefix = targetContainerRegistry + "/"
 	for _, fullImageURL := range imageNames {
 		tmpImage := imagesyncer.Image{}
 		tmpImage.Source = fullImageURL
