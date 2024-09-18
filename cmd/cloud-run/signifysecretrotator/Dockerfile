@@ -8,6 +8,7 @@ WORKDIR /app
 COPY ./cmd/cloud-run/signifysecretrotator/**/*.py .
 COPY ./cmd/cloud-run/signifysecretrotator/requirements.txt .
 
+RUN apk add g++
 RUN pip install --no-cache-dir --upgrade -r requirements.txt && \
 	apk add --no-cache ca-certificates
 

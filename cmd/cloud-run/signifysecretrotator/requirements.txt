@@ -2,4 +2,3 @@ flask==2.3.2
 cloudevents==1.9.0
 gunicorn==22.0.0
 google-cloud-secret-manager==2.20.2
-cryptography==43.0.1
