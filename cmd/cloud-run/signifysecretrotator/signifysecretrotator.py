@@ -22,6 +22,7 @@ project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
 component_name: str = os.getenv("COMPONENT_NAME", "signify-certificate-rotator")
 application_name: str = os.getenv("APPLICATION_NAME", "secret-rotator")
 secret_rotate_message_type = os.getenv("SECRET_ROTATE_MESSAGE_TYPE", "signify")
+rsa_key_size: int = 4096
 
 
 @app.route("/", methods=["POST"])
@@ -42,7 +43,8 @@ def rotate_signify_secret() -> Response:
 
         validate_message(secret_rotate_msg)
 
-        secret_data: Dict[str, Any] = sm_client.get_secret(secret_rotate_msg["name"])
+        secret_id: str = secret_rotate_msg["name"]
+        secret_data: Dict[str, Any] = sm_client.get_secret(secret_id)
 
         signify_client = SignifyClient(
             token_url=secret_data["tokenURL"],
@@ -59,7 +61,10 @@ def rotate_signify_secret() -> Response:
             )
 
         new_private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
-            public_exponent=65537, key_size=4096
+            # Public exponent is standarised as 65537
+            # see: https://www.daemonology.net/blog/2009-06-11-cryptographic-right-answers.html
+            public_exponent=65537,
+            key_size=rsa_key_size,
         )
 
         access_token: str = signify_client.fetch_access_token(
@@ -79,7 +84,7 @@ def rotate_signify_secret() -> Response:
             new_certs, new_private_key, secret_data, created_at
         )
 
-        sm_client.set_secret(secret_rotate_msg["name"], json.dumps(new_secret_data))
+        sm_client.set_secret(secret_id, json.dumps(new_secret_data))
 
         logger.log_info(f"Certificate rotated successfully at {created_at}")
 
@@ -139,7 +144,9 @@ def extract_message_data(pubsub_message: Any) -> Any:
 
 def decrypt_private_key(private_key_data: bytes, password: bytes) -> bytes:
     """Decrypts an encrypted private key."""
-    private_key = serialization.load_pem_private_key(private_key_data, password)
+    private_key: rsa.RSAPrivateKey = serialization.load_pem_private_key(
+        private_key_data, password
+    )
 
     return private_key.private_bytes(
         Encoding.PEM, PrivateFormat.PKCS8, serialization.NoEncryption()

@@ -1,6 +1,7 @@
 """Custom client for signify API"""
 
 import dataclasses
+from enum import Enum
 import json
 import tempfile
 from typing import Any
@@ -9,6 +10,13 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.serialization import pkcs7
+
+
+@dataclasses.dataclass
+class OAuthGrantTypes(Enum):
+    """Contains possible values for grant types option"""
+
+    CLIENT_CREDENTIALS = "client_credentials"
 
 
 @dataclasses.dataclass
@@ -65,7 +73,7 @@ class SignifyClient:
                 self.token_url,
                 cert=(old_cert_file.name, old_key_file.name),
                 data={
-                    "grant_type": "client_credentials",
+                    "grant_type": OAuthGrantTypes.CLIENT_CREDENTIALS,
                     "client_id": self.client_id,
                 },
                 timeout=timeout,
