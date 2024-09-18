@@ -13,7 +13,7 @@ import (
 
 // PrintExternalSyncerYaml prints out a YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
 func PrintExternalSyncerYaml(images common.ComponentImageMap, targetContainerRegistry, targetTag string) error {
-	imagesConverted := convertImageslist(images, targetContainerRegistry, targetTag)
+	imagesConverted := convertImageslist(images, targetTag)
 
 	var out bytes.Buffer
 	encoder := yaml.NewEncoder(&out)
