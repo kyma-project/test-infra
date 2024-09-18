@@ -439,9 +439,14 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 			orgRepo:       "ci-org/ci-repo",
 		},
 	}
+
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Setenv("JOB_TYPE", c.jobType)
+
+			// Utworzenie mocków SignerFactory
+			mockFactory := &mockSignerFactory{}
+
 			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
 					"*":              {"test-notary"},
@@ -453,21 +458,23 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 					{
 						Name:   "test-notary",
 						Type:   sign.TypeNotaryBackend,
-						Config: sign.NotaryConfig{},
+						Config: mockFactory, // Użycie mocka zamiast NotaryConfig
 					},
 					{
 						Name:   "test-notary2",
 						Type:   sign.TypeNotaryBackend,
-						Config: sign.NotaryConfig{},
+						Config: mockFactory, // Użycie mocka zamiast NotaryConfig
 					},
 					{
 						Name:    "ci-notary",
 						Type:    sign.TypeNotaryBackend,
-						Config:  sign.NotaryConfig{},
+						Config:  mockFactory, // Użycie mocka zamiast NotaryConfig
 						JobType: []string{"postsubmit"},
 					},
 				},
 			}}}
+
+			// Wywołanie funkcji i testowanie wyników
 			got, err := getSignersForOrgRepo(o, c.orgRepo)
 			if err != nil && !c.expectErr {
 				t.Errorf("got error but didn't want to %v", err)
@@ -789,12 +796,16 @@ Build config file content:
 	}
 }
 
-type mockSigner struct {
-	signFunc func([]string) error
+type mockSignerFactory struct{}
+
+func (m *mockSignerFactory) NewSigner() (sign.Signer, error) {
+	return &mockSigner{}, nil
 }
 
-func (m *mockSigner) Sign(images []string) error {
-	return m.signFunc(images)
+type mockSigner struct{}
+
+func (m *mockSigner) Sign([]string) error {
+	return nil
 }
 
 func Test_getDockerfileDirPath(t *testing.T) {

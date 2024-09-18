@@ -20,41 +20,41 @@ import (
 	"github.com/kyma-project/test-infra/pkg/sign"
 )
 
-// generateTestCert generuje samopodpisany certyfikat i klucz prywatny.
-// Zwraca certyfikat i klucz w formacie PEM.
+// generateTestCert generates a self-signed certificate and private key.
+// Returns the certificate and key in PEM format.
 func generateTestCert() (string, string, error) {
-	// Generowanie klucza RSA
+	// Generate RSA key
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return "", "", err
 	}
 
-	// Tworzenie szablonu certyfikatu
+	// Create certificate template
 	template := x509.Certificate{
 		SerialNumber: big.NewInt(1),
 		Subject: pkix.Name{
 			Organization: []string{"Test Organization"},
 		},
 		NotBefore:             time.Now(),
-		NotAfter:              time.Now().Add(24 * time.Hour), // Certyfikat ważny przez 24 godziny
+		NotAfter:              time.Now().Add(24 * time.Hour), // Certificate valid for 24 hours
 		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
 	}
 
-	// Samopodpisanie certyfikatu
+	// Self-sign the certificate
 	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &privateKey.PublicKey, privateKey)
 	if err != nil {
 		return "", "", err
 	}
 
-	// Kodowanie certyfikatu do PEM
+	// Encode certificate to PEM
 	certPEM := new(bytes.Buffer)
 	if err := pem.Encode(certPEM, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
 		return "", "", err
 	}
 
-	// Kodowanie klucza prywatnego do PEM
+	// Encode private key to PEM
 	keyPEM := new(bytes.Buffer)
 	if err := pem.Encode(keyPEM, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}); err != nil {
 		return "", "", err
@@ -63,7 +63,7 @@ func generateTestCert() (string, string, error) {
 	return certPEM.String(), keyPEM.String(), nil
 }
 
-// TestImageService_ParseReference_Valid sprawdza poprawne parsowanie referencji obrazu.
+// TestImageService_ParseReference_Valid checks the correct parsing of an image reference.
 func TestImageService_ParseReference_Valid(t *testing.T) {
 	imageService := sign.ImageService{}
 	ref, err := imageService.ParseReference("docker.io/library/alpine:latest")
@@ -75,10 +75,10 @@ func TestImageService_ParseReference_Valid(t *testing.T) {
 	}
 }
 
-// TestImageService_ParseReference_Invalid sprawdza błędne parsowanie referencji obrazu.
+// TestImageService_ParseReference_Invalid checks the incorrect parsing of an image reference.
 func TestImageService_ParseReference_Invalid(t *testing.T) {
 	imageService := sign.ImageService{}
-	// Użyj bardziej nieprawidłowego formatu referencji
+	// Use more invalid reference formats
 	invalidReferences := []string{
 		":::",
 		"invalid_image@sha256:invaliddigest",
@@ -95,7 +95,7 @@ func TestImageService_ParseReference_Invalid(t *testing.T) {
 	}
 }
 
-// TestImageService_GetImage_Valid sprawdza pobieranie poprawnego obrazu.
+// TestImageService_GetImage_Valid checks fetching a valid image.
 func TestImageService_GetImage_Valid(t *testing.T) {
 	imageService := sign.ImageService{}
 	ref, err := name.ParseReference("docker.io/library/alpine:latest")
@@ -111,10 +111,10 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 	}
 }
 
-// TestImageService_GetImage_Invalid sprawdza pobieranie niepoprawnego obrazu.
+// TestImageService_GetImage_Invalid checks fetching an invalid image.
 func TestImageService_GetImage_Invalid(t *testing.T) {
 	imageService := sign.ImageService{}
-	// Użyj bardziej nieprawidłowego formatu referencji
+	// Use a more invalid reference format
 	ref, err := name.ParseReference("invalid_image")
 	if err != nil {
 		t.Fatalf("Failed to parse reference: %v", err)
@@ -125,7 +125,7 @@ func TestImageService_GetImage_Invalid(t *testing.T) {
 	}
 }
 
-// TestPayloadBuilder_BuildPayload_Valid sprawdza budowanie payloadu dla poprawnych obrazów.
+// TestPayloadBuilder_BuildPayload_Valid checks building a payload for valid images.
 func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
@@ -138,7 +138,7 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 	}
 }
 
-// TestPayloadBuilder_BuildPayload_Invalid sprawdza budowanie payloadu dla niepoprawnych obrazów.
+// TestPayloadBuilder_BuildPayload_Invalid checks building a payload for invalid images.
 func TestPayloadBuilder_BuildPayload_Invalid(t *testing.T) {
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
@@ -148,7 +148,7 @@ func TestPayloadBuilder_BuildPayload_Invalid(t *testing.T) {
 	}
 }
 
-// TestCertificateProvider_CreateKeyPair_Valid sprawdza tworzenie pary kluczy z poprawnymi danymi base64.
+// TestCertificateProvider_CreateKeyPair_Valid checks creating a key pair with valid base64 data.
 func TestCertificateProvider_CreateKeyPair_Valid(t *testing.T) {
 	certPEM, keyPEM, err := generateTestCert()
 	if err != nil {
@@ -164,15 +164,15 @@ func TestCertificateProvider_CreateKeyPair_Valid(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-	// Sprawdzamy, czy cert nie jest pusty
+	// Check if cert is not empty
 	if len(cert.Certificate) == 0 {
 		t.Errorf("Expected cert.Certificate to have data")
 	}
-	// Opcjonalnie: Sprawdzenie poprawności certyfikatu
-	// Możesz użyć bibliotek takich jak x509 do dalszej weryfikacji
+	// Optionally: Check the correctness of the certificate
+	// You can use libraries like x509 for further verification
 }
 
-// TestCertificateProvider_CreateKeyPair_Invalid sprawdza tworzenie pary kluczy z niepoprawnymi danymi base64.
+// TestCertificateProvider_CreateKeyPair_Invalid checks creating a key pair with invalid base64 data.
 func TestCertificateProvider_CreateKeyPair_Invalid(t *testing.T) {
 	signifySecret := sign.SignifySecret{
 		CertificateData: "invalid-base64",
@@ -185,7 +185,7 @@ func TestCertificateProvider_CreateKeyPair_Invalid(t *testing.T) {
 	}
 }
 
-// TestTLSConfigurator_SetupTLS sprawdza konfigurację TLS.
+// TestTLSConfigurator_SetupTLS checks TLS configuration.
 func TestTLSConfigurator_SetupTLS(t *testing.T) {
 	certPEM, keyPEM, err := generateTestCert()
 	if err != nil {
@@ -207,7 +207,7 @@ func TestTLSConfigurator_SetupTLS(t *testing.T) {
 	}
 }
 
-// TestHTTPClient_Do sprawdza wysyłanie żądania HTTP.
+// TestHTTPClient_Do checks sending an HTTP request.
 func TestHTTPClient_Do(t *testing.T) {
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -228,7 +228,7 @@ func TestHTTPClient_Do(t *testing.T) {
 	}
 }
 
-// TestHTTPClient_SetTLSConfig sprawdza ustawienie konfiguracji TLS w HTTPClient.
+// TestHTTPClient_SetTLSConfig checks setting TLS configuration in HTTPClient.
 func TestHTTPClient_SetTLSConfig(t *testing.T) {
 	certPEM, keyPEM, err := generateTestCert()
 	if err != nil {
@@ -246,7 +246,7 @@ func TestHTTPClient_SetTLSConfig(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-	// Sprawdzamy, czy Transport jest ustawiony i jest typu *http.Transport
+	// Check if Transport is set and is of type *http.Transport
 	transport, ok := httpClient.Client.Transport.(*http.Transport)
 	if !ok {
 		t.Errorf("Expected Transport to be of type *http.Transport")
@@ -256,7 +256,7 @@ func TestHTTPClient_SetTLSConfig(t *testing.T) {
 	}
 }
 
-// TestNotarySigner_Sign_Valid sprawdza podpisywanie poprawnych obrazów.
+// TestNotarySigner_Sign_Valid checks signing valid images.
 func TestNotarySigner_Sign_Valid(t *testing.T) {
 	certPEM, keyPEM, err := generateTestCert()
 	if err != nil {
@@ -293,7 +293,7 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 	}
 }
 
-// TestNotarySigner_Sign_Invalid sprawdza podpisywanie niepoprawnych obrazów.
+// TestNotarySigner_Sign_Invalid checks signing invalid images.
 func TestNotarySigner_Sign_Invalid(t *testing.T) {
 	certPEM, keyPEM, err := generateTestCert()
 	if err != nil {
@@ -324,7 +324,7 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 	}
 }
 
-// TestRetryHTTPRequest_Failure sprawdza, czy RetryHTTPRequest zwraca błąd po nieudanych próbach.
+// TestRetryHTTPRequest_Failure checks if RetryHTTPRequest returns an error after failed attempts.
 func TestRetryHTTPRequest_Failure(t *testing.T) {
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -345,7 +345,7 @@ func TestRetryHTTPRequest_Failure(t *testing.T) {
 	}
 }
 
-// TestRetryHTTPRequest_SuccessAfterRetries sprawdza, czy RetryHTTPRequest kończy sukcesem po określonej liczbie prób.
+// TestRetryHTTPRequest_SuccessAfterRetries checks if RetryHTTPRequest succeeds after a certain number of retries.
 func TestRetryHTTPRequest_SuccessAfterRetries(t *testing.T) {
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
 	attempts := 0
