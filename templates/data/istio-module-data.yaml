@@ -116,10 +116,10 @@ templates:
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+$
-                  inheritedConfigs:
-                    global:
-                      - jobConfig_presubmit
-                    local:
-                      - job_default
-                      - job_build
-                      - job_skip_config
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - job_default
+                    - job_build
+                    - job_skip_config
