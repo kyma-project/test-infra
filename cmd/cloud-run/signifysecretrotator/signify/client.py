@@ -46,7 +46,7 @@ class SignifyClient:
 
             if access_token_response.status_code != 200:
                 raise requests.HTTPError(
-                    f"Got not-success status code {access_token_response.status_code}",
+                    f"Got non-success status code {access_token_response.status_code}",
                     response=access_token_response,
                 )
 
@@ -81,7 +81,7 @@ class SignifyClient:
 
         if cert_create_response.status_code != 200:
             raise requests.HTTPError(
-                f"Got un-success statsu code {cert_create_response.status_code}"
+                f"Got non-success status code {cert_create_response.status_code}"
             )
 
         decoded_response = cert_create_response.json()
