@@ -26,7 +26,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240916-af720dce"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240918-28bd3344"
             securityContext:
               privileged: false
               seccompProfile:
@@ -82,7 +82,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240916-af720dce"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240918-28bd3344"
             securityContext:
               privileged: false
               seccompProfile:
