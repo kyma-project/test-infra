@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -284,7 +284,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -372,7 +372,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -460,7 +460,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -548,7 +548,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -636,7 +636,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -724,7 +724,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -812,7 +812,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -900,7 +900,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -988,7 +988,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1076,7 +1076,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1164,7 +1164,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1252,7 +1252,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240918-39d265ca"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20240919-98473955"
             imagePullPolicy: Always
             securityContext:
               privileged: false
