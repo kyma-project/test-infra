@@ -46,8 +46,5 @@ func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
 	if err := yaml.Unmarshal(f, &syncDef); err != nil {
 		return nil, err
 	}
-	if syncDef.TargetRepoPrefix == "" {
-		return nil, fmt.Errorf("targetRepoPrefix can not be empty")
-	}
 	return &syncDef, nil
 }

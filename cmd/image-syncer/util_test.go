@@ -81,17 +81,10 @@ var _ = Describe("getTarget", func() {
 
 var _ = Describe("parseImagesFile", func() {
 	validYAML := `
-targetRepoPrefix: "external/prod/"
 images:
   - source: "cypress/included:9.5.0"
     target: "external/prod/cypress/included:latest"
 `
-	missingTargetRepoPrefixYAML := `
-images:
-  - source: "cypress/included:9.5.0"
-    target: "external/prod/cypress/included:latest"
-`
-
 	tests := []struct {
 		name        string
 		content     string
@@ -102,12 +95,6 @@ images:
 			name:      "valid YAML",
 			content:   validYAML,
 			shouldErr: false,
-		},
-		{
-			name:        "missing targetRepoPrefix",
-			content:     missingTargetRepoPrefixYAML,
-			shouldErr:   true,
-			expectedErr: "targetRepoPrefix can not be empty",
 		},
 	}
 

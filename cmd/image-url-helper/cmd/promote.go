@@ -56,7 +56,7 @@ func PromoteCmd() *cobra.Command {
 			common.MergeImageMap(allImages, images)
 			common.MergeImageMap(allImages, testImages)
 
-			err = promote.PrintExternalSyncerYaml(allImages, targetContainerRegistryClean, options.targetTag)
+			err = promote.PrintExternalSyncerYaml(allImages, options.targetTag)
 			if err != nil {
 				fmt.Printf("Cannot print list of images: %s\n", err)
 				os.Exit(2)

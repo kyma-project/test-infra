@@ -19,17 +19,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	defaultTargetRepoPrefix = "europe-docker.pkg.dev/kyma-project/prod/external/"
+)
+
 var (
 	log = logrus.New()
 )
 
 // Config stores command line arguments
 type Config struct {
-	ImagesFile    string
-	TargetKeyFile string
-	AccessToken    string
-	DryRun        bool
-	Debug         bool
+	ImagesFile       string
+	TargetRepoPrefix string
+	TargetKeyFile    string
+	AccessToken      string
+	DryRun           bool
+	Debug            bool
 }
 
 func ifRefNotFound(err error) bool {
@@ -187,7 +192,7 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, aut
 		auth = &authn.Bearer{Token: string(authCfg)}
 	}
 	for _, img := range images.Images {
-		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
+		target, err := getTarget(img.Source, cfg.TargetRepoPrefix, img.Tag)
 		imageType := "Index"
 		if err != nil {
 			return err
@@ -267,6 +272,7 @@ func main() {
 	}
 
 	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "Specifies the path to the YAML file that contains list of images")
+	rootCmd.PersistentFlags().StringVarP(&cfg.TargetRepoPrefix, "target-repo-prefix", "r", defaultTargetRepoPrefix, "Specifies the target repository prefix")
 	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "Specifies the JSON key file used for authorization to the target repository")
 	rootCmd.PersistentFlags().StringVarP(&cfg.AccessToken, "access-token", "a", "", "Specifies the access token used for authorization to the target repository")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
