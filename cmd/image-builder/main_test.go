@@ -439,12 +439,9 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 			orgRepo:       "ci-org/ci-repo",
 		},
 	}
-
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Setenv("JOB_TYPE", c.jobType)
-
-			// Utworzenie mocków SignerFactory
 			mockFactory := &mockSignerFactory{}
 
 			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
@@ -458,23 +455,22 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 					{
 						Name:   "test-notary",
 						Type:   sign.TypeNotaryBackend,
-						Config: mockFactory, // Użycie mocka zamiast NotaryConfig
+						Config: mockFactory,
 					},
 					{
 						Name:   "test-notary2",
 						Type:   sign.TypeNotaryBackend,
-						Config: mockFactory, // Użycie mocka zamiast NotaryConfig
+						Config: mockFactory,
 					},
 					{
 						Name:    "ci-notary",
 						Type:    sign.TypeNotaryBackend,
-						Config:  mockFactory, // Użycie mocka zamiast NotaryConfig
+						Config:  mockFactory,
 						JobType: []string{"postsubmit"},
 					},
 				},
 			}}}
 
-			// Wywołanie funkcji i testowanie wyników
 			got, err := getSignersForOrgRepo(o, c.orgRepo)
 			if err != nil && !c.expectErr {
 				t.Errorf("got error but didn't want to %v", err)
