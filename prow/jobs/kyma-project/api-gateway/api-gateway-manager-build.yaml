@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240923-7a093207"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240923-aa43b945"
             securityContext:
               privileged: false
               seccompProfile:
@@ -75,7 +75,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240923-7a093207"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240923-aa43b945"
             securityContext:
               privileged: false
               seccompProfile:
