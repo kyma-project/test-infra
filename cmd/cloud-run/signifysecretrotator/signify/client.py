@@ -5,6 +5,7 @@ from enum import Enum
 import json
 import tempfile
 from typing import Any
+from urllib import response
 import requests
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography import x509
@@ -17,6 +18,9 @@ class OAuthGrantTypes(Enum):
     """Contains possible values for grant types option"""
 
     CLIENT_CREDENTIALS = "client_credentials"
+
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 @dataclasses.dataclass
@@ -80,6 +84,7 @@ class SignifyClient:
             )
 
             if access_token_response.status_code != 200:
+                print(access_token_response.json(), OAuthGrantTypes.CLIENT_CREDENTIALS)
                 raise requests.HTTPError(
                     f"Got non-success status code {access_token_response.status_code}",
                     response=access_token_response,
