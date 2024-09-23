@@ -1,5 +1,20 @@
 # image-syncer
 
+Contents:
+
+- [Overview](#overview)
+- [User Guide](#user-guide)
+    - [Workflow](#workflow)
+        - [Example Workflow](#example-workflow)
+    - [Example Images List File](#example-images-list-file)
+- [Developer Guide](#developer-guide)
+    - [Syncing Process](#syncing-process)
+    - [Reusable Workflow](#reusable-workflow)
+    - [Image Syncer Container Image](#image-syncer-container-image)
+        - [Flags](#flags)
+        - [Environment Variables](#environment-variables)
+    - [Infrastucture as Code](#infrastucture-as-code)
+
 ## Overview
 
 The image-syncer is used to copy container images between two registries.
@@ -22,7 +37,7 @@ Follow the steps below to use the image-syncer for your repository:
    See the example [images list file](#example-images-list-file) below.
 3. Merge the PR to synchronize the images.
 
-### Workflow using image-syncer
+### Workflow
 
 > [!IMPORTANT]
 > The image-syncer running for pull request will always run in dry-run mode.
@@ -91,49 +106,46 @@ images:
 
 ## Developer Guide
 
+The image-syncer tool consists of the following components:
+
+- The image-syncer binary, written in Go. The binary is released as a container image.
+- The image-syncer reusable workflow that can be called from the GitHub workflow.
+- The image-syncer infrastructure resources are used to access the target registry.
+
+### Image Syncer Binary
+
+The image-syncer binary is responsible for synchronizing images between two registries.
+The binary is released as a container image.
+The [Dockerfile](https://github.com/kyma-project/test-infra/blob/main/cmd/image-syncer/Dockerfile) for the image-syncer binary.
+
+> [!IMPORTANT]
+> The amd64Only field in the images list file allows syncing the image manifest instead of the image index.
+> The flag does not prevent syncing other platforms.
+
+#### Flags
+
+The image-syncer binary accepts flags to configure the synchronization process.
+Supported [flags](https://github.com/kyma-project/test-infra/blob/1df13d56ad523ce434e33284bb7e392ff897cd1b/cmd/image-syncer/main.go#L274-L282).
+
+#### Environment Variables
+
+All the flags can also be set using environment variables.
+The environment variables must be prefixed with `SYNCER` and use uppercase letters.
+Dash characters must be replaced with underscores.
+For example, the `--dry-run` flag can be set using the `SYNCER_DRY_RUN` environment variable.
+
 ### Reusable Workflow
 
-### Syncing Process
+The image-syncer reusable workflow provides an execution environment for the image-syncer binary.
+The workflow is called from the GitHub workflow defined in other repositories.
+It authenticates in Google Cloud and provides the image-syncer binary with the required credentials.
 
-Syncing process steps:
+### Infrastucture as Code
 
-1. Pull an image from source.
-2. Check if the image name contains the multi-platform SHA256 digest. To get this digest,
-   run `docker run mplatform/manifest-tool inspect {your-image}:{image-version}` and copy the first digest this command returns. For the
-   non-multi-platform images supporting only amd64 architecture, use their amd64 digest and add the `amd64only: true` parameter.
-3. If the image name contains digest, re-tag the target image with the tag instead of SHA256 digest.
-4. Check if the image exists in target.
-5. If the image does not exist, re-tag the image and push to the target registry.  
-   If the image exists, compare the IDs. If they are different, synchronization is interrupted. It means that something is wrong and the
-   source image was changed (this should not happen).
-6. Push the signature to the target repository.
+The image-syncer needs certain infrastructure resources to access the target registry.
+The resources are defined in
+the [infrastructure-as-code](https://github.com/kyma-project/test-infra/tree/main/configs/terraform/environments/prod) configuration.
 
-These steps guarantee that images in your registry are immutable and verified.
-
-### Image Syncer Container Image
-
-### Flags
-
-```
-Usage:
-  image-syncer [flags]
-
-Flags:
-      --debug                         Enables the debug mode [SYNCER_DEBUG]
-      --dry-run                       Enables the dry-run mode [SYNCER_DRY_RUN]
-  -h, --help                          help for image-syncer
-  -i, --images-file string            Specifies the path to the YAML file that contains list of images [SYNCER_IMAGES_FILE]
-  -t, --target-repo-auth-key string   Specifies the JSON key file used for authorization to the target repository [SYNCER_TARGET_REPO_AUTH_KEY]
-```
-
-
-### Environment Variables
-
-All the flags can also be set using these environment variables:
-
-| Name                           | Required | Description                                                           |
-| :----------------------------- | :------: | :-------------------------------------------------------------------- |
-| **SYNCER_IMAGES_FILE**         |    Yes   | Path to the YAML file with the sync definition, provided as a string.|
-| **SYNCER_TARGET_REPO_AUTH_KEY**|    Yes   | Path to the JSON key file, provided as a string.|
-| **SYNCER_DRY_RUN**             |    No    | Value controlling the `dry run` mode, provided as a boolean.|
-|**SYNCER_DEBUG**| No | Variable that enables the `debug` mode.|
+- The image-syncer [resources](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer.tf).
+- The
+  image-syncer [varaibles](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer-variables.tf).
