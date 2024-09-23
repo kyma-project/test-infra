@@ -1,4 +1,4 @@
-name: pull-build-image-syncer.yml
+name: push-build-image-syncer
 on:
   push:
     branches:

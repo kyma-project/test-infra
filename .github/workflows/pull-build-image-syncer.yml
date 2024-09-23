@@ -1,4 +1,4 @@
-name: pull-build-image-syncer.yml
+name: pull-build-image-syncer
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
