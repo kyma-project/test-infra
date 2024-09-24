@@ -47,7 +47,7 @@ See
 supported [inputs](https://github.com/kyma-project/test-infra/blob/4df11c5384a5c7ac3ce76b726e17dee6aba07f79/.github/workflows/image-syncer.yml#L5)
 by the image-syncer reusable workflow.
 
-The image-syncer supports following github events:
+The image-syncer supports following GitHub events:
 
 - pull_request_target
 - push
@@ -82,7 +82,7 @@ jobs:
 ### Example Images List File
 
 > [!IMPORTANT]
-> The image-syncer expects the file external-images-yaml with the list of images in root directory of the repository.
+> The image-syncer expects the file external-images.yaml with the list of images in root directory of the repository.
 
 As an input parameter, image-syncer takes a file having the following structure:
 
@@ -148,4 +148,4 @@ the [infrastructure-as-code](https://github.com/kyma-project/test-infra/tree/mai
 
 - The image-syncer [resources](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer.tf).
 - The
-  image-syncer [varaibles](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer-variables.tf).
+  image-syncer [variables](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer-variables.tf).
