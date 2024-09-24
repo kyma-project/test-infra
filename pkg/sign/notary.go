@@ -219,8 +219,8 @@ type NotarySigner struct {
 	RetryTimeout        time.Duration
 	PayloadBuilder      PayloadBuilderInterface
 	CertificateProvider CertificateProviderInterface
-	TLSConfigurator     TLSConfiguratorInterface
 	HTTPClient          HTTPClientInterface
+	TLSConfig           *tls.Config
 }
 
 // Sign implements the Signer interface.
@@ -239,15 +239,8 @@ func (ns *NotarySigner) Sign(images []string) error {
 		return fmt.Errorf("marshal signing request: %v", err)
 	}
 
-	// Decode certificate and key
-	cert, err := ns.CertificateProvider.CreateKeyPair()
-	if err != nil {
-		return fmt.Errorf("failed to load certificate and key: %v", err)
-	}
-
-	// Setup TLS configuration
-	tlsConfig := ns.TLSConfigurator.SetupTLS(cert)
-	err = ns.HTTPClient.SetTLSConfig(tlsConfig)
+	// Use the stored TLS configuration
+	err = ns.HTTPClient.SetTLSConfig(ns.TLSConfig)
 	if err != nil {
 		return fmt.Errorf("failed to set TLS config: %v", err)
 	}
@@ -336,7 +329,16 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 	certificateProvider := &CertificateProvider{
 		Credentials: tlsCredentials,
 	}
-	tlsConfigurator := &TLSConfigurator{}
+
+	// Create certificate and TLS configuration
+	cert, err := certificateProvider.CreateKeyPair()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load certificate and key: %v", err)
+	}
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+
 	httpClient := &HTTPClient{
 		Client: &http.Client{
 			Timeout: nc.Timeout,
@@ -349,8 +351,8 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 		RetryTimeout:        nc.RetryTimeout,
 		PayloadBuilder:      payloadBuilder,
 		CertificateProvider: certificateProvider,
-		TLSConfigurator:     tlsConfigurator,
 		HTTPClient:          httpClient,
+		TLSConfig:           tlsConfig,
 	}
 
 	return signer, nil
