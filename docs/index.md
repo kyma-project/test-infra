@@ -14,7 +14,7 @@
 
 [Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
-[image-syncer](/cmd/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
+[image-syncer](/cmd/image-syncer/README.md) - Contents:
 
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
