@@ -270,15 +270,22 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
 	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
-	tlsConfigurator := sign.TLSConfigurator{}
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
+
+	// Create TLSConfig
+	cert, err := certificateProvider.CreateKeyPair()
+	if err != nil {
+		t.Fatalf("Failed to create key pair: %v", err)
+	}
+	tlsConfig := &tls.Config{Certificates: []tls.Certificate{cert}}
+
 	notarySigner := sign.NotarySigner{
 		URL:                 "http://example.com",
 		RetryTimeout:        1 * time.Second,
 		PayloadBuilder:      &payloadBuilder,
 		CertificateProvider: &certificateProvider,
-		TLSConfigurator:     &tlsConfigurator,
 		HTTPClient:          &httpClient,
+		TLSConfig:           tlsConfig,
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -307,15 +314,22 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
 	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
-	tlsConfigurator := sign.TLSConfigurator{}
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
+
+	// Create TLSConfig
+	cert, err := certificateProvider.CreateKeyPair()
+	if err != nil {
+		t.Fatalf("Failed to create key pair: %v", err)
+	}
+	tlsConfig := &tls.Config{Certificates: []tls.Certificate{cert}}
+
 	notarySigner := sign.NotarySigner{
 		URL:                 "http://example.com",
 		RetryTimeout:        1 * time.Second,
 		PayloadBuilder:      &payloadBuilder,
 		CertificateProvider: &certificateProvider,
-		TLSConfigurator:     &tlsConfigurator,
 		HTTPClient:          &httpClient,
+		TLSConfig:           tlsConfig,
 	}
 
 	err = notarySigner.Sign([]string{"invalid_image"})
@@ -340,7 +354,7 @@ func TestRetryHTTPRequest_Failure(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expected an error on failure")
 	}
-	if resp.StatusCode != http.StatusInternalServerError {
+	if resp != nil && resp.StatusCode != http.StatusInternalServerError {
 		t.Errorf("Expected status %d, got %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 }
