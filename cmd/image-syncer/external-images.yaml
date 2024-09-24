@@ -11,9 +11,9 @@ images:
   # Golang image is pinned because it is force updated in the upstream
   - source: "golang@sha256:ac67716dd016429be8d4c2c53a248d7bcdf06d34127d3dc451bda6aa5a87bc06"
     tag: "1.23.1-alpine3.20"
-  - source: "istio/pilot:1.22.3-distroless"
-  - source: "istio/proxyv2:1.22.3-distroless"
-  - source: "istio/install-cni:1.22.3-distroless"
+  - source: "istio/pilot:1.23.2-distroless"
+  - source: "istio/proxyv2:1.23.2-distroless"
+  - source: "istio/install-cni:1.23.2-distroless"
   - source: "jettech/kube-webhook-certgen:v1.5.0"
   - source: "oryd/hydra:v1.11.8"
   - source: "oryd/oathkeeper:v0.38.25-beta.1"
