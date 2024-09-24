@@ -6,6 +6,7 @@ provider "registry.opentofu.org/alekc/kubectl" {
   constraints = ">= 2.0.0"
   hashes = [
     "h1:TUeUq1UdVkHTxcgq7CJWWXBrc8VEQTufmgU18qDmfGE=",
+    "h1:mCz0lOwNsFCZEcFf7DBSe6b4hZgn5piiy0mZDwRGUIU=",
     "zh:15c227886bac78c8b8827f85595648212574ec81febc39e1055e1a6bf048fe65",
     "zh:2211ebeeb0918dbb3587d206e32adca9e1f343a93bbffcd37d8d99bf4d8dea9a",
     "zh:2303836cdea12ece8dbe39c2d7d30a9378fd06e9c2ebda66cbe5e01cc096ee2e",
@@ -27,6 +28,7 @@ provider "registry.opentofu.org/hashicorp/google" {
   version     = "6.0.1"
   constraints = ">= 4.55.0, >= 4.64.0, >= 4.76.0, >= 5.6.0, >= 6.0.1"
   hashes = [
+    "h1:ThrlYm3g5xAujZm08/bVmUsRnPQurrPD9ilnWJILVSw=",
     "h1:czbmf61ZtZQhmZGOveHJtbf68EJnYZ9VNZpkj0tniCI=",
     "zh:009e842f398806db167379d93dbffa8f96da5145a69eeb56f752a41f5107b75e",
     "zh:11c0400b1cd2af6a8dfa6fe9cc9fede2b9e2d87f2b692b77349d90df731183bb",
@@ -44,6 +46,7 @@ provider "registry.opentofu.org/hashicorp/google" {
 provider "registry.opentofu.org/hashicorp/google-beta" {
   version = "6.0.1"
   hashes = [
+    "h1:0+YxXN37FXIH0mr0+OyHbrAWfpTdhz7urX6ups73Sfo=",
     "h1:kFnodjgLWS7bLedz1kx4fEjtzWHVzbxzp73mrVifVCc=",
     "zh:18c8612e2b17930bca27c06bbe67b71ecc0d79686884c9030f620a1b77741c66",
     "zh:6eaf52fae5fd182566940fa2d9d29c5130a4c4fd1d36ed14b2a264aab64fc035",
@@ -63,6 +66,7 @@ provider "registry.opentofu.org/hashicorp/kubernetes" {
   constraints = ">= 2.22.0, 2.22.0"
   hashes = [
     "h1:5+ClgQwP1yHUjZdcI0jO6vywF2YU3v/0zcvERm1ly8w=",
+    "h1:Qk63dOg4FPiH8DfTxRP2emB3oTCB2PGfhjF2kSwFK6Y=",
     "zh:0db2e01d756ed21aaf46b31266f9974d00ae1c520730dc2bf33e83616c2cccc1",
     "zh:0f396d3b6c7a9a2d19030380800534f960918f04d6774dc4d789efff6cda4ac9",
     "zh:1f7dc0f072196b999f07b82e4a0b1a3a8074c43c3b8d5d642dffdd3d0f1014e1",
@@ -81,6 +85,7 @@ provider "registry.opentofu.org/integrations/github" {
   constraints = "~> 6.2.3"
   hashes = [
     "h1:igRdbZ2jqI6oKAr78+8smF3xw/97xKrbhdITKubKQQM=",
+    "h1:qBH3fN/NItflQkBoIVdQa7n8WvBOuu7Ao20oeoAubKM=",
     "zh:05874671652a260b12d784cc46b0eea156f493a5f12e00368d1f6cb319156257",
     "zh:0c7a3cae5a66e5c5efc3b25ba646a0d46bfe1fd3edba1f5a75f51aede85a9d1b",
     "zh:174310010d08f13e36e53ff18e44a21dd040c89884ef190a192c6ce27926a912",
