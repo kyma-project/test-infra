@@ -22,12 +22,6 @@ resource "google_service_account" "kyma-oci-image-builder" {
   description  = "Service Account for retrieving secrets on the oci-image-builder ADO pipeline."
 }
 
-resource "google_service_account" "sa-gardener-logs" {
-  account_id   = "sa-gardener-logs"
-  display_name = "sa-gardener-logs"
-  description  = "SA used by gardener cluster to send logs to Stackdriver. Will be removed with Prow"
-}
-
 resource "google_service_account" "terraform-planner" {
   account_id   = "terraform-planner"
   display_name = "terraform-planner"

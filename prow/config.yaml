@@ -534,8 +534,6 @@ presets:
         value: "1.28"
       - name: GKE_CLUSTER_VERSION
         value: "1.28"
-      - name: GARDENER_CLUSTER_VERSION
-        value: "1.28"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -608,7 +606,6 @@ presets:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
-  # Gardener needs the credentials, we can't use preset-sa-gke-kyma-integration, as KYMA_PROJECT_DIR is colliding with another preset
   - labels:
       preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
     env:
@@ -648,19 +645,6 @@ presets:
       - name: sa-kyma-artifacts
         mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
-      preset-sa-gardener-logs: "true"
-    env:
-      - name: SA_GARDENER_LOGS
-        value: /etc/credentials/sa-gardener-logs/service-account.json
-    volumes:
-      - name: sa-gardener-logs
-        secret:
-          secretName: sa-gardener-logs
-    volumeMounts:
-      - name: sa-gardener-logs
-        mountPath: /etc/credentials/sa-gardener-logs
-        readOnly: true
-  - labels:
       preset-sa-prow-job-github-issues: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -673,85 +657,6 @@ presets:
       - name: sa-prow-job-github-issues
         mountPath: /etc/credentials/sa-prow-job-github-issues
         readOnly: true
-  - labels:
-      preset-gardener-azure-kyma-integration: "true"
-    env:
-      - name: GARDENER_KYMA_PROW_KUBECONFIG
-        value: /etc/credentials/gardener-kyma-prow/kubeconfig
-      - name: GARDENER_KYMA_PROW_PROJECT_NAME
-        value: "kyma-prow"
-      - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        value: "kyma-azure"
-      - name: GARDENER_PROVIDER
-        value: "azure"
-    volumes:
-      - name: gardener-kyma-prow-kubeconfig
-        secret:
-          secretName: gardener-kyma-prow-kubeconfig
-    volumeMounts:
-      - name: gardener-kyma-prow-kubeconfig
-        mountPath: /etc/credentials/gardener-kyma-prow
-  - labels:
-      preset-gardener-gcp-kyma-integration: "true"
-    env:
-      - name: GARDENER_KYMA_PROW_KUBECONFIG
-        value: /etc/credentials/gardener-kyma-prow/kubeconfig
-      - name: GARDENER_KYMA_PROW_PROJECT_NAME
-        value: "kyma-prow"
-      - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        value: "kyma-gcp-workloads"
-      - name: GARDENER_PROVIDER
-        value: "gcp"
-    volumes:
-      - name: gardener-kyma-prow-kubeconfig
-        secret:
-          secretName: gardener-kyma-prow-kubeconfig
-    volumeMounts:
-      - name: gardener-kyma-prow-kubeconfig
-        mountPath: /etc/credentials/gardener-kyma-prow
-  - labels:
-      preset-gardener-aws-kyma-integration: "true"
-    env:
-      - name: GARDENER_KYMA_PROW_KUBECONFIG
-        value: /etc/credentials/gardener-kyma-prow/kubeconfig
-      - name: GARDENER_KYMA_PROW_PROJECT_NAME
-        value: "kyma-prow"
-      - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        value: "prow-dev-aws"
-      - name: GARDENER_PROVIDER
-        value: "aws"
-    volumes:
-      - name: gardener-kyma-prow-kubeconfig
-        secret:
-          secretName: gardener-kyma-prow-kubeconfig
-    volumeMounts:
-      - name: gardener-kyma-prow-kubeconfig
-        mountPath: /etc/credentials/gardener-kyma-prow
-  - labels:
-      preset-gardener-neighbors: "true"
-    env:
-      - name: GARDENER_KUBECONFIG
-        value: /etc/credentials/gardener-neighbors/kubeconfig
-      - name: GARDENER_PROJECT_NAME
-        value: "neighbors"
-      - name: GARDENER_PROVIDER_SECRET_NAME
-        value: "neighbors-gardener"
-    volumes:
-      - name: gardener-neighbors-kubeconfig
-        secret:
-          secretName: gardener-neighbors-kubeconfig
-    volumeMounts:
-      - name: gardener-neighbors-kubeconfig
-        mountPath: /etc/credentials/gardener-neighbors
-  - labels:
-      preset-gardener-kyma-rotate-kubeconfig: "true"
-    volumes:
-      - name: gardener-kyma-prow-token-rotate-kubeconfig
-        secret:
-          secretName: gardener-kyma-prow-token-rotate-kubeconfig
-    volumeMounts:
-      - name: gardener-kyma-prow-token-rotate-kubeconfig
-        mountPath: /etc/credentials/gardener-kyma-prow-rotate
   - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
@@ -1110,43 +1015,6 @@ presets:
       - name: KEB_SUBACCOUNT_ID
         value: "prow-keb-integration"
   - labels:
-      preset-keb-dev-credentials: "true"
-    env:
-      - name: KEB_HOST
-        valueFrom:
-          secretKeyRef:
-            name: keb-dev-credentials
-            key: KEB_HOST
-      - name: KEB_CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: keb-dev-credentials
-            key: KEB_CLIENT_ID
-      - name: KEB_CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: keb-dev-credentials
-            key: KEB_CLIENT_SECRET
-      - name: KEB_TOKEN_URL
-        value: "https://kymatest.accounts400.ondemand.com/oauth2/token"
-      - name: KEB_GLOBALACCOUNT_ID
-        valueFrom:
-          secretKeyRef:
-            name: keb-dev-credentials
-            key: KEB_GLOBALACCOUNT_ID
-      - name: KEB_USER_ID
-        value: "test@test.com"
-      - name: GARDENER_KUBECONFIG
-        value: "/gardener/kubeconfig"
-    volumes:
-      - name: gardener-skr-kyma-dev-kubeconfig
-        secret:
-          secretName: gardener-skr-kyma-dev-kubeconfig
-    volumeMounts:
-      - name: gardener-skr-kyma-dev-kubeconfig
-        mountPath: "/gardener"
-        readOnly: true
-  - labels:
       preset-keb-plan-azure: "true"
     env:
       - name: KEB_PLAN_ID
@@ -1187,17 +1055,6 @@ presets:
           secretKeyRef:
             name: kcp-client-credentials
             key: KCP_OIDC_CLIENT_SECRET
-  - labels:
-      preset-kcp-client-dev-envs: "true"
-    env:
-      - name: KCP_GARDENER_NAMESPACE
-        value: "garden-kyma-dev"
-      - name: KCP_KEB_API_URL
-        value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
-      - name: KCP_KUBECONFIG_API_URL
-        value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
-      - name: KCP_OIDC_ISSUER_URL
-        value: "https://kymatest.accounts400.ondemand.com"
   - labels:
       preset-signify-prod-secret: "true"
     volumes:

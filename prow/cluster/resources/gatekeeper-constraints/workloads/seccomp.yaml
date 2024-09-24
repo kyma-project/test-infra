@@ -23,7 +23,6 @@ spec:
       - "eu.gcr.io/kyma-project/prow/cleaner:*"
       - "eu.gcr.io/kyma-project/test-infra/bootstrap:*"
       - "eu.gcr.io/kyma-project/test-infra/buildpack-golang:*"
-      - "eu.gcr.io/kyma-project/test-infra/gardener-rotate:*"
       - "eu.gcr.io/kyma-project/test-infra/golangci-lint:*"
       - "eu.gcr.io/kyma-project/test-infra/kyma-integration:*"
       - "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"

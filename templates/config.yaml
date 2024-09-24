@@ -158,8 +158,6 @@ globalSets:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240918-fc401fce"
   image_wssagent_nodejs:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240918-fc401fce"
-  image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240923-aa43b945
   image_markdown_index:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240923-aa43b945
   image_image_detector:
@@ -326,13 +324,3 @@ globalSets:
       preset-dind-enabled: "true"
       preset-sa-kyma-push-images: "true"
       preset-docker-push-repository-kyma: "true"
-  # gardener configs
-  gardener_gcp_job:
-    labels:
-      preset-gardener-gcp-kyma-integration: "true"
-      preset-kyma-cli-stable: "true"
-      preset-cluster-version: "true"
-    env:
-      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-      GARDENER_REGION: "europe-west4"
-      GARDENER_ZONES: "europe-west4-b"
