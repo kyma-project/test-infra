@@ -150,20 +150,8 @@ globalSets:
     env:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
-  image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20240924-5679cab8"
   image_buildpack-golang:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-5679cab8"
-  image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240924-5679cab8"
-  image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20240924-5679cab8"
-  image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240924-43afdeb6
-  image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240924-43afdeb6
-  image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240924-5679cab8"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
