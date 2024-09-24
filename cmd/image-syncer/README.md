@@ -8,19 +8,18 @@ Contents:
         - [Example Workflow](#example-workflow)
     - [Example Images List File](#example-images-list-file)
 - [Developer Guide](#developer-guide)
-    - [Syncing Process](#syncing-process)
-    - [Reusable Workflow](#reusable-workflow)
-    - [Image Syncer Container Image](#image-syncer-container-image)
+    - [Image Syncer Binary](#image-syncer-binary)
         - [Flags](#flags)
         - [Environment Variables](#environment-variables)
+    - [Reusable Workflow](#reusable-workflow)
     - [Infrastucture as Code](#infrastucture-as-code)
 
 ## Overview
 
-The image-syncer is used to copy container images between two registries.
-It copies images **only when they are not present** in the target repo.
-The tool guarantees that **tags are immutable** in the target repo.
-That means that if the image tag is already present in the target registry, it will not be overwritten by the new image.
+Image-syncer is used to copy container images between two registries.
+It copies images **only when they are not present** in the target repository.
+The tool guarantees that **tags are immutable** in the target repository.
+That means that if the image tag is already present in the target registry, it is not overwritten by the new image.
 The tool can be used in a GitHub workflow to synchronize images defined in a YAML file maintained in the repository.
 
 > [!NOTE]
@@ -28,34 +27,33 @@ The tool can be used in a GitHub workflow to synchronize images defined in a YAM
 
 ## User Guide
 
-The developers can use image-syncer to synchronize images defined in the YAML file maintained in their repository.
+Developers can use image-syncer to synchronize images defined in the YAML file maintained in their repository.
 Each team defines the list of images they want to synchronize.
 
-Follow the steps below to use the image-syncer for your repository:
+Follow the steps below to use image-syncer for your repository:
 
 1. Create a workflow that calls
    the [image-syncer reusable workflow](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/image-syncer.yml).
-   See the example [workflow](#example-workflow) below.
-2. Create a PR with the YAML file with the list of images you want to synchronize.
-   See the example [images list file](#example-images-list-file) below.
+   See [Example Workflow](#example-workflow).
+2. Create a pull request (PR) with the YAML file, including the list of images you want to synchronize.
+   See [Example Images List File](#example-images-list-file).
 3. Merge the PR to synchronize the images.
 
 ### Workflow
 
 > [!IMPORTANT]
-> The image-syncer running for pull request will always run in dry-run mode.
-> The workflow calling image-syncer reusable workflow on pull request must use the pull_request_target event as a trigger.
+> Image-syncer running on a pull request always runs in dry-run mode.
+> The workflow calling the image-syncer reusable workflow on pull request must use the pull_request_target event as a trigger.
 
-See
-supported [inputs](https://github.com/kyma-project/test-infra/blob/4df11c5384a5c7ac3ce76b726e17dee6aba07f79/.github/workflows/image-syncer.yml#L5)
-by the image-syncer reusable workflow.
+See the [inputs](https://github.com/kyma-project/test-infra/blob/4df11c5384a5c7ac3ce76b726e17dee6aba07f79/.github/workflows/image-syncer.yml#L5) 
+supported by the image-syncer reusable workflow.
 
-The image-syncer supports following GitHub events:
+Image-syncer supports the following GitHub events:
 
 - pull_request_target
 - push
 
-The workflow must call the image-syncer reusable workflow from the main branch of the test-infra repository.
+The workflow must call the image-syncer reusable workflow from the `main` branch of the `test-infra` repository.
 The value of uses must be `kyma-project/test-infra/.github/workflows/image-syncer.yml@main`.
 
 #### Example Workflow
@@ -85,13 +83,13 @@ jobs:
 ### Example Images List File
 
 > [!IMPORTANT]
-> The image-syncer expects the file external-images.yaml with the list of images in root directory of the repository.
+> Image-syncer expects the `external-images.yaml` file with the list of images to be in the root directory of the repository.
 
 As an input parameter, image-syncer takes a file having the following structure:
 
-- source: the source image to be copied. It can be an image name with a tag or a digest.
-- tag: the tag of the image in the target repository. This is required when the source uses digest to identify the image.
-- amd64Only: a boolean value that indicates if it's allowed to synchronize the image manifest instead of image index.
+- **source**: The source image to be copied. It can be an image name with a tag or a digest.
+- **tag**: The tag of the image in the target repository, which is required when the source uses digest to identify the image.
+- **amd64Only**: A boolean value that indicates if it's allowed to synchronize the image manifest instead of the image index.
   This is required when the source image is not a multi-platform image.
 
 ```yaml
@@ -113,29 +111,29 @@ The image-syncer tool consists of the following components:
 
 - The image-syncer binary, written in Go. The binary is released as a container image.
 - The image-syncer reusable workflow that can be called from the GitHub workflow.
-- The image-syncer infrastructure resources are used to access the target registry.
+- The image-syncer infrastructure resources that are used to access the target registry.
 
 ### Image Syncer Binary
 
 The image-syncer binary is responsible for synchronizing images between two registries.
 The binary is released as a container image.
-The [Dockerfile](https://github.com/kyma-project/test-infra/blob/main/cmd/image-syncer/Dockerfile) for the image-syncer binary.
+See the [Dockerfile](https://github.com/kyma-project/test-infra/blob/main/cmd/image-syncer/Dockerfile) for the image-syncer binary.
 
-> [!IMPORTANT]
-> The amd64Only field in the images list file allows syncing the image manifest instead of the image index.
+> [!WARNING]
+> The **amd64Only** field in the images list file allows syncing the image manifest instead of the image index.
 > The flag does not prevent syncing other platforms.
 
 #### Flags
 
 The image-syncer binary accepts flags to configure the synchronization process.
-Supported [flags](https://github.com/kyma-project/test-infra/blob/1df13d56ad523ce434e33284bb7e392ff897cd1b/cmd/image-syncer/main.go#L274-L282).
+See the supported [flags](https://github.com/kyma-project/test-infra/blob/1df13d56ad523ce434e33284bb7e392ff897cd1b/cmd/image-syncer/main.go#L274-L282).
 
 #### Environment Variables
 
-All the flags can also be set using environment variables.
-The environment variables must be prefixed with `SYNCER` and use uppercase letters.
+You can also set all the flags using environment variables.
+The environment variables must be prefixed with **SYNCER** and use uppercase letters.
 Dash characters must be replaced with underscores.
-For example, the `--dry-run` flag can be set using the `SYNCER_DRY_RUN` environment variable.
+For example, the `--dry-run` flag can be set using the **SYNCER_DRY_RUN** environment variable.
 
 ### Reusable Workflow
 
@@ -145,9 +143,9 @@ It authenticates in Google Cloud and provides the image-syncer binary with the r
 
 ### Infrastucture as Code
 
-The image-syncer needs certain infrastructure resources to access the target registry.
+Image-syncer needs certain infrastructure resources to access the target registry.
 The resources are defined in
-the [infrastructure-as-code](https://github.com/kyma-project/test-infra/tree/main/configs/terraform/environments/prod) configuration.
+the [infrastructure-as-code](https://github.com/kyma-project/test-infra/tree/main/configs/terraform/environments/prod) configuration:
 
 - The image-syncer [resources](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer.tf).
 - The
