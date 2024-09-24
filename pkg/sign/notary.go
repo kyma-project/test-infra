@@ -17,15 +17,123 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
-const (
-	tagDelim         = ":"
-	regRepoDelimiter = "/"
-)
+// ImageFetcherInterface abstracts fetching images.
+type ImageFetcherInterface interface {
+	Fetch(ref ReferenceInterface) (ImageInterface, error)
+}
+
+// ReferenceParserInterface abstracts parsing image references.
+type ReferenceParserInterface interface {
+	Parse(image string) (ReferenceInterface, error)
+}
+
+// ImageFetcher implements ImageFetcherInterface.
+type ImageFetcher struct{}
+
+// ReferenceParser implements ReferenceParserInterface.
+type ReferenceParser struct{}
+
+// Fetch fetches the image using the external library.
+func (zf *ImageFetcher) Fetch(ref ReferenceInterface) (ImageInterface, error) {
+	rw, ok := ref.(*ReferenceWrapper)
+	if !ok {
+		return nil, fmt.Errorf("unexpected reference type")
+	}
+	img, err := remote.Image(rw.Ref)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch image: %w", err)
+	}
+	return &ImageWrapper{img: img}, nil
+}
+
+func (rp *ReferenceParser) Parse(image string) (ReferenceInterface, error) {
+	ref, err := name.ParseReference(image)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse image reference: %w", err)
+	}
+	return &ReferenceWrapper{Ref: ref}, nil
+}
+
+// ReferenceInterface abstracts name.Reference
+type ReferenceInterface interface {
+	Name() string
+	String() string
+	GetRepositoryName() string
+	GetTag() (string, error)
+}
+
+type ManifestInterface interface {
+	GetConfigSize() int64
+	GetConfigDigest() string
+}
+
+// ImageInterface abstracts v1.Image
+type ImageInterface interface {
+	Manifest() (ManifestInterface, error)
+}
+
+// ReferenceWrapper wraps name.Reference
+type ReferenceWrapper struct {
+	Ref name.Reference
+}
+
+type ManifestWrapper struct {
+	manifest *v1.Manifest
+}
+
+func (mw *ManifestWrapper) GetConfigSize() int64 {
+	return mw.manifest.Config.Size
+}
+
+func (mw *ManifestWrapper) GetConfigDigest() string {
+	return mw.manifest.Config.Digest.String()
+}
+
+func (rw *ReferenceWrapper) Name() string {
+	return rw.Ref.Name()
+}
+
+func (rw *ReferenceWrapper) String() string {
+	return rw.Ref.String()
+}
+
+func (rw *ReferenceWrapper) GetRepositoryName() string {
+	switch ref := rw.Ref.(type) {
+	case name.Tag:
+		return ref.Context().Name()
+	case name.Digest:
+		return ref.Context().Name()
+	default:
+		return ""
+	}
+}
+
+func (rw *ReferenceWrapper) GetTag() (string, error) {
+	switch ref := rw.Ref.(type) {
+	case name.Tag:
+		return ref.TagStr(), nil
+	default:
+		return "", fmt.Errorf("reference is not a tag")
+	}
+}
+
+// ImageWrapper wraps v1.Image
+type ImageWrapper struct {
+	img v1.Image
+}
+
+func (iw *ImageWrapper) Manifest() (ManifestInterface, error) {
+	manifest, err := iw.img.Manifest()
+	if err != nil {
+		return nil, err
+	}
+	return &ManifestWrapper{manifest: manifest}, nil
+}
 
 // ImageRepositoryInterface handles image parsing and fetching.
 type ImageRepositoryInterface interface {
-	ParseReference(image string) (name.Reference, error)
-	GetImage(ref name.Reference) (v1.Image, error)
+	ParseReference(image string) (ReferenceInterface, error)
+	GetImage(ref ReferenceInterface) (ImageInterface, error)
 }
 
 // PayloadBuilderInterface constructs the signing payload.
@@ -83,18 +191,17 @@ type AuthSecretConfig struct {
 }
 
 // ImageService implements ImageRepositoryInterface.
-type ImageService struct{}
-
-func (is *ImageService) ParseReference(image string) (name.Reference, error) {
-	ref, err := name.ParseReference(image)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse image reference: %w", err)
-	}
-	return ref, nil
+type ImageService struct {
+	ReferenceParser ReferenceParserInterface
+	ImageFetcher    ImageFetcherInterface
 }
 
-func (is *ImageService) GetImage(ref name.Reference) (v1.Image, error) {
-	img, err := remote.Image(ref)
+func (is *ImageService) ParseReference(image string) (ReferenceInterface, error) {
+	return is.ReferenceParser.Parse(image)
+}
+
+func (is *ImageService) GetImage(ref ReferenceInterface) (ImageInterface, error) {
+	img, err := is.ImageFetcher.Fetch(ref)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch image: %w", err)
 	}
@@ -109,15 +216,17 @@ type PayloadBuilder struct {
 func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) {
 	var gunTargets []GUNTargets
 	for _, image := range images {
-		base, tag, err := parseImageNameAndTag(image)
-		if err != nil {
-			return SigningPayload{}, fmt.Errorf("parse image name and tag: %w", err)
-		}
-
 		// Parse reference
 		ref, err := pb.ImageService.ParseReference(image)
 		if err != nil {
 			return SigningPayload{}, fmt.Errorf("ref parse: %w", err)
+		}
+
+		// Get base (repository name) and tag from the reference
+		base := ref.GetRepositoryName()
+		tag, err := ref.GetTag()
+		if err != nil {
+			return SigningPayload{}, fmt.Errorf("failed to get tag: %w", err)
 		}
 
 		// Get image
@@ -135,8 +244,8 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 		// Build target
 		target := Target{
 			Name:     tag,
-			ByteSize: manifest.Config.Size,
-			Digest:   manifest.Config.Digest.String(),
+			ByteSize: manifest.GetConfigSize(),
+			Digest:   manifest.GetConfigDigest(),
 		}
 
 		// Build GUN target
@@ -144,24 +253,12 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 			GUN:     base,
 			Targets: []Target{target},
 		}
-
 		gunTargets = append(gunTargets, gunTarget)
 	}
-
 	payload := SigningPayload{
 		GunTargets: gunTargets,
 	}
 	return payload, nil
-}
-
-func parseImageNameAndTag(image string) (string, string, error) {
-	parts := strings.Split(image, tagDelim)
-	if len(parts) > 1 && !strings.Contains(parts[len(parts)-1], regRepoDelimiter) {
-		base := strings.Join(parts[:len(parts)-1], tagDelim)
-		tag := parts[len(parts)-1]
-		return base, tag, nil
-	}
-	return "", "", fmt.Errorf("no tag provided")
 }
 
 // CertificateProvider implements CertificateProviderInterface.
@@ -322,7 +419,12 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 	}
 
 	// Initialize components
-	imageService := &ImageService{}
+	referenceParser := &ReferenceParser{}
+	imageFetcher := &ImageFetcher{}
+	imageService := &ImageService{
+		ReferenceParser: referenceParser,
+		ImageFetcher:    imageFetcher,
+	}
 	payloadBuilder := &PayloadBuilder{
 		ImageService: imageService,
 	}

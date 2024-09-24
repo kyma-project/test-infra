@@ -89,16 +89,13 @@ func (m *MockHTTPClient) SetTLSConfig(tlsConfig *tls.Config) error {
 
 // MockImage implements v1.Image interface (from github.com/google/go-containerregistry/pkg/v1)
 type MockImage struct {
-	manifest   *v1.Manifest
-	configFile *v1.ConfigFile
+	manifest     *v1.Manifest
+	configFile   *v1.ConfigFile
+	MockManifest func() (ManifestInterface, error)
 }
 
 func (m *MockImage) RawManifest() ([]byte, error) {
 	return json.Marshal(m.manifest)
-}
-
-func (m *MockImage) Manifest() (*v1.Manifest, error) {
-	return m.manifest, nil
 }
 
 func (m *MockImage) Layers() ([]v1.Layer, error) {
@@ -135,4 +132,110 @@ func (m *MockImage) LayerByDigest(v1.Hash) (v1.Layer, error) {
 
 func (m *MockImage) LayerByDiffID(v1.Hash) (v1.Layer, error) {
 	return nil, nil
+}
+
+// MockReferenceParser implements ReferenceParserInterface
+type MockReferenceParser struct {
+	MockParse func(image string) (ReferenceInterface, error)
+}
+
+// MockReference implements ReferenceInterface
+type MockReference struct {
+	MockName              func() string
+	MockString            func() string
+	MockGetRepositoryName func() string
+	MockGetTag            func() (string, error)
+}
+
+func (mr *MockReference) Name() string {
+	if mr.MockName != nil {
+		return mr.MockName()
+	}
+	return ""
+}
+
+func (mr *MockReference) String() string {
+	if mr.MockString != nil {
+		return mr.MockString()
+	}
+	return ""
+}
+
+func (mr *MockReference) GetRepositoryName() string {
+	if mr.MockGetRepositoryName != nil {
+		return mr.MockGetRepositoryName()
+	}
+	return ""
+}
+
+func (mr *MockReference) GetTag() (string, error) {
+	if mr.MockGetTag != nil {
+		return mr.MockGetTag()
+	}
+	return "", fmt.Errorf("MockGetTag not implemented")
+}
+func (mrp *MockReferenceParser) Parse(image string) (ReferenceInterface, error) {
+	if mrp.MockParse != nil {
+		return mrp.MockParse(image)
+	}
+	return nil, fmt.Errorf("MockParse not implemented")
+}
+
+// MockImageFetcher implements ImageFetcherInterface
+type MockImageFetcher struct {
+	MockFetch func(ref ReferenceInterface) (ImageInterface, error)
+}
+
+func (mif *MockImageFetcher) Fetch(ref ReferenceInterface) (ImageInterface, error) {
+	if mif.MockFetch != nil {
+		return mif.MockFetch(ref)
+	}
+	return nil, fmt.Errorf("MockFetch not implemented")
+}
+
+func (mi *MockImage) Manifest() (ManifestInterface, error) {
+	if mi.MockManifest != nil {
+		return mi.MockManifest()
+	}
+	return nil, fmt.Errorf("MockManifest not implemented")
+}
+
+// MockManifest implements ManifestInterface
+type MockManifest struct {
+	MockGetConfigSize   func() int64
+	MockGetConfigDigest func() string
+}
+
+func (mm *MockManifest) GetConfigSize() int64 {
+	if mm.MockGetConfigSize != nil {
+		return mm.MockGetConfigSize()
+	}
+	return 0
+}
+
+func (mm *MockManifest) GetConfigDigest() string {
+	if mm.MockGetConfigDigest != nil {
+		return mm.MockGetConfigDigest()
+	}
+	return ""
+}
+
+// MockImageRepository implements ImageRepositoryInterface
+type MockImageRepository struct {
+	MockParseReference func(image string) (ReferenceInterface, error)
+	MockGetImage       func(ref ReferenceInterface) (ImageInterface, error)
+}
+
+func (mir *MockImageRepository) ParseReference(image string) (ReferenceInterface, error) {
+	if mir.MockParseReference != nil {
+		return mir.MockParseReference(image)
+	}
+	return nil, fmt.Errorf("MockParseReference not implemented")
+}
+
+func (mir *MockImageRepository) GetImage(ref ReferenceInterface) (ImageInterface, error) {
+	if mir.MockGetImage != nil {
+		return mir.MockGetImage(ref)
+	}
+	return nil, fmt.Errorf("MockGetImage not implemented")
 }
