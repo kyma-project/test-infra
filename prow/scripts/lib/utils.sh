@@ -249,37 +249,6 @@ function utils::compress_send_to_vm() {
   rm -rf "${TMP_DIRECTORY}"
 }
 
-# utils::deprovision_gardener_cluster deprovisions a Gardener cluster
-#
-# Arguments
-# $1 - Gardener project name
-# $2 - Gardener cluster name
-# $3 - path to kubeconfig
-function utils::deprovision_gardener_cluster() {
-  log::info "deprovisions a Gardener cluster"
-  log::info "Gardener project name: $1,  Gardner cluster name: $2, path to kubeconfig: $3"
-  if [ -z "$1" ]; then
-    echo "Project name is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$2" ]; then
-    echo "Cluster name is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$3" ]; then
-    echo "Kubeconfig path is empty. Exiting..."
-    exit 1
-  fi
-  GARDENER_PROJECT_NAME=$1
-  GARDENER_CLUSTER_NAME=$2
-  GARDENER_CREDENTIALS=$3
-
-  local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
-
-  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
-}
-
 
 # utils::save_psp_list generates pod-security-policy list and saves it to json file
 #

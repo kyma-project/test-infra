@@ -17,7 +17,6 @@ spec:
       - "gcr.io/k8s-prow/clonerefs:*"
       - "gcr.io/k8s-prow/sidecar:*"
       - "aquasec/trivy:*"
-      - "eu.gcr.io/kyma-project/test-infra/gardener-rotate:*"
       - "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:*"

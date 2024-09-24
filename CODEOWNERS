@@ -21,38 +21,7 @@
 
 /prow/jobs @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/btp-manager @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/busola @kyma-project/hasselhoff @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/components/kubeconfig-service @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/components/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/tests/e2e/provisioning @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/control-plane/control-plane-validation.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/eventing-publisher-proxy @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
 /prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
-
-/prow/jobs/kyma-project/kyma/releases @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/keb-endpoints-test.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma/kyma-gardener-cleanup.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma/kyma-release-pr-image-guard.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/kyma-validation.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/periodics.yaml @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/skr-aws-upgrade-integration-dev.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma/skr-integration.yaml @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-
-/prow/jobs/kyma-project/kyma-dashboard @kyma-project/hasselhoff @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/template-operator @kyma-project/jellyfish @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/test-infra @kyma-project/prow @neighbors-dev-bot
 
 /prow/scripts @kyma-project/prow @neighbors-dev-bot
 

@@ -42,10 +42,6 @@ templates:
               preset-gc-project-env: "true"
           vm_job_k3d:
             annotations:
-          e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240918-fc401fce"
-            securityContext: #temporary we need permissions to create folders for tooling, see `make install`
-              runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
