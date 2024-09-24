@@ -69,7 +69,7 @@ config:
 func TestNotaryConfig_NewSigner(t *testing.T) {
 	// Set up a mock secret file in a valid temporary path
 	secretPath := "/tmp/mock_secret.json"
-	mockSecret := SignifySecret{
+	mockSecret := TLSCredentials{
 		CertificateData: "mockCertData",
 		PrivateKeyData:  "mockPrivateKeyData",
 	}

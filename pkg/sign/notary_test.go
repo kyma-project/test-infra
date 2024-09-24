@@ -155,11 +155,11 @@ func TestCertificateProvider_CreateKeyPair_Valid(t *testing.T) {
 		t.Fatalf("Failed to generate test certificate: %v", err)
 	}
 
-	signifySecret := sign.SignifySecret{
+	signifySecret := sign.TLSCredentials{
 		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
 	}
-	certificateProvider := sign.CertificateProvider{SignifySecret: signifySecret}
+	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
 	cert, err := certificateProvider.CreateKeyPair()
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
@@ -174,11 +174,11 @@ func TestCertificateProvider_CreateKeyPair_Valid(t *testing.T) {
 
 // TestCertificateProvider_CreateKeyPair_Invalid checks creating a key pair with invalid base64 data.
 func TestCertificateProvider_CreateKeyPair_Invalid(t *testing.T) {
-	signifySecret := sign.SignifySecret{
+	signifySecret := sign.TLSCredentials{
 		CertificateData: "invalid-base64",
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte("private-key-data")),
 	}
-	certificateProvider := sign.CertificateProvider{SignifySecret: signifySecret}
+	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
 	_, err := certificateProvider.CreateKeyPair()
 	if err == nil {
 		t.Errorf("Expected an error for invalid base64 data")
@@ -263,13 +263,13 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 		t.Fatalf("Failed to generate test certificate: %v", err)
 	}
 
-	signifySecret := sign.SignifySecret{
+	signifySecret := sign.TLSCredentials{
 		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
 	}
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
-	certificateProvider := sign.CertificateProvider{SignifySecret: signifySecret}
+	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
 	tlsConfigurator := sign.TLSConfigurator{}
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
 	notarySigner := sign.NotarySigner{
@@ -300,13 +300,13 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 		t.Fatalf("Failed to generate test certificate: %v", err)
 	}
 
-	signifySecret := sign.SignifySecret{
+	signifySecret := sign.TLSCredentials{
 		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
 	}
 	imageService := sign.ImageService{}
 	payloadBuilder := sign.PayloadBuilder{ImageService: &imageService}
-	certificateProvider := sign.CertificateProvider{SignifySecret: signifySecret}
+	certificateProvider := sign.CertificateProvider{Credentials: signifySecret}
 	tlsConfigurator := sign.TLSConfigurator{}
 	httpClient := sign.HTTPClient{Client: &http.Client{}}
 	notarySigner := sign.NotarySigner{

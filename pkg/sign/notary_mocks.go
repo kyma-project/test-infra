@@ -11,7 +11,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/types"
 )
 
-// MockImageService implements ImageServiceInterface
+// MockImageService implements ImageRepositoryInterface
 type MockImageService struct {
 	MockParseReference func(image string) (name.Reference, error)
 	MockGetImage       func(ref name.Reference) (v1.Image, error)

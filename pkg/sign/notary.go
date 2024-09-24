@@ -22,8 +22,8 @@ const (
 	regRepoDelimiter = "/"
 )
 
-// ImageServiceInterface handles image parsing and fetching.
-type ImageServiceInterface interface {
+// ImageRepositoryInterface handles image parsing and fetching.
+type ImageRepositoryInterface interface {
 	ParseReference(image string) (name.Reference, error)
 	GetImage(ref name.Reference) (v1.Image, error)
 }
@@ -49,7 +49,40 @@ type HTTPClientInterface interface {
 	SetTLSConfig(tlsConfig *tls.Config) error
 }
 
-// ImageService implements ImageServiceInterface.
+type Target struct {
+	Name     string `json:"name"`
+	ByteSize int64  `json:"byteSize"`
+	Digest   string `json:"digest"`
+}
+
+type GUNTargets struct {
+	GUN     string   `json:"gun"`
+	Targets []Target `json:"targets"`
+}
+
+type SigningPayload struct {
+	GunTargets []GUNTargets `json:"gunTargets"`
+}
+
+type TLSCredentials struct {
+	CertificateData string `json:"certData"`
+	PrivateKeyData  string `json:"privateKeyData"`
+}
+
+// NotaryConfig structs
+type NotaryConfig struct {
+	Endpoint     string            `yaml:"endpoint" json:"endpoint"`
+	Secret       *AuthSecretConfig `yaml:"secret,omitempty" json:"secret,omitempty"`
+	Timeout      time.Duration     `yaml:"timeout" json:"timeout"`
+	RetryTimeout time.Duration     `yaml:"retry-timeout" json:"retry-timeout"`
+}
+
+type AuthSecretConfig struct {
+	Path string `yaml:"path" json:"path"`
+	Type string `yaml:"type" json:"type"`
+}
+
+// ImageService implements ImageRepositoryInterface.
 type ImageService struct{}
 
 func (is *ImageService) ParseReference(image string) (name.Reference, error) {
@@ -70,11 +103,11 @@ func (is *ImageService) GetImage(ref name.Reference) (v1.Image, error) {
 
 // PayloadBuilder implements PayloadBuilderInterface.
 type PayloadBuilder struct {
-	ImageService ImageServiceInterface
+	ImageService ImageRepositoryInterface
 }
 
 func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) {
-	var trustedCollections []TrustedCollection
+	var gunTargets []GUNTargets
 	for _, image := range images {
 		base, tag, err := parseImageNameAndTag(image)
 		if err != nil {
@@ -106,17 +139,17 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 			Digest:   manifest.Config.Digest.String(),
 		}
 
-		// Build trusted collection
-		trustedCollection := TrustedCollection{
+		// Build GUN target
+		gunTarget := GUNTargets{
 			GUN:     base,
 			Targets: []Target{target},
 		}
 
-		trustedCollections = append(trustedCollections, trustedCollection)
+		gunTargets = append(gunTargets, gunTarget)
 	}
 
 	payload := SigningPayload{
-		TrustedCollections: trustedCollections,
+		GunTargets: gunTargets,
 	}
 	return payload, nil
 }
@@ -133,15 +166,15 @@ func parseImageNameAndTag(image string) (string, string, error) {
 
 // CertificateProvider implements CertificateProviderInterface.
 type CertificateProvider struct {
-	SignifySecret SignifySecret
+	Credentials TLSCredentials
 }
 
 func (cp *CertificateProvider) CreateKeyPair() (tls.Certificate, error) {
-	certData, err := base64.StdEncoding.DecodeString(cp.SignifySecret.CertificateData)
+	certData, err := base64.StdEncoding.DecodeString(cp.Credentials.CertificateData)
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to decode certificate: %w", err)
 	}
-	keyData, err := base64.StdEncoding.DecodeString(cp.SignifySecret.PrivateKeyData)
+	keyData, err := base64.StdEncoding.DecodeString(cp.Credentials.PrivateKeyData)
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to decode private key: %w", err)
 	}
@@ -284,15 +317,15 @@ func RetryHTTPRequest(client HTTPClientInterface, req *http.Request, retries int
 
 // NewSigner constructs a new NotarySigner with dependencies injected.
 func (nc *NotaryConfig) NewSigner() (Signer, error) {
-	// Read Signify secret from the path directly
+	// Read secret from the path directly
 	secretFileContent, err := os.ReadFile(nc.Secret.Path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read secret file: %v", err)
 	}
-	var signifySecret SignifySecret
-	err = json.Unmarshal(secretFileContent, &signifySecret)
+	var tlsCredentials TLSCredentials
+	err = json.Unmarshal(secretFileContent, &tlsCredentials)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal signify secret: %v", err)
+		return nil, fmt.Errorf("failed to unmarshal TLS credentials: %v", err)
 	}
 
 	// Initialize components
@@ -301,7 +334,7 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 		ImageService: imageService,
 	}
 	certificateProvider := &CertificateProvider{
-		SignifySecret: signifySecret,
+		Credentials: tlsCredentials,
 	}
 	tlsConfigurator := &TLSConfigurator{}
 	httpClient := &HTTPClient{
