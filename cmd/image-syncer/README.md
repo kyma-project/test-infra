@@ -23,6 +23,9 @@ The tool guarantees that **tags are immutable** in the target repo.
 That means that if the image tag is already present in the target registry, it will not be overwritten by the new image.
 The tool can be used in a GitHub workflow to synchronize images defined in a YAML file maintained in the repository.
 
+> [!NOTE]
+> The target repository and path prefix used by the image-syncer is `europe-docker.pkg.dev/kyma-project/prod/external/`
+
 ## User Guide
 
 The developers can use image-syncer to synchronize images defined in the YAML file maintained in their repository.
