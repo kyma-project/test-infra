@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat
 from requests import HTTPError
-from secretmanager import client
+from secretmanager.client import SecretManagerClient, SecretManagerError
 from pylogger.logger import create_logger
 from signify.client import SignifyClient
 
@@ -37,7 +37,7 @@ def rotate_signify_secret() -> Response:
     )
 
     try:
-        sm_client = client.SecretManagerClient()
+        sm_client = SecretManagerClient()
 
         pubsub_message: Dict[str, Any] = get_pubsub_message()
 
@@ -87,12 +87,12 @@ def rotate_signify_secret() -> Response:
             new_certs, new_private_key, secret_data, created_at
         )
 
-        sm_client.set_secret(secret_id, json.dumps(new_secret_data))
+        sm_client.add_secret_version(secret_id, json.dumps(new_secret_data))
 
         logger.log_info(f"Certificate rotated successfully at {created_at}")
 
         return "Certificate rotated successfully"
-    except (HTTPError, ValueError, TypeError) as exc:
+    except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
         return prepare_error_response(exc, logger)
 
 

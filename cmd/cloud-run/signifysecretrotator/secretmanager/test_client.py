@@ -67,14 +67,14 @@ class TestSecretManagerClient(unittest.TestCase):
             secret_name="projects/test-project/secrets/test-secret/versions/latest"
         )
 
-    def test_set_secret(self) -> None:
+    def test_add_secret_version(self) -> None:
         """Tests setting a new secret version"""
         # Arrange
         secret_id = "projects/test-project/secrets/test-secret"
         secret_data = "new-secret-value"
 
         # Act
-        self.client.set_secret(secret_id, secret_data)
+        self.client.add_secret_version(secret_id, secret_data)
 
         # Assert
         payload: dict[str, bytes] = {"data": secret_data.encode()}

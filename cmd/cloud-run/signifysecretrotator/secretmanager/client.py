@@ -3,6 +3,7 @@
 import json
 from typing import Any, Dict
 from google.cloud import secretmanager
+from google.api_core.exceptions import GoogleAPIError
 
 
 class SecretManagerClient:
@@ -30,17 +31,20 @@ class SecretManagerClient:
 
         secret_name = f"{secret_id}/versions/{secret_version}"
 
-        response: secretmanager.AccessSecretVersionResponse = (
-            self.client.access_secret_version(name=secret_name)
-        )
-        secret_value = response.payload.data.decode()
+        try:
+            response: secretmanager.AccessSecretVersionResponse = (
+                self.client.access_secret_version(name=secret_name)
+            )
+            secret_value = response.payload.data.decode()
 
-        if is_json:
-            return json.loads(secret_value)
+            if is_json:
+                return json.loads(secret_value)
 
-        return secret_value
+            return secret_value
+        except GoogleAPIError as e:
+            raise SecretManagerError(secret_id, e) from e
 
-    def set_secret(self, secret_id: str, data: str) -> None:
+    def add_secret_version(self, secret_id: str, data: str) -> None:
         """Adds new secret version with given data
 
         Args:
@@ -49,4 +53,14 @@ class SecretManagerClient:
         """
         payload = {"data": data.encode()}
 
-        self.client.add_secret_version(parent=secret_id, payload=payload)
+        try:
+            self.client.add_secret_version(parent=secret_id, payload=payload)
+        except GoogleAPIError as e:
+            raise SecretManagerError(secret_id, e) from e
+
+
+class SecretManagerError(Exception):
+    """Common class for Secret Manager client exceptions"""
+
+    def __init__(self, secret_id: str, e: Exception) -> None:
+        self.add_note(f"Failed to access secret {secret_id}, error: {e}")
