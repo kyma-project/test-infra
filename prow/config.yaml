@@ -463,6 +463,7 @@ tide:
         - kyma-project/warden
         - kyma-project/docker-registry
         - kyma-project/hydroform
+        - kyma-project/btp-manager
       reviewApprovedRequired: true
     - labels:
         - lgtm
