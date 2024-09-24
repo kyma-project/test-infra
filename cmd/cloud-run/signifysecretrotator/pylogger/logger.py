@@ -1,58 +1,69 @@
 """Encapsulates logging for cloud runs"""
 
 import json
+import logging
 from typing import Any, Dict
 
 from flask import Request
 
 
-class LogEntry(dict):
-    """Simplifies logging by returning a JSON string."""
-
-    def __str__(self) -> str:
-        return json.dumps(self)
-
-
-class Logger:
-    """Encapsulates logging for cloud runs"""
+class GoogleCloudFormatter(logging.Formatter):
+    """Wraps the formatting the logs using google cloud format"""
 
     def __init__(
-        self,
-        component_name: str,
-        application_name: str,
-        project_id: str = "",
-        request: Request = None,
+        self, component_name: str, application_name: str, log_fields: Dict[str, Any]
     ) -> None:
-        self.log_fields: Dict[str, Any] = {
-            "component": component_name,
-            "labels": {"io.kyma.component": application_name},
-        }
-        if request:
-            trace_header: str = request.headers.get("X-Cloud-Trace-Context")
+        self.component_name: str = component_name
+        self.application_name: str = application_name
+        self.log_fields: Dict[str, Any] = log_fields
 
-            if trace_header and project_id:
-                trace = trace_header.split("/")
-                self.log_fields["logging.googleapi.com/trace"] = (
-                    f"projects/{project_id}/traces/{trace[0]}"
-                )
+        super().__init__()
 
-    def log_error(self, message: str) -> None:
-        """Print log error message
+    def format(self, record: logging.LogRecord) -> str:
+        """Formats record into cloud event log"""
 
-        Args:
-            message (str): Custom message that should be placed in entry
-        """
-        self._log(message, "ERROR")
+        return json.dumps(
+            {
+                "timestamp": record.created,
+                "severity": record.levelname,
+                "message": record.getMessage(),
+            }
+        )
 
-    def log_info(self, message: str) -> None:
-        """Print log info message
 
-        Args:
-            message (str): Custom message that should be placed in entry
-        """
-        self._log(message, "INFO")
+def create_logger(
+    component_name: str,
+    application_name: str,
+    project_id: str = None,
+    request: Request = None,
+    log_level=logging.INFO,
+) -> logging.Logger:
+    """Creates instance of stdout logger for aplication's component"""
+    logger: logging.Logger = logging.getLogger(f"{application_name}/{component_name}")
+    logger.setLevel(log_level)
 
-    def _log(self, message: str, severity: str) -> None:
-        entry = LogEntry(severity=severity, message=message, **self.log_fields)
+    log_fields = {
+        "component": component_name,
+        "labels": {"io.kyma.component": application_name},
+    }
 
-        print(entry)
+    if request:
+        trace_header: str | None = request.headers.get("X-Cloud-Trace-Context")
+
+        if trace_header and project_id:
+            trace: list[str] = trace_header.split("/")
+            log_fields["logging.googleapi.com/trace"] = (
+                f"projects/{project_id}/traces/{trace[0]}"
+            )
+
+    formatter = GoogleCloudFormatter(
+        component_name=component_name,
+        application_name=application_name,
+        log_fields=log_fields,
+    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    logger.addHandler(handler)
+
+    return logger

@@ -1,80 +1,105 @@
 """Tests for logger module"""
 
+import time
+from typing import Any
 import unittest
-from unittest.mock import patch
+import logging
 import json
+from unittest.mock import MagicMock, Mock, patch
+
+from flask import Request
 
 # pylint: disable=import-error
 # False positive see: https://github.com/pylint-dev/pylint/issues/3984
-from logger import Logger, LogEntry
+from logger import GoogleCloudFormatter, create_logger
 
 
-class TestLogger(unittest.TestCase):
-    """Tests for logger class"""
+class TestGoogleCloudFormatter(unittest.TestCase):
+    """Tests for custom formatter"""
 
-    @patch("flask.Request")
-    def test_logger_initialization(self, mock_request) -> None:
-        """Test logger initialization"""
-        mock_request = mock_request()
-        mock_request.headers.get.return_value = "trace-id/other-info"
-
-        logger = Logger("component1", "application1", "project1", mock_request)
-
-        self.assertEqual(logger.log_fields["component"], "component1")
-        self.assertEqual(
-            logger.log_fields["labels"]["io.kyma.component"], "application1"
-        )
-        self.assertTrue("logging.googleapi.com/trace" in logger.log_fields)
-
-    def test_logger_initialization_without_request(self) -> None:
-        """Test logger initialization without flas request"""
-        logger = Logger("component1", "application1")
-
-        self.assertEqual(logger.log_fields["component"], "component1")
-        self.assertEqual(
-            logger.log_fields["labels"]["io.kyma.component"], "application1"
-        )
-        self.assertFalse("logging.googleapi.com/trace" in logger.log_fields)
-
-    @patch("builtins.print")
-    def test_log_error(self, mock_print) -> None:
-        """Test log_error method"""
-        logger = Logger("component1", "application1")
-        logger.log_error("An error occurred")
-
-        expected_output = LogEntry(
-            severity="ERROR",
-            message="An error occurred",
-            component="component1",
-            labels={"io.kyma.component": "application1"},
+    def setUp(self):
+        self.component_name = "test_component"
+        self.application_name = "test_application"
+        self.log_fields = {"key1": "value1"}
+        self.formatter = GoogleCloudFormatter(
+            self.component_name, self.application_name, self.log_fields
         )
 
-        mock_print.assert_called_once_with(expected_output)
+    def test_format(self) -> None:
+        """Test format function"""
+        log_record = logging.LogRecord(
+            name="test",
+            level=logging.INFO,
+            pathname="test_path",
+            lineno=10,
+            msg="This is a test message",
+            args=(),
+            exc_info=None,
+        )
+        formatted_log = self.formatter.format(log_record)
+        expected_log = {
+            "timestamp": log_record.created,
+            "severity": "INFO",
+            "message": "This is a test message",
+        }
+        self.assertEqual(json.loads(formatted_log), expected_log)
 
-    @patch("builtins.print")
-    def test_log_info(self, mock_print) -> None:
-        """Test log_info method"""
-        logger = Logger("component1", "application1")
-        logger.log_info("Information message")
 
-        expected_output = LogEntry(
-            severity="INFO",
-            message="Information message",
-            component="component1",
-            labels={"io.kyma.component": "application1"},
+class TestCreateLogger(unittest.TestCase):
+    """Tests for logger factory"""
+
+    def setUp(self):
+        # Ensure that each test has logger with unique name
+        self.component_name = f"test_component_{time.time()}"
+        self.application_name = "test_application"
+        self.project_id = "test_project_id"
+        self.request = Mock(spec=Request)
+        self.request.headers = {"X-Cloud-Trace-Context": "1234567890/other-info"}
+
+    def test_create_logger(self):
+        """Tests create logger with trace"""
+
+        logger: logging.Logger = create_logger(
+            component_name=self.component_name,
+            application_name=self.application_name,
+            project_id=self.project_id,
+            request=self.request,
+            log_level=logging.INFO,
         )
 
-        mock_print.assert_called_once_with(expected_output)
+        self.assertFalse(logger.isEnabledFor(logging.DEBUG))
 
-    def test_log_entry_str(self) -> None:
-        """Test log entry to json"""
-        log_entry = LogEntry(
-            severity="INFO", message="Test", component="test_component"
+        self.assertTrue(logger.hasHandlers())
+
+        handler = logger.handlers[0]
+        self.assertIsInstance(handler.formatter, GoogleCloudFormatter)
+
+        expected_log_fields: dict[str, Any] = {
+            "component": self.component_name,
+            "labels": {"io.kyma.component": self.application_name},
+            "logging.googleapi.com/trace": f"projects/{self.project_id}/traces/1234567890",
+        }
+        self.assertDictEqual(expected_log_fields, handler.formatter.log_fields)
+
+    def test_create_logger_without_trace(self):
+        """Tests create logger without request"""
+        logger: logging.Logger = create_logger(
+            component_name=self.component_name,
+            application_name=self.application_name,
+            log_level=logging.INFO,
         )
-        expected_output = json.dumps(
-            {"severity": "INFO", "message": "Test", "component": "test_component"}
-        )
-        self.assertEqual(str(log_entry), expected_output)
+
+        self.assertFalse(logger.isEnabledFor(logging.DEBUG))
+        self.assertTrue(logger.hasHandlers())
+
+        handler = logger.handlers[0]
+        self.assertIsInstance(handler.formatter, GoogleCloudFormatter)
+
+        expected_log_fields: dict[str, Any] = {
+            "component": self.component_name,
+            "labels": {"io.kyma.component": self.application_name},
+        }
+        self.assertDictEqual(expected_log_fields, handler.formatter.log_fields)
 
 
 if __name__ == "__main__":

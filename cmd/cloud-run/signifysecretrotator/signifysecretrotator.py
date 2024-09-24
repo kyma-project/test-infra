@@ -1,6 +1,7 @@
 """Simple PubSub handler to rotate signify certificates"""
 
 import datetime
+import logging
 import os
 import base64
 import json
@@ -14,7 +15,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat
 from requests import HTTPError
 from secretmanager import client
-from pylogger.logger import Logger
+from pylogger.logger import create_logger
 from signify.client import SignifyClient
 
 app = Flask(__name__)
@@ -28,9 +29,10 @@ rsa_key_size: int = 4096
 @app.route("/", methods=["POST"])
 def rotate_signify_secret() -> Response:
     """HTTP webhook handler for rotating Signify secrets."""
-    logger = Logger(
+    logger = create_logger(
         component_name=component_name,
         application_name=application_name,
+        project_id=project_id,
         request=request,
     )
 
@@ -62,7 +64,8 @@ def rotate_signify_secret() -> Response:
 
         new_private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
             # Public exponent is standarised as 65537
-            # see: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key
+            # see:
+            # https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key
             public_exponent=65537,
             key_size=rsa_key_size,
         )
@@ -167,7 +170,7 @@ def get_pubsub_message() -> Dict[str, Any]:
 
 
 # TODO(kacpermalachowski): Move it to common package
-def prepare_error_response(err: str, logger: Logger) -> Response:
+def prepare_error_response(err: str, logger: logging.Logger) -> Response:
     """Prepares an error response with logging."""
     _, exc_value, _ = sys.exc_info()
     stacktrace = repr(traceback.format_exception(exc_value))
