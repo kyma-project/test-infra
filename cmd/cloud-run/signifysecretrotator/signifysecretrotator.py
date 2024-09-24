@@ -6,7 +6,6 @@ import os
 import base64
 import json
 import sys
-import traceback
 from typing import Any, Dict, List
 from flask import Flask, Response, request, make_response
 from cryptography import x509
@@ -89,7 +88,7 @@ def rotate_signify_secret() -> Response:
 
         sm_client.add_secret_version(secret_id, json.dumps(new_secret_data))
 
-        logger.log_info(f"Certificate rotated successfully at {created_at}")
+        logger.info("Certificate rotated successfully at %s", created_at)
 
         return "Certificate rotated successfully"
     except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
@@ -172,9 +171,7 @@ def get_pubsub_message() -> Dict[str, Any]:
 # TODO(kacpermalachowski): Move it to common package
 def prepare_error_response(err: str, logger: logging.Logger) -> Response:
     """Prepares an error response with logging."""
-    _, exc_value, _ = sys.exc_info()
-    stacktrace = repr(traceback.format_exception(exc_value))
-    logger.log_error(f"Error: {err}\nStack:\n {stacktrace}")
+    logger.error(err, exc_info=sys.exc_info())
     resp = make_response()
     resp.content_type = "application/json"
     resp.status_code = 500

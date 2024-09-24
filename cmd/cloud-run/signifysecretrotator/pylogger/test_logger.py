@@ -5,7 +5,7 @@ from typing import Any
 import unittest
 import logging
 import json
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock
 
 from flask import Request
 

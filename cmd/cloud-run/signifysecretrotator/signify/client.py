@@ -5,7 +5,6 @@ from enum import Enum
 import json
 import tempfile
 from typing import Any
-from urllib import response
 import requests
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography import x509
