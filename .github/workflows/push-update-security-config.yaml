@@ -1,0 +1,56 @@
+name: push-update-security-config
+
+on:
+  schedule:
+    - cron: 0 8 * * *
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/*.tf'
+      - '**/*.tfvars'
+
+jobs:
+  autobump:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
+    concurrency:
+      group: post-test-infra-image-detector-autobump
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate in GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+
+      - name: Get kyma bot token from Secret Manager
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+          secrets: |-
+            kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
+
+      - name: Store Github Token for autobumper
+        run: echo ${{ steps.secrets.outputs.kyma-autobump-token }} > /etc/github/token
+
+      - name: Find images to scan
+        run: |
+          docker run \
+            -v /etc/github/token:/etc/github/token:ro
+            europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240924-a3a85f88 \
+            --terraform-dir=configs/terraform \
+            --sec-scanner-config=sec-scanners-config.yaml \
+            --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml
+
+
+      
+      
