@@ -13,7 +13,8 @@ type Tag struct {
 	// Name which identifies single Tag
 	Name string `yaml:"name" json:"name"`
 	// Value of the tag or template of it
-	Value string `yaml:"value" json:"value"`
+	Value      string `yaml:"value" json:"value"`
+	Validation string `yaml:"validation" json:"validation"`
 }
 
 // NewTagFromString creates new Tag from env var style string
@@ -41,6 +42,9 @@ func NewTagFromString(val string) (Tag, error) {
 // UnmarshalYAML provides custom logic for unmarshalling tag into struct
 // If not name is given it will be replaced by default_tag.
 // It ensures that both use cases are supported
+// TODO (dekiel): yaml config can provide a name always.
+//
+//	This custom unmarshaller is not needed.
 func (t *Tag) UnmarshalYAML(value *yaml.Node) error {
 	var tagTemplate string
 

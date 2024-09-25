@@ -33,9 +33,14 @@ type Config struct {
 	DevRegistry Registry `yaml:"dev-registry" json:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
 	Cache CacheConfig `yaml:"cache" json:"cache"`
-	// TagTemplate is go-template field that defines the format of the $_TAG substitution.
+	// Default Tag template used for images build on commit.
+	// The value can be a go-template string or literal tag value string.
 	// See tags.Tag struct for more information and available fields
-	TagTemplate tags.Tag `yaml:"tag-template" json:"tag-template"`
+	DefaultCommitTag tags.Tag `yaml:"default-commit-tag" json:"default-commit-tag"`
+	// Default Tag template used for images build on pull request.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	DefaultPRTag tags.Tag `yaml:"default-pr-tag" json:"default-pr-tag"`
 	// LogFormat defines the format kaniko logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`
