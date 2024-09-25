@@ -151,7 +151,7 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-5679cab8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
