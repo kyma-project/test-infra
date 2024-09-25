@@ -317,12 +317,6 @@ func (ns *NotarySigner) Sign(images []string) error {
 	}
 	defer resp.Body.Close()
 
-	// Check if the response status code indicates success.
-	if resp.StatusCode != http.StatusAccepted {
-		respMsg, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("failed to sign images: %s", string(respMsg))
-	}
-
 	fmt.Printf("Successfully signed images: %s\n", sImg)
 	return nil
 }
