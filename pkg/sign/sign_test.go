@@ -1,7 +1,15 @@
 package sign
 
 import (
+	"bytes"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/base64"
 	"encoding/json"
+	"encoding/pem"
+	"math/big"
 	"os"
 	"testing"
 	"time"
@@ -67,16 +75,22 @@ config:
 }
 
 func TestNotaryConfig_NewSigner(t *testing.T) {
+	certPEM, keyPEM, err := generateTestCert()
+	if err != nil {
+		t.Fatalf("Failed to generate test certificate: %v", err)
+	}
+
+	mockSecret := TLSCredentials{
+		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
+		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
+	}
+
 	// Set up a mock secret file in a valid temporary path
 	secretPath := "/tmp/mock_secret.json"
-	mockSecret := TLSCredentials{
-		CertificateData: "mockCertData",
-		PrivateKeyData:  "mockPrivateKeyData",
-	}
 	secretContent, _ := json.Marshal(mockSecret)
 
 	// Write the mock secret to the file
-	err := os.WriteFile(secretPath, secretContent, 0644)
+	err = os.WriteFile(secretPath, secretContent, 0644)
 	if err != nil {
 		t.Fatalf("Failed to write mock secret file: %v", err)
 	}
@@ -98,4 +112,49 @@ func TestNotaryConfig_NewSigner(t *testing.T) {
 	if signer == nil {
 		t.Errorf("expected a valid signer, but got nil")
 	}
+}
+
+// generateTestCert generates a self-signed certificate and private key.
+// Returns the certificate and key in PEM format.
+func generateTestCert() (string, string, error) {
+	// Generate RSA key
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Create certificate template
+	template := x509.Certificate{
+		SerialNumber: big.NewInt(1),
+		Subject: pkix.Name{
+			Organization: []string{"Test Organization"},
+		},
+		NotBefore: time.Now(),
+		NotAfter:  time.Now().Add(24 * time.Hour), // Certificate valid for 24 hours
+		KeyUsage:  x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage: []x509.ExtKeyUsage{
+			x509.ExtKeyUsageServerAuth,
+		},
+		BasicConstraintsValid: true,
+	}
+
+	// Self-sign the certificate
+	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &privateKey.PublicKey, privateKey)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Encode certificate to PEM
+	certPEM := new(bytes.Buffer)
+	if err := pem.Encode(certPEM, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes}); err != nil {
+		return "", "", err
+	}
+
+	// Encode private key to PEM
+	keyPEM := new(bytes.Buffer)
+	if err := pem.Encode(keyPEM, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}); err != nil {
+		return "", "", err
+	}
+
+	return certPEM.String(), keyPEM.String(), nil
 }
