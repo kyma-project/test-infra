@@ -323,13 +323,12 @@ func (ns *NotarySigner) Sign(images []string) error {
 
 // RetryHTTPRequest sends an HTTP request with retry logic in case of failures.
 func RetryHTTPRequest(client HTTPClientInterface, req *http.Request, retries int, retryInterval time.Duration) (*http.Response, error) {
-	var lastResp *http.Response
-	var lastErr error
+	var resp *http.Response
+	var err error
 
 	// Read and store the request body for potential retries.
 	var bodyBytes []byte
 	if req.Body != nil {
-		var err error
 		bodyBytes, err = io.ReadAll(req.Body)
 		if err != nil {
 			return nil, fmt.Errorf("failed to read request body: %w", err)
@@ -344,25 +343,30 @@ func RetryHTTPRequest(client HTTPClientInterface, req *http.Request, retries int
 		}
 
 		// Send the HTTP request.
-		resp, err := client.Do(req)
+		resp, err = client.Do(req)
 		if err != nil {
-			lastErr = err
+			// err is already set
 		} else if resp.StatusCode == http.StatusAccepted {
 			return resp, nil
 		} else {
-			lastErr = fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+			// Read and discard the response body to free resources
+			io.Copy(io.Discard, resp.Body)
+			resp.Body.Close()
+			err = fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+			resp = nil // Discard the unsuccessful response
 		}
-		lastResp = resp
 
 		// Decrement the retry counter.
 		retries--
 		if retries == 0 {
 			break
 		}
+
 		// Wait before the next retry.
 		time.Sleep(retryInterval)
 	}
-	return lastResp, fmt.Errorf("request failed after retries: %w", lastErr)
+
+	return nil, fmt.Errorf("request failed after retries: %w", err)
 }
 
 // NewSigner constructs a new NotarySigner with the necessary dependencies.
