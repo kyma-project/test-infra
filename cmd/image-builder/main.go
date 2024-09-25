@@ -22,10 +22,12 @@ import (
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
+	"github.com/kyma-project/test-infra/pkg/logging"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
+	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
@@ -39,6 +41,7 @@ type options struct {
 	name       string
 	variant    string
 	logDir     string
+	logger     Logger
 	orgRepo    string
 	silent     bool
 	isCI       bool
@@ -61,6 +64,11 @@ type options struct {
 	gitState              GitStateConfig
 	debug                 bool
 	dryRun                bool
+}
+
+type Logger interface {
+	logging.StructuredLoggerInterface
+	logging.WithLoggerInterface
 }
 
 // parseVariable returns a build-arg.
@@ -407,7 +415,7 @@ func buildInADO(o options) error {
 // It fetches the build logs and prints them.
 // If the build fails, the function returns an error.
 // If the build is successful, the function returns nil.
-func buildLocally(o options) error {
+func buildLocally(logger Logger, o options) error {
 	// Determine the build tool to use based on the USE_BUILDKIT environment variable.
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
@@ -466,13 +474,13 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	defaultTag, err := getDefaultTag(o)
+	defaultTag, err := getDefaultTag(logger, o)
 	if err != nil {
 		return err
 	}
 
 	// Get the tags for the image.
-	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
+	parsedTags, err := getTags(logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return err
 	}
@@ -637,7 +645,7 @@ func (l *StrList) List() []string {
 	return n
 }
 
-func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
+func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
 
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha), tags.PRNumber(pr))
@@ -797,9 +805,22 @@ func main() {
 	o := options{isCI: os.Getenv("CI") == "true"}
 	o.gatherOptions(flagSet)
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("Failed to parse flags: %s", err)
 	}
+
+	var (
+		zapLogger *zap.Logger
+		err       error
+	)
+	if o.debug {
+		zapLogger, err = zap.NewDevelopment()
+	} else {
+		zapLogger, err = zap.NewProduction()
+	}
+	if err != nil {
+		log.Fatalf("Failed to initialize logger: %s", err)
+	}
+	o.logger = zapLogger.Sugar()
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
@@ -841,7 +862,7 @@ func main() {
 	}
 
 	if o.parseTagsOnly {
-		err = generateTags(o)
+		err = generateTags(o.logger, o)
 		if err != nil {
 			fmt.Printf("Parse tags failed with error: %s\n", err)
 			os.Exit(1)
@@ -857,7 +878,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	err = buildLocally(o)
+	err = buildLocally(o.logger, o)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -865,7 +886,7 @@ func main() {
 	fmt.Println("Job's done.")
 }
 
-func generateTags(o options) error {
+func generateTags(logger Logger, o options) error {
 	// Get the absolute path to the dockerfile directory.
 	dockerfilePath, err := getDockerfileDirPath(o)
 	if err != nil {
@@ -877,7 +898,7 @@ func generateTags(o options) error {
 		return err
 	}
 	// Parse tags from the provided options.
-	parsedTags, err := parseTags(o)
+	parsedTags, err := parseTags(logger, o)
 	if err != nil {
 		return fmt.Errorf("failed to parse tags : %s", err)
 	}
@@ -909,7 +930,7 @@ func getEnvs(o options, dockerfilePath string) (map[string]string, error) {
 	return map[string]string{}, nil
 }
 
-func parseTags(o options) ([]tags.Tag, error) {
+func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 	var pr string
 	sha := o.gitState.BaseCommitSHA
 	if o.gitState.isPullRequest {
@@ -940,12 +961,12 @@ func parseTags(o options) ([]tags.Tag, error) {
 		}
 	}
 
-	defaultTag, err := getDefaultTag(o)
+	defaultTag, err := getDefaultTag(logger, o)
 	if err != nil {
 		return nil, err
 	}
 
-	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
+	parsedTags, err := getTags(logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return nil, err
 	}
@@ -953,7 +974,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 	return parsedTags, nil
 }
 
-func getDefaultTag(o options) (tags.Tag, error) {
+func getDefaultTag(logger Logger, o options) (tags.Tag, error) {
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		return o.DefaultPRTag, nil
 	}
