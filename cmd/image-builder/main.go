@@ -466,8 +466,13 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
+	defaultTag, err := getDefaultTag(o)
+	if err != nil {
+		return err
+	}
+
 	// Get the tags for the image.
-	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return err
 	}
@@ -633,13 +638,9 @@ func (l *StrList) List() []string {
 }
 
 func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
-	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
-	if pr != "" {
-		// assume we are using PR number, build default tag as 'PR-XXXX'
-		return []tags.Tag{{Name: "default_tag", Value: "PR-" + pr}}, nil
-	}
+
 	// build a tag from commit SHA
-	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
+	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha), tags.PRNumber(pr))
 	if err != nil {
 		return nil, fmt.Errorf("get tagger: %w", err)
 	}
@@ -915,6 +916,9 @@ func parseTags(o options) ([]tags.Tag, error) {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 	}
 
+	// TODO (dekiel):
+	//  when running for pr we should enforce a sha to be empty because the base branch commit is not relevant for tags generated on pr.
+	//  This variable should better be named to represent what sha it holds.
 	if sha == "" {
 		return nil, fmt.Errorf("sha still empty")
 	}
@@ -936,12 +940,27 @@ func parseTags(o options) ([]tags.Tag, error) {
 		}
 	}
 
-	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	defaultTag, err := getDefaultTag(o)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return nil, err
 	}
 
 	return parsedTags, nil
+}
+
+func getDefaultTag(o options) (tags.Tag, error) {
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
+		return o.DefaultPRTag, nil
+	}
+	if len(o.gitState.BaseCommitSHA) > 0 {
+		return o.DefaultCommitTag, nil
+	}
+	return tags.Tag{}, fmt.Errorf("could not determine default tag, no pr number or commit sha provided")
 }
 
 func getDockerfileDirPath(o options) (string, error) {

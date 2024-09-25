@@ -1,4 +1,11 @@
-tag-template: "v{{ .Date }}-{{ .ShortSHA }}"
+default-commit-tag:
+  name: "default_tag"
+  value: "v{{ .Date }}-{{ .ShortSHA }}"
+  validation: "^(v[0-9]+\\.[0-9]+\\.[0-9]+-\\d{8}-[0-9a-f]{7})$"
+default-pr-tag:
+  name: "default_tag"
+  value: "PR-{{ .PRNumber }}"
+  validation: "^(PR-[0-9]+)$"
 registry:
   - europe-docker.pkg.dev/kyma-project/prod
 dev-registry:
