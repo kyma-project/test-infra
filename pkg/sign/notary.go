@@ -212,10 +212,14 @@ type TLSProviderInterface interface {
 // TLSProvider provides TLS configurations using the provided TLS credentials.
 type TLSProvider struct {
 	Credentials TLSCredentials
+	tlsConfig   *tls.Config
 }
 
 // GetTLSConfig constructs a tls.Config using the stored TLS credentials.
 func (tp *TLSProvider) GetTLSConfig() (*tls.Config, error) {
+	if tp.tlsConfig != nil {
+		return tp.tlsConfig, nil
+	}
 	certData, err := base64.StdEncoding.DecodeString(tp.Credentials.CertificateData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode certificate data: %w", err)
@@ -228,10 +232,11 @@ func (tp *TLSProvider) GetTLSConfig() (*tls.Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to load certificate and key: %w", err)
 	}
-	tlsConfig := &tls.Config{
+	tp.tlsConfig = &tls.Config{
 		Certificates: []tls.Certificate{cert},
 	}
-	return tlsConfig, nil
+
+	return tp.tlsConfig, nil
 }
 
 // HTTPClientInterface defines methods for making HTTP requests and setting TLS configurations.
@@ -387,7 +392,7 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 		Credentials: tlsCredentials,
 	}
 
-	// **Validate the TLS credentials**
+	// Load the TLS credentials
 	_, err = tlsProvider.GetTLSConfig()
 	if err != nil {
 		return nil, fmt.Errorf("invalid TLS credentials: %w", err)
