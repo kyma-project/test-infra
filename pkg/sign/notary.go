@@ -350,25 +350,27 @@ func RetryHTTPRequest(client HTTPClientInterface, req *http.Request, retries int
 		// Send the HTTP request.
 		resp, err = client.Do(req)
 		if err != nil {
-			// err is already set
-		} else if resp.StatusCode == http.StatusAccepted {
+			// Continue to the next retry attempt
+			time.Sleep(retryInterval)
+			retries--
+			continue
+		}
+
+		if resp.StatusCode == http.StatusAccepted {
 			return resp, nil
-		} else {
-			// Read and discard the response body to free resources
-			io.Copy(io.Discard, resp.Body)
-			resp.Body.Close()
-			err = fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-			resp = nil // Discard the unsuccessful response
 		}
 
-		// Decrement the retry counter.
+		// Read and discard the response body to free resources
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
+		err = fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		resp = nil // Discard the unsuccessful response
+
+		// Decrement the retry counter and wait before the next retry.
 		retries--
-		if retries == 0 {
-			break
+		if retries > 0 {
+			time.Sleep(retryInterval)
 		}
-
-		// Wait before the next retry.
-		time.Sleep(retryInterval)
 	}
 
 	return nil, fmt.Errorf("request failed after retries: %w", err)
