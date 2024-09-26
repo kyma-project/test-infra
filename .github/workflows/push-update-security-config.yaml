@@ -40,7 +40,9 @@ jobs:
             kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
 
       - name: Store Github Token for autobumper
-        run: echo ${{ steps.secrets.outputs.kyma-autobump-token }} > /etc/github/token
+        run: |
+          touch /etc/github/token
+          echo ${{ steps.secrets.outputs.kyma-autobump-token }} > /etc/github/token
 
       - name: Find images to scan
         run: |
