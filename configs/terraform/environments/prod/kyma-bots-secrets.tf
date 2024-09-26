@@ -66,3 +66,11 @@ resource "kubernetes_cluster_role_binding" "access_kyma_bot_github_tokens_untrus
     name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }
+
+# 
+resource "github_actions_variable" "kyma_autobump_bot_github_token_secret_name" {
+  provider = github.kyma_project
+  repository = data.github_repository.test_infra.full_name
+  variable_name = "KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME"
+  value = var.kyma_autobump_bot_github_token_sm_secret_name
+}
