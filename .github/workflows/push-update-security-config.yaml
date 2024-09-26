@@ -57,7 +57,7 @@ jobs:
             --workdir /github/workspace \
             --rm \
             --user $UID \
-            europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240926-f9123aae \
+            europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240926-400a7c63 \
             --terraform-dir=configs/terraform \
             --sec-scanner-config=sec-scanners-config.yaml \
             --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml

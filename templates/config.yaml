@@ -36,7 +36,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240926-f9123aae
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240926-400a7c63
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -59,7 +59,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240926-f9123aae
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240926-400a7c63
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
