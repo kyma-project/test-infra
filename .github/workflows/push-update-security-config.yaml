@@ -52,7 +52,3 @@ jobs:
             --terraform-dir=configs/terraform \
             --sec-scanner-config=sec-scanners-config.yaml \
             --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml
-
-
-      
-      
