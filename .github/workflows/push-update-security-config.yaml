@@ -41,13 +41,16 @@ jobs:
 
       - name: Store Github Token for autobumper
         run: |
-          touch /etc/github/token
-          echo ${{ steps.secrets.outputs.kyma-autobump-token }} > /etc/github/token
+          echo ${{ steps.secrets.outputs.kyma-autobump-token }} > ~/token
 
       - name: Find images to scan
         run: |
           docker run \
-            -v /etc/github/token:/etc/github/token:ro
+            -v ~/token:/etc/github/token:ro \
+            -v ${{ github.workspace }}:/github/workspace \
+            --workdir /github/workspace \
+            --rm \
+            --user $UID \
             europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240924-a3a85f88 \
             --terraform-dir=configs/terraform \
             --sec-scanner-config=sec-scanners-config.yaml \
