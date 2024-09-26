@@ -81,6 +81,44 @@ func Call(stdout, stderr io.Writer, cmd string, args ...string) error {
 	return c.Run()
 }
 
+// Checks if user is set in git config by calling git command.
+// Returns true if both user name and email are set.
+func isGitUserSet(stderr io.Writer) (bool, error) {
+	gitUserStdout := &bytes.Buffer{}
+	if err := Call(gitUserStdout, stderr, gitCmd, "config user.email"); err != nil {
+		return false, fmt.Errorf("getting user email: %w", err)
+	}
+
+	if gitUserStdout.String() == "" {
+		return false, nil
+	}
+
+	if err := Call(gitUserStdout, stderr, gitCmd, "config user.name"); err != nil {
+		return false, fmt.Errorf("getting user email: %w", err)
+	}
+
+	if gitUserStdout.String() == "" {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func setGitUserInConfig(username, email string, stdout, stderr io.Writer) error {
+	userNameArgs := fmt.Sprintf("config user.name \"%s\"", username)
+	userEmailArgs := fmt.Sprintf("config user.email \"%s\"", email)
+
+	if err := Call(stdout, stderr, gitCmd, userNameArgs); err != nil {
+		return fmt.Errorf("setting user name: %w", err)
+	}
+
+	if err := Call(stdout, stderr, gitCmd, userEmailArgs); err != nil {
+		return fmt.Errorf("setting user email: %w", err)
+	}
+
+	return nil
+}
+
 func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	revParseStdout := &bytes.Buffer{}
 	if err := Call(revParseStdout, stderr, gitCmd, "rev-parse", refname+":"); err != nil {
@@ -277,6 +315,16 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 		if o.GitEmail == "" {
 			o.GitEmail = user.Email
+		}
+	}
+
+	isUserSet, err := isGitUserSet(stderr)
+	if err != nil {
+		return fmt.Errorf("failed to check if user is set: %w", err)
+	}
+	if !isUserSet {
+		if err := setGitUserInConfig(o.GitName, o.GitEmail, stdout, stderr); err != nil {
+			return fmt.Errorf("failed to set git user in config: %w", err)
 		}
 	}
 
