@@ -15,7 +15,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20240924-a3a85f88
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20240924-a3a85f88
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240924-a3a85f88
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240924-a3a85f88
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240918-20d00fb8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20240924-a3a85f88
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240924-a3a85f88
@@ -28,6 +27,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20240924-a3a85f88
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240924-5679cab8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240924-5679cab8
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20240924-997e8b7b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240910-c199525c
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240924-6fb36f45
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240924-6fb36f45
