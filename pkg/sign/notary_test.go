@@ -1,4 +1,4 @@
-package sign_test
+package sign
 
 import (
 	"bytes"
@@ -18,8 +18,6 @@ import (
 	"os"
 	"testing"
 	"time"
-
-	"github.com/kyma-project/test-infra/pkg/sign"
 )
 
 // generateTestCert generates a self-signed certificate and private key.
@@ -69,7 +67,7 @@ func generateTestCert() (string, string, error) {
 
 // TestImageService_ParseReference_Valid checks the correct parsing of an image reference.
 func TestImageService_ParseReference_Valid(t *testing.T) {
-	imageService := sign.ImageService{}
+	imageService := ImageService{}
 
 	// Use a valid image reference
 	ref, err := imageService.ParseReference("docker.io/library/alpine:latest")
@@ -83,7 +81,7 @@ func TestImageService_ParseReference_Valid(t *testing.T) {
 
 // TestImageService_ParseReference_Invalid checks the incorrect parsing of an image reference.
 func TestImageService_ParseReference_Invalid(t *testing.T) {
-	imageService := sign.ImageService{}
+	imageService := ImageService{}
 
 	invalidReferences := []string{
 		":::",
@@ -103,9 +101,9 @@ func TestImageService_ParseReference_Invalid(t *testing.T) {
 // TestImageService_GetImage_Valid checks fetching a valid image.
 func TestImageService_GetImage_Valid(t *testing.T) {
 	// Mock dependencies
-	mockImageRepository := &sign.MockImageRepository{
-		MockParseReference: func(image string) (sign.ReferenceInterface, error) {
-			return &sign.MockReference{
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (ReferenceInterface, error) {
+			return &MockReference{
 				MockName: func() string {
 					return image
 				},
@@ -117,10 +115,10 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 				},
 			}, nil
 		},
-		MockGetImage: func(ref sign.ReferenceInterface) (sign.ImageInterface, error) {
-			return &sign.MockImage{
-				MockManifest: func() (sign.ManifestInterface, error) {
-					return &sign.MockManifest{
+		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
+			return &MockImage{
+				MockManifest: func() (ManifestInterface, error) {
+					return &MockManifest{
 						MockGetConfigSize: func() int64 {
 							return 1024
 						},
@@ -159,11 +157,11 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 
 // TestImageService_GetImage_Invalid checks fetching an invalid image.
 func TestImageService_GetImage_Invalid(t *testing.T) {
-	mockImageRepository := &sign.MockImageRepository{
-		MockParseReference: func(image string) (sign.ReferenceInterface, error) {
-			return &sign.MockReference{}, nil
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (ReferenceInterface, error) {
+			return &MockReference{}, nil
 		},
-		MockGetImage: func(ref sign.ReferenceInterface) (sign.ImageInterface, error) {
+		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
 			return nil, fmt.Errorf("failed to fetch image")
 		},
 	}
@@ -183,7 +181,7 @@ func TestImageService_GetImage_Invalid(t *testing.T) {
 
 // TestPayloadBuilder_BuildPayload_Valid checks building a payload for valid images.
 func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
-	mockRef := &sign.MockReference{
+	mockRef := &MockReference{
 		MockGetRepositoryName: func() string {
 			return "docker.io/library/alpine"
 		},
@@ -192,7 +190,7 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 		},
 	}
 
-	mockManifest := &sign.MockManifest{
+	mockManifest := &MockManifest{
 		MockGetConfigSize: func() int64 {
 			return 1024
 		},
@@ -201,22 +199,22 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 		},
 	}
 
-	mockImage := &sign.MockImage{
-		MockManifest: func() (sign.ManifestInterface, error) {
+	mockImage := &MockImage{
+		MockManifest: func() (ManifestInterface, error) {
 			return mockManifest, nil
 		},
 	}
 
-	mockImageRepository := &sign.MockImageRepository{
-		MockParseReference: func(image string) (sign.ReferenceInterface, error) {
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (ReferenceInterface, error) {
 			return mockRef, nil
 		},
-		MockGetImage: func(ref sign.ReferenceInterface) (sign.ImageInterface, error) {
+		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
 			return mockImage, nil
 		},
 	}
 
-	payloadBuilder := sign.PayloadBuilder{
+	payloadBuilder := PayloadBuilder{
 		ImageService: mockImageRepository,
 	}
 
@@ -231,13 +229,13 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 
 // TestPayloadBuilder_BuildPayload_Invalid checks building a payload for invalid images.
 func TestPayloadBuilder_BuildPayload_Invalid(t *testing.T) {
-	mockImageRepository := &sign.MockImageRepository{
-		MockParseReference: func(image string) (sign.ReferenceInterface, error) {
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (ReferenceInterface, error) {
 			return nil, fmt.Errorf("failed to parse reference")
 		},
 	}
 
-	payloadBuilder := sign.PayloadBuilder{
+	payloadBuilder := PayloadBuilder{
 		ImageService: mockImageRepository,
 	}
 
@@ -254,12 +252,12 @@ func TestTLSProvider_GetTLSConfig_Valid(t *testing.T) {
 		t.Fatalf("Failed to generate test certificate: %v", err)
 	}
 
-	tlsCredentials := sign.TLSCredentials{
+	tlsCredentials := TLSCredentials{
 		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
 	}
 
-	tlsProvider := sign.TLSProvider{Credentials: tlsCredentials}
+	tlsProvider := TLSProvider{Credentials: tlsCredentials}
 	tlsConfig, err := tlsProvider.GetTLSConfig()
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
@@ -274,12 +272,12 @@ func TestTLSProvider_GetTLSConfig_Valid(t *testing.T) {
 
 // TestTLSProvider_GetTLSConfig_Invalid checks getting TLS configuration with invalid credentials.
 func TestTLSProvider_GetTLSConfig_Invalid(t *testing.T) {
-	tlsCredentials := sign.TLSCredentials{
+	tlsCredentials := TLSCredentials{
 		CertificateData: "invalid-base64",
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte("private-key-data")),
 	}
 
-	tlsProvider := sign.TLSProvider{Credentials: tlsCredentials}
+	tlsProvider := TLSProvider{Credentials: tlsCredentials}
 	_, err := tlsProvider.GetTLSConfig()
 	if err == nil {
 		t.Errorf("Expected an error for invalid credentials")
@@ -288,7 +286,7 @@ func TestTLSProvider_GetTLSConfig_Invalid(t *testing.T) {
 
 // TestHTTPClient_Do checks sending an HTTP request.
 func TestHTTPClient_Do(t *testing.T) {
-	httpClient := sign.HTTPClient{Client: &http.Client{}}
+	httpClient := HTTPClient{Client: &http.Client{}}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
@@ -317,7 +315,7 @@ func TestHTTPClient_SetTLSConfig(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to load X509 key pair: %v", err)
 	}
-	httpClient := sign.HTTPClient{Client: &http.Client{}}
+	httpClient := HTTPClient{Client: &http.Client{}}
 	tlsConfig := &tls.Config{Certificates: []tls.Certificate{certificate}}
 
 	err = httpClient.SetTLSConfig(tlsConfig)
@@ -337,13 +335,13 @@ func TestHTTPClient_SetTLSConfig(t *testing.T) {
 
 // TestNotarySigner_Sign_Valid checks signing valid images.
 func TestNotarySigner_Sign_Valid(t *testing.T) {
-	mockPayloadBuilder := &sign.MockPayloadBuilder{
-		MockBuildPayload: func(images []string) (sign.SigningPayload, error) {
-			return sign.SigningPayload{
-				GunTargets: []sign.GUNTargets{
+	mockPayloadBuilder := &MockPayloadBuilder{
+		MockBuildPayload: func(images []string) (SigningPayload, error) {
+			return SigningPayload{
+				GunTargets: []GUNTargets{
 					{
 						GUN: "docker.io/library/alpine",
-						Targets: []sign.Target{
+						Targets: []Target{
 							{
 								Name:     "latest",
 								ByteSize: 1024,
@@ -356,7 +354,7 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 		},
 	}
 
-	mockTLSProvider := &sign.MockTLSProvider{
+	mockTLSProvider := &MockTLSProvider{
 		MockGetTLSConfig: func() (*tls.Config, error) {
 			certPEM, keyPEM, _ := generateTestCert()
 			cert, err := tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
@@ -367,7 +365,7 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 		},
 	}
 
-	mockHTTPClient := &sign.MockHTTPClient{
+	mockHTTPClient := &MockHTTPClient{
 		MockDo: func(req *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: http.StatusAccepted,
@@ -379,12 +377,12 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 		},
 	}
 
-	notarySigner := sign.NotarySigner{
-		URL:            "http://example.com",
-		RetryTimeout:   1 * time.Second,
-		PayloadBuilder: mockPayloadBuilder,
-		TLSProvider:    mockTLSProvider,
-		HTTPClient:     mockHTTPClient,
+	notarySigner := NotarySigner{
+		url:            "http://example.com",
+		retryTimeout:   1 * time.Second,
+		payloadBuilder: mockPayloadBuilder,
+		tlsProvider:    mockTLSProvider,
+		httpClient:     mockHTTPClient,
 	}
 
 	err := notarySigner.Sign([]string{"docker.io/library/alpine:latest"})
@@ -395,13 +393,13 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 
 // TestNotarySigner_Sign_Invalid checks signing invalid images.
 func TestNotarySigner_Sign_Invalid(t *testing.T) {
-	mockPayloadBuilder := &sign.MockPayloadBuilder{
-		MockBuildPayload: func(images []string) (sign.SigningPayload, error) {
-			return sign.SigningPayload{}, fmt.Errorf("failed to build payload")
+	mockPayloadBuilder := &MockPayloadBuilder{
+		MockBuildPayload: func(images []string) (SigningPayload, error) {
+			return SigningPayload{}, fmt.Errorf("failed to build payload")
 		},
 	}
 
-	mockTLSProvider := &sign.MockTLSProvider{
+	mockTLSProvider := &MockTLSProvider{
 		MockGetTLSConfig: func() (*tls.Config, error) {
 			certPEM, keyPEM, _ := generateTestCert()
 			cert, err := tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
@@ -412,7 +410,7 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 		},
 	}
 
-	mockHTTPClient := &sign.MockHTTPClient{
+	mockHTTPClient := &MockHTTPClient{
 		MockDo: func(req *http.Request) (*http.Response, error) {
 			return nil, fmt.Errorf("request failed")
 		},
@@ -421,12 +419,12 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 		},
 	}
 
-	notarySigner := sign.NotarySigner{
-		URL:            "http://example.com",
-		RetryTimeout:   1 * time.Second,
-		PayloadBuilder: mockPayloadBuilder,
-		TLSProvider:    mockTLSProvider,
-		HTTPClient:     mockHTTPClient,
+	notarySigner := NotarySigner{
+		url:            "http://example.com",
+		retryTimeout:   1 * time.Second,
+		payloadBuilder: mockPayloadBuilder,
+		tlsProvider:    mockTLSProvider,
+		httpClient:     mockHTTPClient,
 	}
 
 	err := notarySigner.Sign([]string{"invalid_image"})
@@ -437,7 +435,7 @@ func TestNotarySigner_Sign_Invalid(t *testing.T) {
 
 // TestRetryHTTPRequest_Failure checks if RetryHTTPRequest returns an error after failed attempts.
 func TestRetryHTTPRequest_Failure(t *testing.T) {
-	httpClient := sign.HTTPClient{Client: &http.Client{}}
+	httpClient := HTTPClient{Client: &http.Client{}}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -447,7 +445,7 @@ func TestRetryHTTPRequest_Failure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
-	resp, err := sign.RetryHTTPRequest(&httpClient, req, 3, 1*time.Second)
+	resp, err := RetryHTTPRequest(&httpClient, req, 3, 1*time.Second)
 	if err == nil {
 		t.Errorf("Expected an error on failure")
 	}
@@ -458,7 +456,7 @@ func TestRetryHTTPRequest_Failure(t *testing.T) {
 
 // TestRetryHTTPRequest_SuccessAfterRetries checks if RetryHTTPRequest succeeds after a certain number of retries.
 func TestRetryHTTPRequest_SuccessAfterRetries(t *testing.T) {
-	httpClient := sign.HTTPClient{Client: &http.Client{}}
+	httpClient := HTTPClient{Client: &http.Client{}}
 	attempts := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		attempts++
@@ -474,7 +472,7 @@ func TestRetryHTTPRequest_SuccessAfterRetries(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
-	resp, err := sign.RetryHTTPRequest(&httpClient, req, 3, 1*time.Second)
+	resp, err := RetryHTTPRequest(&httpClient, req, 3, 1*time.Second)
 	if err != nil {
 		t.Errorf("Expected no error after retries, got %v", err)
 	}
@@ -490,7 +488,7 @@ func TestNotaryConfig_NewSigner_Success(t *testing.T) {
 		t.Fatalf("Failed to generate test certificate: %v", err)
 	}
 
-	tlsCredentials := sign.TLSCredentials{
+	tlsCredentials := TLSCredentials{
 		CertificateData: base64.StdEncoding.EncodeToString([]byte(certPEM)),
 		PrivateKeyData:  base64.StdEncoding.EncodeToString([]byte(keyPEM)),
 	}
@@ -515,9 +513,9 @@ func TestNotaryConfig_NewSigner_Success(t *testing.T) {
 	tempFile.Close() // Close the file to ensure the data is written
 
 	// Create NotaryConfig with the path to the secret file
-	notaryConfig := &sign.NotaryConfig{
+	notaryConfig := &NotaryConfig{
 		Endpoint:     "http://example.com",
-		Secret:       &sign.AuthSecretConfig{Path: tempFile.Name()},
+		Secret:       &AuthSecretConfig{Path: tempFile.Name()},
 		Timeout:      10 * time.Second,
 		RetryTimeout: 1 * time.Second,
 	}
@@ -532,22 +530,22 @@ func TestNotaryConfig_NewSigner_Success(t *testing.T) {
 	}
 
 	// Optionally, check if signer is of type *NotarySigner
-	notarySigner, ok := signer.(*sign.NotarySigner)
+	notarySigner, ok := signer.(*NotarySigner)
 	if !ok {
 		t.Errorf("Expected signer to be of type *NotarySigner")
 	}
 
 	// Additional checks for NotarySigner fields
-	if notarySigner.URL != notaryConfig.Endpoint {
-		t.Errorf("Expected NotarySigner URL to be '%s', got '%s'", notaryConfig.Endpoint, notarySigner.URL)
+	if notarySigner.url != notaryConfig.Endpoint {
+		t.Errorf("Expected NotarySigner URL to be '%s', got '%s'", notaryConfig.Endpoint, notarySigner.url)
 	}
 }
 
 func TestNotaryConfig_NewSigner_InvalidSecretFile(t *testing.T) {
 	// Create NotaryConfig with a non-existent secret file
-	notaryConfig := &sign.NotaryConfig{
+	notaryConfig := &NotaryConfig{
 		Endpoint:     "http://example.com",
-		Secret:       &sign.AuthSecretConfig{Path: "non-existent-file.json"},
+		Secret:       &AuthSecretConfig{Path: "non-existent-file.json"},
 		Timeout:      10 * time.Second,
 		RetryTimeout: 1 * time.Second,
 	}
@@ -580,9 +578,9 @@ func TestNotaryConfig_NewSigner_InvalidTLSCredentials(t *testing.T) {
 	tempFile.Close()
 
 	// Create NotaryConfig with the path to the secret file
-	notaryConfig := &sign.NotaryConfig{
+	notaryConfig := &NotaryConfig{
 		Endpoint:     "http://example.com",
-		Secret:       &sign.AuthSecretConfig{Path: tempFile.Name()},
+		Secret:       &AuthSecretConfig{Path: tempFile.Name()},
 		Timeout:      10 * time.Second,
 		RetryTimeout: 1 * time.Second,
 	}

@@ -271,13 +271,13 @@ func (hc *HTTPClient) SetTLSConfig(tlsConfig *tls.Config) error {
 	return nil
 }
 
-// NotarySigner is responsible for signing images using Notary v2.
+// NotarySigner is responsible for signing images
 type NotarySigner struct {
-	URL            string
-	RetryTimeout   time.Duration
-	PayloadBuilder PayloadBuilderInterface
-	TLSProvider    TLSProviderInterface
-	HTTPClient     HTTPClientInterface
+	url            string
+	retryTimeout   time.Duration
+	payloadBuilder PayloadBuilderInterface
+	tlsProvider    TLSProviderInterface
+	httpClient     HTTPClientInterface
 }
 
 // Sign signs the provided images by sending a signing request to the Notary server.
@@ -285,7 +285,7 @@ func (ns *NotarySigner) Sign(images []string) error {
 	sImg := strings.Join(images, ", ")
 
 	// Build the signing payload.
-	payload, err := ns.PayloadBuilder.BuildPayload(images)
+	payload, err := ns.payloadBuilder.BuildPayload(images)
 	if err != nil {
 		return fmt.Errorf("failed to build payload: %w", err)
 	}
@@ -297,26 +297,26 @@ func (ns *NotarySigner) Sign(images []string) error {
 	}
 
 	// Obtain TLS configuration.
-	tlsConfig, err := ns.TLSProvider.GetTLSConfig()
+	tlsConfig, err := ns.tlsProvider.GetTLSConfig()
 	if err != nil {
 		return fmt.Errorf("failed to get TLS configuration: %w", err)
 	}
 
 	// Set TLS configuration for the HTTP client.
-	err = ns.HTTPClient.SetTLSConfig(tlsConfig)
+	err = ns.httpClient.SetTLSConfig(tlsConfig)
 	if err != nil {
 		return fmt.Errorf("failed to set TLS configuration: %w", err)
 	}
 
 	// Create an HTTP POST request with the signing payload.
-	req, err := http.NewRequest("POST", ns.URL, bytes.NewReader(b))
+	req, err := http.NewRequest("POST", ns.url, bytes.NewReader(b))
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	req.Header.Add("Content-Type", "application/json")
 
 	// Send the request with retries.
-	resp, err := RetryHTTPRequest(ns.HTTPClient, req, 5, ns.RetryTimeout)
+	resp, err := RetryHTTPRequest(ns.httpClient, req, 5, ns.retryTimeout)
 	if err != nil {
 		return fmt.Errorf("request failed: %w", err)
 	}
@@ -417,11 +417,11 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 
 	// Create the NotarySigner with all dependencies injected.
 	signer := &NotarySigner{
-		URL:            nc.Endpoint,
-		RetryTimeout:   nc.RetryTimeout,
-		PayloadBuilder: payloadBuilder,
-		TLSProvider:    tlsProvider,
-		HTTPClient:     httpClient,
+		url:            nc.Endpoint,
+		retryTimeout:   nc.RetryTimeout,
+		payloadBuilder: payloadBuilder,
+		tlsProvider:    tlsProvider,
+		httpClient:     httpClient,
 	}
 	return signer, nil
 }
