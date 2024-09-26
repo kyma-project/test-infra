@@ -59,13 +59,18 @@ The value of uses must be `kyma-project/test-infra/.github/workflows/image-synce
 #### Example Workflow
 
 ```yaml
-name: pull-sync-external-images
+name: sync-external-images
 
 on:
-  pull_request_target:
+  push:
     branches:
       - main
+    paths:
+      - "external-images.yaml"
+  pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    branches:
+      - main
     paths:
       - "external-images.yaml"
 
