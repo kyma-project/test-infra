@@ -201,18 +201,6 @@ updates:
       prefix: "image-builder"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/cmd/image-builder/images/buildkit"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "buildkit-image-builder"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/images/unified-agent/nodejs"
     labels:
       - "docker"
