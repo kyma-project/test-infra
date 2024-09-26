@@ -368,15 +368,7 @@ branch-protection:
               - "E2E (watcher-enqueue)"
               - "E2E (watcher-metrics)"
         modulectl:
-          required_status_checks:
-            contexts:
-              - "Build modulectl"
-              - "E2E Test - Create Scaffold"
-              - "Lint PR Title"
-              - "Lint Markdown Links"
-              - "Unit Test modulectl"
-              - "Validate Docs"
-              - "Verify Unit Test Coverage"
+          unmanaged: true
         cli:
           unmanaged: true
         istio:
