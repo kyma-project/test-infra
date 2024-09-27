@@ -34,12 +34,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         # Setup git config with commiter data from config
+        # Prevent silent passing github token
+        # see https://stackoverflow.com/a/69979203/23148781
       - name: Setup git config
         run: |
-          GIT_USERNAME=$(grep "gitName" $AUTOBUMP_CONFIG_PATH | cut -d '"' -f 2)
-          GIT_EMAIL=$(grep "gitEmail" $AUTOBUMP_CONFIG_PATH | cut -d '"' -f 2)
+          GIT_USERNAME=$(grep "gitName" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
+          GIT_EMAIL=$(grep "gitEmail" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
           git config user.name $GIT_USERNAME
           git config user.email $GIT_EMAIL
+
+          git config --unset-all http.https://github.com/.extraheader
       - name: Authenticate in GCP
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -67,6 +71,6 @@ jobs:
             --rm \
             --user $UID \
             europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240926-400a7c63 \
-            --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR}} \
+            --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR }} \
             --sec-scanner-config=${{ env.SEC_SCANNERS_CONFIG_PATH }} \
             --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
