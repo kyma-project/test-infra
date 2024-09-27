@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 	"testing/fstest"
+	"time"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
@@ -297,7 +298,7 @@ func TestFlags(t *testing.T) {
 	}
 }
 
-func Test_gatTags(t *testing.T) {
+func Test_getTags(t *testing.T) {
 	tc := []struct {
 		name           string
 		pr             string
@@ -309,12 +310,43 @@ func Test_gatTags(t *testing.T) {
 		expectResult   []tags.Tag
 	}{
 		{
-			name:         "pr variable is present",
-			pr:           "1234",
-			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234"}},
+			name:        "no pr and sha provided",
+			tagTemplate: tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+			expectErr:   true,
 		},
 		{
-			name:      "sha is empty",
+			name:        "no pr and sha provided",
+			tagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+			expectErr:   true,
+		},
+		{
+			name:         "generate default pr tag",
+			pr:           "1234",
+			tagTemplate:  tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234", Validation: "^(PR-[0-9]+)$"}},
+		},
+		{
+			name:         "generate default commit tag",
+			sha:          "12345678",
+			tagTemplate:  tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+			expectResult: []tags.Tag{{Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-12345678", Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}},
+		},
+		{
+			name:           "generate default pr tag with additional tags",
+			pr:             "1234",
+			tagTemplate:    tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, {Name: "default_tag", Value: "PR-1234", Validation: "^(PR-[0-9]+)$"}},
+		},
+		{
+			name:           "generate default commit tag",
+			sha:            "12345678",
+			tagTemplate:    tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, {Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-12345678", Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}},
+		},
+		{
+			name:      "no pr, sha and default tag provided",
 			expectErr: true,
 		},
 		{
@@ -562,12 +594,29 @@ func Test_appendMissing(t *testing.T) {
 }
 
 func Test_parseTags(t *testing.T) {
+	prGitState := GitStateConfig{
+		BaseCommitSHA:     "base-commit-sha",
+		PullRequestNumber: 5,
+		isPullRequest:     true,
+	}
+	buidConfig := Config{
+		DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+		DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+	}
 	tc := []struct {
-		name      string
-		options   options
-		tags      []tags.Tag
-		expectErr bool
+		name         string
+		options      options
+		expectedTags []tags.Tag
+		expectErr    bool
 	}{
+		{
+			name: "pares only PR default tag",
+			options: options{
+				gitState: prGitState,
+				Config:   buidConfig,
+			},
+			expectedTags: []tags.Tag{{Name: "default_tag", Value: "PR-5", Validation: "^(PR-[0-9]+)$"}},
+		},
 		{
 			name: "PR tag parse",
 			options: options{
@@ -580,7 +629,7 @@ func Test_parseTags(t *testing.T) {
 					{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
 				},
 			},
-			tags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
+			expectedTags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
 		},
 		{
 			name: "Tags from commit sha",
@@ -589,10 +638,10 @@ func Test_parseTags(t *testing.T) {
 					BaseCommitSHA: "some-sha",
 				},
 				Config: Config{
-					TagTemplate: tags.Tag{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+					DefaultCommitTag: tags.Tag{Name: "default_commit_tag", Value: `{{ .CommitSHA }}`},
 				},
 			},
-			tags: []tags.Tag{{Name: "AnotherTest", Value: "some-sha"}},
+			expectedTags: []tags.Tag{{Name: "default_commit_tag", Value: "some-sha"}},
 		},
 		{
 			name: "empty commit sha",
@@ -613,8 +662,8 @@ func Test_parseTags(t *testing.T) {
 				t.Error("Expected error, but no one occured")
 			}
 
-			if !reflect.DeepEqual(tags, c.tags) {
-				t.Errorf("Got %v, but expected %v", tags, c.tags)
+			if !reflect.DeepEqual(tags, c.expectedTags) {
+				t.Errorf("Got %v, but expected %v", tags, c.expectedTags)
 			}
 		})
 	}

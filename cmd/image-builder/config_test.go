@@ -21,9 +21,10 @@ func Test_ParseConfig(t *testing.T) {
 dev-registry: dev.kyma-project.io/dev-registry
 tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
-				Registry:    []string{"kyma-project.io/prod-registry"},
-				DevRegistry: []string{"dev.kyma-project.io/dev-registry"},
-				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				Registry:         []string{"kyma-project.io/prod-registry"},
+				DevRegistry:      []string{"dev.kyma-project.io/dev-registry"},
+				DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `pr-{{ .PRNumber }}`},
 			},
 		},
 		{
@@ -36,9 +37,10 @@ dev-registry:
 - dev.kyma-project.io/second-registry
 tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
-				Registry:    []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
-				DevRegistry: []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
-				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				Registry:         []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
+				DevRegistry:      []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
+				DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `pr-{{ .PRNumber }}`},
 			},
 		},
 		{
