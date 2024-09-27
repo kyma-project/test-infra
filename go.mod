@@ -51,6 +51,8 @@ require (
 	sigs.k8s.io/yaml v1.4.0
 )
 
+require github.com/rogpeppe/go-internal v1.11.0 // indirect
+
 require (
 	cloud.google.com/go v0.115.1 // indirect
 	cloud.google.com/go/auth v0.9.5 // indirect
