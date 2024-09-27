@@ -1,0 +1,25 @@
+name: push-build-image-autobumper
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cmd/image-autobumper/Dockerfile'
+      - 'cmd/image-autobumper/**'
+      - 'go.mod'
+      - 'go.sum'
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-autobumper
+      dockerfile: cmd/image-autobumper/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"
