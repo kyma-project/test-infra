@@ -1,0 +1,10 @@
+on:
+  schedule:
+    - cron: "* * * * *"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event_name }}
+      - run: cat ${{ github.event_path }}
