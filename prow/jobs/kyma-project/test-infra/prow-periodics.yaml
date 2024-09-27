@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240926-400a7c63"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240927-29c71d4a"
             securityContext:
               privileged: false
               seccompProfile:
