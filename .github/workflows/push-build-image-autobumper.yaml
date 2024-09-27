@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - 'cmd/image-detector/Dockerfile'
-      - 'cmd/image-detector/**'
+      - 'cmd/image-autobumper/Dockerfile'
+      - 'cmd/image-autobumper/**'
       - 'go.mod'
       - 'go.sum'
   workflow_dispatch: {}

@@ -3,8 +3,8 @@ on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/image-syncer/*.go"
-      - "cmd/image-syncer/Dockerfile"
+      - 'cmd/image-autobumper/Dockerfile'
+      - 'cmd/image-autobumper/**'
       - "go.mod"
       - "go.sum"
 
