@@ -27,6 +27,7 @@ sign-config:
       job-type:
         - postsubmit
         - workflow_dispatch
+        - schedule
       config:
         endpoint: https://signing.repositories.cloud.sap/signingsvc/sign
         timeout: 5m
