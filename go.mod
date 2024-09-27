@@ -36,7 +36,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/tidwall/gjson v1.17.3
-	github.com/zricethezav/gitleaks/v8 v8.19.2
+	github.com/zricethezav/gitleaks/v8 v8.19.3
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	golang.org/x/net v0.29.0
