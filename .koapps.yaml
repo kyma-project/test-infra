@@ -1,7 +1,6 @@
 apps:
   - ko://github.com/kyma-project/test-infra/cmd/tools/pjtester
   - ko://github.com/kyma-project/test-infra/cmd/image-detector
-  - ko://github.com/kyma-project/test-infra/cmd/image-autobumper
   - ko://github.com/kyma-project/test-infra/cmd/image-url-helper
   - ko://github.com/kyma-project/test-infra/cmd/markdown-index
   - ko://github.com/kyma-project/test-infra/cmd/tools/usersmapchecker
