@@ -638,9 +638,16 @@ func (l *StrList) List() []string {
 }
 
 func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
+	var taggerOptions []tags.TagOption
+	if len(pr) > 0 {
+		taggerOptions = append(taggerOptions, tags.PRNumber(pr))
+	}
+	if len(sha) > 0 {
+		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
+	}
 
 	// build a tag from commit SHA
-	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha), tags.PRNumber(pr))
+	tagger, err := tags.NewTagger(templates, taggerOptions...)
 	if err != nil {
 		return nil, fmt.Errorf("get tagger: %w", err)
 	}
@@ -910,17 +917,15 @@ func getEnvs(o options, dockerfilePath string) (map[string]string, error) {
 }
 
 func parseTags(o options) ([]tags.Tag, error) {
-	var pr string
-	sha := o.gitState.BaseCommitSHA
-	if o.gitState.isPullRequest {
-		pr = fmt.Sprint(o.gitState.PullRequestNumber)
+	var (
+		pr  string
+		sha string
+	)
+	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA == "" {
+		sha = o.gitState.BaseCommitSHA
 	}
-
-	// TODO (dekiel):
-	//  when running for pr we should enforce a sha to be empty because the base branch commit is not relevant for tags generated on pr.
-	//  This variable should better be named to represent what sha it holds.
-	if sha == "" {
-		return nil, fmt.Errorf("sha still empty")
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
+		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 	}
 
 	// read tags from base64 encoded string if provided
