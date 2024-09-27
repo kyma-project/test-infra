@@ -13,6 +13,12 @@ on:
       - '**/*.tf'
       - '**/*.tfvars'
 
+env:
+  AUTOBUMP_CONFIG_PATH: configs/autobump-config/test-infra-sec-config-autobump-config.yaml
+  SEC_SCANNERS_CONFIG_PATH: sec-scanners-config.yaml
+  TERRAFORM_CONFIGS_DIR: configs/terraform
+
+
 jobs:
   autobump:
     runs-on: ubuntu-latest
@@ -20,17 +26,20 @@ jobs:
       id-token: write # This is required for requesting the JWT token
       contents: read # This is required for actions/checkout
     concurrency:
+      # Prevent merge conflicts on pushing to fork repo between different runs. 
+      # Image detector will update already existing PR with new changes, to keep clean history it's preferd to do it one by one.
       group: post-test-infra-image-detector-autobump
       cancel-in-progress: false
 
     steps:
       - uses: actions/checkout@v4
-        # Setup git config with default actions information to prevent error "Unknown committer"
-        # See https://github.com/actions/checkout/issues/13#issuecomment-2207006934
+        # Setup git config with commiter data from config
       - name: Setup git config
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          GIT_USERNAME=$(grep "gitName" $AUTOBUMP_CONFIG_PATH | cut -d '"' -f 2)
+          GIT_EMAIL=$(grep "gitEmail" $AUTOBUMP_CONFIG_PATH | cut -d '"' -f 2)
+          git config user.name $GIT_USERNAME
+          git config user.email $GIT_EMAIL
       - name: Authenticate in GCP
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -58,6 +67,6 @@ jobs:
             --rm \
             --user $UID \
             europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240926-400a7c63 \
-            --terraform-dir=configs/terraform \
-            --sec-scanner-config=sec-scanners-config.yaml \
-            --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml
+            --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR}} \
+            --sec-scanner-config=${{ env.SEC_SCANNERS_CONFIG_PATH }} \
+            --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
