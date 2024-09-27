@@ -1,7 +1,7 @@
 default-commit-tag:
   name: "default_tag"
   value: "v{{ .Date }}-{{ .ShortSHA }}"
-  validation: "^(v[0-9]+\\.[0-9]+\\.[0-9]+-\\d{8}-[0-9a-f]{7})$"
+  validation: "^(v[0-9]{8}-[0-9a-f]{8})$"
 default-pr-tag:
   name: "default_tag"
   value: "PR-{{ .PRNumber }}"
