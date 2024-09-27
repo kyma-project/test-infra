@@ -245,6 +245,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
 			isPullRequest:     true,
 		}, nil
+
 	case "push":
 		var payload github.PushEvent
 		err = json.Unmarshal(data, &payload)
@@ -257,6 +258,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			JobType:         "postsubmit",
 			BaseCommitSHA:   *payload.HeadCommit.ID,
 		}, nil
+
 	case "workflow_dispatch":
 		var payload github.WorkflowDispatchEvent
 		err = json.Unmarshal(data, &payload)
@@ -270,6 +272,24 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
 			BaseCommitRef:   os.Getenv("GITHUB_REF"),
 		}, nil
+
+	case "schedule":
+		// There is nostruct for schedule event in github package
+		var payload struct {
+			Repo github.Repository `json:"repository,omitempty"`
+		}
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+		return GitStateConfig{
+			RepositoryName:  *payload.Repo.Name,
+			RepositoryOwner: *payload.Repo.Owner.Login,
+			JobType:         "schedule",
+			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
+			BaseCommitRef:   os.Getenv("GITHUB_REF"),
+		}, nil
+
 	default:
 		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
 	}
