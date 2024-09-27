@@ -1,0 +1,25 @@
+name: push-build-image-detector
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/image-detector/*.go"
+      - "cmd/image-detector/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-detector
+      dockerfile: cmd/image-detector/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"
