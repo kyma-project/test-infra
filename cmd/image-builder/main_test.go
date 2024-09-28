@@ -16,6 +16,8 @@ import (
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
+
+	. "github.com/onsi/gomega"
 )
 
 var (
@@ -26,6 +28,19 @@ var (
 	}
 	expectedDefaultCommitTag = func(baseSHA string) tags.Tag {
 		return tags.Tag{Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-" + fmt.Sprintf("%.8s", baseSHA), Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}
+	}
+	buildConfig = Config{
+		DefaultPRTag:     defaultPRTag,
+		DefaultCommitTag: defaultCommitTag,
+	}
+	prGitState = GitStateConfig{
+		BaseCommitSHA:     "abcdef123456",
+		PullRequestNumber: 5,
+		isPullRequest:     true,
+	}
+	commitGitState = GitStateConfig{
+		BaseCommitSHA: "abcdef123456",
+		isPullRequest: false,
 	}
 )
 
@@ -608,19 +623,6 @@ func Test_appendMissing(t *testing.T) {
 }
 
 func Test_parseTags(t *testing.T) {
-	prGitState := GitStateConfig{
-		BaseCommitSHA:     "abcdef123456",
-		PullRequestNumber: 5,
-		isPullRequest:     true,
-	}
-	commitGitState := GitStateConfig{
-		BaseCommitSHA: "abcdef123456",
-		isPullRequest: false,
-	}
-	buildConfig := Config{
-		DefaultPRTag:     defaultPRTag,
-		DefaultCommitTag: defaultCommitTag,
-	}
 	tagsFlag := sets.Tags{{Name: "base64testtag", Value: "testtag"}, {Name: "base64testtemplate", Value: "test-{{ .PRNumber }}"}}
 	base64Tags := base64.StdEncoding.EncodeToString([]byte(tagsFlag.String()))
 	tc := []struct {
@@ -706,6 +708,56 @@ func Test_parseTags(t *testing.T) {
 
 			if !reflect.DeepEqual(tags, c.expectedTags) {
 				t.Errorf("Got %v, but expected %v", tags, c.expectedTags)
+			}
+		})
+	}
+}
+
+func Test_getDefaultTag(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	tests := []struct {
+		name    string
+		options options
+		want    tags.Tag
+		wantErr bool
+	}{
+		{
+			name: "Success - Pull Request",
+			options: options{
+				gitState: prGitState,
+				Config:   buildConfig,
+			},
+			want:    defaultPRTag,
+			wantErr: false,
+		},
+		{
+			name: "Success - Commit SHA",
+			options: options{
+				gitState: commitGitState,
+				Config:   buildConfig,
+			},
+			want:    defaultCommitTag,
+			wantErr: false,
+		},
+		{
+			name: "Failure - No PR number or commit SHA",
+			options: options{
+				gitState: GitStateConfig{},
+			},
+			want:    tags.Tag{},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := getDefaultTag(tt.options)
+			if tt.wantErr {
+				g.Expect(err).To(HaveOccurred())
+			} else {
+				g.Expect(err).NotTo(HaveOccurred())
+				g.Expect(got).To(Equal(tt.want))
 			}
 		})
 	}

@@ -928,6 +928,8 @@ func parseTags(o options) ([]tags.Tag, error) {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 	}
 
+	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
+	//   This way all tags are available in the tags list from thr very beginning of execution and can be used in any process.
 	// read tags from base64 encoded string if provided
 	if o.tagsBase64 != "" {
 		decoded, err := base64.StdEncoding.DecodeString(o.tagsBase64)
@@ -955,6 +957,9 @@ func parseTags(o options) ([]tags.Tag, error) {
 	return parsedTags, nil
 }
 
+// getDefaultTag returns the default tag based on the read git state.
+// The function provid default tag for pull request or commit.
+// The default tag is read from the provided options struct.
 func getDefaultTag(o options) (tags.Tag, error) {
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		return o.DefaultPRTag, nil
