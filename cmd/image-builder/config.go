@@ -214,11 +214,19 @@ func loadADOGitState() (GitStateConfig, error) {
 func loadGithubActionsGitState() (GitStateConfig, error) {
 	eventName, present := os.LookupEnv("GITHUB_EVENT_NAME")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set, please set it to valid event name")
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set.  Please ensure the image-builder is running in GitHub environment.")
 	}
 	eventPayloadPath, present := os.LookupEnv("GITHUB_EVENT_PATH")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set, please set it to valid path to event file")
+		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set. Please ensure the image-builder is running in GitHub environment.")
+	}
+	commitSHA, present := os.LookupEnv("GITHUB_SHA")
+	if !present && (eventName == "workflow_dispatch" || eventName == "schedule") {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_SHA environment variable is not set, it should be set to HEAD commit SHA. Please ensure the image-builder is running in GitHub environment.")
+	}
+	gitRef, present := os.LookupEnv("GITHUB_REF")
+	if !present && (eventName == "workflow_dispatch" || eventName == "schedule") {
+		return GitStateConfig{}, fmt.Errorf("GITHUB_REF environment variable is not set, it should be set to current ref. Please ensure the image-builder is running in GitHub environment.")
 	}
 
 	// Read event payload file from runner
@@ -269,8 +277,8 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "workflow_dispatch",
-			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
-			BaseCommitRef:   os.Getenv("GITHUB_REF"),
+			BaseCommitSHA:   commitSHA,
+			BaseCommitRef:   gitRef,
 		}, nil
 
 	case "schedule":
@@ -286,8 +294,8 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "schedule",
-			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
-			BaseCommitRef:   os.Getenv("GITHUB_REF"),
+			BaseCommitSHA:   commitSHA,
+			BaseCommitRef:   gitRef,
 		}, nil
 
 	default:
