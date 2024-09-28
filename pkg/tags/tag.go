@@ -13,7 +13,7 @@ type Tag struct {
 	// Value of the tag or template of it
 	Value string `yaml:"value" json:"value"`
 	// Validation is a regex pattern to validate the tag value after it has been parsed
-	Validation string `yaml:"validation" json:"validation"`
+	Validation string `yaml:"validation" json:"validation,omitempty"`
 }
 
 // NewTagFromString creates new Tag from env var style string

@@ -921,7 +921,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 		pr  string
 		sha string
 	)
-	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA == "" {
+	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA != "" {
 		sha = o.gitState.BaseCommitSHA
 	}
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
@@ -932,15 +932,13 @@ func parseTags(o options) ([]tags.Tag, error) {
 	if o.tagsBase64 != "" {
 		decoded, err := base64.StdEncoding.DecodeString(o.tagsBase64)
 		if err != nil {
-			fmt.Printf("Failed to decode tags, error: %s", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to decode tags, error: %w", err)
 		}
 		splitedTags := strings.Split(string(decoded), ",")
 		for _, tag := range splitedTags {
 			err = o.tags.Set(tag)
 			if err != nil {
-				fmt.Printf("Failed to set tag, tag: %s, error: %s", tag, err)
-				os.Exit(1)
+				return nil, fmt.Errorf("failed to set tag, tag: %s, error: %w", tag, err)
 			}
 		}
 	}
@@ -949,7 +947,6 @@ func parseTags(o options) ([]tags.Tag, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return nil, err

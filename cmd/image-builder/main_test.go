@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
+	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -13,6 +16,17 @@ import (
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
+)
+
+var (
+	defaultPRTag         = tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"}
+	defaultCommitTag     = tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}
+	expectedDefaultPRTag = func(prNumber int) tags.Tag {
+		return tags.Tag{Name: "default_tag", Value: "PR-" + strconv.Itoa(prNumber), Validation: "^(PR-[0-9]+)$"}
+	}
+	expectedDefaultCommitTag = func(baseSHA string) tags.Tag {
+		return tags.Tag{Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-" + fmt.Sprintf("%.8s", baseSHA), Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}
+	}
 )
 
 func Test_gatherDestinations(t *testing.T) {
@@ -310,40 +324,40 @@ func Test_getTags(t *testing.T) {
 		expectResult   []tags.Tag
 	}{
 		{
-			name:        "no pr and sha provided",
-			tagTemplate: tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+			name:        "generate default pr tag, when no pr number and commit sha provided",
+			tagTemplate: defaultPRTag,
 			expectErr:   true,
 		},
 		{
-			name:        "no pr and sha provided",
-			tagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+			name:        "generate default commit tag, when no pr number and commit sha provided",
+			tagTemplate: defaultCommitTag,
 			expectErr:   true,
 		},
 		{
-			name:         "generate default pr tag",
+			name:         "generate default pr tag, when pr number provided",
 			pr:           "1234",
-			tagTemplate:  tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
-			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234", Validation: "^(PR-[0-9]+)$"}},
+			tagTemplate:  defaultPRTag,
+			expectResult: []tags.Tag{expectedDefaultPRTag(1234)},
 		},
 		{
-			name:         "generate default commit tag",
-			sha:          "12345678",
-			tagTemplate:  tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
-			expectResult: []tags.Tag{{Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-12345678", Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}},
+			name:         "generate default commit tag, when commit sha provided",
+			sha:          "1a2b3c4d5e6f78",
+			tagTemplate:  defaultCommitTag,
+			expectResult: []tags.Tag{expectedDefaultCommitTag("1a2b3c4d5e6f78")},
 		},
 		{
-			name:           "generate default pr tag with additional tags",
+			name:           "generate default pr tag and additional tags",
 			pr:             "1234",
-			tagTemplate:    tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
+			tagTemplate:    defaultPRTag,
 			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
-			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, {Name: "default_tag", Value: "PR-1234", Validation: "^(PR-[0-9]+)$"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, expectedDefaultPRTag(1234)},
 		},
 		{
-			name:           "generate default commit tag",
-			sha:            "12345678",
-			tagTemplate:    tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+			name:           "generate default commit tag and additional tags",
+			sha:            "1a2b3c4d5e6f78",
+			tagTemplate:    defaultCommitTag,
 			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
-			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, {Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-12345678", Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, expectedDefaultCommitTag("1a2b3c4d5e6f78")},
 		},
 		{
 			name:      "no pr, sha and default tag provided",
@@ -352,7 +366,7 @@ func Test_getTags(t *testing.T) {
 		{
 			name:        "bad tagTemplate",
 			expectErr:   true,
-			sha:         "abcd1234",
+			sha:         "1a2b3c4d5e6f78",
 			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `v{{ .ASD }}`},
 		},
 		{
@@ -595,14 +609,20 @@ func Test_appendMissing(t *testing.T) {
 
 func Test_parseTags(t *testing.T) {
 	prGitState := GitStateConfig{
-		BaseCommitSHA:     "base-commit-sha",
+		BaseCommitSHA:     "abcdef123456",
 		PullRequestNumber: 5,
 		isPullRequest:     true,
 	}
-	buidConfig := Config{
-		DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"},
-		DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"},
+	commitGitState := GitStateConfig{
+		BaseCommitSHA: "abcdef123456",
+		isPullRequest: false,
 	}
+	buildConfig := Config{
+		DefaultPRTag:     defaultPRTag,
+		DefaultCommitTag: defaultCommitTag,
+	}
+	tagsFlag := sets.Tags{{Name: "base64testtag", Value: "testtag"}, {Name: "base64testtemplate", Value: "test-{{ .PRNumber }}"}}
+	base64Tags := base64.StdEncoding.EncodeToString([]byte(tagsFlag.String()))
 	tc := []struct {
 		name         string
 		options      options
@@ -613,42 +633,64 @@ func Test_parseTags(t *testing.T) {
 			name: "pares only PR default tag",
 			options: options{
 				gitState: prGitState,
-				Config:   buidConfig,
+				Config:   buildConfig,
 			},
-			expectedTags: []tags.Tag{{Name: "default_tag", Value: "PR-5", Validation: "^(PR-[0-9]+)$"}},
+			expectedTags: []tags.Tag{expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
 		{
-			name: "PR tag parse",
+			name: "parse only commit default tag",
 			options: options{
-				gitState: GitStateConfig{
-					BaseCommitSHA:     "some-sha",
-					PullRequestNumber: 5,
-					isPullRequest:     true,
-				},
+				gitState: commitGitState,
+				Config:   buildConfig,
+			},
+			expectedTags: []tags.Tag{expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
+		},
+		{
+			name: "parse PR default and additional tags",
+			options: options{
+				gitState: prGitState,
+				Config:   buildConfig,
 				tags: sets.Tags{
-					{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+					{Name: "AnotherTest", Value: `Another-{{ .PRNumber }}`},
+					{Name: "Test", Value: "tag-value"},
 				},
 			},
-			expectedTags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
+			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + strconv.Itoa(prGitState.PullRequestNumber)}, {Name: "Test", Value: "tag-value"}, expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
 		{
-			name: "Tags from commit sha",
+			name: "parse commit default and additional tags",
 			options: options{
-				gitState: GitStateConfig{
-					BaseCommitSHA: "some-sha",
-				},
-				Config: Config{
-					DefaultCommitTag: tags.Tag{Name: "default_commit_tag", Value: `{{ .CommitSHA }}`},
+				gitState: commitGitState,
+				Config:   buildConfig,
+				tags: sets.Tags{
+					{Name: "AnotherTest", Value: `Another-{{ .CommitSHA }}`},
+					{Name: "Test", Value: "tag-value"},
 				},
 			},
-			expectedTags: []tags.Tag{{Name: "default_commit_tag", Value: "some-sha"}},
+			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + commitGitState.BaseCommitSHA}, {Name: "Test", Value: "tag-value"}, expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
 		},
 		{
-			name: "empty commit sha",
+			name: "parse bad tag template",
 			options: options{
-				gitState: GitStateConfig{},
+				gitState: prGitState,
+				Config:   buildConfig,
+				tags: sets.Tags{
+					{Name: "BadTagTemplate", Value: `{{ .ASD }}`},
+				},
 			},
 			expectErr: true,
+		},
+		{
+			name: "parse tags from base64 encoded flag",
+			options: options{
+				gitState:   prGitState,
+				Config:     buildConfig,
+				tagsBase64: base64Tags,
+			},
+			expectedTags: []tags.Tag{
+				{Name: "base64testtag", Value: "testtag"},
+				{Name: "base64testtemplate", Value: "test-5"},
+				expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
 	}
 
