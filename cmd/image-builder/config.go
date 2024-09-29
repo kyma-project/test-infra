@@ -214,21 +214,21 @@ func loadADOGitState() (GitStateConfig, error) {
 func loadGithubActionsGitState() (GitStateConfig, error) {
 	eventName, present := os.LookupEnv("GITHUB_EVENT_NAME")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set.  Please ensure the image-builder is running in GitHub environment.")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_EVENT_NAME environment variable is not set.  Please ensure the image-builder is running in GitHub environment")
 	}
 	eventPayloadPath, present := os.LookupEnv("GITHUB_EVENT_PATH")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set. Please ensure the image-builder is running in GitHub environment.")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_EVENT_PATH environment variable is not set. Please ensure the image-builder is running in GitHub environment")
 	}
 	// For PR and push events commit sha will be fetched from event payload
 	commitSHA, present := os.LookupEnv("GITHUB_SHA")
 	if !present && (eventName != "pull_request_target" && eventName != "push") {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_SHA environment variable is not set, it should be set to HEAD commit SHA. Please ensure the image-builder is running in GitHub environment.")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_SHA environment variable is not set, it should be set to HEAD commit SHA. Please ensure the image-builder is running in GitHub environment")
 	}
 	// For PR and push events commit ref will be fetched from event payload
 	gitRef, present := os.LookupEnv("GITHUB_REF")
 	if !present && (eventName != "pull_request_target" && eventName != "push") {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_REF environment variable is not set, it should be set to current ref. Please ensure the image-builder is running in GitHub environment.")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_REF environment variable is not set, it should be set to current ref. Please ensure the image-builder is running in GitHub environment")
 	}
 
 	// Read event payload file from runner
