@@ -29,7 +29,7 @@ sign-config:
         - workflow_dispatch
         - schedule
       config:
-        endpoint: https://signing.repositories.cloud.sap/signingsvc/sign
+        endpoint: https://signing-manage.repositories.cloud.sap/trusted-collections/publish
         timeout: 5m
         retry-timeout: 10s
         secret:
