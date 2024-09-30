@@ -12,7 +12,7 @@ on:
     paths:
       - "images/**"
       - ".github/workflows/image-builder.yml"
-
+  workflow_dispatch: {}
 jobs:
   # Build the base Alpine image
   build-alpine:
