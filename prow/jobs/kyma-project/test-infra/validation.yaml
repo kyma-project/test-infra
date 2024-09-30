@@ -33,34 +33,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-test-infra-validate-dockerfiles
-      annotations:
-        description: "Validate Dockerfiles, run hadolint."
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-dockerfiles"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '.*Dockerfile$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20240924-6fb36f45"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/bash"
-            args:
-              - "-c"
-              - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
   
