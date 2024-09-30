@@ -3,39 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pull-unit-test-go
-      annotations:
-        description: "Run unit tests for all modules in test-infra repository"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-unit-test-go"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '.*\.go$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "go"
-            args:
-              - "test"
-              - "-cover"
-              - "./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
     - name: pre-main-test-infra-lint
       annotations:
         description: "Run golangci-lint for all modules in test-infra repository"
