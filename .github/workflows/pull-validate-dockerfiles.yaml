@@ -1,0 +1,16 @@
+name: pull-validate-dockerfiles
+
+on:
+  pull_request:
+    branches:
+     - main
+    paths:
+      - '**/Dockerfile'
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    container: hadolint/hadolint
+    steps:
+      - uses: actions/checkout@v4
+      - run: find "." -type f -name "Dockerfile" -exec "hadolint" -x {} +
