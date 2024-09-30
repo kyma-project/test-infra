@@ -24,7 +24,6 @@ apps:
   - ko://github.com/kyma-project/test-infra/cmd/dashboard-token-proxy
 """
 
-# Parsuj listę aplikacji
 apps = [line.split("ko://github.com/kyma-project/test-infra/cmd/")[1].strip() for line in koapps_yaml.splitlines() if line.startswith("  - ko://")]
 
 dockerfile_template = """FROM golang:1.23-alpine as builder
@@ -110,30 +109,24 @@ jobs:
         run: echo "Image built ${{{{ needs.build-image.outputs.images }}}}"
 """
 
-# Tworzenie plików
 for app in apps:
-    app_full_path = app  # Pełna ścieżka aplikacji (np. cloud-run/scan-logs-for-secrets)
-    app_name = app_full_path.split('/')[-1]  # Ostatni segment ścieżki (np. scan-logs-for-secrets)
+    app_full_path = app
+    app_name = app_full_path.split('/')[-1]
 
-    # Ścieżka do Dockerfile
     dockerfile_dir = os.path.join("cmd", app_full_path)
     dockerfile_path = os.path.join(dockerfile_dir, "Dockerfile")
 
-    # Utwórz folder, jeśli nie istnieje
     os.makedirs(dockerfile_dir, exist_ok=True)
 
-    # Zapisz Dockerfile
     with open(dockerfile_path, 'w') as dockerfile:
         dockerfile.write(dockerfile_template.format(app_name=app_name, app_full_path=app_full_path))
 
-    # Ścieżka do workflow pull-build
     workflow_pull_path = f".github/workflows/pull-build-{app_name}.yml"
     with open(workflow_pull_path, 'w') as workflow_pull:
         workflow_pull.write(workflow_template_pull.format(app_name=app_name, app_full_path=app_full_path))
 
-    # Ścieżka do workflow push-build
     workflow_push_path = f".github/workflows/push-build-{app_name}.yml"
     with open(workflow_push_path, 'w') as workflow_push:
         workflow_push.write(workflow_template_push.format(app_name=app_name, app_full_path=app_full_path))
 
-print("Pliki Dockerfile oraz workflow zostały wygenerowane.")
+print("git")
