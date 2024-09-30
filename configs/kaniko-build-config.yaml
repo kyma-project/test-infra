@@ -28,7 +28,7 @@ sign-config:
         - postsubmit
         - workflow_dispatch
       config:
-        endpoint: https://signing-manage.repositories.cloud.sap/trusted-collections/publish
+        endpoint: https://signing.repositories.cloud.sap/signingsvc/sign
         timeout: 5m
         retry-timeout: 10s
         secret:
