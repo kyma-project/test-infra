@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch"}
+var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch", "schedule"}
 
 func GetValidJobTypes() []string {
 	return validJobTypes
