@@ -5,6 +5,7 @@ on:
     branches:
      - main
     paths:
+     - '.github/workflows/pull-unit-test-go.yaml'
      - '**/*.go'
 
 jobs:
