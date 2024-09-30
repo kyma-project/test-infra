@@ -27,6 +27,7 @@ sign-config:
       job-type:
         - postsubmit
         - workflow_dispatch
+        - schedule
       config:
         endpoint: https://signing-manage.repositories.cloud.sap/trusted-collections/publish
         timeout: 5m
