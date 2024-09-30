@@ -1,0 +1,21 @@
+apps:
+  - ko://github.com/kyma-project/test-infra/cmd/tools/pjtester
+  - ko://github.com/kyma-project/test-infra/cmd/image-url-helper
+  - ko://github.com/kyma-project/test-infra/cmd/markdown-index
+  - ko://github.com/kyma-project/test-infra/cmd/tools/usersmapchecker
+  - ko://github.com/kyma-project/test-infra/cmd/tools/gcscleaner
+  - ko://github.com/kyma-project/test-infra/cmd/tools/diskscollector
+  - ko://github.com/kyma-project/test-infra/cmd/tools/clusterscollector
+  - ko://github.com/kyma-project/test-infra/cmd/tools/vmscollector
+  - ko://github.com/kyma-project/test-infra/cmd/tools/ipcleaner
+  - ko://github.com/kyma-project/test-infra/cmd/tools/orphanremover
+  - ko://github.com/kyma-project/test-infra/cmd/tools/dnscollector
+  - ko://github.com/kyma-project/test-infra/cmd/tools/externalsecretschecker
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/create-github-issue
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/move-gcs-bucket
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/scan-logs-for-secrets
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/search-github-issue
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/github-webhook-gateway
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/cors-proxy
+  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/automated-approver
+  - ko://github.com/kyma-project/test-infra/cmd/dashboard-token-proxy
