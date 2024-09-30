@@ -1,0 +1,82 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-test-infra-ko-build
+      decorate: true
+      cluster: untrusted-workload
+      run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod|^images/
+      annotations:
+        owner: neighbors
+        description: Builds go-based toolkit in one go
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-ko-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45
+            env:
+              - name: KO_DOCKER_REPO
+                value: europe-docker.pkg.dev/kyma-project/prod/test-infra
+            command: ["ko"]
+            args:
+              - resolve
+              - -f
+              - .koapps.yaml
+              - --push=false
+              - --base-import-paths
+              - -j4
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
+postsubmits:
+  kyma-project/test-infra:
+    - name: post-test-infra-ko-build
+      decorate: true
+      cluster: trusted-workload
+      run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod|^images/
+      annotations:
+        owner: neighbors
+        description: Builds go-based toolkit in one go
+      labels:
+        preset-sa-kyma-push-images: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-ko-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45
+            env:
+              - name: KO_DOCKER_REPO
+                value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko
+            command: ["bash", "-c"]
+            args:
+              - |-
+                TAG="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}"
+                ko resolve -f .koapps.yaml \
+                  --base-import-paths \
+                  --tags=latest \
+                  --tags="$TAG" \
+                  -j4
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
