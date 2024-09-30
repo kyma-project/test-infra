@@ -5,6 +5,7 @@ on:
     branches:
      - main
     paths:
+      - '.github/workflows/pull-validate-scripts.yaml'
       - '**/*.sh'
 
 jobs:
