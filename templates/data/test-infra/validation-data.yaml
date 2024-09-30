@@ -13,21 +13,6 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-test-infra-validate-scripts"
-                  annotations:
-                    owner: neighbors
-                    description: "Validate scripts."
-                  run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
-                  command: "prow/scripts/validate-scripts.sh"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20240924-6fb36f45
-                inheritedConfigs:
-                  local:
-                    - "jobConfig_allBranches"
-                  global:
-                    - "jobConfig_presubmit"
-                    - "pubsub_labels"
-                    - "unprivileged"
-              - jobConfig:
                   name: "pre-main-test-infra-validate-generated-files"
                   annotations:
                     owner: neighbors
