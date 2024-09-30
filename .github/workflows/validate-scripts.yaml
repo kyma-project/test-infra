@@ -19,6 +19,6 @@ jobs:
             sudo apt install shellcheck
           fi
       - run: |
-          shellcheck ./**/*.sh
+          find "." -type f -name "*.sh" -exec "shellcheck" -x {} +
         env:
           SHELLCHECK_OPTS: "-e SC2034 -e SC2181 -e SC2155"
