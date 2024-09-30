@@ -148,6 +148,27 @@ Image signing allows verification that the image comes from a trusted repository
 > [!NOTE]
 > Image Builder signs images built on the push and workflow_dispatch events only. Images built on the pull_request_target event are not signed.
 
+## Image Signing with Signify
+
+Image Builder signs images using the Signify service, ensuring that images come from trusted repositories and have not been tampered with.
+
+### Updated Signing Process
+
+The authentication to the Signify API has been updated from using `role id/secret id` to mTLS. This change introduces the following updates:
+
+- **mTLS Authentication**: Image Builder now uses a client certificate/private key pair for authentication with the Signify API. These credentials are valid for 7 days, after which they must be rotated.
+- **Automated Rotation**: The certificate rotation must occur every 7 days. The new certificate/private key pair must be generated using the previous pair before they expire.
+
+The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
+
+> [!NOTE]
+> Images are only signed when built on `push` and `workflow_dispatch` events. Pull request images are not signed.
+
+### Signify API Changes
+
+The JSON structure for signing has changed. See the new structure and examples in the [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
+
+
 ## Named Tags
 
 Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
