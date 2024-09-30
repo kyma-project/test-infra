@@ -20,4 +20,4 @@ jobs:
         run: |
           sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/${{ env.HADOLINT_VERSION }}/hadolint-Linux-x86_64
           sudo chmod +x /bin/hadolint
-      - run: find "." -type f -name "Dockerfile" -exec "hadolint" -x {} +
+      - run: find "." -type f -name "Dockerfile" -exec "hadolint" {} +
