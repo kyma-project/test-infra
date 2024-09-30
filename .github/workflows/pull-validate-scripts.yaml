@@ -1,4 +1,4 @@
-name: validate-scripts
+name: pull-validate-scripts
 
 on:
   pull_request:
