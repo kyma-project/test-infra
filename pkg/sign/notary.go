@@ -441,7 +441,7 @@ type GUNTargets struct {
 
 // SigningPayload represents the payload to be sent to the Notary server for signing.
 type SigningPayload struct {
-	GunTargets []GUNTargets `json:"gunTargets"`
+	GunTargets []GUNTargets `json:"trustedCollections"`
 }
 
 // TLSCredentials holds the base64-encoded TLS certificate and private key data.
