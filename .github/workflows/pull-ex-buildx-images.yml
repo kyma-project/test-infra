@@ -1,0 +1,135 @@
+name: pull-ex-buildx-images
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    paths:
+      - "images/**"
+      - ".github/workflows/image-builder.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "images/**"
+      - ".github/workflows/image-builder.yml"
+
+jobs:
+  # Build the base Alpine image
+  build-alpine:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: alpine
+      dockerfile: images/alpine/Dockerfile
+      context: .
+
+  # Build alpine/git image that depends on build-alpine
+  build-alpine-git:
+    needs: build-alpine
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: alpine-git
+      dockerfile: images/alpine/git/Dockerfile
+      context: .
+
+  # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
+  build-alpine-git-gke-aws-auth:
+    needs: build-alpine-git
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: alpine-git-gke-aws-auth
+      dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
+      context: .
+
+  # Build alpine/hadolint image that depends on build-alpine
+  build-alpine-hadolint:
+    needs: build-alpine
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: alpine-hadolint
+      dockerfile: images/alpine/hadolint/Dockerfile
+      context: .
+
+  # Build alpine/shellcheck image that depends on build-alpine
+  build-alpine-shellcheck:
+    needs: build-alpine
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: alpine-shellcheck
+      dockerfile: images/alpine/shellcheck/Dockerfile
+      context: .
+
+  # Build the base buildpack image
+  build-buildpack:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: buildpack
+      dockerfile: images/buildpack/Dockerfile
+      context: .
+
+  # Build buildpack/go image that depends on build-buildpack
+  build-buildpack-go:
+    needs: build-buildpack
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: buildpack-go
+      dockerfile: images/buildpack/go/Dockerfile
+      context: .
+
+  # Build e2e-dind-k3d image
+  build-e2e-dind-k3d:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: e2e-dind-k3d
+      dockerfile: images/e2e-dind-k3d/Dockerfile
+      context: .
+
+  # Build e2e-dind-nodejs image
+  build-e2e-dind-nodejs:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: e2e-dind-nodejs
+      dockerfile: images/e2e-dind-nodejs/Dockerfile
+      context: .
+
+  # Build e2e-gcloud image
+  build-e2e-gcloud:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: e2e-gcloud
+      dockerfile: images/e2e-gcloud/Dockerfile
+      context: .
+
+  # Build unified-agent base image
+  build-unified-agent:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: unified-agent
+      dockerfile: images/unified-agent/Dockerfile
+      context: .
+
+  # Build unified-agent/go image that depends on build-unified-agent
+  build-unified-agent-go:
+    needs: build-unified-agent
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: unified-agent-go
+      dockerfile: images/unified-agent/go/Dockerfile
+      context: .
+
+  # Build unified-agent/nodejs image that depends on build-unified-agent
+  build-unified-agent-nodejs:
+    needs: build-unified-agent
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: unified-agent-nodejs
+      dockerfile: images/unified-agent/nodejs/Dockerfile
+      context: .
+
+  # Build unified-agent/python image that depends on build-unified-agent
+  build-unified-agent-python:
+    needs: build-unified-agent
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: unified-agent-python
+      dockerfile: images/unified-agent/python/Dockerfile
+      context: .
