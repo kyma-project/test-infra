@@ -12,6 +12,7 @@ jobs:
       - name: Install shellcheck
         run: |
           sudo apt install shellcheck
-      - run: "shellcheck ${{ github.workspace }}/**/*.sh"
+      - run: |
+          shellcheck ./**/*.sh
         env:
           SHELLCHECK_OPTS: "-e SC2034 -e SC2181 -e SC2155"
