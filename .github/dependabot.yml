@@ -287,18 +287,6 @@ updates:
       prefix: "e2e-dind-k3d"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/images/alpine/shellcheck"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "alpine-shellcheck"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/images/alpine/hadolint"
     labels:
       - "docker"

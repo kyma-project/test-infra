@@ -11,14 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install shellcheck
+        # Shellcheck should be preinstalled on linux runners
+        # see: https://github.com/koalaman/shellcheck?tab=readme-ov-file#in-your-build-or-test-suites
+        # in case of change this contract in the future, we will install it
         run: |
-          # Shellcheck should be preinstalled
-          # in case of change this contract in the future
-          # we will install it
           if ! [ -x "$(command -v shellcheck)" ]; then
             sudo apt install shellcheck
           fi
-      - run: |
-          find "." -type f -name "*.sh" -exec "shellcheck" -x {} +
+        # Use find to ensure each file is checked
+      - run: find "." -type f -name "*.sh" -exec "shellcheck" -x {} +
         env:
           SHELLCHECK_OPTS: "-e SC2034 -e SC2181 -e SC2155"
