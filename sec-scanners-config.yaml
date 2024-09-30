@@ -1,14 +1,14 @@
 module-name: test-infra
 protecode:
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240927-ccdd835a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240927-29c71d4a
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240927-29c71d4a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20240930-454017dd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20240930-1b200621
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20240930-1b200621
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20240924-997e8b7b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240910-c199525c
 whitesource:
