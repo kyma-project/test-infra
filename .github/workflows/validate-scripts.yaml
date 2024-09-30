@@ -11,7 +11,12 @@ jobs:
     steps:
       - name: Install shellcheck
         run: |
-          sudo apt install shellcheck
+          # Shellcheck should be preinstalled
+          # in case of change this contract in the future
+          # we will install it
+          if ! [ -x "$(command -v shellcheck)" ]; then
+            sudo apt install shellcheck
+          fi
       - run: |
           shellcheck ./**/*.sh
         env:
