@@ -287,18 +287,6 @@ updates:
       prefix: "e2e-dind-k3d"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/images/alpine/hadolint"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "alpine-hadolint"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/images/alpine/git/gke-aws-auth"
     labels:
       - "docker"
