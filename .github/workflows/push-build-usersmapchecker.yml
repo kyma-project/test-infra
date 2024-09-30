@@ -1,0 +1,26 @@
+name: push-build-usersmapchecker
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/usersmapchecker/*.go"
+      - "cmd/tools/usersmapchecker/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: usersmapchecker
+      dockerfile: cmd/tools/usersmapchecker/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

@@ -10,18 +10,18 @@ RUN go mod download
 # Copy the source to the Working Directory inside the container
 COPY . .
 
-WORKDIR /app/cmd/cloud-run/move-gcs-bucket
+WORKDIR /app/cmd/image-url-helper
 
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 FROM alpine:3.20.3
 
-LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/cloud-run/move-gcs-bucket
+LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/image-url-helper
 
 # Copy the built Go app from the builder stage
-COPY --from=builder /app/cmd/cloud-run/move-gcs-bucket/main /move-gcs-bucket
+COPY --from=builder /app/cmd/image-url-helper/main /image-url-helper
 
 RUN apk add --no-cache ca-certificates git && \
-    chmod +x /move-gcs-bucket
-ENTRYPOINT ["/move-gcs-bucket"]
+    chmod +x /image-url-helper
+ENTRYPOINT ["/image-url-helper"]

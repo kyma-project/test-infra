@@ -1,0 +1,26 @@
+name: push-build-pjtester
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/pjtester/*.go"
+      - "cmd/tools/pjtester/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: pjtester
+      dockerfile: cmd/tools/pjtester/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

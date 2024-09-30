@@ -1,0 +1,26 @@
+name: push-build-automated-approver
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/external-plugins/automated-approver/*.go"
+      - "cmd/external-plugins/automated-approver/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: automated-approver
+      dockerfile: cmd/external-plugins/automated-approver/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

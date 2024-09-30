@@ -1,0 +1,26 @@
+name: push-build-vmscollector
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/vmscollector/*.go"
+      - "cmd/tools/vmscollector/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: vmscollector
+      dockerfile: cmd/tools/vmscollector/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

@@ -1,0 +1,26 @@
+name: push-build-dashboard-token-proxy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/dashboard-token-proxy/*.go"
+      - "cmd/dashboard-token-proxy/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: dashboard-token-proxy
+      dockerfile: cmd/dashboard-token-proxy/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"

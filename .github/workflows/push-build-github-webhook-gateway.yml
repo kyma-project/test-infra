@@ -1,0 +1,26 @@
+name: push-build-github-webhook-gateway
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/cloud-run/github-webhook-gateway/*.go"
+      - "cmd/cloud-run/github-webhook-gateway/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
+
+jobs:
+  build-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: github-webhook-gateway
+      dockerfile: cmd/cloud-run/github-webhook-gateway/Dockerfile
+      context: .
+  print-image:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Print image
+        run: echo "Image built ${{ needs.build-image.outputs.images }}"
