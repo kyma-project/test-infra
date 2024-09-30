@@ -456,6 +456,7 @@ tide:
         - kyma-project/docker-registry
         - kyma-project/hydroform
         - kyma-project/btp-manager
+        - kyma-project/kyma-environment-broker
         - kyma-project/modulectl
       reviewApprovedRequired: true
     - labels:
