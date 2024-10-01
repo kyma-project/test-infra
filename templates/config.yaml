@@ -21,7 +21,6 @@ global:
         - name: "template-repository"
         - name: "btp-manager"
         - name: "kyma-environment-broker"
-        - name: "telemetry-manager"
         - name: "compass-manager"
 
 # global configSet variables
