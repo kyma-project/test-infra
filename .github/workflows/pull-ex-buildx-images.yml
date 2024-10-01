@@ -1,17 +1,17 @@
 name: pull-ex-buildx-images
 
 on:
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    paths:
-      - "images/**"
-      - ".github/workflows/image-builder.yml"
-  push:
-    branches:
-      - main
-    paths:
-      - "images/**"
-      - ".github/workflows/image-builder.yml"
+  # pull_request_target:
+  #   types: [opened, edited, synchronize, reopened, ready_for_review]
+  #   paths:
+  #     - "images/**"
+  #     - ".github/workflows/image-builder.yml"
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "images/**"
+  #     - ".github/workflows/image-builder.yml"
   workflow_dispatch: {}
 jobs:
   # Build the base Alpine image
