@@ -334,39 +334,11 @@ branch-protection:
             - "^sec-scanners-config-"
             - "^sm-integration$"
         template-operator:
-          required_status_checks:
-            contexts:
-              - "lint"
-              - "Run integration tests"
+          unmanaged: true
         lifecycle-manager:
-          required_status_checks:
-            contexts:
-              - "E2E (kyma-metrics)"
-              - "E2E (module-without-default-cr)"
-              - "E2E (upgrade-under-deletion)"
-              - "E2E (self-signed-certificate-rotation)"
-              - "E2E (non-blocking-deletion)"
-              - "E2E (purge-controller)"
-              - "E2E (purge-metrics)"
-              - "E2E (watcher-enqueue)"
-              - "E2E (module-upgrade-channel-switch)"
-              - "E2E (module-upgrade-new-version)"
-              - "E2E (ca-certificate-rotation)"
-              - "E2E (kyma-deprovision-with-foreground-propagation)"
-              - "E2E (kyma-deprovision-with-background-propagation)"
-              - "E2E (misconfigured-kyma-secret)"
-              - "Run 'make test'"
-              - "kyma (unstable) alpha deploy -k config/control-plane"
-              - "kyma (unstable) alpha deploy -k config/default"
-              - "lint"
-              - "Kustomize (dry-run)"
-              - "Kustomize (dry-run-control-plane)"
-              - "markdown-link-check"
+          unmanaged: true
         runtime-watcher:
-          required_status_checks:
-            contexts:
-              - "E2E (watcher-enqueue)"
-              - "E2E (watcher-metrics)"
+          unmanaged: true
         modulectl:
           unmanaged: true
         cli:
@@ -448,6 +420,9 @@ tide:
         - kyma-project/btp-manager
         - kyma-project/kyma-environment-broker
         - kyma-project/modulectl
+        - kyma-project/lifecycle-manager
+        - kyma-project/runtime-watcher
+        - kyma-project/template-operator
       reviewApprovedRequired: true
     - labels:
         - lgtm
