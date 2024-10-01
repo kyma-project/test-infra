@@ -1,20 +1,30 @@
-name: pull-build-externalsecretschecker
+name: build-image-url-helper
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/tools/externalsecretschecker/*.go"
-      - "cmd/tools/externalsecretschecker/Dockerfile"
+      - "cmd/image-url-helper/*.go"
+      - "cmd/image-url-helper/Dockerfile"
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/image-url-helper/*.go"
+      - "cmd/image-url-helper/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
-      name: externalsecretschecker
-      dockerfile: cmd/tools/externalsecretschecker/Dockerfile
+      name: image-url-helper
+      dockerfile: cmd/image-url-helper/Dockerfile
       context: .
   print-image:
     runs-on: ubuntu-latest

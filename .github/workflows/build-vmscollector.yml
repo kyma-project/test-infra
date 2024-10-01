@@ -1,20 +1,30 @@
-name: pull-build-pjtester
+name: build-vmscollector
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/tools/pjtester/*.go"
-      - "cmd/tools/pjtester/Dockerfile"
+      - "cmd/tools/vmscollector/*.go"
+      - "cmd/tools/vmscollector/Dockerfile"
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/vmscollector/*.go"
+      - "cmd/tools/vmscollector/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
-      name: pjtester
-      dockerfile: cmd/tools/pjtester/Dockerfile
+      name: vmscollector
+      dockerfile: cmd/tools/vmscollector/Dockerfile
       context: .
   print-image:
     runs-on: ubuntu-latest

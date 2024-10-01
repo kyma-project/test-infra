@@ -55,7 +55,7 @@ RUN apk add --no-cache ca-certificates git && \\
 ENTRYPOINT ["/{app_name}"]
 """
 
-workflow_template_pull = """name: pull-build-{app_name}
+workflow_template_pull = """name: build-{app_name}
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
@@ -65,24 +65,6 @@ on:
       - "pkg/**"
       - "go.mod"
       - "go.sum"
-
-jobs:
-  build-image:
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: {app_name}
-      dockerfile: cmd/{app_full_path}/Dockerfile
-      context: .
-  print-image:
-    runs-on: ubuntu-latest
-    needs: build-image
-    steps:
-      - name: Print image
-        run: echo "Image built ${{{{ needs.build-image.outputs.images }}}}"
-"""
-
-workflow_template_push = """name: push-build-{app_name}
-on:
   push:
     branches:
       - main
@@ -121,12 +103,8 @@ for app in apps:
     with open(dockerfile_path, 'w') as dockerfile:
         dockerfile.write(dockerfile_template.format(app_name=app_name, app_full_path=app_full_path))
 
-    workflow_pull_path = f".github/workflows/pull-build-{app_name}.yml"
+    workflow_pull_path = f".github/workflows/build-{app_name}.yml"
     with open(workflow_pull_path, 'w') as workflow_pull:
         workflow_pull.write(workflow_template_pull.format(app_name=app_name, app_full_path=app_full_path))
-
-    workflow_push_path = f".github/workflows/push-build-{app_name}.yml"
-    with open(workflow_push_path, 'w') as workflow_push:
-        workflow_push.write(workflow_template_push.format(app_name=app_name, app_full_path=app_full_path))
 
 print("git")

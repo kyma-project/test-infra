@@ -1,5 +1,13 @@
-name: push-build-automated-approver
+name: build-automated-approver
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/external-plugins/automated-approver/*.go"
+      - "cmd/external-plugins/automated-approver/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main

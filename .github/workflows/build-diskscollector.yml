@@ -1,20 +1,30 @@
-name: pull-build-vmscollector
+name: build-diskscollector
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/tools/vmscollector/*.go"
-      - "cmd/tools/vmscollector/Dockerfile"
+      - "cmd/tools/diskscollector/*.go"
+      - "cmd/tools/diskscollector/Dockerfile"
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/diskscollector/*.go"
+      - "cmd/tools/diskscollector/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
-      name: vmscollector
-      dockerfile: cmd/tools/vmscollector/Dockerfile
+      name: diskscollector
+      dockerfile: cmd/tools/diskscollector/Dockerfile
       context: .
   print-image:
     runs-on: ubuntu-latest

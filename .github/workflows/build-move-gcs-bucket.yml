@@ -1,5 +1,13 @@
-name: push-build-move-gcs-bucket
+name: build-move-gcs-bucket
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/cloud-run/move-gcs-bucket/*.go"
+      - "cmd/cloud-run/move-gcs-bucket/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main

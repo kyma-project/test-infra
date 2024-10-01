@@ -1,5 +1,13 @@
-name: push-build-orphanremover
+name: build-orphanremover
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/tools/orphanremover/*.go"
+      - "cmd/tools/orphanremover/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main

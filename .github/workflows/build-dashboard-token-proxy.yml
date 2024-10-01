@@ -1,20 +1,30 @@
-name: pull-build-orphanremover
+name: build-dashboard-token-proxy
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/tools/orphanremover/*.go"
-      - "cmd/tools/orphanremover/Dockerfile"
+      - "cmd/dashboard-token-proxy/*.go"
+      - "cmd/dashboard-token-proxy/Dockerfile"
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/dashboard-token-proxy/*.go"
+      - "cmd/dashboard-token-proxy/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
-      name: orphanremover
-      dockerfile: cmd/tools/orphanremover/Dockerfile
+      name: dashboard-token-proxy
+      dockerfile: cmd/dashboard-token-proxy/Dockerfile
       context: .
   print-image:
     runs-on: ubuntu-latest

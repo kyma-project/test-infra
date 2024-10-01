@@ -1,20 +1,30 @@
-name: pull-build-usersmapchecker
+name: build-gcscleaner
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
-      - "cmd/tools/usersmapchecker/*.go"
-      - "cmd/tools/usersmapchecker/Dockerfile"
+      - "cmd/tools/gcscleaner/*.go"
+      - "cmd/tools/gcscleaner/Dockerfile"
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/tools/gcscleaner/*.go"
+      - "cmd/tools/gcscleaner/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
     with:
-      name: usersmapchecker
-      dockerfile: cmd/tools/usersmapchecker/Dockerfile
+      name: gcscleaner
+      dockerfile: cmd/tools/gcscleaner/Dockerfile
       context: .
   print-image:
     runs-on: ubuntu-latest

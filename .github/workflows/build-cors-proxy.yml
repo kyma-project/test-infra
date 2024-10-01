@@ -1,5 +1,13 @@
-name: push-build-cors-proxy
+name: build-cors-proxy
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/cloud-run/cors-proxy/*.go"
+      - "cmd/cloud-run/cors-proxy/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main

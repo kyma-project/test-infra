@@ -1,4 +1,4 @@
-name: pull-build-search-github-issue
+name: build-search-github-issue
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
@@ -8,6 +8,16 @@ on:
       - "pkg/**"
       - "go.mod"
       - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/cloud-run/search-github-issue/*.go"
+      - "cmd/cloud-run/search-github-issue/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 jobs:
   build-image:

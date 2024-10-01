@@ -1,5 +1,13 @@
-name: push-build-create-github-issue
+name: build-create-github-issue
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/cloud-run/create-github-issue/*.go"
+      - "cmd/cloud-run/create-github-issue/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main

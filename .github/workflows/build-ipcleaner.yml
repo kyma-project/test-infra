@@ -1,5 +1,13 @@
-name: push-build-ipcleaner
+name: build-ipcleaner
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/tools/ipcleaner/*.go"
+      - "cmd/tools/ipcleaner/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main
