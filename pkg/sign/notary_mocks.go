@@ -108,7 +108,9 @@ func (mr *MockReference) GetTag() (string, error) {
 
 // MockImage implements ImageInterface
 type MockImage struct {
-	MockManifest func() (ManifestInterface, error)
+	MockManifest  func() (ManifestInterface, error)
+	MockGetDigest func() (string, error)
+	MockGetSize   func() (int64, error)
 }
 
 func (mi *MockImage) Manifest() (ManifestInterface, error) {
@@ -116,6 +118,20 @@ func (mi *MockImage) Manifest() (ManifestInterface, error) {
 		return mi.MockManifest()
 	}
 	return nil, fmt.Errorf("MockManifest not implemented")
+}
+
+func (mi *MockImage) GetDigest() (string, error) {
+	if mi.MockGetDigest != nil {
+		return mi.MockGetDigest()
+	}
+	return "", fmt.Errorf("MockGetDigest not implemented")
+}
+
+func (mi *MockImage) GetSize() (int64, error) {
+	if mi.MockGetSize != nil {
+		return mi.MockGetSize()
+	}
+	return 0, fmt.Errorf("MockGetSize not implemented")
 }
 
 // MockManifest implements ManifestInterface
