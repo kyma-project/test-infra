@@ -40,24 +40,6 @@ jobs:
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
       context: .
 
-  # Build alpine/hadolint image that depends on build-alpine
-  build-alpine-hadolint:
-    needs: build-alpine
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: alpine-hadolint
-      dockerfile: images/alpine/hadolint/Dockerfile
-      context: .
-
-  # Build alpine/shellcheck image that depends on build-alpine
-  build-alpine-shellcheck:
-    needs: build-alpine
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: alpine-shellcheck
-      dockerfile: images/alpine/shellcheck/Dockerfile
-      context: .
-
   # Build the base buildpack image
   build-buildpack:
     uses: ./.github/workflows/image-builder.yml
