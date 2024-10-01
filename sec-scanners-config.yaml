@@ -7,8 +7,8 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20241001-0e7d9b5c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20241001-0e7d9b5c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20241001-0e7d9b5c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241001-ea6bb32e
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241001-ea6bb32e
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241001-709bacbd
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241001-709bacbd
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20240924-997e8b7b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20240910-c199525c
 whitesource:
