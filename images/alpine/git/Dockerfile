@@ -1,4 +1,5 @@
-FROM local/alpine:latest
+ARG BASE_ALPINE_IMAGE
+FROM ${BASE_ALPINE_IMAGE}
 
 RUN apk add --no-cache git git-daemon openssh
 
