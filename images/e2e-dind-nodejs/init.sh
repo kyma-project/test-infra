@@ -1,4 +1,5 @@
 #!/usr/local/bin/dumb-init /bin/bash
+# shellcheck shell=bash
 
 set -e
 
@@ -12,6 +13,8 @@ cleanup_dind() {
     fi
 }
 
+# It's called using trap for INT TERM signal
+# shellcheck disable=SC2317
 early_exit_handler() {
     if [ -n "${WRAPPED_COMMAND_PID:-}" ]; then
         kill -TERM "$WRAPPED_COMMAND_PID" || true

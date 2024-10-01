@@ -1,0 +1,23 @@
+name: pull-validate-dockerfiles
+
+on:
+  pull_request:
+    branches:
+     - main
+    paths:
+      - '.github/workflows/pull-validate-dockerfiles.yaml'
+      - '**/Dockerfile'
+
+env:
+ HADOLINT_VERSION: v2.12.0
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install hadolint
+        run: |
+          sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/${{ env.HADOLINT_VERSION }}/hadolint-Linux-x86_64
+          sudo chmod +x /bin/hadolint
+      - run: find "." -type f -name "Dockerfile" -exec "hadolint" {} +

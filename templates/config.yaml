@@ -118,16 +118,6 @@ globalSets:
       - name: signify-secret
         mountPath: /secret
         readOnly: true
-  linting:
-    skip_report: "false"
-    max_concurrency: "10"
-    optional: "true"
-    decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240910-83aca12b"
-    pubsub_project: "sap-kyma-prow"
-    pubsub_topic: "prowjobs"
-    request_memory: 200Mi
-    request_cpu: 80m
   testing:
     skip_report: "false"
     max_concurrency: "10"
