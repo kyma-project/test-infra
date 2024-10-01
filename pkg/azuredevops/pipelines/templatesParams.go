@@ -56,7 +56,7 @@ func (p OCIImageBuilderTemplateParams) SetWorkflowDispatchJobType() {
 
 // SetScheduleJobType sets required parameter JobType to schedule.
 func (p OCIImageBuilderTemplateParams) SetScheduleJobType() {
-	p["JobType"] = "workflow_dispatch"
+	p["JobType"] = "schedule"
 }
 
 // SetPullNumber sets optional parameter PullNumber.
