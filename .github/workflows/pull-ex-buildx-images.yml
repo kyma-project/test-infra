@@ -21,16 +21,26 @@ jobs:
       name: alpine
       dockerfile: images/alpine/Dockerfile
       context: .
-
+      
+  unpack-image:
+    runs-on: ubuntu-latest
+    needs: build-alpine
+    steps:
+      - name: Unpack image output to environment variable
+        run: |
+          IMAGE="${{ needs.build-alpine.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "CLEAN_IMAGE=$CLEAN_IMAGE" >> $GITHUB_ENV
+          
   # Build alpine/git image that depends on build-alpine
   build-alpine-git:
-    needs: build-alpine
+    needs: [build-alpine, unpack-image]
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: alpine-git
       dockerfile: images/alpine/git/Dockerfile
       context: .
-  #     build-args: BASE_ALPINE_IMAGE=${{ needs.build-alpine.outputs.images }}
+      build-args: BASE_ALPINE_IMAGE=${{ env.CLEAN_IMAGE }}
 
   # # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
   # build-alpine-git-gke-aws-auth:
