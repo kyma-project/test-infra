@@ -32,10 +32,10 @@ RUN set -eux; \
     echo 'dockremap:165536:65536' >> /etc/subuid && \
     echo 'dockremap:165536:65536' >> /etc/subgid
 
-RUN mkdir -p /workspace; \
-    chmod 1777 /workspace
+RUN mkdir -p /app; \
+    chmod 1777 /app
 
-WORKDIR /workspace
+WORKDIR /app
 
 FROM golang:1.22.3 AS go-deps
 ENV CGO_ENABLED=0
