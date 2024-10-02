@@ -1,3 +1,4 @@
+tag-template: "v{{ .Date }}-{{ .ShortSHA }}"
 default-commit-tag:
   name: "default_tag"
   value: "v{{ .Date }}-{{ .ShortSHA }}"

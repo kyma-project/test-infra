@@ -33,6 +33,9 @@ type Config struct {
 	DevRegistry Registry `yaml:"dev-registry" json:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
 	Cache CacheConfig `yaml:"cache" json:"cache"`
+	// TagTemplate is used to generate default tag for push events for current image-builder version.
+	// This will be removed after migration.
+	TagTemplate tags.Tag `yaml:"tag-template" json:"tag-template"`
 	// Default Tag template used for images build on commit.
 	// The value can be a go-template string or literal tag value string.
 	// See tags.Tag struct for more information and available fields
