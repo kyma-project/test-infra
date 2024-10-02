@@ -84,7 +84,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
