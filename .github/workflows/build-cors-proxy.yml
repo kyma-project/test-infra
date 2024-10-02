@@ -1,7 +1,7 @@
 name: build-cors-proxy
 on:
   pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
       - "cmd/cloud-run/cors-proxy/*.go"
       - "cmd/cloud-run/cors-proxy/Dockerfile"

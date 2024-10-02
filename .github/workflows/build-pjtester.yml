@@ -1,7 +1,7 @@
 name: build-pjtester
 on:
   pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
       - "cmd/tools/pjtester/*.go"
       - "cmd/tools/pjtester/Dockerfile"

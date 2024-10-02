@@ -1,7 +1,7 @@
 name: build-search-github-issue
 on:
   pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
       - "cmd/cloud-run/search-github-issue/*.go"
       - "cmd/cloud-run/search-github-issue/Dockerfile"

@@ -1,7 +1,7 @@
 name: build-automated-approver
 on:
   pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
       - "cmd/external-plugins/automated-approver/*.go"
       - "cmd/external-plugins/automated-approver/Dockerfile"
