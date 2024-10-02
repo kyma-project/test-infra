@@ -26,6 +26,20 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   default     = "image-builder-ado-pat"
 }
 
+# Variable for image-builder's artifact registries identity
+variable "image_builder_kyma-project_identity" {
+  description = "Configuration for identity of image-builder in main kyma-project GCP project. It's used to access artifact registries."
+  type = object({
+    id = string
+    description = string
+  })
+
+  default = {
+    id = "azure-pipeline-image-builder"
+    description = "OCI image builder running in kyma development service azure pipelines"
+  }
+}
+
 # Variable for Docker Hub Mirror configuration
 variable "dockerhub_mirror" {
   description = "Configuration for the Docker Hub mirror repository"
