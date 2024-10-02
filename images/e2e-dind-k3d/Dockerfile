@@ -39,10 +39,10 @@ RUN set -eux; \
     ln -sf /sbin/ip6tables-legacy-save /sbin/ip6tables-save ; \
     ln -sf /sbin/ip6tables-legacy-restore /sbin/ip6tables-restore
 
-RUN mkdir -p /workspace; \
-    chmod 1777 /workspace
+RUN mkdir -p /app; \
+    chmod 1777 /app
 
-WORKDIR /workspace
+WORKDIR /app
 
 FROM base AS go-deps
 ENV CGO_ENABLED=0
