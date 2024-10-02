@@ -528,8 +528,9 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 
 // appendToTags appends key-value pairs from source map to target slice of tags.Tag
 // This allows creation of image tags from key value pairs.
-func appendToTags(target *[]tags.Tag, source map[string]string) {
+func appendToTags(logger Logger, target *[]tags.Tag, source map[string]string) {
 	for key, value := range source {
+		logger.Debugw("appending key-value pair to tags", "key", key, "value", value)
 		*target = append(*target, tags.Tag{Name: key, Value: value})
 	}
 }
@@ -647,7 +648,6 @@ func (l *StrList) List() []string {
 }
 
 func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
-
 	logger.Debugw("building tags", "pr_number", pr, "commit_sha", sha, "templates", templates)
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha), tags.PRNumber(pr))
@@ -725,7 +725,7 @@ func validateOptions(o options) error {
 func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error) {
 	logger.Debugw("loading env file", "envFile_path", envFile)
 	if len(envFile) == 0 {
-		logger.Infow("provided env file path empty, skipping loading env file")
+		logger.Infow("provided env file path is empty, skipping loading env file")
 		// file is empty - ignore
 		return nil, nil
 	}
@@ -735,7 +735,7 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 		return nil, fmt.Errorf("open env file: %w", err)
 	}
 	defer file.Close()
-	logger.Debugw("File opened with success")
+	logger.Debugw("File opened")
 	fileReader := bufio.NewScanner(file)
 	vars := make(map[string]string)
 	logger.Debugw("Reading env file line by line")
@@ -755,7 +755,7 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 			if _, ok := os.LookupEnv(key); ok {
 				// do not override env variable if it's already present in the runtime
 				// do not include in vars map since dev should not have access to it anyway
-				logger.Debugw("Env file key already present in runtime, skipping setting it")
+				logger.Infow("Env file key already present in runtime, skipping setting it", "key", key, "value", val)
 				continue
 			}
 			logger.Debugw("Setting env file for a given key in runtime")
@@ -815,7 +815,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
-	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "", "Path to file where generated tags will be written as JSON")
+	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
 
 	return flagSet
 }
@@ -883,9 +883,10 @@ func main() {
 
 	if o.parseTagsOnly {
 		o.logger.With("command", "parse-tags-only")
+		o.logger.Infow("Parsing tags")
 		err = generateTags(o)
 		if err != nil {
-			o.logger.Errorw("Parse tags failed", "error", err)
+			o.logger.Errorw("Parsing tags failed", "error", err)
 			os.Exit(1)
 		}
 		o.logger.Infow("Tags parsed successfully")
@@ -926,36 +927,53 @@ func generateTags(o options) error {
 	if envs == nil {
 		envs = make(map[string]string)
 		o.logger.Debugw("No env file provided, creating empty envs map")
+	} else {
+		o.logger.Infow("Environment variables loaded from env file")
 	}
-	o.logger.Debugw("Environment variables loaded from env file")
+	o.logger.Debugw("Parsing tags")
 	// Parse tags from the provided options.
 	parsedTags, err := parseTags(o)
 	if err != nil {
 		return fmt.Errorf("failed to parse tags : %s", err)
 	}
-	o.logger.Debugw("Tags parsed successfully")
+	o.logger.Infow("Tags parsed successfully", "parsedTags", parsedTags)
 	o.logger.Debugw("Appending values from envFile to tags")
 	// Append environment variables to tags.
-	appendToTags(&parsedTags, envs)
+	appendToTags(o.logger, &parsedTags, envs)
 	// Print parsed tags to stdout as json.
+	o.logger.Debugw("Added envs to tags", "tags", parsedTags)
 	jsonTags, err := tagsAsJSON(parsedTags)
-	fmt.Printf("Generated image tags: %s\n", jsonTags)
+	if err != nil {
+		return fmt.Errorf("failed generating tags json represenation: %w", err)
+	}
+	o.logger.Infow("Generated image tags", "tags", jsonTags)
 	// Write tags to a file.
 	if o.tagsOutputFile != "" {
-		o.logger.Debugw("Writing tags to file", "tagsOutputFile", o.tagsOutputFile)
-		err = os.WriteFile(o.tagsOutputFile, jsonTags, 0644)
+		o.logger.Debugw("tags output file provided", "tagsOutputFile", o.tagsOutputFile)
+		err = writeOutputFile(o.logger, o.tagsOutputFile, jsonTags)
 		if err != nil {
 			return fmt.Errorf("failed to write tags to file: %s", err)
 		}
-		o.logger.Debugw("Tags written to file")
+		o.logger.Infow("Tags written to file", "tagsOutputFile", o.tagsOutputFile, "tags", jsonTags)
 	}
+	return nil
+}
+
+// writeOutputFile writes the provided data to the file specified by the path.
+func writeOutputFile(logger Logger, path string, data []byte) error {
+	logger.Debugw("Writing tags to file", "tagsOutputFile", path)
+	err := os.WriteFile(path, data, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write tags to file: %s", err)
+	}
+	logger.Debugw("Tags written to file")
 	return nil
 }
 
 func tagsAsJSON(parsedTags []tags.Tag) ([]byte, error) {
 	jsonTags, err := json.Marshal(parsedTags)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal tags to json, got erro: %w", err)
+		return nil, fmt.Errorf("failed to marshal tags to json, got error: %w", err)
 	}
 	return jsonTags, err
 }
@@ -972,6 +990,7 @@ func getEnvs(o options, dockerfileDirPath string) (map[string]string, error) {
 
 func parseTags(o options) ([]tags.Tag, error) {
 	var pr string
+	o.logger.Debugw("Reading gitstate data")
 	sha := o.gitState.BaseCommitSHA
 	if o.gitState.isPullRequest {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
@@ -984,6 +1003,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 		return nil, fmt.Errorf("sha still empty")
 	}
 
+	o.logger.Debugw("Checking if base64 encoded tags are provided", "tagsBase64", o.tagsBase64)
 	// read tags from base64 encoded string if provided
 	if o.tagsBase64 != "" {
 		o.logger.Debugw("Decoding tags from base64", "tagsBase64", o.tagsBase64)
@@ -994,7 +1014,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 		}
 		o.logger.Debugw("Tags decoded from base64", "decoded", string(decoded))
 		splitedTags := strings.Split(string(decoded), ",")
-		o.logger.Debugw("Splitted tags")
+		o.logger.Debugw("Splitted tags", "splitedTags", splitedTags)
 		for _, tag := range splitedTags {
 			o.logger.Debugw("Setting tag", "tag", tag)
 			err = o.tags.Set(tag)
@@ -1004,15 +1024,19 @@ func parseTags(o options) ([]tags.Tag, error) {
 			}
 			o.logger.Debugw("Tag set", "tags", o.tags.String())
 		}
+		o.logger.Debugw("All tags set", "tags", o.tags.String())
+	} else {
+		o.logger.Debugw("No base64 encoded tags provided")
 	}
-	o.logger.Debugw("All tags set", "tags", o.tags.String())
 
+	o.logger.Debugw("Getting default tag")
 	defaultTag, err := getDefaultTag(o)
 	if err != nil {
 		return nil, err
 	}
-	o.logger.Debugw("Get default tag", "defaultTag", defaultTag)
+	o.logger.Debugw("Default tag", "defaultTag", defaultTag)
 
+	o.logger.Debugw("Parsing tags")
 	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return nil, err
@@ -1023,7 +1047,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 }
 
 func getDefaultTag(o options) (tags.Tag, error) {
-	o.logger.Debugw("Getting default tag")
+	o.logger.Debugw("Reading gitstate data")
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		o.logger.Debugw("Pull request number provided, returning default pr tag")
 		return o.DefaultPRTag, nil
