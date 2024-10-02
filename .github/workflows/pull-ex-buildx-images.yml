@@ -136,3 +136,11 @@ jobs:
       dockerfile: images/unified-agent/python/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+
+  # Build e2e-gcloud image
+  build-e2e-gcloud:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: e2e-gcloud
+      dockerfile: images/e2e-gcloud/Dockerfile
+      context: .
