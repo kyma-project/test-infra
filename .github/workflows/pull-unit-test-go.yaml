@@ -1,0 +1,17 @@
+name: pull-unit-test-go
+
+on:
+  pull_request:
+    branches:
+     - main
+    paths:
+     - '.github/workflows/pull-unit-test-go.yaml'
+     - '**/*.go'
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+      - run: go test -cover ./...

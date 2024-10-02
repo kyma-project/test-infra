@@ -21,7 +21,6 @@ global:
         - name: "template-repository"
         - name: "btp-manager"
         - name: "kyma-environment-broker"
-        - name: "telemetry-manager"
         - name: "compass-manager"
 
 # global configSet variables
@@ -36,7 +35,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240927-29c71d4a
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20241001-709bacbd
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -59,7 +58,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240927-29c71d4a
+    image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20241001-709bacbd
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -118,22 +117,12 @@ globalSets:
       - name: signify-secret
         mountPath: /secret
         readOnly: true
-  linting:
-    skip_report: "false"
-    max_concurrency: "10"
-    optional: "true"
-    decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240910-83aca12b"
-    pubsub_project: "sap-kyma-prow"
-    pubsub_topic: "prowjobs"
-    request_memory: 200Mi
-    request_cpu: 80m
   testing:
     skip_report: "false"
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20241001-f0fc4ad0"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -151,7 +140,7 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240924-6fb36f45"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20241001-f0fc4ad0"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

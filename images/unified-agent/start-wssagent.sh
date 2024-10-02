@@ -20,7 +20,7 @@ GO_MOD_CONFIG_PATH="/wss/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="/wss/javascript-wss-unified-agent.config"
 PYTHON_CONFIG_PATH="/wss/python-wss-unified-agent.config"
 
-if [[ ! -z "$INTERNAL_GITHUB_TOKEN" && ! -z "$INTERNAL_GITHUB_URL" ]]; then
+if [[ -n "$INTERNAL_GITHUB_TOKEN" && -n "$INTERNAL_GITHUB_URL" ]]; then
   git config --global url."https://${INTERNAL_GITHUB_TOKEN}:x-oauth-basic@${INTERNAL_GITHUB_URL}/".insteadOf "https://${INTERNAL_GITHUB_URL}/"
   export GOPRIVATE=${INTERNAL_GITHUB_URL}/kyma
 fi
@@ -99,6 +99,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
   fi
 
+  # WS_PRODUCTNAME is treat as a input
+  # it's set outside the script
+  # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
   echo "Project name - $WS_PROJECTNAME"
 

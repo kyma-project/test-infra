@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240927-ccdd835a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20241001-0e7d9b5c"
             securityContext:
               privileged: false
               seccompProfile:
@@ -52,7 +52,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240924-6fb36f45"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20241001-f0fc4ad0"
             securityContext:
               privileged: false
               seccompProfile:

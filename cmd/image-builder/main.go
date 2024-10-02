@@ -197,12 +197,17 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetRepoOwner(options.gitState.RepositoryOwner)
 
-	if options.gitState.JobType == "presubmit" {
+	switch options.gitState.JobType {
+	case "presubmit":
 		templateParameters.SetPresubmitJobType()
-	} else if options.gitState.JobType == "postsubmit" {
+	case "postsubmit":
 		templateParameters.SetPostsubmitJobType()
-	} else if options.gitState.JobType == "workflow_dispatch" {
+	case "workflow_dispatch":
 		templateParameters.SetWorkflowDispatchJobType()
+	case "schedule":
+		templateParameters.SetScheduleJobType()
+	default:
+		return nil, fmt.Errorf("unknown JobType received, ensure image-builder runs on supported event")
 	}
 
 	if options.gitState.IsPullRequest() {
