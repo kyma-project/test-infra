@@ -26,34 +26,20 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   default     = "image-builder-ado-pat"
 }
 
-# Variables for Docker Hub Mirror configuration
-variable "dockerhub_mirror_repository_id" {
-  description = "Name of the Docker Hub mirror repository"
-  type        = string
-  default     = "dockerhub-mirror"
-}
+# Variable for Docker Hub Mirror configuration
+variable "dockerhub_mirror" {
+  description = "Configuration for the Docker Hub mirror repository"
+  type = object({
+    repository_id = string
+    description = string
+    location = string
+    cleanup_age = string
+  })
 
-variable "dockerhub_mirror_description" {
-  description = "Description of the Docker Hub mirror repository"
-  type        = string
-  default     = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
-}
-
-variable "dockerhub_mirror_location" {
-  description = "Location of the Docker Hub mirror repository"
-  type        = string
-  default     = "europe"
-}
-
-variable "dockerhub_mirror_member" {
-  description = "IAM member to assign the role to (service account)"
-  type        = string
-  default     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
-}
-
-# Variable for the Docker Hub mirror cleanup age
-variable "dockerhub_mirror_cleanup_age" {
-  description = "Age after which to clean up images in the Docker Hub mirror repository"
-  type        = string
-  default     = "730d"  # 730 days = 2 years
+  default = {
+    repository_id = "dockerhub-mirror"
+    description = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
+    location = "europe"
+    cleanup_age = "730d" # 730 days = 2 years
+  }
 }
