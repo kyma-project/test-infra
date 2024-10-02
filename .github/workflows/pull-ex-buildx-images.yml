@@ -40,7 +40,7 @@ jobs:
       name: alpine-git-gke-aws-auth
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
       context: .
-      build-args: BASE_ALPINE_IMAGE=${{ needs.build-alpine.outputs.images[0] }}
+      build-args: BASE_ALPINE_IMAGE=${{ needs.build-alpine.outputs.images[1] }}
 
   # # Build the base buildpack image
   # build-buildpack:
