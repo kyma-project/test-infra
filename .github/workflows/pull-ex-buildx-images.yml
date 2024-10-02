@@ -44,7 +44,7 @@ jobs:
       name: alpine-git
       dockerfile: images/alpine/git/Dockerfile
       context: .
-      build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-image.outputs.clean_image }}
+      build-args: BASE_ALPINE_IMAGE=${{ steps.unpack.outputs.clean_image[0] }}
 
   # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
   build-alpine-git-gke-aws-auth:
