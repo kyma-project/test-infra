@@ -46,14 +46,15 @@ jobs:
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-image.outputs.clean_image }}
 
-  # # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
-  # build-alpine-git-gke-aws-auth:
-  #   needs: build-alpine-git
-  #   uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
-  #   with:
-  #     name: alpine-git-gke-aws-auth
-  #     dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
-  #     context: .
+  # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
+  build-alpine-git-gke-aws-auth:
+    needs: [build-alpine, unpack-image]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: alpine-git-gke-aws-auth
+      dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
+      context: .
+      build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-image.outputs.clean_image }}
 
   # # Build the base buildpack image
   # build-buildpack:
