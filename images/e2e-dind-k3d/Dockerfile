@@ -71,7 +71,7 @@ RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@mai
 
 FROM base
 
-COPY init.sh /
+COPY images/e2e-kind-k3d/init.sh /
 COPY --from=go-deps /usr/local/bin/k3d /usr/local/bin/
 COPY --from=go-deps /usr/local/bin/helm /usr/local/bin/
 COPY --from=go-deps /go/bin/kind /usr/local/bin/
