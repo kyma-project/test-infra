@@ -70,7 +70,7 @@ jobs:
       clean_image: ${{ steps.unpack-buildpack.outputs.clean_image }}
     steps:
       - name: Unpack image output to output variable
-        id: unpack-alpine
+        id: unpack-buildpack
         run: |
           IMAGE="${{ needs.build-buildpack.outputs.images }}"
           CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
