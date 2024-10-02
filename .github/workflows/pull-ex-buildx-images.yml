@@ -139,7 +139,7 @@ jobs:
 
   # Build e2e-gcloud image
   build-e2e-gcloud:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: e2e-gcloud
       dockerfile: images/e2e-gcloud/Dockerfile
