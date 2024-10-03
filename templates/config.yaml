@@ -122,7 +122,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20241001-f0fc4ad0"
+    image: "europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20241003-acbac287"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -140,7 +140,7 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20241001-f0fc4ad0"
+    image: "europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20241003-acbac287"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
