@@ -127,7 +127,7 @@ variable "docker_dev_repository" {
   })
   default = {
     name = "dev"
-    description = "Development images for kyma-projec"
+    description = "Development images for kyma-project"
     location = "europe"
     format = "DOCKER"
     immutable_tags = false
