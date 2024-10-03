@@ -4,7 +4,6 @@ set -e
 docker run --rm "$IMG" bash -c '
 set -e
 go version
-ko version
 kubebuilder version
 kustomize version
 jobguard -help

@@ -20,14 +20,14 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20241003-9d1845c9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241002-aac0cb23"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/ko-app/markdown-index"
+              - "/markdown-index"
             args:
               - "--config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml"
               - "--labels-override=kind/chore,area/documentation"
@@ -52,7 +52,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20241001-f0fc4ad0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20241001-f0fc4ad0"
             securityContext:
               privileged: false
               seccompProfile:

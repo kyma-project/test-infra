@@ -19,9 +19,9 @@
         },
         {
           "command": [
-            "/ko-app/entrypoint",
+            "/entrypoint",
             "init",
-            "/ko-app/entrypoint",
+            "/entrypoint",
             "/tekton/bin/entrypoint",
             "step-build-image"
           ],
@@ -39,9 +39,9 @@
           "containers": [
             {
               "command": [
-                "/ko-app/entrypoint",
+                "/entrypoint",
                 "init",
-                "/ko-app/entrypoint",
+                "/entrypoint",
                 "/tekton/bin/entrypoint",
                 "step-build-image"
               ],

@@ -33,4 +33,4 @@ spec:
       - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
       - "gcr.io/k8s-prow/generic-autobumper:*"
       - "gcr.io/k8s-prow/ghproxy:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:*"
+      - "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:*"
