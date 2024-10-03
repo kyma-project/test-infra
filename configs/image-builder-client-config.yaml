@@ -1,0 +1,9 @@
+log-format: json
+ado-config:
+  ado-organization-url: https://dev.azure.com/hyperspace-pipelines
+  ado-project-name: kyma
+  ado-pipeline-id: 14902
+  ado-retry-strategy:
+    attempts: 3
+    delay: 5s
+  ado-refresh-interval: 30s

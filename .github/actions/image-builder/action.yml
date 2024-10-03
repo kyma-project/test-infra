@@ -33,7 +33,7 @@ inputs:
   config:
     description: Path to the config file
     required: false
-    default: "./configs/kaniko-build-config.yaml"
+    default: "./configs/image-builder-client-config.yaml"
   env-file:
     description: Path to file with environment variables to be loaded in the build
     required: false
