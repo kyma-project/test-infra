@@ -162,7 +162,7 @@ The authentication to the Signify API has been updated from using `role id/secre
 The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
 
 > [!NOTE]
-> Images are only signed when built on `push` and `workflow_dispatch` events. Pull request images are not signed.
+> Images are only signed when built on `push`, `schedule`, and `workflow_dispatch` events. Pull request images are not signed.
 
 ### Signify API Changes
 
