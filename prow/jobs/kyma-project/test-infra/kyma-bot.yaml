@@ -22,7 +22,7 @@ presubmits: # runs on PRs
       spec:
         serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20241001-0e7d9b5c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/usersmapchecker:v20241001-0e7d9b5c"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -30,7 +30,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/ko-app/usersmapchecker"
+              - "/usersmapchecker"
             resources:
               requests:
                 memory: 3Gi

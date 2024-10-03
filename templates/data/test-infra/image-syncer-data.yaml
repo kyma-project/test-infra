@@ -13,8 +13,8 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(cmd/image-syncer/external-images.yaml)"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240918-20d00fb8
-                  command: "/ko-app/image-syncer"
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20240918-20d00fb8
+                  command: "/image-syncer"
                   args:
                     - --dry-run
                     - --debug
@@ -33,8 +33,8 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(cmd/image-syncer/external-images.yaml)"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240918-20d00fb8
-                  command: "/ko-app/image-syncer"
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20240918-20d00fb8
+                  command: "/image-syncer"
                   args:
                     - --images-file=cmd/image-syncer/external-images.yaml
                     - --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)

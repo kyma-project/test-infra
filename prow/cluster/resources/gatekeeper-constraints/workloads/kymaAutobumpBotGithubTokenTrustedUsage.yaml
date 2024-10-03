@@ -13,18 +13,18 @@ spec:
       - kyma-autobump-bot-github-token
     trustedImages:
       # Prowjob name: post-test-infra-markdown-index-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/markdown-index:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/ko-app\/markdown-index","--config=configs\/autobump-config\/test-infra-markdown-index-autobump-config\.yaml","--labels-override=kind\/chore,area\/documentation"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["\\/markdown-index","--config=configs\/autobump-config\/test-infra-markdown-index-autobump-config\.yaml","--labels-override=kind\/chore,area\/documentation"\],"container_name":"test",.*}$'
       # Prowjob name: test-infra-image-detector-autobump
       # Prowjob name: post-test-infra-image-detector-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/image-detector:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["\\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump
       - image: "gcr.io/k8s-prow/generic-autobumper:*"
         command:
