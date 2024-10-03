@@ -13,8 +13,8 @@ spec:
       - kyma-bot-github-sap-token
     trustedImages:
       # Prowjob name: pre-main-check-users-map
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/usersmapchecker:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["/ko-app/usersmapchecker"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["/usersmapchecker"\],"container_name":"test",.*}$'

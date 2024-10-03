@@ -15,7 +15,7 @@ periodics: # runs on schedule
     spec:
       serviceAccountName: sa-prow-job-resource-cleaners
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20241001-f0fc4ad0
+        - image: europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20241001-f0fc4ad0
           securityContext:
             privileged: false
             seccompProfile:
@@ -51,14 +51,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/diskscollector:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/diskscollector"
+            - "/diskscollector"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-dryRun=false"
@@ -83,14 +83,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/ipcleaner:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/ipcleaner"
+            - "/ipcleaner"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-dry-run=false"
@@ -115,14 +115,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/clusterscollector:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/clusterscollector"
+            - "/clusterscollector"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-dryRun=false"
@@ -147,14 +147,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/vmscollector:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/vmscollector"
+            - "/vmscollector"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*'"
@@ -180,14 +180,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/orphanremover:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/orphanremover"
+            - "/orphanremover"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-dryRun=false"
@@ -212,14 +212,14 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20241001-0e7d9b5c"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/dnscollector:v20241002-aac0cb23"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/ko-app/dnscollector"
+            - "/dnscollector"
           args:
             - "-project=$(CLOUDSDK_CORE_PROJECT)"
             - "-dnsZone=$(CLOUDSDK_DNS_ZONE_NAME)"
