@@ -1,4 +1,5 @@
-FROM local/unified-agent:latest
+ARG BASE_UNIFIED_AGENT_IMAGE
+FROM ${BASE_UNIFIED_AGENT_IMAGE}
 
 ENV NODE_VERSION 20.11.0
 
@@ -100,4 +101,4 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && yarn --version
 
 
-COPY javascript-wss-unified-agent.config /wss
+COPY images/unified-agent/nodejs/javascript-wss-unified-agent.config /wss

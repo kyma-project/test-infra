@@ -16,102 +16,131 @@ on:
 jobs:
   # Build the base Alpine image
   build-alpine:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: alpine
       dockerfile: images/alpine/Dockerfile
       context: .
-
-  # Build alpine/git image that depends on build-alpine
-  build-alpine-git:
+      
+  unpack-alpine:
+    runs-on: ubuntu-latest
     needs: build-alpine
-    uses: ./.github/workflows/image-builder.yml
+    outputs:
+      clean_image: ${{ steps.unpack-alpine.outputs.clean_image }}
+    steps:
+      - name: Unpack image output to output variable
+        id: unpack-alpine
+        run: |
+          IMAGE="${{ needs.build-alpine.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "clean_image=$CLEAN_IMAGE" >> $GITHUB_OUTPUT
+
+  # Build alpine/git image that depends on build-alpine  
+  build-alpine-git:
+    needs: [build-alpine, unpack-alpine]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: alpine-git
       dockerfile: images/alpine/git/Dockerfile
       context: .
+      build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
 
   # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
   build-alpine-git-gke-aws-auth:
-    needs: build-alpine-git
-    uses: ./.github/workflows/image-builder.yml
+    needs: [build-alpine, unpack-alpine]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: alpine-git-gke-aws-auth
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
       context: .
+      build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
 
   # Build the base buildpack image
   build-buildpack:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
       context: .
 
+  unpack-buildpack:
+    runs-on: ubuntu-latest
+    needs: build-buildpack
+    outputs:
+      clean_image: ${{ steps.unpack-buildpack.outputs.clean_image }}
+    steps:
+      - name: Unpack image output to output variable
+        id: unpack-buildpack
+        run: |
+          IMAGE="${{ needs.build-buildpack.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "clean_image=$CLEAN_IMAGE" >> $GITHUB_OUTPUT
+
   # Build buildpack/go image that depends on build-buildpack
   build-buildpack-go:
-    needs: build-buildpack
-    uses: ./.github/workflows/image-builder.yml
+    needs: [build-buildpack, unpack-buildpack]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: buildpack-go
       dockerfile: images/buildpack/go/Dockerfile
       context: .
-
-  # Build e2e-dind-k3d image
-  build-e2e-dind-k3d:
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: e2e-dind-k3d
-      dockerfile: images/e2e-dind-k3d/Dockerfile
-      context: .
-
-  # Build e2e-dind-nodejs image
-  build-e2e-dind-nodejs:
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: e2e-dind-nodejs
-      dockerfile: images/e2e-dind-nodejs/Dockerfile
-      context: .
-
-  # Build e2e-gcloud image
-  build-e2e-gcloud:
-    uses: ./.github/workflows/image-builder.yml
-    with:
-      name: e2e-gcloud
-      dockerfile: images/e2e-gcloud/Dockerfile
-      context: .
+      build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
 
   # Build unified-agent base image
   build-unified-agent:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
       context: .
 
+  unpack-unified-agent:
+    runs-on: ubuntu-latest
+    needs: build-unified-agent
+    outputs:
+      clean_image: ${{ steps.unpack-unified-agent.outputs.clean_image }}
+    steps:
+      - name: Unpack image output to output variable
+        id: unpack-unified-agent
+        run: |
+          IMAGE="${{ needs.build-unified-agent.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "clean_image=$CLEAN_IMAGE" >> $GITHUB_OUTPUT
+          
   # Build unified-agent/go image that depends on build-unified-agent
   build-unified-agent-go:
-    needs: build-unified-agent
-    uses: ./.github/workflows/image-builder.yml
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: unified-agent-go
       dockerfile: images/unified-agent/go/Dockerfile
       context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
 
   # Build unified-agent/nodejs image that depends on build-unified-agent
   build-unified-agent-nodejs:
-    needs: build-unified-agent
-    uses: ./.github/workflows/image-builder.yml
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: unified-agent-nodejs
       dockerfile: images/unified-agent/nodejs/Dockerfile
       context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
 
   # Build unified-agent/python image that depends on build-unified-agent
   build-unified-agent-python:
-    needs: build-unified-agent
-    uses: ./.github/workflows/image-builder.yml
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: unified-agent-python
       dockerfile: images/unified-agent/python/Dockerfile
+      context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+
+  # Build e2e-gcloud image
+  build-e2e-gcloud:
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: e2e-gcloud
+      dockerfile: images/e2e-gcloud/Dockerfile
       context: .
