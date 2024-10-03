@@ -54,6 +54,6 @@ variable "dockerhub_mirror" {
     repository_id = "dockerhub-mirror"
     description = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
     location = "europe"
-    cleanup_age = "730d" # 730 days = 2 years
+    cleanup_age = "63072000s" # 63072000s = 730 days = 2 years
   }
 }
