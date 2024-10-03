@@ -423,6 +423,8 @@ tide:
         - kyma-project/lifecycle-manager
         - kyma-project/runtime-watcher
         - kyma-project/template-operator
+        - kyma-project/cloud-manager
+        - kyma-project/cloud-manager-tests
       reviewApprovedRequired: true
     - labels:
         - lgtm
