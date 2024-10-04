@@ -471,8 +471,13 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
+	defaultTag, err := getDefaultTag(o)
+	if err != nil {
+		return err
+	}
+
 	// Get the tags for the image.
-	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return err
 	}
@@ -638,13 +643,16 @@ func (l *StrList) List() []string {
 }
 
 func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
-	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
-	if pr != "" {
-		// assume we are using PR number, build default tag as 'PR-XXXX'
-		return []tags.Tag{{Name: "default_tag", Value: "PR-" + pr}}, nil
+	var taggerOptions []tags.TagOption
+	if len(pr) > 0 {
+		taggerOptions = append(taggerOptions, tags.PRNumber(pr))
 	}
+	if len(sha) > 0 {
+		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
+	}
+
 	// build a tag from commit SHA
-	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
+	tagger, err := tags.NewTagger(templates, taggerOptions...)
 	if err != nil {
 		return nil, fmt.Errorf("get tagger: %w", err)
 	}
@@ -914,39 +922,57 @@ func getEnvs(o options, dockerfilePath string) (map[string]string, error) {
 }
 
 func parseTags(o options) ([]tags.Tag, error) {
-	var pr string
-	sha := o.gitState.BaseCommitSHA
-	if o.gitState.isPullRequest {
+	var (
+		pr  string
+		sha string
+	)
+	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA != "" {
+		sha = o.gitState.BaseCommitSHA
+	}
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 	}
 
-	if sha == "" {
-		return nil, fmt.Errorf("sha still empty")
-	}
-
+	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
+	//   This way all tags are available in the tags list from thr very beginning of execution and can be used in any process.
 	// read tags from base64 encoded string if provided
 	if o.tagsBase64 != "" {
 		decoded, err := base64.StdEncoding.DecodeString(o.tagsBase64)
 		if err != nil {
-			fmt.Printf("Failed to decode tags, error: %s", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to decode tags, error: %w", err)
 		}
 		splitedTags := strings.Split(string(decoded), ",")
 		for _, tag := range splitedTags {
 			err = o.tags.Set(tag)
 			if err != nil {
-				fmt.Printf("Failed to set tag, tag: %s, error: %s", tag, err)
-				os.Exit(1)
+				return nil, fmt.Errorf("failed to set tag, tag: %s, error: %w", tag, err)
 			}
 		}
 	}
 
-	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	defaultTag, err := getDefaultTag(o)
+	if err != nil {
+		return nil, err
+	}
+	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return nil, err
 	}
 
 	return parsedTags, nil
+}
+
+// getDefaultTag returns the default tag based on the read git state.
+// The function provid default tag for pull request or commit.
+// The default tag is read from the provided options struct.
+func getDefaultTag(o options) (tags.Tag, error) {
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
+		return o.DefaultPRTag, nil
+	}
+	if len(o.gitState.BaseCommitSHA) > 0 {
+		return o.DefaultCommitTag, nil
+	}
+	return tags.Tag{}, fmt.Errorf("could not determine default tag, no pr number or commit sha provided")
 }
 
 func getDockerfileDirPath(o options) (string, error) {
