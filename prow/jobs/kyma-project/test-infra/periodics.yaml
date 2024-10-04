@@ -35,39 +35,6 @@ periodics: # runs on schedule
             requests:
               memory: 100Mi
               cpu: 50m
-  - name: orphaned-assetstore-gcp-bucket-cleaner
-    annotations:
-      description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
-      owner: "neighbors"
-    labels:
-      prow.k8s.io/pubsub.project: "sap-kyma-prow"
-      prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
-      prow.k8s.io/pubsub.topic: "prowjobs"
-      preset-gc-project-env: "true"
-    cron: "00 00 * * *"
-    skip_report: false
-    decorate: true
-    cluster: trusted-workload
-    spec:
-      containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/gcscleaner:v20241004-fdf557fe"
-          securityContext:
-            privileged: false
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
-          command:
-            - "/gcscleaner"
-          args:
-            - "-project=$(CLOUDSDK_CORE_PROJECT)"
-            - "-bucketNameRegexp='^.+-([a-z0-9]+$)'"
-            - "-excludedBuckets='kyma-prowjobs-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-development-artifacts,kyma-backup-restore,eu.artifacts.sap-kyma-prow.appspot.com,kyma-prow-access-storage-logs,kyma-prow-workloads-logs,eu.artifacts.sap-kyma-prow-workloads.appspot.com'"
-            - "-workerNumber=10"
-            - "-logLevel=info"
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 50m
   - name: orphaned-disks-cleaner
     annotations:
       description: "Periodic cleanup of orphaned Google cloud disks"
