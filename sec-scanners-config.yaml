@@ -1,6 +1,6 @@
 module-name: test-infra
 protecode:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241003-e3714466
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241004-fdf557fe
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241004-fdf557fe
     - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20241004-fdf557fe
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20241004-fdf557fe
