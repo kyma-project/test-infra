@@ -132,13 +132,6 @@ func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 	p["Tags"] = encodedTags
 }
 
-// SetUseKanikoConfigFromPR sets optional parameter UseKanikoConfigFromPR.
-// If true, ADO pipeline will use a Kaniko config from PR.
-// This is used for testing purposes.
-func (p OCIImageBuilderTemplateParams) SetUseKanikoConfigFromPR(useKanikoFromPR bool) {
-	p["UseKanikoConfigFromPR"] = strconv.FormatBool(useKanikoFromPR)
-}
-
 // SetAuthorization sets Authorization parameter.
 // This parameter is used to provide authorization token when running in github actions
 func (p OCIImageBuilderTemplateParams) SetAuthorization(authorizationToken string) {
