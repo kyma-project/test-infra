@@ -1,4 +1,5 @@
-FROM local/unified-agent:latest
+ARG BASE_UNIFIED_AGENT_IMAGE
+FROM ${BASE_UNIFIED_AGENT_IMAGE}
 
 ARG GO_VERSION=1.22.2
 
@@ -103,4 +104,4 @@ RUN set -eux; \
 	go version; \
     mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 1777 "$GOPATH"
 
-COPY go-mod-wss-unified-agent.config /wss
+COPY images/unified-agent/go/go-mod-wss-unified-agent.config /wss

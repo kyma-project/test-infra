@@ -22,14 +22,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240918-20d00fb8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20241004-f3a7b0ef"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/ko-app/image-syncer"
+              - "/image-syncer"
             args:
               - "--dry-run"
               - "--debug"
@@ -61,14 +61,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240918-20d00fb8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20241004-f3a7b0ef"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/ko-app/image-syncer"
+              - "/image-syncer"
             args:
               - "--images-file=cmd/image-syncer/external-images.yaml"
               - "--target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)"

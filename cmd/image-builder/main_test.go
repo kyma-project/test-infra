@@ -1,17 +1,47 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
+	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"testing/fstest"
+	"time"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
+
+	. "github.com/onsi/gomega"
+)
+
+var (
+	defaultPRTag         = tags.Tag{Name: "default_tag", Value: `PR-{{ .PRNumber }}`, Validation: "^(PR-[0-9]+)$"}
+	defaultCommitTag     = tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}
+	expectedDefaultPRTag = func(prNumber int) tags.Tag {
+		return tags.Tag{Name: "default_tag", Value: "PR-" + strconv.Itoa(prNumber), Validation: "^(PR-[0-9]+)$"}
+	}
+	expectedDefaultCommitTag = func(baseSHA string) tags.Tag {
+		return tags.Tag{Name: "default_tag", Value: "v" + time.Now().Format("20060102") + "-" + fmt.Sprintf("%.8s", baseSHA), Validation: "^(v[0-9]{8}-[0-9a-f]{8})$"}
+	}
+	buildConfig = Config{
+		DefaultPRTag:     defaultPRTag,
+		DefaultCommitTag: defaultCommitTag,
+	}
+	prGitState = GitStateConfig{
+		BaseCommitSHA:     "abcdef123456",
+		PullRequestNumber: 5,
+		isPullRequest:     true,
+	}
+	commitGitState = GitStateConfig{
+		BaseCommitSHA: "abcdef123456",
+		isPullRequest: false,
+	}
 )
 
 func Test_gatherDestinations(t *testing.T) {
@@ -297,7 +327,7 @@ func TestFlags(t *testing.T) {
 	}
 }
 
-func Test_gatTags(t *testing.T) {
+func Test_getTags(t *testing.T) {
 	tc := []struct {
 		name           string
 		pr             string
@@ -309,18 +339,49 @@ func Test_gatTags(t *testing.T) {
 		expectResult   []tags.Tag
 	}{
 		{
-			name:         "pr variable is present",
-			pr:           "1234",
-			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234"}},
+			name:        "generate default pr tag, when no pr number and commit sha provided",
+			tagTemplate: defaultPRTag,
+			expectErr:   true,
 		},
 		{
-			name:      "sha is empty",
+			name:        "generate default commit tag, when no pr number and commit sha provided",
+			tagTemplate: defaultCommitTag,
+			expectErr:   true,
+		},
+		{
+			name:         "generate default pr tag, when pr number provided",
+			pr:           "1234",
+			tagTemplate:  defaultPRTag,
+			expectResult: []tags.Tag{expectedDefaultPRTag(1234)},
+		},
+		{
+			name:         "generate default commit tag, when commit sha provided",
+			sha:          "1a2b3c4d5e6f78",
+			tagTemplate:  defaultCommitTag,
+			expectResult: []tags.Tag{expectedDefaultCommitTag("1a2b3c4d5e6f78")},
+		},
+		{
+			name:           "generate default pr tag and additional tags",
+			pr:             "1234",
+			tagTemplate:    defaultPRTag,
+			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, expectedDefaultPRTag(1234)},
+		},
+		{
+			name:           "generate default commit tag and additional tags",
+			sha:            "1a2b3c4d5e6f78",
+			tagTemplate:    defaultCommitTag,
+			additionalTags: []tags.Tag{{Name: "additional_tag", Value: "additional"}},
+			expectResult:   []tags.Tag{{Name: "additional_tag", Value: "additional"}, expectedDefaultCommitTag("1a2b3c4d5e6f78")},
+		},
+		{
+			name:      "no pr, sha and default tag provided",
 			expectErr: true,
 		},
 		{
 			name:        "bad tagTemplate",
 			expectErr:   true,
-			sha:         "abcd1234",
+			sha:         "1a2b3c4d5e6f78",
 			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `v{{ .ASD }}`},
 		},
 		{
@@ -442,6 +503,8 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Setenv("JOB_TYPE", c.jobType)
+			mockFactory := &mockSignerFactory{}
+
 			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
 					"*":              {"test-notary"},
@@ -453,21 +516,22 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 					{
 						Name:   "test-notary",
 						Type:   sign.TypeNotaryBackend,
-						Config: sign.NotaryConfig{},
+						Config: mockFactory,
 					},
 					{
 						Name:   "test-notary2",
 						Type:   sign.TypeNotaryBackend,
-						Config: sign.NotaryConfig{},
+						Config: mockFactory,
 					},
 					{
 						Name:    "ci-notary",
 						Type:    sign.TypeNotaryBackend,
-						Config:  sign.NotaryConfig{},
+						Config:  mockFactory,
 						JobType: []string{"postsubmit"},
 					},
 				},
 			}}}
+
 			got, err := getSignersForOrgRepo(o, c.orgRepo)
 			if err != nil && !c.expectErr {
 				t.Errorf("got error but didn't want to %v", err)
@@ -562,44 +626,76 @@ func Test_appendMissing(t *testing.T) {
 }
 
 func Test_parseTags(t *testing.T) {
+	tagsFlag := sets.Tags{{Name: "base64testtag", Value: "testtag"}, {Name: "base64testtemplate", Value: "test-{{ .PRNumber }}"}}
+	base64Tags := base64.StdEncoding.EncodeToString([]byte(tagsFlag.String()))
 	tc := []struct {
-		name      string
-		options   options
-		tags      []tags.Tag
-		expectErr bool
+		name         string
+		options      options
+		expectedTags []tags.Tag
+		expectErr    bool
 	}{
 		{
-			name: "PR tag parse",
+			name: "pares only PR default tag",
 			options: options{
-				gitState: GitStateConfig{
-					BaseCommitSHA:     "some-sha",
-					PullRequestNumber: 5,
-					isPullRequest:     true,
-				},
+				gitState: prGitState,
+				Config:   buildConfig,
+			},
+			expectedTags: []tags.Tag{expectedDefaultPRTag(prGitState.PullRequestNumber)},
+		},
+		{
+			name: "parse only commit default tag",
+			options: options{
+				gitState: commitGitState,
+				Config:   buildConfig,
+			},
+			expectedTags: []tags.Tag{expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
+		},
+		{
+			name: "parse PR default and additional tags",
+			options: options{
+				gitState: prGitState,
+				Config:   buildConfig,
 				tags: sets.Tags{
-					{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+					{Name: "AnotherTest", Value: `Another-{{ .PRNumber }}`},
+					{Name: "Test", Value: "tag-value"},
 				},
 			},
-			tags: []tags.Tag{{Name: "default_tag", Value: "PR-5"}},
+			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + strconv.Itoa(prGitState.PullRequestNumber)}, {Name: "Test", Value: "tag-value"}, expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
 		{
-			name: "Tags from commit sha",
+			name: "parse commit default and additional tags",
 			options: options{
-				gitState: GitStateConfig{
-					BaseCommitSHA: "some-sha",
-				},
-				Config: Config{
-					TagTemplate: tags.Tag{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+				gitState: commitGitState,
+				Config:   buildConfig,
+				tags: sets.Tags{
+					{Name: "AnotherTest", Value: `Another-{{ .CommitSHA }}`},
+					{Name: "Test", Value: "tag-value"},
 				},
 			},
-			tags: []tags.Tag{{Name: "AnotherTest", Value: "some-sha"}},
+			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + commitGitState.BaseCommitSHA}, {Name: "Test", Value: "tag-value"}, expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
 		},
 		{
-			name: "empty commit sha",
+			name: "parse bad tag template",
 			options: options{
-				gitState: GitStateConfig{},
+				gitState: prGitState,
+				Config:   buildConfig,
+				tags: sets.Tags{
+					{Name: "BadTagTemplate", Value: `{{ .ASD }}`},
+				},
 			},
 			expectErr: true,
+		},
+		{
+			name: "parse tags from base64 encoded flag",
+			options: options{
+				gitState:   prGitState,
+				Config:     buildConfig,
+				tagsBase64: base64Tags,
+			},
+			expectedTags: []tags.Tag{
+				{Name: "base64testtag", Value: "testtag"},
+				{Name: "base64testtemplate", Value: "test-5"},
+				expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
 	}
 
@@ -613,8 +709,58 @@ func Test_parseTags(t *testing.T) {
 				t.Error("Expected error, but no one occured")
 			}
 
-			if !reflect.DeepEqual(tags, c.tags) {
-				t.Errorf("Got %v, but expected %v", tags, c.tags)
+			if !reflect.DeepEqual(tags, c.expectedTags) {
+				t.Errorf("Got %v, but expected %v", tags, c.expectedTags)
+			}
+		})
+	}
+}
+
+func Test_getDefaultTag(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	tests := []struct {
+		name    string
+		options options
+		want    tags.Tag
+		wantErr bool
+	}{
+		{
+			name: "Success - Pull Request",
+			options: options{
+				gitState: prGitState,
+				Config:   buildConfig,
+			},
+			want:    defaultPRTag,
+			wantErr: false,
+		},
+		{
+			name: "Success - Commit SHA",
+			options: options{
+				gitState: commitGitState,
+				Config:   buildConfig,
+			},
+			want:    defaultCommitTag,
+			wantErr: false,
+		},
+		{
+			name: "Failure - No PR number or commit SHA",
+			options: options{
+				gitState: GitStateConfig{},
+			},
+			want:    tags.Tag{},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := getDefaultTag(tt.options)
+			if tt.wantErr {
+				g.Expect(err).To(HaveOccurred())
+			} else {
+				g.Expect(err).NotTo(HaveOccurred())
+				g.Expect(got).To(Equal(tt.want))
 			}
 		})
 	}
@@ -789,12 +935,16 @@ Build config file content:
 	}
 }
 
-type mockSigner struct {
-	signFunc func([]string) error
+type mockSignerFactory struct{}
+
+func (m *mockSignerFactory) NewSigner() (sign.Signer, error) {
+	return &mockSigner{}, nil
 }
 
-func (m *mockSigner) Sign(images []string) error {
-	return m.signFunc(images)
+type mockSigner struct{}
+
+func (m *mockSigner) Sign([]string) error {
+	return nil
 }
 
 func Test_getDockerfileDirPath(t *testing.T) {

@@ -89,10 +89,10 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
 }
 
 resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  repository_id = "dockerhub-mirror"
-  description   = "Remote repository mirroring Docker Hub"
+  repository_id = var.dockerhub_mirror.repository_id
+  description   = var.dockerhub_mirror.description
   format        = "DOCKER"
-  location      = "europe"
+  location      = var.dockerhub_mirror.location
   mode          = "REMOTE_REPOSITORY"
 
   remote_repository_config {
@@ -101,13 +101,36 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
       public_repository = "DOCKER_HUB"
     }
   }
+
+  cleanup_policy_dry_run = false
+
+  cleanup_policies {
+    id = "cleanup-old-images"
+    action = "DELETE"
+
+    condition {
+      older_than = var.dockerhub_mirror.cleanup_age
+      tag_state  = "ANY"
+    }
+  }
+}
+
+import {
+  id = "projects/${var.kyma_project_gcp_project_id}/serviceAccounts/${var.image_builder_kyma-project_identity.id}@${var.kyma_project_gcp_project_id}.iam.gserviceaccount.com"
+  to = google_service_account.kyma_project_image_builder
+}
+
+resource "google_service_account" "kyma_project_image_builder" {
+  provider = google.kyma_project
+  account_id = var.image_builder_kyma-project_identity.id
+  description = var.image_builder_kyma-project_identity.description
 }
 
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
   provider   = google.kyma_project
   project    = var.kyma_project_gcp_project_id
   location   = google_artifact_registry_repository.dockerhub_mirror.location
-  repository = google_artifact_registry_repository.dockerhub_mirror.name
+  repository = google_artifact_registry_repository.dockerhub_mirror.repository_id
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:azure-pipeline-image-builder@kyma-project.iam.gserviceaccount.com"
+  member     = "serviceAccount:${google_service_account.kyma_project_image_builder.email}"
 }

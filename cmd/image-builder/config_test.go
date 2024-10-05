@@ -19,11 +19,19 @@ func Test_ParseConfig(t *testing.T) {
 			name: "parsed full config one repo",
 			config: `registry: kyma-project.io/prod-registry
 dev-registry: dev.kyma-project.io/dev-registry
-tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
+default-commit-tag:
+  name: default_tag
+  value: v{{ .Date }}-{{ .ShortSHA }}
+  validation: ^(v[0-9]{8}-[0-9a-f]{8})$
+default-pr-tag:
+  name: default_tag
+  value: pr-{{ .PRNumber }}
+  validation: ^(PR-[0-9]+)$`,
 			expectedConfig: Config{
-				Registry:    []string{"kyma-project.io/prod-registry"},
-				DevRegistry: []string{"dev.kyma-project.io/dev-registry"},
-				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				Registry:         []string{"kyma-project.io/prod-registry"},
+				DevRegistry:      []string{"dev.kyma-project.io/dev-registry"},
+				DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: `^(v[0-9]{8}-[0-9a-f]{8})$`},
+				DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `pr-{{ .PRNumber }}`, Validation: `^(PR-[0-9]+)$`},
 			},
 		},
 		{
@@ -34,11 +42,19 @@ tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 dev-registry:
 - dev.kyma-project.io/dev-registry
 - dev.kyma-project.io/second-registry
-tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
+default-commit-tag:
+  name: default_tag
+  value: v{{ .Date }}-{{ .ShortSHA }}
+  validation: ^(v[0-9]{8}-[0-9a-f]{8})$
+default-pr-tag:
+  name: default_tag
+  value: pr-{{ .PRNumber }}
+  validation: ^(PR-[0-9]+)$`,
 			expectedConfig: Config{
-				Registry:    []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
-				DevRegistry: []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
-				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
+				Registry:         []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
+				DevRegistry:      []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
+				DefaultCommitTag: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`, Validation: `^(v[0-9]{8}-[0-9a-f]{8})$`},
+				DefaultPRTag:     tags.Tag{Name: "default_tag", Value: `pr-{{ .PRNumber }}`, Validation: `^(PR-[0-9]+)$`},
 			},
 		},
 		{
@@ -261,6 +277,26 @@ func TestLoadGitStateConfig(t *testing.T) {
 				RepositoryName:  "test-infra",
 				RepositoryOwner: "KacperMalachowski",
 				JobType:         "workflow_dispatch",
+				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
+				BaseCommitRef:   "refs/heads/main",
+				isPullRequest:   false,
+			},
+		},
+		{
+			name: "Load data from event payload for github schedule event",
+			options: options{
+				ciSystem: GithubActions,
+			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/schedule.json",
+				"GITHUB_EVENT_NAME": "schedule",
+				"GITHUB_SHA":        "d42f5051757b3e0699eb979d7581404e36fc0eee",
+				"GITHUB_REF":        "refs/heads/main",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-infra",
+				RepositoryOwner: "KacperMalachowski",
+				JobType:         "schedule",
 				BaseCommitSHA:   "d42f5051757b3e0699eb979d7581404e36fc0eee",
 				BaseCommitRef:   "refs/heads/main",
 				isPullRequest:   false,

@@ -33,9 +33,17 @@ type Config struct {
 	DevRegistry Registry `yaml:"dev-registry" json:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
 	Cache CacheConfig `yaml:"cache" json:"cache"`
-	// TagTemplate is go-template field that defines the format of the $_TAG substitution.
-	// See tags.Tag struct for more information and available fields
+	// TagTemplate is used to generate default tag for push events for current image-builder version.
+	// This will be removed after migration.
 	TagTemplate tags.Tag `yaml:"tag-template" json:"tag-template"`
+	// Default Tag template used for images build on commit.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	DefaultCommitTag tags.Tag `yaml:"default-commit-tag" json:"default-commit-tag"`
+	// Default Tag template used for images build on pull request.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	DefaultPRTag tags.Tag `yaml:"default-pr-tag" json:"default-pr-tag"`
 	// LogFormat defines the format kaniko logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`
@@ -214,11 +222,21 @@ func loadADOGitState() (GitStateConfig, error) {
 func loadGithubActionsGitState() (GitStateConfig, error) {
 	eventName, present := os.LookupEnv("GITHUB_EVENT_NAME")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is not set, please set it to valid event name")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_EVENT_NAME environment variable is not set.  Please ensure the image-builder is running in GitHub environment")
 	}
 	eventPayloadPath, present := os.LookupEnv("GITHUB_EVENT_PATH")
 	if !present {
-		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_PATH environment variable is not set, please set it to valid path to event file")
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_EVENT_PATH environment variable is not set. Please ensure the image-builder is running in GitHub environment")
+	}
+	// For PR and push events commit sha will be fetched from event payload
+	commitSHA, present := os.LookupEnv("GITHUB_SHA")
+	if !present && (eventName != "pull_request_target" && eventName != "push") {
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_SHA environment variable is not set, it should be set to HEAD commit SHA. Please ensure the image-builder is running in GitHub environment")
+	}
+	// For PR and push events commit ref will be fetched from event payload
+	gitRef, present := os.LookupEnv("GITHUB_REF")
+	if !present && (eventName != "pull_request_target" && eventName != "push") {
+		return GitStateConfig{}, fmt.Errorf("the GITHUB_REF environment variable is not set, it should be set to current ref. Please ensure the image-builder is running in GitHub environment")
 	}
 
 	// Read event payload file from runner
@@ -245,6 +263,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			PullHeadCommitSHA: *payload.PullRequest.Head.SHA,
 			isPullRequest:     true,
 		}, nil
+
 	case "push":
 		var payload github.PushEvent
 		err = json.Unmarshal(data, &payload)
@@ -257,6 +276,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			JobType:         "postsubmit",
 			BaseCommitSHA:   *payload.HeadCommit.ID,
 		}, nil
+
 	case "workflow_dispatch":
 		var payload github.WorkflowDispatchEvent
 		err = json.Unmarshal(data, &payload)
@@ -267,9 +287,27 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			RepositoryName:  *payload.Repo.Name,
 			RepositoryOwner: *payload.Repo.Owner.Login,
 			JobType:         "workflow_dispatch",
-			BaseCommitSHA:   os.Getenv("GITHUB_SHA"),
-			BaseCommitRef:   os.Getenv("GITHUB_REF"),
+			BaseCommitSHA:   commitSHA,
+			BaseCommitRef:   gitRef,
 		}, nil
+
+	case "schedule":
+		// There is nostruct for schedule event in github package
+		var payload struct {
+			Repo github.Repository `json:"repository,omitempty"`
+		}
+		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse event payload: %s", err)
+		}
+		return GitStateConfig{
+			RepositoryName:  *payload.Repo.Name,
+			RepositoryOwner: *payload.Repo.Owner.Login,
+			JobType:         "schedule",
+			BaseCommitSHA:   commitSHA,
+			BaseCommitRef:   gitRef,
+		}, nil
+
 	default:
 		return GitStateConfig{}, fmt.Errorf("GITHUB_EVENT_NAME environment variable is set to unsupported value \"%s\", please set it to supported value", eventName)
 	}

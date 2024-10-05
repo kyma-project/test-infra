@@ -206,12 +206,17 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetRepoOwner(options.gitState.RepositoryOwner)
 
-	if options.gitState.JobType == "presubmit" {
+	switch options.gitState.JobType {
+	case "presubmit":
 		templateParameters.SetPresubmitJobType()
-	} else if options.gitState.JobType == "postsubmit" {
+	case "postsubmit":
 		templateParameters.SetPostsubmitJobType()
-	} else if options.gitState.JobType == "workflow_dispatch" {
+	case "workflow_dispatch":
 		templateParameters.SetWorkflowDispatchJobType()
+	case "schedule":
+		templateParameters.SetScheduleJobType()
+	default:
+		return nil, fmt.Errorf("unknown JobType received, ensure image-builder runs on supported event")
 	}
 
 	if options.gitState.IsPullRequest() {
@@ -648,9 +653,18 @@ func (l *StrList) List() []string {
 }
 
 func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
+	var taggerOptions []tags.TagOption
+	if len(pr) > 0 {
+		taggerOptions = append(taggerOptions, tags.PRNumber(pr))
+	}
+	if len(sha) > 0 {
+		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
+	}
+
+
 	logger.Debugw("building tags", "pr_number", pr, "commit_sha", sha, "templates", templates)
 	// build a tag from commit SHA
-	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
+	tagger, err := tags.NewTagger(templates, taggerOptions...)
 	if err != nil {
 		return nil, fmt.Errorf("get tagger: %w", err)
 	}
@@ -989,16 +1003,24 @@ func getEnvs(o options, dockerfileDirPath string) (map[string]string, error) {
 }
 
 func parseTags(o options) ([]tags.Tag, error) {
-	var pr string
+	var (
+		pr  string
+		sha string
+	)
+
 	o.logger.Debugw("Reading gitstate data")
-	sha := o.gitState.BaseCommitSHA
-	if o.gitState.isPullRequest {
+
+	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA != "" {
+		sha = o.gitState.BaseCommitSHA
+		o.logger.Debugw()
+	}
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
+		o.logger.Debugw()
 	}
 
-	if sha == "" {
-		return nil, fmt.Errorf("sha still empty")
-	}
+	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
+	//   This way all tags are available in the tags list from thr very beginning of execution and can be used in any process.
 
 	o.logger.Debugw("Checking if base64 encoded tags are provided", "tagsBase64", o.tagsBase64)
 	// read tags from base64 encoded string if provided
@@ -1006,8 +1028,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 		o.logger.Debugw("Decoding tags from base64", "tagsBase64", o.tagsBase64)
 		decoded, err := base64.StdEncoding.DecodeString(o.tagsBase64)
 		if err != nil {
-			fmt.Printf("Failed to decode tags, error: %s", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to decode tags, error: %w", err)
 		}
 		o.logger.Debugw("Tags decoded from base64", "decoded", string(decoded))
 		splitedTags := strings.Split(string(decoded), ",")
@@ -1016,8 +1037,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 			o.logger.Debugw("Setting tag", "tag", tag)
 			err = o.tags.Set(tag)
 			if err != nil {
-				fmt.Printf("Failed to set tag, tag: %s, error: %s", tag, err)
-				os.Exit(1)
+				return nil, fmt.Errorf("failed to set tag, tag: %s, error: %w", tag, err)
 			}
 			o.logger.Debugw("Tag set", "tags", o.tags.String())
 		}
@@ -1033,6 +1053,10 @@ func parseTags(o options) ([]tags.Tag, error) {
 	}
 	o.logger.Debugw("Default tag", "defaultTag", defaultTag)
 
+	defaultTag, err := getDefaultTag(o)
+	if err != nil {
+		return nil, err
+	}
 	o.logger.Debugw("Parsing tags")
 	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
@@ -1043,6 +1067,9 @@ func parseTags(o options) ([]tags.Tag, error) {
 	return parsedTags, nil
 }
 
+// getDefaultTag returns the default tag based on the read git state.
+// The function provid default tag for pull request or commit.
+// The default tag is read from the provided options struct.
 func getDefaultTag(o options) (tags.Tag, error) {
 	o.logger.Debugw("Reading gitstate data")
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
