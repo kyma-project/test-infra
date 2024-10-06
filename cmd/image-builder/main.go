@@ -661,7 +661,6 @@ func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, e
 		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
 	}
 
-
 	logger.Debugw("building tags", "pr_number", pr, "commit_sha", sha, "templates", templates)
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, taggerOptions...)
@@ -958,7 +957,7 @@ func generateTags(o options) error {
 	o.logger.Debugw("Added envs to tags", "tags", parsedTags)
 	jsonTags, err := tagsAsJSON(parsedTags)
 	if err != nil {
-		return fmt.Errorf("failed generating tags json represenation: %w", err)
+		return fmt.Errorf("failed generating tags json representation: %w", err)
 	}
 	o.logger.Infow("Generated image tags", "tags", jsonTags)
 	// Write tags to a file.
@@ -998,7 +997,9 @@ func getEnvs(o options, dockerfileDirPath string) (map[string]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to load env file: %s", err)
 	}
-	o.logger.Debugw("Environment variables loaded from env file", "envs", envs)
+	if envs != nil {
+		o.logger.Debugw("Environment variables loaded from env file", "envs", envs)
+	}
 	return envs, nil
 }
 
@@ -1012,11 +1013,11 @@ func parseTags(o options) ([]tags.Tag, error) {
 
 	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA != "" {
 		sha = o.gitState.BaseCommitSHA
-		o.logger.Debugw()
+		o.logger.Debugw("run for push event, base commit sha present in git state", "sha", sha)
 	}
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
-		o.logger.Debugw()
+		o.logger.Debugw("run for pull request, number present in git state", "pr-number", pr)
 	}
 
 	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
@@ -1053,7 +1054,7 @@ func parseTags(o options) ([]tags.Tag, error) {
 	}
 	o.logger.Debugw("Default tag", "defaultTag", defaultTag)
 
-	defaultTag, err := getDefaultTag(o)
+	defaultTag, err = getDefaultTag(o)
 	if err != nil {
 		return nil, err
 	}
