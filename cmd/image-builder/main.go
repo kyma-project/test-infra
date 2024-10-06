@@ -421,7 +421,7 @@ func buildInADO(o options) error {
 // It fetches the build logs and prints them.
 // If the build fails, the function returns an error.
 // If the build is successful, the function returns nil.
-func buildLocally(logger Logger, o options) error {
+func buildLocally(o options) error {
 	// Determine the build tool to use based on the USE_BUILDKIT environment variable.
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
@@ -440,7 +440,7 @@ func buildLocally(logger Logger, o options) error {
 	}
 	// Load environment variables from the envFile or variants.yaml file.
 	if len(o.envFile) > 0 {
-		envs, err = loadEnv(logger, os.DirFS(dockerfilePath), o.envFile)
+		envs, err = loadEnv(o.logger, os.DirFS(dockerfilePath), o.envFile)
 		if err != nil {
 			return fmt.Errorf("load env failed, error: %w", err)
 		}
@@ -486,7 +486,7 @@ func buildLocally(logger Logger, o options) error {
 	}
 
 	// Get the tags for the image.
-	parsedTags, err := getTags(logger, pr, sha, append(o.tags, defaultTag))
+	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return err
 	}
@@ -916,7 +916,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	err = buildLocally(o.logger, o)
+	err = buildLocally(o)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -1056,10 +1056,6 @@ func parseTags(o options) ([]tags.Tag, error) {
 	}
 	o.logger.Debugw("Default tag", "defaultTag", defaultTag)
 
-	defaultTag, err = getDefaultTag(o)
-	if err != nil {
-		return nil, err
-	}
 	o.logger.Debugw("Parsing tags")
 	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
