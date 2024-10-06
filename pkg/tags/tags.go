@@ -42,6 +42,10 @@ func (tg *Tagger) ParseTags() ([]Tag, error) {
 		if err != nil {
 			return nil, err
 		}
+		err = tg.validateTag(tag)
+		if err != nil {
+			return nil, err
+		}
 		parsed = append(parsed, tag)
 	}
 

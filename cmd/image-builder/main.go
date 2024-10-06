@@ -656,9 +656,11 @@ func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, e
 	var taggerOptions []tags.TagOption
 	if len(pr) > 0 {
 		taggerOptions = append(taggerOptions, tags.PRNumber(pr))
+		logger.Debugw()
 	}
 	if len(sha) > 0 {
 		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
+		logger.Debugw()
 	}
 
 	logger.Debugw("building tags", "pr_number", pr, "commit_sha", sha, "templates", templates)
