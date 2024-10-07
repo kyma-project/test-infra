@@ -72,9 +72,7 @@
 
 [HTML Lens](/docs/prow/prow-html-lens.md) - Spyglass HTML lens allows to render HTML files in the job results.
 
-[Image Autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs. 
-
-[Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
+[Image Autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs.
 
 [Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
 
