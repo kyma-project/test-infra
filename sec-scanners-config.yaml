@@ -1,14 +1,14 @@
 module-name: test-infra
 protecode:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241004-f3a7b0ef
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241004-f3a7b0ef
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241007-36d14dd7
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241007-36d14dd7
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20240924-997e8b7b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241002-1ca38179
 whitesource:

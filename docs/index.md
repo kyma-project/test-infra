@@ -34,10 +34,6 @@
 
 [Job Guard](/cmd/tools/jobguard/README.md) - Job Guard was moved to the [`cmd`](/cmd/jobguard) directory.
 
-[Prow Job Tester](/cmd/tools/pjtester/README.md) - Prow Job tester is a tool for testing changes to the Prow Jobs' definitions and code running in Prow Jobs. It uses the production Prow instance to run chosen Prow Jobs with changes from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development can be done within one cycle.
-
-[Render Templates](/cmd/tools/rendertemplates/README.md) - The Render Templates is a tool that reads the configuration from a [`config.yaml`](/templates/config.yaml) file and [`data`](/templates/data) files to generate output files, such as Prow component jobs. While the `config.yaml` file can hold configuration for an output file, you can place such data within the data files that hold configuration for related output files. Having separate files with grouped data is cleaner and easier to maintain than one huge config file.
-
 [Virtual Machines Garbage Collector](/cmd/tools/vmscollector/README.md) - This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud project.
 
 [Artifact Registry Creator Tool (GCP, Terraform)](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
@@ -93,6 +89,3 @@
 [Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
-
-[Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check
-

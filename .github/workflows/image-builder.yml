@@ -108,4 +108,4 @@ jobs:
           image-name: ${{ inputs.name }}
           dockerfile: ${{ inputs.dockerfile }}
           env-file: ${{ inputs.env-file }}
-          config: "./configs/kaniko-build-config.yaml"
+          config: "./configs/image-builder-client-config.yaml"
