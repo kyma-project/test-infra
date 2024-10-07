@@ -14,7 +14,7 @@ To add additional applications into the images, open a pull request (PR) with ch
 ## Write Image Tests
 
 To write simple smoke tests with your image, add an executable file called `test.sh`.
-The scripts should contain all steps that perform basic or advanced test operations against the image. You can use all binaries available in [E2E DinD K3d Image](./e2e-dind-k3d) to test the built image.
+The scripts should contain all steps that perform basic or advanced test operations against the image.
 The test script must exit with a non-zero number if any steps have failed.
 
 By default, current context of a test script is always Docker build context. Image name is passed as a variable `IMG`.
