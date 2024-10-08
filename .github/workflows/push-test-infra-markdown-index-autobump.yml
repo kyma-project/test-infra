@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '**/*.md'
+  workflow_dispatch: {}
 
 env:
   AUTOBUMP_CONFIG_PATH: configs/autobump-config/test-infra-markdown-index-autobump-config.yaml
