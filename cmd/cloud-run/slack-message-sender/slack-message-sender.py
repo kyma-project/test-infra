@@ -295,8 +295,9 @@ def issue_labeled() -> Response:
                 issue_url = payload["issue"]["html_url"]
 
                 assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["assigneeSlackUsername"]:
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['assigneeSlackUsername']}>"
+                if payload["issue"]["assignee"]:
+                    assignee_login = payload["issue"]["assignee"]["login"]
+                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
 
                 sender = payload["senderSlackUsername"]
                 if payload["senderSlackUsername"]:
@@ -317,18 +318,17 @@ def issue_labeled() -> Response:
                     blocks=[
                         {
                             "type": "context",
-                            "elements":
-                                [
-                                    {
-                                        "type": "image",
-                                        "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                                        "alt_text": "label"
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "SAP Github issue labeled"
-                                    }
-                                ]
+                            "elements": [
+                                {
+                                    "type": "image",
+                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                    "alt_text": "label"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "SAP Github issue labeled"
+                                }
+                            ]
                         },
                         {
                             "type": "header",
@@ -339,17 +339,16 @@ def issue_labeled() -> Response:
                         },
                         {
                             "type": "section",
-                            "text":
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
-                                }
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
+                            }
                         },
                     ],
                 )
                 print(LogEntry(
                     severity="INFO",
-                    message=f'Slack message send, message id: {result["ts"]}',
+                    message=f'Slack message sent, message id: {result["ts"]}',
                     **log_fields,
                 ))
 
