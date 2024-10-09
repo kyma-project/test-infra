@@ -831,7 +831,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
-	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/tmp/generated-tags.json", "Path to file where generated tags will be written as JSON")
+	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
 
 	return flagSet
 }
