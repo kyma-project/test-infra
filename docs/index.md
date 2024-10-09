@@ -66,7 +66,7 @@
 
 [HTML Lens](/docs/prow/prow-html-lens.md) - Spyglass HTML lens allows to render HTML files in the job results.
 
-[Image Autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs.
+[Image Autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs. 
 
 [Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
 
@@ -89,3 +89,4 @@
 [Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/cmd/images) directory instead.
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
+
