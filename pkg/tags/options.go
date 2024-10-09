@@ -43,3 +43,10 @@ func PRNumber(pr string) TagOption {
 		return nil
 	}
 }
+
+func WithLogger(logger Logger) TagOption {
+	return func(t *Tagger) error {
+		t.logger = logger.With("component", "tagger")
+		return nil
+	}
+}

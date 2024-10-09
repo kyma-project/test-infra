@@ -9,4 +9,7 @@ FROM gcr.io/kaniko-project/executor:v1.23.2
 
 COPY --from=builder /app/image-builder /image-builder
 
+# Create a tmp directory to write image-builder output in default location
+RUN mkdir /tmp
+
 ENTRYPOINT ["/image-builder"]
