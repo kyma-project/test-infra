@@ -32,7 +32,7 @@ component_name: str = os.getenv('COMPONENT_NAME', '')
 application_name: str = os.getenv('APPLICATION_NAME', '')
 slack_channel_id: str = os.getenv('PROW_DEV_NULL_SLACK_CHANNEL_ID', '')
 slack_release_channel_id: str = os.getenv('RELEASE_SLACK_CHANNEL_ID', '')
-slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
+slack_team_channel_id: str = "C07RVMJQ9HN"
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars
@@ -287,7 +287,7 @@ def issue_labeled() -> Response:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
 
             label = payload["label"]["name"]
-            if label in ("internal-incident", "customer-incident"):
+            if label in ("internal-incident", "customer-incident", "neighbors-test"):
                 title = payload["issue"]["title"]
                 number = payload["issue"]["number"]
                 repo = payload["repository"]["name"]
