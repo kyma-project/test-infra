@@ -1,36 +1,5 @@
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-test-infra-markdown-index-autobump
-      annotations:
-        description: "autobump markdown index.md"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      run_if_changed: '.md$'
-      skip_report: false
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      reporter_config:
-        slack:
-          channel: kyma-neighbors-alerts
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241007-aa6bbc21"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/markdown-index"
-            args:
-              - "--config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml"
-              - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-deploy-prow
       annotations:
         description: "Deploy prow components"
