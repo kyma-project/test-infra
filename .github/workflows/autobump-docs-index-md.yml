@@ -1,5 +1,12 @@
-name: hello-world
-on: workflow_dispatch
+name: autobump-docs-index-md.yml
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+  workflow_dispatch: {}
 
 env:
   AUTOBUMP_CONFIG_PATH: configs/autobump-config/test-infra-markdown-index-autobump-config.yaml
@@ -23,7 +30,9 @@ jobs:
           GIT_EMAIL=$(grep "gitEmail" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
           git config user.name "$GIT_USERNAME"
           git config user.email "$GIT_EMAIL"
+
           git config --unset-all http.https://github.com/.extraheader
+
       - name: Authenticate in GCP
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -37,9 +46,11 @@ jobs:
         with:
           secrets: |-
             kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
+
       - name: Store Github Token for autobumper
         run: |
           echo "${{ steps.secrets.outputs.kyma-autobump-token }}" > ~/token
+
       - name: Run markdown index autobump
         run: |
           docker run --rm \
