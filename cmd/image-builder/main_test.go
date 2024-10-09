@@ -248,7 +248,7 @@ func TestFlags(t *testing.T) {
 				configPath:     "/config/image-builder-config.yaml",
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
-				tagsOutputFile: "/generated-tags.json",
+				tagsOutputFile: "/tmp/generated-tags.json",
 			},
 			expectedErr: true,
 			args: []string{
@@ -270,7 +270,7 @@ func TestFlags(t *testing.T) {
 				logDir:         "prow/logs",
 				orgRepo:        "kyma-project/test-infra",
 				silent:         true,
-				tagsOutputFile: "/generated-tags.json",
+				tagsOutputFile: "/tmp/generated-tags.json",
 			},
 			args: []string{
 				"--config=config.yaml",
@@ -292,7 +292,7 @@ func TestFlags(t *testing.T) {
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
 				exportTags:     true,
-				tagsOutputFile: "/generated-tags.json",
+				tagsOutputFile: "/tmp/generated-tags.json",
 			},
 			args: []string{
 				"--export-tags",
@@ -309,7 +309,7 @@ func TestFlags(t *testing.T) {
 					tags.Tag{Name: "BIN", Value: "test"},
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
-				tagsOutputFile: "/generated-tags.json",
+				tagsOutputFile: "/tmp/generated-tags.json",
 			},
 			args: []string{
 				"--build-arg=BIN=test",
