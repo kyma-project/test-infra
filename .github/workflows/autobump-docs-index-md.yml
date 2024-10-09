@@ -1,4 +1,4 @@
-name: push-test-infra-markdown-index-autobump
+name: autobump-docs-index-md.yml
 
 on:
   push:
