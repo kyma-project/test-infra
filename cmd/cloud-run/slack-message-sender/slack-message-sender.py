@@ -313,6 +313,7 @@ def issue_labeled() -> Response:
                     username="GithubBot",
                     unfurl_links=True,
                     unfurl_media=True,
+                    link_names=1,
                     blocks=[
                         {
                             "type": "context",
