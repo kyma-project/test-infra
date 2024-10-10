@@ -295,9 +295,11 @@ def issue_labeled() -> Response:
                 issue_url = payload["issue"]["html_url"]
 
                 assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["issue"]["assignee"]:
-                    assignee_login = payload["issue"]["assignee"]["login"]
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+                issue_assignee = payload["issue"].get("assignee")
+                if issue_assignee:
+                    assignee_login = issue_assignee.get("login")
+                    if assignee_login:
+                        assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
 
                 sender = payload["senderSlackUsername"]
                 if payload["senderSlackUsername"]:
@@ -311,7 +313,7 @@ def issue_labeled() -> Response:
 
                 result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
-                    text=f"issue {title} #{number} labeld as {label} in {repo}",
+                    text=f"Issue {title} #{number} labeled as {label} in {repo}",
                     username="GithubBot",
                     unfurl_links=True,
                     unfurl_media=True,
