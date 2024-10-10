@@ -278,7 +278,7 @@ def release_cluster_created() -> Response:
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
-    '''this function sends information about labeled issues in a Slack channel'''
+    '''This function sends information about labeled issues in a Slack channel'''
     log_fields: Dict[str, Any] = prepare_log_fields()
     log_fields["labels"]["io.kyma.app"] = "issue-labeled"
     try:
@@ -294,13 +294,12 @@ def issue_labeled() -> Response:
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["assigneeSlackUsername"]:
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['assigneeSlackUsername']}>"
+                assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                if payload["issue"].get("assignee"):
+                    assignee_login = payload["issue"]["assignee"]["login"]
+                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
 
-                sender = payload["senderSlackUsername"]
-                if payload["senderSlackUsername"]:
-                    sender = f"<@{payload['senderSlackUsername']}>"
+                sender_login = payload["sender"]["login"]
 
                 print(LogEntry(
                     severity="INFO",
@@ -310,31 +309,30 @@ def issue_labeled() -> Response:
 
                 result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
-                    text=f"issue {title} #{number} labeld as {label} in {repo}",
+                    text=f"Issue {title} #{number} labeled as {label} in {repo}",
                     username="GithubBot",
                     unfurl_links=True,
                     unfurl_media=True,
                     blocks=[
                         {
                             "type": "context",
-                            "elements":
-                                [
-                                    {
-                                        "type": "image",
-                                        "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                                        "alt_text": "label"
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "SAP Github issue labeled"
-                                    }
-                                ]
+                            "elements": [
+                                {
+                                    "type": "image",
+                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                    "alt_text": "label"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "SAP GitHub issue labeled"
+                                }
+                            ]
                         },
                         {
                             "type": "header",
                             "text": {
                                 "type": "plain_text",
-                                "text": f"SAP Github {label}"
+                                "text": f"SAP GitHub {label}"
                             }
                         },
                         {
@@ -342,20 +340,22 @@ def issue_labeled() -> Response:
                             "text":
                                 {
                                     "type": "mrkdwn",
-                                    "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
+                                    "text": (
+                                        f"@here @{sender_login} labeled issue `{title}` as `{label}`.\n"
+                                        f"{assignee_info} <{issue_url}|See the issue here.>"
+                                    )
                                 }
                         },
                     ],
                 )
                 print(LogEntry(
                     severity="INFO",
-                    message=f'Slack message send, message id: {result["ts"]}',
+                    message=f"Slack message sent, message id: {result['ts']}",
                     **log_fields,
                 ))
 
             return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
-    # pylint: disable=broad-exception-caught
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
