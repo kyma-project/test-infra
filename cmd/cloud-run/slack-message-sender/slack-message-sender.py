@@ -103,32 +103,6 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
     return resp
 
 
-def get_slack_users():
-    if time.time() - slack_users_cache['timestamp'] > 3600:
-        try:
-            response = slack_app.client.users_list()
-            slack_users_cache['users'] = response['members']
-            slack_users_cache['timestamp'] = time.time()
-        except SlackApiError as e:
-            print(LogEntry(
-                severity="ERROR",
-                message=f"Error fetching users_list: {e.response['error']}",
-            ))
-            return []
-    return slack_users_cache['users']
-
-
-def get_slack_user_id_by_employee_id(employee_id):
-    users = get_slack_users()
-    for user in users:
-        profile = user.get('profile', {})
-        fields = profile.get('fields', {})
-        for field_id, field in fields.items():
-            if field.get('value') == employee_id:
-                return user['id']
-    return None
-
-
 @app.route("/secret-leak-found", methods=["POST"])
 def secret_leak_found() -> Response:
     '''secret_leak_found handles found secret leak Slack messages'''
@@ -316,24 +290,12 @@ def issue_labeled() -> Response:
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                sender_employee_id = payload["sender"]["login"]
-                assignee_employee_id = None
-                if payload["issue"].get("assignee"):
-                    assignee_employee_id = payload["issue"]["assignee"]["login"]
-
-                sender_user_id = get_slack_user_id_by_employee_id(sender_employee_id)
-                if sender_user_id:
-                    sender_mention = f"<@{sender_user_id}>"
-                else:
-                    sender_mention = f"@{sender_employee_id}"
-
                 assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if assignee_employee_id:
-                    assignee_user_id = get_slack_user_id_by_employee_id(assignee_employee_id)
-                    if assignee_user_id:
-                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_user_id}>"
-                    else:
-                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_employee_id}"
+                if payload["issue"].get("assignee"):
+                    assignee_login = payload["issue"]["assignee"]["login"]
+                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+
+                sender_login = payload["sender"]["login"]
 
                 print(LogEntry(
                     severity="INFO",
@@ -372,13 +334,14 @@ def issue_labeled() -> Response:
                         },
                         {
                             "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": (
-                                    f"<!here> {sender_mention} labeled issue `{title}` as `{label}`.\n"
-                                    f"{assignee_info} <{issue_url}|See the issue here.>"
-                                )
-                            }
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": (
+                                        f"@here @{sender_login} labeled issue `{title}` as `{label}`.\n"
+                                        f"{assignee_info} <{issue_url}|See the issue here.>"
+                                    )
+                                }
                         },
                     ],
                 )
