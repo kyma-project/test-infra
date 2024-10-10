@@ -41,6 +41,10 @@ type WithLoggerInterface interface {
 	With(args ...interface{}) *zap.SugaredLogger
 }
 
+type NamedLoggerInterface interface {
+	Named(name string) *zap.SugaredLogger
+}
+
 // Logger is an interface to interact with Google logging.
 // TODO: this should be replaced by extending LoggerInterface
 type Logger interface {
