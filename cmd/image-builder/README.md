@@ -95,6 +95,7 @@ The Image Builder reusable workflow supports the following GitHub events to trig
 * `push` - to build images on push to the specified branch.
 * `pull_request_target` - to build images on pull requests.
 * `workflow_dispatch` - to manually trigger the workflow.
+* `schedule` - to build images on a regular basis.
 
 ## Reusable Workflow Reference
 
@@ -146,7 +147,7 @@ By default, Image Builder signs images with the production signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
 
 > [!NOTE]
-> Image Builder signs images built on the push and workflow_dispatch events only. Images built on the pull_request_target event are not signed.
+> Image Builder only signs images built on the `push`, `schedule`, and `workflow_dispatch` events. Images built on the `pull_request_target` event are not signed.
 
 ## Image Signing with Signify
 
