@@ -1,23 +1,14 @@
-'''This function can receive various data types and sends Slack messages'''
-
-# common-slack-bot-token
-# google logging https://cloud.google.com/run/docs/logging#writing_structured_logs
-# python wsgi pep https://peps.python.org/pep-3333/#environ-variables
-# gunicorn https://docs.gunicorn.org/en/stable/run.html#
-# flask app: https://flask.palletsprojects.com/en/2.2.x/quickstart/#a-minimal-application
-# flask request docs: https://flask.palletsprojects.com/en/2.2.x/api/#incoming-request-data
-# flask responses docs: https://flask.palletsprojects.com/en/2.2.x/quickstart/#about-responses
-# slack app send message: https://api.slack.com/messaging/sending
-
 import json
 import os
 import sys
 import traceback
 import base64
+import time
 from typing import Dict, Any
 from flask import Flask, request, make_response, Response
 from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
+from slack_sdk.errors import SlackApiError
 
 
 class LogEntry(dict):
@@ -51,6 +42,11 @@ if len(tmp_groups) != 1:
         )
     ))
 kyma_security_slack_group_id: str = tmp_groups[0]
+
+slack_users_cache = {
+    'timestamp': 0,
+    'users': []
+}
 
 
 def prepare_log_fields() -> Dict[str, Any]:
@@ -105,6 +101,32 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
     resp.content_type = 'application/json'
     resp.status_code = 500
     return resp
+
+
+def get_slack_users():
+    if time.time() - slack_users_cache['timestamp'] > 3600:
+        try:
+            response = slack_app.client.users_list()
+            slack_users_cache['users'] = response['members']
+            slack_users_cache['timestamp'] = time.time()
+        except SlackApiError as e:
+            print(LogEntry(
+                severity="ERROR",
+                message=f"Error fetching users_list: {e.response['error']}",
+            ))
+            return []
+    return slack_users_cache['users']
+
+
+def get_slack_user_id_by_employee_id(employee_id):
+    users = get_slack_users()
+    for user in users:
+        profile = user.get('profile', {})
+        fields = profile.get('fields', {})
+        for field_id, field in fields.items():
+            if field.get('value') == employee_id:
+                return user['id']
+    return None
 
 
 @app.route("/secret-leak-found", methods=["POST"])
@@ -294,12 +316,24 @@ def issue_labeled() -> Response:
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                sender_employee_id = payload["sender"]["login"]
+                assignee_employee_id = None
                 if payload["issue"].get("assignee"):
-                    assignee_login = payload["issue"]["assignee"]["login"]
-                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+                    assignee_employee_id = payload["issue"]["assignee"]["login"]
 
-                sender_login = payload["sender"]["login"]
+                sender_user_id = get_slack_user_id_by_employee_id(sender_employee_id)
+                if sender_user_id:
+                    sender_mention = f"<@{sender_user_id}>"
+                else:
+                    sender_mention = f"@{sender_employee_id}"
+
+                assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                if assignee_employee_id:
+                    assignee_user_id = get_slack_user_id_by_employee_id(assignee_employee_id)
+                    if assignee_user_id:
+                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_user_id}>"
+                    else:
+                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_employee_id}"
 
                 print(LogEntry(
                     severity="INFO",
@@ -338,14 +372,13 @@ def issue_labeled() -> Response:
                         },
                         {
                             "type": "section",
-                            "text":
-                                {
-                                    "type": "mrkdwn",
-                                    "text": (
-                                        f"@here @{sender_login} labeled issue `{title}` as `{label}`.\n"
-                                        f"{assignee_info} <{issue_url}|See the issue here.>"
-                                    )
-                                }
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": (
+                                    f"<!here> {sender_mention} labeled issue `{title}` as `{label}`.\n"
+                                    f"{assignee_info} <{issue_url}|See the issue here.>"
+                                )
+                            }
                         },
                     ],
                 )
