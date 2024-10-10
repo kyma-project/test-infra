@@ -278,13 +278,15 @@ def release_cluster_created() -> Response:
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
-    '''this function sends information about labeled issues in a Slack channel'''
+    '''This function sends information about labeled issues in a Slack channel'''
     log_fields: Dict[str, Any] = prepare_log_fields()
     log_fields["labels"]["io.kyma.app"] = "issue-labeled"
     try:
         pubsub_message = get_pubsub_message()
         if isinstance(pubsub_message, dict) and "data" in pubsub_message:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
+
+            pubsub_message_str = json.dumps(pubsub_message, indent=2)
 
             label = payload["label"]["name"]
             if label in ("internal-incident", "customer-incident", "neighbors-test"):
@@ -296,10 +298,9 @@ def issue_labeled() -> Response:
 
                 assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
                 issue_assignee = payload["issue"].get("assignee")
-                if issue_assignee:
-                    assignee_login = issue_assignee.get("login")
-                    if assignee_login:
-                        assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+                if issue_assignee and issue_assignee.get("login"):
+                    assignee_login = issue_assignee["login"]
+                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
 
                 sender = payload["senderSlackUsername"]
                 if payload["senderSlackUsername"]:
@@ -310,6 +311,12 @@ def issue_labeled() -> Response:
                     message=f"Sending notification to {slack_team_channel_id}.",
                     **log_fields,
                 ))
+
+                message_text = (
+                    f"@here {sender} labeled issue `{title}` as `{label}`.\n"
+                    f"{assignee} <{issue_url}|See the issue here.>\n\n"
+                    f"*PubSub Message:*\n```{pubsub_message_str}```"
+                )
 
                 result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
@@ -328,7 +335,7 @@ def issue_labeled() -> Response:
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": "SAP Github issue labeled"
+                                    "text": "SAP GitHub issue labeled"
                                 }
                             ]
                         },
@@ -336,14 +343,14 @@ def issue_labeled() -> Response:
                             "type": "header",
                             "text": {
                                 "type": "plain_text",
-                                "text": f"SAP Github {label}"
+                                "text": f"SAP GitHub {label}"
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
+                                "text": message_text
                             }
                         },
                     ],
@@ -357,6 +364,5 @@ def issue_labeled() -> Response:
             return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
-    # pylint: disable=broad-exception-caught
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
