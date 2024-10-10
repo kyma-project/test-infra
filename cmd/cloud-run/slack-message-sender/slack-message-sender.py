@@ -287,7 +287,7 @@ def issue_labeled() -> Response:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
 
             label = payload["label"]["name"]
-            if label in ("internal-incident", "customer-incident"):
+            if label in ("internal-incident", "customer-incident", "neighbors-test"):
                 title = payload["issue"]["title"]
                 number = payload["issue"]["number"]
                 repo = payload["repository"]["name"]
