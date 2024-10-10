@@ -32,7 +32,7 @@ component_name: str = os.getenv('COMPONENT_NAME', '')
 application_name: str = os.getenv('APPLICATION_NAME', '')
 slack_channel_id: str = os.getenv('PROW_DEV_NULL_SLACK_CHANNEL_ID', '')
 slack_release_channel_id: str = os.getenv('RELEASE_SLACK_CHANNEL_ID', '')
-slack_team_channel_id: str = "C07RVMJQ9HN"
+slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars
@@ -286,24 +286,20 @@ def issue_labeled() -> Response:
         if isinstance(pubsub_message, dict) and "data" in pubsub_message:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
 
-            pubsub_message_str = json.dumps(pubsub_message, indent=2)
-
             label = payload["label"]["name"]
-            if label in ("internal-incident", "customer-incident", "neighbors-test"):
+            if label in ("internal-incident", "customer-incident"):
                 title = payload["issue"]["title"]
                 number = payload["issue"]["number"]
                 repo = payload["repository"]["name"]
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["issue"]["assignee"]:
+                assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                if payload["issue"].get("assignee"):
                     assignee_login = payload["issue"]["assignee"]["login"]
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
 
-                sender = payload["senderSlackUsername"]
-                if payload["senderSlackUsername"]:
-                    sender = f"<@{payload['senderSlackUsername']}>"
+                sender_login = payload["sender"]["login"]
 
                 print(LogEntry(
                     severity="INFO",
@@ -311,13 +307,9 @@ def issue_labeled() -> Response:
                     **log_fields,
                 ))
 
-                message_text = (
-                    f"*PubSub Message:*\n```{pubsub_message_str}```"
-                )
-
                 result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
-                    text=f"issue {title} #{number} labeld as {label} in {repo}",
+                    text=f"Issue {title} #{number} labeled as {label} in {repo}",
                     username="GithubBot",
                     unfurl_links=True,
                     unfurl_media=True,
@@ -345,16 +337,20 @@ def issue_labeled() -> Response:
                         },
                         {
                             "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": message_text
-                            }
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": (
+                                        f"@here @{sender_login} labeled issue `{title}` as `{label}`.\n"
+                                        f"{assignee_info} <{issue_url}|See the issue here.>"
+                                    )
+                                }
                         },
                     ],
                 )
                 print(LogEntry(
                     severity="INFO",
-                    message=f'Slack message sent, message id: {result["ts"]}',
+                    message=f"Slack message sent, message id: {result['ts']}",
                     **log_fields,
                 ))
 
