@@ -253,6 +253,8 @@ func main() {
 				if err != nil {
 					log.WithError(err).Fatal("Could not open target auth key JSON")
 				}
+			} else {
+				authCfg = []byte(cfg.AccessToken)
 			}
 
 			if cfg.DryRun {
