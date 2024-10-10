@@ -313,8 +313,6 @@ def issue_labeled() -> Response:
                 ))
 
                 message_text = (
-                    f"@here {sender} labeled issue `{title}` as `{label}`.\n"
-                    f"{assignee} <{issue_url}|See the issue here.>\n\n"
                     f"*PubSub Message:*\n```{pubsub_message_str}```"
                 )
 
