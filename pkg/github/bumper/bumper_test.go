@@ -113,15 +113,6 @@ func TestValidateOptions(t *testing.T) {
 	}
 }
 
-type fakeWriter struct {
-	results []byte
-}
-
-func (w *fakeWriter) Write(content []byte) (n int, err error) {
-	w.results = append(w.results, content...)
-	return len(content), nil
-}
-
 func writeToFile(t *testing.T, path, content string) {
 	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
 		t.Errorf("write file %s dir with error '%v'", path, err)
@@ -144,8 +135,8 @@ func TestCallWithWriter(t *testing.T) {
 	var fakeOut fakeWriter
 	var fakeErr fakeWriter
 
-	stdout := HideSecretsWriter{Delegate: &fakeOut, Censor: secret.Censor}
-	stderr := HideSecretsWriter{Delegate: &fakeErr, Censor: secret.Censor}
+	stdout := CensoredWriter{Delegate: &fakeOut, Censor: secret.Censor}
+	stderr := CensoredWriter{Delegate: &fakeErr, Censor: secret.Censor}
 
 	testCases := []struct {
 		description string
@@ -182,13 +173,13 @@ func TestCallWithWriter(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.description, func(t *testing.T) {
-			fakeOut.results = []byte{}
-			fakeErr.results = []byte{}
-			_ = Call(stdout, stderr, tc.command, tc.args)
-			if full, want := string(fakeOut.results), tc.expectedOut; !strings.Contains(full, want) {
+			fakeOut.result = []byte{}
+			fakeErr.result = []byte{}
+			_ = Call(stdout, stderr, tc.command, tc.args...)
+			if full, want := string(fakeOut.result), tc.expectedOut; !strings.Contains(full, want) {
 				t.Errorf("stdout does not contain %q, got %q", full, want)
 			}
-			if full, want := string(fakeErr.results), tc.expectedErr; !strings.Contains(full, want) {
+			if full, want := string(fakeErr.result), tc.expectedErr; !strings.Contains(full, want) {
 				t.Errorf("stderr does not contain %q, got %q", full, want)
 			}
 		})
