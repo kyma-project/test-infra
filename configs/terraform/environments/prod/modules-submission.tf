@@ -31,7 +31,7 @@ resource "google_service_account" "kyma_project_kyma_submission_pipeline" {
   description  = "The submission-pipeline ADO pipeline."
 }
 
-resource "google_service_account" "kyma_submission_pipeline" {
+resource "google_service_account" "kyma-submission-pipeline" {
   account_id   = "kyma-submission-pipeline"
   display_name = "kyma-submission-pipeline"
   #   description = "Service account for retrieving secrets on the conduit-cli build pipeline."
