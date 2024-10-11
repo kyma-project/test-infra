@@ -39,7 +39,7 @@ import {
 resource "google_service_account" "kyma_submission_pipeline" {
   account_id   = "kyma-submission-pipeline"
   display_name = "kyma-submission-pipeline"
-  description  = "The submission-pipeline ADO pipeline."
+  description = "Service account for retrieving secrets on the conduit-cli build pipeline."
 }
 
 resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin" {
