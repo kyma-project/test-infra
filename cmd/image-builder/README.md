@@ -54,7 +54,7 @@ jobs:
       uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
       with:
          name: test-infra/ginkgo
-         dockerfile: prow/images/ginkgo/Dockerfile
+         dockerfile: cmd/images/ginkgo/Dockerfile
          context: .
          env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}

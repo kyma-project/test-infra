@@ -4,13 +4,13 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "images/**"
+      - "cmd/images/**"
       - ".github/workflows/image-builder.yml"
   push:
     branches:
       - main
     paths:
-      - "images/**"
+      - "cmd/images/**"
       - ".github/workflows/image-builder.yml"
   workflow_dispatch: {}
 
@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: alpine
-      dockerfile: images/alpine/Dockerfile
+      dockerfile: cmd/images/alpine/Dockerfile
       context: .
       
   unpack-alpine:
@@ -42,7 +42,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: alpine-git
-      dockerfile: images/alpine/git/Dockerfile
+      dockerfile: cmd/images/alpine/git/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
 
@@ -52,7 +52,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: alpine-git-gke-aws-auth
-      dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
+      dockerfile: cmd/images/alpine/git/gke-aws-auth/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
 
@@ -61,7 +61,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: buildpack
-      dockerfile: images/buildpack/Dockerfile
+      dockerfile: cmd/images/buildpack/Dockerfile
       context: .
 
   unpack-buildpack:
@@ -83,7 +83,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: buildpack-go
-      dockerfile: images/buildpack/go/Dockerfile
+      dockerfile: cmd/images/buildpack/go/Dockerfile
       context: .
       build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
 
@@ -92,7 +92,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: unified-agent
-      dockerfile: images/unified-agent/Dockerfile
+      dockerfile: cmd/images/unified-agent/Dockerfile
       context: .
 
   unpack-unified-agent:
@@ -114,7 +114,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: unified-agent-go
-      dockerfile: images/unified-agent/go/Dockerfile
+      dockerfile: cmd/images/unified-agent/go/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
 
@@ -124,7 +124,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: unified-agent-nodejs
-      dockerfile: images/unified-agent/nodejs/Dockerfile
+      dockerfile: cmd/images/unified-agent/nodejs/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
 
@@ -134,7 +134,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: unified-agent-python
-      dockerfile: images/unified-agent/python/Dockerfile
+      dockerfile: cmd/images/unified-agent/python/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
 
@@ -143,5 +143,5 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: e2e-gcloud
-      dockerfile: images/e2e-gcloud/Dockerfile
+      dockerfile: cmd/images/e2e-gcloud/Dockerfile
       context: .
