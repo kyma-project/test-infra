@@ -37,7 +37,6 @@ import {
 }
 
 resource "google_service_account" "kyma_submission_pipeline" {
-  provider     = google.sap_kyma_prow
   account_id   = "kyma-submission-pipeline"
   display_name = "kyma-submission-pipeline"
   description  = "The submission-pipeline ADO pipeline."
