@@ -43,6 +43,8 @@ type Options struct {
 	HeadBranchName string `json:"headBranchName" yaml:"headBranchName"`
 	// Optional list of labels to add to the bump PR
 	Labels []string `json:"labels" yaml:"labels"`
+	// Ensure fork exists and create it if doesn't exists
+	EnsureFork bool `json:"ensureFork" yaml:"ensureFork"`
 }
 
 const (
@@ -278,6 +280,17 @@ func processGitHub(o *Options, prh PRHandler) error {
 		if o.GitEmail == "" {
 			o.GitEmail = user.Email
 		}
+	}
+
+	if o.EnsureFork {
+		// Ensure the forked repository exists
+		repo, err := gc.EnsureFork(o.GitHubLogin, o.GitHubOrg, o.GitHubRepo)
+		if err != nil {
+			return fmt.Errorf("ensure fork: %w", err)
+		}
+
+		// Set the remote name to the forked repository
+		o.RemoteName = repo
 	}
 
 	for i, changeFunc := range prh.Changes() {
