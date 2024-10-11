@@ -69,7 +69,6 @@ type options struct {
 type Logger interface {
 	logging.StructuredLoggerInterface
 	logging.WithLoggerInterface
-	logging.NamedLoggerInterface
 }
 
 // parseVariable returns a build-arg.
@@ -664,7 +663,7 @@ func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, e
 		logger.Debugw("commit sha is set, adding tagger option", "commit_sha", sha)
 	}
 
-	taggerOptions = append(taggerOptions, tags.WithLogger(logger.Named("tagger")))
+	taggerOptions = append(taggerOptions, tags.WithLogger(logger))
 	logger.Debugw("added logger to tagger options")
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(logger, templates, taggerOptions...)
@@ -857,7 +856,6 @@ func main() {
 		log.Fatalf("Failed to initialize logger: %s", err)
 	}
 	o.logger = zapLogger.Sugar()
-	o.logger.Named("main")
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
@@ -998,19 +996,6 @@ func tagsAsJSON(parsedTags []tags.Tag) ([]byte, error) {
 	}
 	return jsonTags, err
 }
-
-// func getEnvs(logger Logger, o options, dockerfileDirPath string) (map[string]string, error) {
-// 	logger.Debugw("starting loading environment variables from file")
-// 	logger.Debugw("Loading environment variables from env file", "envFile", o.envFile, "dockerfileDirPath", dockerfileDirPath)
-// 	envs, err := loadEnv(o.logger, os.DirFS(dockerfileDirPath), o.envFile)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to load env file: %s", err)
-// 	}
-// 	if envs != nil {
-// 		o.logger.Debugw("Environment variables loaded from env file", "envs", envs)
-// 	}
-// 	return envs, nil
-// }
 
 func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 	logger.Debugw("starting to parse tags")
