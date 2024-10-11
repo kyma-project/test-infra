@@ -1,4 +1,4 @@
-name: reusable-image-autobumper
+name: image-autobumper
 on:
   workflow_call:
     inputs:
@@ -24,11 +24,11 @@ jobs:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
 
-      - name: Access Google Cloud Secret
-        id: access-secret
-        uses: google-github-actions/get-secretmanager-secrets@v2
+      - name: Get kyma bot token from Secret Manager
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
         with:
-          secrets: |
+          secrets: |-
             kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
 
       - name: Store Github Token for autobumper
@@ -37,8 +37,6 @@ jobs:
           chmod 644 ~/token
           
       - name: Checkout repository
-        with:
-          token: ${{ steps.secrets.outputs.kyma-autobump-token }}
         uses: actions/checkout@v4
 
         # Setup git config with commiter data from config
