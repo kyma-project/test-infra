@@ -32,14 +32,15 @@ resource "google_service_account" "kyma_project_kyma_submission_pipeline" {
 }
 
 import {
-  id = "projects/sap-kyna-prow/serviceAccounts/kyma-submission-pipeline@sap-kyma-prow.iam.gserviceaccount.com"
+  id = "projects/sap-kyma-prow/serviceAccounts/kyma-submission-pipeline@sap-kyma-prow.iam.gserviceaccount.com"
   to = google_service_account.kyma_submission_pipeline
 }
 
 resource "google_service_account" "kyma_submission_pipeline" {
   account_id   = "kyma-submission-pipeline"
   display_name = "kyma-submission-pipeline"
-  description = "Service account for retrieving secrets on the conduit-cli build pipeline."
+  #   description = "Service account for retrieving secrets on the conduit-cli build pipeline."
+  description = "The submission-pipeline ADO pipeline."
 }
 
 resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin" {
