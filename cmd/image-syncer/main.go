@@ -230,20 +230,25 @@ func (cfg *Config) newAuthenticator() (authn.Authenticator, error) {
 
 	if cfg.TargetKeyFile != "" {
 		log.WithField("targetKeyFile", cfg.TargetKeyFile).Debug("target key file path provided, reading the file")
+
 		authCfg, err = os.ReadFile(cfg.TargetKeyFile)
 		if err != nil {
 			return nil, fmt.Errorf("could not open target auth key JSON file, error: %w", err)
 		}
 		log.Debug("target key file read successfully, creating basic authenticator")
+
 		auth = &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 		log.WithField("username", "_json_key").Debug("basic authenticator created successfully")
+
 		return auth, nil
 	}
 	if cfg.AccessToken != "" {
 		log.Debug("access token provided, creating bearer authenticator")
 		auth = &authn.Bearer{Token: cfg.AccessToken}
+
 		return auth, nil
 	}
+
 	return nil, fmt.Errorf("no target auth key file or access token provided")
 }
 
