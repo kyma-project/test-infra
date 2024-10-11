@@ -757,7 +757,8 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 	logger.Debugw("Reading env file line by line")
 	for fileReader.Scan() {
 		line := fileReader.Text()
-		logger.Debugw("Processing envFile line", "line", line)
+		logger = logger.With("line", line)
+		logger.Debugw("Processing envFile line")
 		logger.Debugw("Splitting envFile line", "separator", "=")
 		separatedValues := strings.SplitN(line, "=", 2)
 		if len(separatedValues) > 2 {
@@ -766,12 +767,13 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 		// ignore empty lines, setup environment variable only if key and value are present
 		if len(separatedValues) == 2 {
 			logger.Debugw("Separated values", "key", separatedValues[0], "value", separatedValues[1])
+			logger = logger.With("key", separatedValues[0], "value", separatedValues[1])
 			key, val := separatedValues[0], separatedValues[1]
 			logger.Debugw("Checking if env file for a given key is already present in runtime")
 			if _, ok := os.LookupEnv(key); ok {
 				// do not override env variable if it's already present in the runtime
 				// do not include in vars map since dev should not have access to it anyway
-				logger.Infow("Env file key already present in runtime, skipping setting it", "key", key, "value", val)
+				logger.Infow("Env file key already present in runtime, skipping setting it")
 				continue
 			}
 			logger.Debugw("Setting env file for a given key in runtime")
