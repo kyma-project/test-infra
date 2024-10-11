@@ -27,7 +27,7 @@ slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars
-with open('/etc/slack-secret/common-slack-bot-token', encoding='utf-8') as token_file:
+with open('/etc/slack-secret/common-slack-bot-token-test', encoding='utf-8') as token_file:
     slack_bot_token = token_file.readline()
 slack_app = App(token=slack_bot_token)
 
