@@ -12,7 +12,7 @@ resource "kubernetes_cluster_role" "access_kyma_bot_github_tokens_trusted_worklo
   rule {
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name, var.kyma_guard_bot_github_token_secret_name]
+    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_token_secret_name, var.kyma_bot_github_sap_token_prow_k8s_secret_name, var.kyma_guard_bot_github_token_secret_name]
     verbs          = ["update", "get", "list", "watch", "patch", "create", "delete"]
   }
 }
@@ -27,7 +27,7 @@ resource "kubernetes_cluster_role" "access_kyma_bot_github_tokens_untrusted_work
   rule {
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name, var.kyma_guard_bot_github_token_secret_name]
+    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_token_secret_name, var.kyma_bot_github_sap_token_prow_k8s_secret_name, var.kyma_guard_bot_github_token_secret_name]
     verbs          = ["update", "get", "list", "watch", "patch", "create", "delete"]
   }
 }
@@ -72,5 +72,5 @@ resource "github_actions_variable" "kyma_autobump_bot_github_token_secret_name" 
   provider = github.kyma_project
   repository = data.github_repository.test_infra.name
   variable_name = "KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME"
-  value = var.kyma_autobump_bot_github_token_sm_secret_name
+  value = var.kyma_bot_github_sap_token_secret_name
 }
