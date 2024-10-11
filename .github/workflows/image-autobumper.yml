@@ -59,7 +59,7 @@ jobs:
             --cap-drop=ALL \
             --privileged \
             -v "${{ github.workspace }}:/workspace" \
-            -v "~/token:/tmp/github_token:ro" \
+            -v "~/token:/etc/github/token:ro" \
             -w /workspace \
             ${{ inputs.docker-image }} \
             --autobump-config=${{ inputs.autobump-config-path }}
