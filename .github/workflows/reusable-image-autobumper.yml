@@ -1,0 +1,66 @@
+name: reusable-image-autobumper
+on:
+  workflow_call:
+    inputs:
+      docker-image:
+        description: 'Docker image with tag to be used'
+        default: 'europe-docker.pkg.dev/kyma-project/prod/image-autobumper:v20240927-bc42bcd3'
+        type: string
+
+env:
+  AUTOBUMP_CONFIG_PATH: configs/image-autobumper-config/image-autobumper-config.yaml
+
+jobs:
+  autobump:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure Workload Identity Federation
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+
+      - name: Access Google Cloud Secret
+        id: access-secret
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |
+            kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
+
+      - name: Store Github Token for autobumper
+        run: |
+          echo ${{ steps.secrets.outputs.kyma-autobump-token }} > ~/token
+          chmod 644 ~/token
+          
+      - name: Checkout repository
+        with:
+          token: ${{ steps.secrets.outputs.kyma-autobump-token }}
+        uses: actions/checkout@v4
+
+        # Setup git config with commiter data from config
+        # Prevent silent passing github token
+        # see https://stackoverflow.com/a/69979203/23148781
+      - name: Setup git config
+        run: |
+          GIT_USERNAME=$(grep "gitName" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
+          GIT_EMAIL=$(grep "gitEmail" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
+          git config user.name $GIT_USERNAME
+          git config user.email $GIT_EMAIL
+
+          git config --unset-all http.https://github.com/.extraheader
+
+      - name: Run Docker container
+        run: |
+          docker run \
+            --rm \
+            --cap-drop=ALL \
+            --privileged \
+            -v "${{ github.workspace }}:/workspace" \
+            -v "~/token:/tmp/github_token:ro" \
+            -w /workspace \
+            ${{ inputs.docker-image }} \
+            --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
