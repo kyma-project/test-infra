@@ -115,9 +115,34 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
   }
 }
 
-import {
-  id = "projects/${var.kyma_project_gcp_project_id}/serviceAccounts/${var.image_builder_kyma-project_identity.id}@${var.kyma_project_gcp_project_id}.iam.gserviceaccount.com"
-  to = google_service_account.kyma_project_image_builder
+resource "google_artifact_registry_repository" "docker_cache" {
+  provider               = google.kyma_project
+  location               = var.docker_cache_repository.location
+  repository_id          = var.docker_cache_repository.name
+  description            = var.docker_cache_repository.description
+  format                 = var.docker_cache_repository.format
+  cleanup_policy_dry_run = var.docker_cache_repository.cleanup_policy_dry_run
+
+  docker_config {
+    immutable_tags = var.docker_cache_repository.immutable_tags
+  }
+
+  cleanup_policies {
+    id     = "delete-untagged"
+    action = "DELETE"
+    condition {
+      tag_state = "UNTAGGED"
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-old-cache"
+    action = "DELETE"
+    condition {
+      tag_state  = "ANY"
+      older_than = var.docker_cache_repository.cache_images_max_age
+    }
+  }
 }
 
 resource "google_service_account" "kyma_project_image_builder" {

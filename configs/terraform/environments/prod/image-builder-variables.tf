@@ -57,3 +57,29 @@ variable "dockerhub_mirror" {
     cleanup_age = "63072000s" # 63072000s = 730 days = 2 years
   }
 }
+
+variable "docker_cache_repository" {
+  type = object({
+    name                   = string
+    description            = string
+    location               = string
+    format                 = string
+    immutable_tags         = bool
+    mode                   = string
+    cleanup_policy_dry_run = bool
+    cache_images_max_age   = string
+  })
+  default = {
+    name                   = "cache"
+    description            = "Cache repo for kyma-project"
+    location               = "europe"
+    format                 = "DOCKER"
+    immutable_tags         = false
+    mode                   = "STANDARD_REPOSITORY"
+    cleanup_policy_dry_run = true
+    # Google provider does not support the time units,
+    # so we need to provide the time in seconds.
+    # Time after which the images will be deleted.
+    cache_images_max_age   = "604800s" # 604800s = 7 days
+  }
+}
