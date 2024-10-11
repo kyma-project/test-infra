@@ -45,8 +45,8 @@ jobs:
         # see https://stackoverflow.com/a/69979203/23148781
       - name: Setup git config
         run: |
-          GIT_USERNAME=$(grep "gitName" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
-          GIT_EMAIL=$(grep "gitEmail" ${{ env.AUTOBUMP_CONFIG_PATH }} | cut -d '"' -f 2)
+          GIT_USERNAME=$(grep "gitName" ${{ inputs.autobump-config-path }} | cut -d '"' -f 2)
+          GIT_EMAIL=$(grep "gitEmail" ${{ inputs.autobump-config-path }} | cut -d '"' -f 2)
           git config user.name $GIT_USERNAME
           git config user.email $GIT_EMAIL
 
@@ -62,4 +62,4 @@ jobs:
             -v "~/token:/tmp/github_token:ro" \
             -w /workspace \
             ${{ inputs.docker-image }} \
-            --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
+            --autobump-config=${{ inputs.autobump-config-path }}
