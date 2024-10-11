@@ -243,9 +243,6 @@ func validateOptions(o *Options) error {
 			o.HeadBranchName = defaultHeadBranchName
 		}
 	}
-	if o.GitHubHost == "" {
-		o.GitHubHost = "github.com"
-	}
 
 	return nil
 }
@@ -270,6 +267,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
 
+	githubHost := "github.com"
 	gitHubGraphQLEndpoint := github.DefaultGraphQLEndpoint
 	gitHubAPIEndpoint := github.DefaultAPIEndpoint
 	if o.GitHubHost != "" {
@@ -277,6 +275,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// Use default endpoint for GitHub Enterprise Server.
 		// See: https://docs.github.com/en/enterprise-server@3.12/rest/quickstart?apiVersion=2022-11-28#using-curl-in-the-command-line
 		// See: https://docs.github.com/en/enterprise-server@3.12/graphql/overview/about-the-graphql-api
+		githubHost = o.GitHubHost
 		gitHubAPIEndpoint = fmt.Sprintf("https://%s/api/v3", o.GitHubHost)
 		gitHubGraphQLEndpoint = fmt.Sprintf("https://%s/api/graphql", o.GitHubHost)
 	}
@@ -325,7 +324,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
-	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubHost, o.GitHubLogin, o.RemoteName)
+	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
 	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
