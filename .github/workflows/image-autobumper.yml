@@ -6,9 +6,10 @@ on:
         description: 'Docker image with tag to be used'
         default: 'europe-docker.pkg.dev/kyma-project/prod/image-autobumper:v20240927-bc42bcd3'
         type: string
-
-env:
-  AUTOBUMP_CONFIG_PATH: configs/image-autobumper-config/image-autobumper-config.yaml
+      autobump-config-path:
+        description: 'Path to the autobump config file, relative to the repository root'
+        default: 'configs/autobump-config/test-infra-autobump-config.yaml'
+        type: string
 
 jobs:
   autobump:
