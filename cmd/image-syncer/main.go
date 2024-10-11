@@ -275,12 +275,13 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
+			log.Info("Parsed images file")
 
-			log.Info("Creating authenticator")
 			auth, err := cfg.newAuthenticator()
 			if err != nil {
 				log.WithError(err).Fatal("Failed to create authenticator")
 			}
+			log.Info("Created authenticator for target repository")
 
 			if cfg.DryRun {
 				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
