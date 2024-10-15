@@ -14,7 +14,7 @@ on:
         description: Path to the dockerfile used to build docker image
         required: false
         type: string
-        default: "prow/images/ginkgo/Dockerfile"
+        default: "cmd/images/ginkgo/Dockerfile"
       context:
         description: Build context to build container from
         required: false

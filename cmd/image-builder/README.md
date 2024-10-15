@@ -54,7 +54,7 @@ jobs:
       uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
       with:
          name: test-infra/ginkgo
-         dockerfile: prow/images/ginkgo/Dockerfile
+         dockerfile: cmd/images/ginkgo/Dockerfile
          context: .
          env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}
@@ -71,7 +71,7 @@ The example workflow consists of three jobs:
 1. `compute-tag` - computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
 2. `build-image` - builds the image using the Image Builder reusable workflow.
    It uses the `kyma-project/test-infra/.github/workflows/image-builder.yml@main` reusable workflow.
-   It builds the `test-infra/ginkgo` image, using the Dockerfile from the `prow/images/gingko/Dockerfile` path.
+   It builds the `test-infra/ginkgo` image, using the Dockerfile from the `cmd/images/gingko/Dockerfile` path.
    The build context is the current directory which effectively means the repository root.
    It uses the `envs` file to load environment variables.
    The image will be tagged with the tag computed in the `compute-tag` job.
