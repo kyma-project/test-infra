@@ -429,6 +429,8 @@ tide:
         - kyma-project/directory-size-exporter
         - kyma-project/opentelemetry-collector-components
         - kyma-project/kyma-metrics-collector
+        - kyma-project/istio
+        - kyma-project/api-gateway
       reviewApprovedRequired: true
     - labels:
         - lgtm
