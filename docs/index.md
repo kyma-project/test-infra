@@ -6,8 +6,6 @@
 
 [Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
 
-[Image Builder](/cmd/image-builder/README_deprecated.md) - > Deprecation Notice
-
 [Image Builder GitHub Workflow Integration](/cmd/image-builder/github-workflow-integration.md) - The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to run the process of building OCI
 
 [Image Builder](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images.
