@@ -118,10 +118,10 @@ See the provided outputs description in the [image-builder reusable workflow](/.
 
 ## Default Tags
 
-Image Builder provides a default tag for built images.
+Image Builder provides default tags for built images.
 The default tag is computed based on the template provided in the Image Builder configuration file.
 The default tag is always added to the image, even if the user provides custom tags.
-The Image Builder supports two default tags:
+Image Builder supports two default tags:
 
 - **Pull Request Default Tag**: The default tag template for images built on pull requests is `pr-<PR_NUMBER>`.
   Example tag value: `PR-123`.
@@ -135,8 +135,8 @@ You can use `-tag name=value` to pass the name for the tag.
 
 If the name is not provided, it is evaluated from the value:
 
-- if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
-- if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
+- If the value is a string, it is used directly as a name. For example,`-tag latest` is equal to `-tag latest=latest`
+- If the value is go-template, it is converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
   to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
 ## Supported Image Repositories
