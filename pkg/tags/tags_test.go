@@ -3,6 +3,8 @@ package tags
 import (
 	"testing"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 func TestTagger_ParseTags(t *testing.T) {
@@ -37,6 +39,11 @@ func TestTagger_ParseTags(t *testing.T) {
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
+			zapLogger, err := zap.NewDevelopment()
+			if err != nil {
+				t.Errorf("error creating zap logger: %v", err)
+			}
+			logger := zapLogger.Sugar()
 			t.Setenv("test-var", "test")
 			tag := Tagger{
 				tags:      c.template,
@@ -44,6 +51,7 @@ func TestTagger_ParseTags(t *testing.T) {
 				CommitSHA: "f1c7ca0b532141898f56c1843ae60ebec3a75a85",
 				Time:      time.Now(),
 				Date:      time.Date(2022, 06, 02, 01, 01, 01, 1, time.Local).Format("20060102"),
+				logger:    logger,
 			}
 			got, err := tag.ParseTags()
 			if err != nil {

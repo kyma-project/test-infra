@@ -22,10 +22,12 @@ import (
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
+	"github.com/kyma-project/test-infra/pkg/logging"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
+	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
@@ -39,6 +41,7 @@ type options struct {
 	name       string
 	variant    string
 	logDir     string
+	logger     Logger
 	orgRepo    string
 	silent     bool
 	isCI       bool
@@ -60,6 +63,12 @@ type options struct {
 	gitState              GitStateConfig
 	debug                 bool
 	dryRun                bool
+	tagsOutputFile        string
+}
+
+type Logger interface {
+	logging.StructuredLoggerInterface
+	logging.WithLoggerInterface
 }
 
 // parseVariable returns a build-arg.
@@ -422,13 +431,13 @@ func buildLocally(o options) error {
 
 	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
 	// 		We should call this function before calling image building functions.
-	dockerfilePath, err := getDockerfileDirPath(o)
+	dockerfilePath, err := getDockerfileDirPath(o.logger, o)
 	if err != nil {
 		return fmt.Errorf("get dockerfile path failed, error: %w", err)
 	}
 	// Load environment variables from the envFile or variants.yaml file.
 	if len(o.envFile) > 0 {
-		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+		envs, err = loadEnv(o.logger, os.DirFS(dockerfilePath), o.envFile)
 		if err != nil {
 			return fmt.Errorf("load env failed, error: %w", err)
 		}
@@ -468,13 +477,13 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	defaultTag, err := getDefaultTag(o)
+	defaultTag, err := getDefaultTag(o.logger, o)
 	if err != nil {
 		return err
 	}
 
 	// Get the tags for the image.
-	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
+	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
 		return err
 	}
@@ -521,8 +530,9 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 
 // appendToTags appends key-value pairs from source map to target slice of tags.Tag
 // This allows creation of image tags from key value pairs.
-func appendToTags(target *[]tags.Tag, source map[string]string) {
+func appendToTags(logger Logger, target *[]tags.Tag, source map[string]string) {
 	for key, value := range source {
+		logger.Debugw("appending key-value pair to tags", "key", key, "value", value)
 		*target = append(*target, tags.Tag{Name: key, Value: value})
 	}
 }
@@ -639,24 +649,34 @@ func (l *StrList) List() []string {
 	return n
 }
 
-func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
+func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
+	logger.Debugw("started building tags", "pr_number", pr, "commit_sha", sha, "templates", templates)
+
+	logger.Debugw("building tagger options")
 	var taggerOptions []tags.TagOption
 	if len(pr) > 0 {
 		taggerOptions = append(taggerOptions, tags.PRNumber(pr))
+		logger.Debugw("pr number is set, adding tagger option", "pr_number", pr)
 	}
 	if len(sha) > 0 {
 		taggerOptions = append(taggerOptions, tags.CommitSHA(sha))
+		logger.Debugw("commit sha is set, adding tagger option", "commit_sha", sha)
 	}
 
+	taggerOptions = append(taggerOptions, tags.WithLogger(logger))
+	logger.Debugw("added logger to tagger options")
 	// build a tag from commit SHA
-	tagger, err := tags.NewTagger(templates, taggerOptions...)
+	tagger, err := tags.NewTagger(logger, templates, taggerOptions...)
 	if err != nil {
-		return nil, fmt.Errorf("get tagger: %w", err)
+		return nil, fmt.Errorf("failed creating tagger instance: %w", err)
 	}
+	logger.Debugw("created tagger instance with options, starting parsing tags")
 	p, err := tagger.ParseTags()
 	if err != nil {
 		return nil, fmt.Errorf("build tag: %w", err)
 	}
+	logger.Debugw("parsed tags successfully", "tags", p)
+
 	return p, nil
 }
 
@@ -718,39 +738,55 @@ func validateOptions(o options) error {
 }
 
 // loadEnv creates environment variables in application runtime from a file with key=value data
-func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
+func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error) {
+	logger.Debugw("loading env file", "envFile_path", envFile)
 	if len(envFile) == 0 {
+		logger.Infow("provided env file path is empty, skipping loading env file")
 		// file is empty - ignore
 		return nil, nil
 	}
+	logger.Debugw("Opening env file")
 	file, err := vfs.Open(envFile)
 	if err != nil {
 		return nil, fmt.Errorf("open env file: %w", err)
 	}
+	defer file.Close()
+	logger.Debugw("File opened")
 	fileReader := bufio.NewScanner(file)
 	vars := make(map[string]string)
+	logger.Debugw("Reading env file line by line")
 	for fileReader.Scan() {
 		line := fileReader.Text()
+		logger = logger.With("line", line)
+		logger.Debugw("Processing envFile line")
+		logger.Debugw("Splitting envFile line", "separator", "=")
 		separatedValues := strings.SplitN(line, "=", 2)
 		if len(separatedValues) > 2 {
 			return nil, fmt.Errorf("env var split incorrectly, got more than two values, expected only two, values: %v", separatedValues)
 		}
 		// ignore empty lines, setup environment variable only if key and value are present
 		if len(separatedValues) == 2 {
+			logger.Debugw("Separated values", "key", separatedValues[0], "value", separatedValues[1])
+			logger = logger.With("key", separatedValues[0], "value", separatedValues[1])
 			key, val := separatedValues[0], separatedValues[1]
+			logger.Debugw("Checking if env file for a given key is already present in runtime")
 			if _, ok := os.LookupEnv(key); ok {
 				// do not override env variable if it's already present in the runtime
 				// do not include in vars map since dev should not have access to it anyway
+				logger.Infow("Env file key already present in runtime, skipping setting it")
 				continue
 			}
+			logger.Debugw("Setting env file for a given key in runtime")
 			err := os.Setenv(key, val)
 			if err != nil {
 				return nil, fmt.Errorf("setenv: %w", err)
 			}
+			logger.Debugw("Adding env file key to vars, to be injected as build args")
 			// add value to the vars that will be injected as build args
 			vars[key] = val
 		}
 	}
+	logger.Debugw("Finished processing env file")
 	return vars, nil
 }
 
@@ -796,6 +832,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
+	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
 
 	return flagSet
 }
@@ -805,9 +842,22 @@ func main() {
 	o := options{isCI: os.Getenv("CI") == "true"}
 	o.gatherOptions(flagSet)
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("Failed to parse flags: %s", err)
 	}
+
+	var (
+		zapLogger *zap.Logger
+		err       error
+	)
+	if o.debug {
+		zapLogger, err = zap.NewDevelopment()
+	} else {
+		zapLogger, err = zap.NewProduction()
+	}
+	if err != nil {
+		log.Fatalf("Failed to initialize logger: %s", err)
+	}
+	o.logger = zapLogger.Sugar()
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
@@ -849,11 +899,14 @@ func main() {
 	}
 
 	if o.parseTagsOnly {
-		err = generateTags(o)
+		logger := o.logger.With("command", "parse-tags-only")
+		logger.Infow("Parsing tags")
+		err = generateTags(logger, o)
 		if err != nil {
-			fmt.Printf("Parse tags failed with error: %s\n", err)
+			logger.Errorw("Parsing tags failed", "error", err)
 			os.Exit(1)
 		}
+		logger.Infow("Tags parsed successfully")
 		os.Exit(0)
 	}
 	if o.buildInADO {
@@ -873,87 +926,136 @@ func main() {
 	fmt.Println("Job's done.")
 }
 
-func generateTags(o options) error {
+func generateTags(logger Logger, o options) error {
+	logger.Infow("starting tag generation")
+	logger.Debugw("getting the absolute path to the Dockerfile directory")
 	// Get the absolute path to the dockerfile directory.
-	dockerfilePath, err := getDockerfileDirPath(o)
+	dockerfileDirPath, err := getDockerfileDirPath(logger, o)
 	if err != nil {
-		return fmt.Errorf("failed to get dockerfile path: %s", err)
+		return fmt.Errorf("failed to get dockerfile path: %w", err)
 	}
+	logger.Debugw("dockerfile directory path retrieved", "dockerfileDirPath", dockerfileDirPath)
+	logger.Debugw("getting environment variables from environment file", "envFile", o.envFile, "dockerfileDirPath", dockerfileDirPath)
 	// Load environment variables from the envFile.
-	envs, err := getEnvs(o, dockerfilePath)
+	envs, err := loadEnv(logger, os.DirFS(dockerfileDirPath), o.envFile)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to load environment variables from env file: %w", err)
 	}
+	// If envs is nil, alocate empty map. getEnvs returns nil if envFile path is empty.
+	if envs == nil {
+		envs = make(map[string]string)
+		logger.Infow("no environment file provided")
+		logger.Debugw("initialized empty envs map")
+	} else {
+		logger.Infow("environment variables successfully loaded from file")
+		logger.Debugw("environment variables", "envs", envs)
+	}
+	logger.Debugw("parsing tags from options")
 	// Parse tags from the provided options.
-	parsedTags, err := parseTags(o)
+	parsedTags, err := parseTags(logger, o)
 	if err != nil {
-		return fmt.Errorf("failed to parse tags : %s", err)
+		return fmt.Errorf("failed to parse tags from options: %w", err)
 	}
+	logger.Infow("tags parsed successfully", "parsedTags", parsedTags)
+	logger.Debugw("appending values from envFile to tags")
 	// Append environment variables to tags.
-	appendToTags(&parsedTags, envs)
+	appendToTags(logger, &parsedTags, envs)
 	// Print parsed tags to stdout as json.
-	jsonTags := tagsAsJSON(parsedTags)
-	fmt.Printf("%s\n", jsonTags)
+	logger.Debugw("environment variables appended to tags", "parsedTags", parsedTags)
+	logger.Debugw("converting parsed tags to JSON")
+	jsonTags, err := tagsAsJSON(parsedTags)
+	if err != nil {
+		return fmt.Errorf("failed generating tags json representation: %w", err)
+	}
+	logger.Debugw("successfully generated image tags in JSON format", "tags", jsonTags)
+	// Write tags to a file.
+	if o.tagsOutputFile != "" {
+		logger.Debugw("tags output file provided", "tagsOutputFile", o.tagsOutputFile)
+		err = writeOutputFile(logger, o.tagsOutputFile, jsonTags)
+		if err != nil {
+			return fmt.Errorf("failed to write tags to file: %w", err)
+		}
+		logger.Infow("tags successfully written to file", "tagsOutputFile", o.tagsOutputFile, "generatedTags", jsonTags)
+	}
 	return nil
 }
 
-func tagsAsJSON(parsedTags []tags.Tag) string {
+// writeOutputFile writes the provided data to the file specified by the path.
+func writeOutputFile(logger Logger, path string, data []byte) error {
+	logger.Debugw("writing generated tags to file", "tagsOutputFile", path)
+	err := os.WriteFile(path, data, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write tags to file: %s", err)
+	}
+	logger.Debugw("tags written to file")
+	return nil
+}
+
+func tagsAsJSON(parsedTags []tags.Tag) ([]byte, error) {
 	jsonTags, err := json.Marshal(parsedTags)
 	if err != nil {
-		fmt.Printf("Failed to marshal tags to json: %s", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to marshal tags to json, got error: %w", err)
 	}
-	return string(jsonTags)
+	return jsonTags, err
 }
 
-func getEnvs(o options, dockerfilePath string) (map[string]string, error) {
-	if len(o.envFile) > 0 {
-		envs, err := loadEnv(os.DirFS(dockerfilePath), o.envFile)
-		if err != nil {
-			return nil, fmt.Errorf("failed to load env file: %s", err)
-		}
-		return envs, nil
-	}
-	return map[string]string{}, nil
-}
-
-func parseTags(o options) ([]tags.Tag, error) {
+func parseTags(logger Logger, o options) ([]tags.Tag, error) {
+	logger.Debugw("starting to parse tags")
 	var (
 		pr  string
 		sha string
 	)
+
+	logger.Debugw("reading git state for event type")
 	if !o.gitState.isPullRequest && o.gitState.BaseCommitSHA != "" {
 		sha = o.gitState.BaseCommitSHA
+		logger.Debugw("running for push event, base commit SHA found", "sha", sha)
 	}
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
+		logger.Debugw("Running for pull request event, PR number found", "pr-number", pr)
 	}
 
 	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
 	//   This way all tags are available in the tags list from thr very beginning of execution and can be used in any process.
+
+	logger.Debugw("checking if base64 encoded tags are provided")
 	// read tags from base64 encoded string if provided
 	if o.tagsBase64 != "" {
+		logger.Debugw("base64 encoded tags provided, starting to decode", "tagsBase64", o.tagsBase64)
 		decoded, err := base64.StdEncoding.DecodeString(o.tagsBase64)
 		if err != nil {
-			return nil, fmt.Errorf("failed to decode tags, error: %w", err)
+			return nil, fmt.Errorf("failed to decode base64 encoded tags, error: %w", err)
 		}
+		logger.Debugw("tags successfully decoded", "decoded", string(decoded))
 		splitedTags := strings.Split(string(decoded), ",")
+		logger.Debugw("splitted decoded tags", "splitedTags", splitedTags)
 		for _, tag := range splitedTags {
+			logger.Debugw("adding tag", "tag", tag)
 			err = o.tags.Set(tag)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set tag, tag: %s, error: %w", tag, err)
 			}
+			logger.Debugw("tag set successfully")
 		}
+		logger.Debugw("all base64 encoded tags successfully added", "tags", o.tags.String())
+	} else {
+		logger.Debugw("no base64 encoded tags provided")
 	}
 
-	defaultTag, err := getDefaultTag(o)
+	logger.Debugw("getting default tag")
+	defaultTag, err := getDefaultTag(logger, o)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to retrieve default tag, error: %w", err)
 	}
-	parsedTags, err := getTags(pr, sha, append(o.tags, defaultTag))
+	logger.Debugw("default tag retrieved", "defaultTag", defaultTag)
+
+	logger.Debugw("parsing tags")
+	parsedTags, err := getTags(logger, pr, sha, append(o.tags, defaultTag))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse tags: %w", err)
 	}
+	logger.Debugw("tags parsed successfully", "parsedTags", parsedTags)
 
 	return parsedTags, nil
 }
@@ -961,24 +1063,30 @@ func parseTags(o options) ([]tags.Tag, error) {
 // getDefaultTag returns the default tag based on the read git state.
 // The function provid default tag for pull request or commit.
 // The default tag is read from the provided options struct.
-func getDefaultTag(o options) (tags.Tag, error) {
+func getDefaultTag(logger Logger, o options) (tags.Tag, error) {
+	logger.Debugw("reading gitstate data")
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
+		logger.Debugw("pull request number provided, returning default pr tag")
 		return o.DefaultPRTag, nil
 	}
 	if len(o.gitState.BaseCommitSHA) > 0 {
+		o.logger.Debugw("commit sha provided, returning default commit tag")
 		return o.DefaultCommitTag, nil
 	}
 	return tags.Tag{}, fmt.Errorf("could not determine default tag, no pr number or commit sha provided")
 }
 
-func getDockerfileDirPath(o options) (string, error) {
+func getDockerfileDirPath(logger Logger, o options) (string, error) {
+	logger.Debugw("starting to get Dockerfile directory path", "dockerfile", o.dockerfile, "context", o.context)
 	// Get the absolute path to the build context directory.
 	context, err := filepath.Abs(o.context)
 	if err != nil {
 		return "", fmt.Errorf("could not get absolute path to build context directory: %w", err)
 	}
+	logger.Debugw("successfully retrieved absolute path to context directory", "absolute_path", context)
 	// Get the absolute path to the dockerfile.
 	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
+	logger.Debugw("dockerfile directory path constructed", "dockerfileDirPath", dockerfileDirPath)
 	return dockerfileDirPath, err
 }
 
