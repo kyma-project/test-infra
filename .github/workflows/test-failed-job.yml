@@ -42,3 +42,16 @@ jobs:
     steps:
       - name: dependent-step
         run: echo "This job is dependent on failed-job"
+
+  dependent-job-4:
+    runs-on: ubuntu-latest
+    needs: failed-job
+    if: ${{ (always() && needs.failed-job.outputs.output1 == 'hello') || failure() }}
+    steps:
+      - name: dependent-step
+        if: ${{ failure() }}
+        run: |
+            echo "This job should fail"
+            exit 1
+      - name: this-not-fail
+        run: echo "do not fail"
