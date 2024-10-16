@@ -46,7 +46,7 @@ jobs:
   dependent-job-4:
     runs-on: ubuntu-latest
     needs: failed-job
-    if: ${{ (always() }}
+    if: ${{ always() }}
     steps:
       - name: dependent-step
         if: ${{ needs.failed-job.result == 'failed' }}
