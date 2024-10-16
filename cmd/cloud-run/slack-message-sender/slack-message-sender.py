@@ -172,10 +172,10 @@ def get_user_id_by_username(username: str) -> str:
             if slack_username.lower() == username.lower() or real_name.lower() == username.lower():
                 return user['id']
 
-        return None
+        return "Slack user not found"
     except SlackApiError as e:
         print(f"Error slack API: {e.response['error']}")
-        return None
+        return "Slack API error"
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
