@@ -41,32 +41,6 @@ variable "prod_docker_repository" {
   }
 }
 
-variable "docker_cache_repository" {
-  type = object({
-    name                   = string
-    description            = string
-    location               = string
-    format                 = string
-    immutable_tags         = bool
-    mode                   = string
-    cleanup_policy_dry_run = bool
-    cache_images_max_age   = string
-  })
-  default = {
-    name                   = "cache"
-    description            = "Cache repo for kyma-project"
-    location               = "europe"
-    format                 = "DOCKER"
-    immutable_tags         = false
-    mode                   = "STANDARD_REPOSITORY"
-    cleanup_policy_dry_run = false
-    # Google provider does not support the time units,
-    # so we need to provide the time in seconds.
-    # Time after which the images will be deleted.
-    cache_images_max_age = "604800s" # 604800s = 7 days
-  }
-}
-
 variable "docker_dev_repository" {
   type = object({
     name                   = string
