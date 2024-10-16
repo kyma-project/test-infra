@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 import base64
-from typing import Dict, Optional , Any
+from typing import Dict, Optional, Any
 from flask import Flask, request, make_response, Response
 from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
@@ -12,6 +12,7 @@ from slack_sdk.errors import SlackApiError
 
 class LogEntry(dict):
     '''LogEntry simplifies logging by returning JSON string'''
+
     def __str__(self):
         return json.dumps(self)
 
@@ -29,6 +30,7 @@ kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME'
 with open('/etc/slack-secret/common-slack-bot-token-test', encoding='utf-8') as token_file:
     slack_bot_token = token_file.readline()
 slack_app = App(token=slack_bot_token)
+
 
 def prepare_log_fields() -> Dict[str, Any]:
     '''prepare_log_fields prapares basic log fields'''
@@ -158,10 +160,12 @@ def release_cluster_created() -> Response:
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
 
+
 # Global user cache
 
 
 user_cache: Dict[str, str] = {}
+
 
 def get_user_id_by_username(username: str) -> Optional[str]:
     username_lower = username.lower()
@@ -202,6 +206,7 @@ def get_user_id_by_username(username: str) -> Optional[str]:
     user_cache[username_lower] = None
     return None
 
+
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
     '''This function sends information about labeled issues in a Slack channel'''
@@ -236,8 +241,6 @@ def issue_labeled() -> Response:
                 sender_slack_id = get_user_id_by_username(sender_login)
                 if sender_slack_id:
                     sender_mention = f"<@{sender_slack_id}>"
-                else:
-                    sender_mention = None
 
                 # Prepare assignee information
                 assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to {assignee_mention}"
@@ -248,47 +251,47 @@ def issue_labeled() -> Response:
                     message=f"Sending notification to {slack_team_channel_id}.",
                     **log_fields,
                 ))
-                if not sender_mention:
+                if not sender_slack_id:
                     result = slack_app.client.chat_postMessage(
-                    channel=slack_team_channel_id,
-                    text=f"Issue {title} #{number} labeled as {label} in {repo}",
-                    username="GithubBot",
-                    unfurl_links=True,
-                    unfurl_media=True,
-                    link_names=True,
-                    blocks=[
-                    {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "image",
-                            "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                            "alt_text": "label"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "SAP GitHub issue labeled"
-                        }
-                    ]
-                    },
-                    {
-                        "type": "header",
-                        "text": {
-                            "type": "plain_text",
-                            "text": f"SAP GitHub {label}"
-                        }
-                    },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": (
-                                f"{sender_mention} labeled issue `{title}` as `{label}`.\n"
-                                f"{assignee_info} <{issue_url}|See the issue here.>"
-                            )
-                        }
-                    },
-                    ],
+                        channel=slack_team_channel_id,
+                        text=f"Issue {title} #{number} labeled as {label} in {repo}",
+                        username="GithubBot",
+                        unfurl_links=True,
+                        unfurl_media=True,
+                        link_names=True,
+                        blocks=[
+                            {
+                                "type": "context",
+                                "elements": [
+                                    {
+                                        "type": "image",
+                                        "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                        "alt_text": "label"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "SAP GitHub issue labeled"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": f"SAP GitHub {label}"
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": (
+                                        f"{sender_mention} labeled issue `{title}` as `{label}`.\n"
+                                        f"{assignee_info} <{issue_url}|See the issue here.>"
+                                    )
+                                }
+                            },
+                        ],
                     )
                     print(LogEntry(
                         severity="INFO",
