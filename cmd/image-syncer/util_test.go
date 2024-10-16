@@ -2,16 +2,10 @@ package main
 
 import (
 	"os"
-	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-func TestMainSuite(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Main Suite")
-}
 
 var _ = Describe("getTarget", func() {
 	tests := []struct {
