@@ -173,7 +173,7 @@ def get_user_id_by_username(username: str) -> Optional[str]:
 
     while True:
         try:
-            response = slack_app.client.users_list(limit=200, cursor=next_cursor)
+            response = slack_app.client.users_list(limit=20, cursor=next_cursor)
         except SlackApiError as e:
             print(f"Slack API error: {e.response['error']}")
             return None
@@ -237,7 +237,7 @@ def issue_labeled() -> Response:
                 if sender_slack_id:
                     sender_mention = f"<@{sender_slack_id}>"
                 else:
-                    sender_mention = sender_login  # Use GitHub login without mention
+                    sender_mention = None
 
                 # Prepare assignee information
                 assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to {assignee_mention}"
@@ -248,8 +248,8 @@ def issue_labeled() -> Response:
                     message=f"Sending notification to {slack_team_channel_id}.",
                     **log_fields,
                 ))
-
-                result = slack_app.client.chat_postMessage(
+                if not sender_mention:
+                    result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
                     text=f"Issue {title} #{number} labeled as {label} in {repo}",
                     username="GithubBot",
@@ -257,46 +257,46 @@ def issue_labeled() -> Response:
                     unfurl_media=True,
                     link_names=True,
                     blocks=[
+                    {
+                    "type": "context",
+                    "elements": [
                         {
-                            "type": "context",
-                            "elements": [
-                                {
-                                    "type": "image",
-                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                                    "alt_text": "label"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "SAP GitHub issue labeled"
-                                }
-                            ]
+                            "type": "image",
+                            "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                            "alt_text": "label"
                         },
                         {
-                            "type": "header",
-                            "text": {
-                                "type": "plain_text",
-                                "text": f"SAP GitHub {label}"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": (
-                                    f"{sender_mention} labeled issue `{title}` as `{label}`.\n"
-                                    f"{assignee_info} <{issue_url}|See the issue here.>"
-                                )
-                            }
-                        },
+                            "type": "mrkdwn",
+                            "text": "SAP GitHub issue labeled"
+                        }
+                    ]
+                    },
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": f"SAP GitHub {label}"
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": (
+                                f"{sender_mention} labeled issue `{title}` as `{label}`.\n"
+                                f"{assignee_info} <{issue_url}|See the issue here.>"
+                            )
+                        }
+                    },
                     ],
-                )
-                print(LogEntry(
-                    severity="INFO",
-                    message=f"Slack message sent, message id: {result['ts']}",
-                    **log_fields,
-                ))
+                    )
+                    print(LogEntry(
+                        severity="INFO",
+                        message=f"Slack message sent, message id: {result['ts']}",
+                        **log_fields,
+                    ))
 
-            return prepare_success_response()
+                    return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
     except Exception as err:
