@@ -162,14 +162,28 @@ def release_cluster_created() -> Response:
 
 def get_user_id_by_username(username: str) -> str:
     try:
-        response = slack_app.client.users_list()
-        users = response['members']
+        users = []
+        next_cursor = None
+
+        while True:
+            if next_cursor:
+                response = slack_app.client.users_list(cursor=next_cursor)
+            else:
+                response = slack_app.client.users_list()
+
+            users.extend(response['members'])
+
+            next_cursor = response['response_metadata'].get('next_cursor')
+            if not next_cursor:
+                break
 
         for user in users:
             slack_username = user.get('name')
             real_name = user['profile'].get('real_name')
 
-            if slack_username.lower() == username.lower() or real_name.lower() == username.lower():
+            if slack_username and slack_username.lower() == username.lower():
+                return user['id']
+            if real_name and real_name.lower() == username.lower():
                 return user['id']
 
         return "Slack user not found"
