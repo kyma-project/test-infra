@@ -169,7 +169,7 @@ def get_user_id_by_username(username: str) -> str:
             slack_username = user.get('name')
             real_name = user['profile'].get('real_name')
 
-            if slack_username == username or real_name == username:
+            if slack_username.lower() == username.lower() or real_name.lower() == username.lower():
                 return user['id']
 
         return None
