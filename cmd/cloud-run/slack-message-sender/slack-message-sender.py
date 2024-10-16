@@ -164,12 +164,36 @@ def get_user_id_by_displayname(displayname: str) -> str:
     try:
         response = slack_app.client.users_list()
         users = response['members']
+
         for user in users:
-            if user['profile']['display_name'] == displayname:
+            if (user.get('name') == displayname or
+                    user['profile'].get('real_name') == displayname or
+                    user['profile'].get('display_name') == displayname):
                 return user['id']
-        raise ValueError(f"User with display name '{displayname}' not found")
+
+        users_info = ""
+        for user in users[:20]:
+            user_info = (
+                f"User ID: {user['id']}\n"
+                f"Name: {user.get('name')}\n"
+                f"Real Name: {user['profile'].get('real_name')}\n"
+                f"Display Name: {user['profile'].get('display_name')}\n"
+                f"Email: {user['profile'].get('email')}\n"
+                "--------------------\n"
+            )
+            users_info += user_info
+
+        slack_app.client.chat_postMessage(
+            channel=slack_team_channel_id,
+            text=f"Nie znaleziono użytkownika '{displayname}'. Oto informacje o pierwszych 20 użytkownikach:\n```{users_info}```",
+            username="DebugBot",
+            unfurl_links=False,
+            unfurl_media=False,
+        )
+
+        raise ValueError(f"Nie znaleziono użytkownika o nazwie '{displayname}'")
     except SlackApiError as e:
-        print(f"Error fetching users: {e.response['error']}")
+        print(f"Błąd podczas pobierania użytkowników: {e.response['error']}")
         return None
 
 @app.route("/issue-labeled", methods=["POST"])
@@ -193,12 +217,17 @@ def issue_labeled() -> Response:
                 assignee_login = payload["issue"].get("assignee", {}).get("login")
                 if assignee_login:
                     assignee_slack_id = get_user_id_by_displayname(assignee_login)
-                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_slack_id}>"
+                    if assignee_slack_id:
+                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_slack_id}>"
+                    else:
+                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to {assignee_login}"
                 else:
                     assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
 
                 sender_login = payload["sender"]["login"]
                 sender_slack_id = get_user_id_by_displayname(sender_login)
+                if not sender_slack_id:
+                    sender_slack_id = sender_login
 
                 print(LogEntry(
                     severity="INFO",
