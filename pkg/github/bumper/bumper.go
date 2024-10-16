@@ -36,6 +36,8 @@ type Options struct {
 	AssignTo string `json:"assign_to" yaml:"assign_to"`
 	// Whether to skip creating the pull request for this bump.
 	SkipPullRequest bool `json:"skipPullRequest" yaml:"skipPullRequest"`
+	// Whether to signoff the commits.
+	Signoff bool `json:"signoff" yaml:"signoff"`
 	// The name used in the address when creating remote. This should be the same name as the fork. If fork does not exist this will be the name of the fork that is created.
 	// If it is not the same as the fork, the robot will change the name of the fork to this. Format will be git@github.com:{GitLogin}/{RemoteName}.git
 	RemoteName string `json:"remoteName" yaml:"remoteName"`
@@ -43,6 +45,8 @@ type Options struct {
 	HeadBranchName string `json:"headBranchName" yaml:"headBranchName"`
 	// Optional list of labels to add to the bump PR
 	Labels []string `json:"labels" yaml:"labels"`
+	// The GitHub host to use, defaulting to github.com
+	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
 }
 
 const (
@@ -119,10 +123,13 @@ func gitAdd(files []string, stdout, stderr io.Writer) error {
 	return nil
 }
 
-func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
+func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bool) error {
 	commitArgs := []string{"commit", "-m", message}
 	if name != "" && email != "" {
 		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
+	}
+	if signoff {
+		commitArgs = append(commitArgs, "--signoff")
 	}
 	if err := Call(stdout, stderr, gitCmd, commitArgs...); err != nil {
 		return fmt.Errorf("git commit: %w", err)
@@ -260,7 +267,20 @@ func processGitHub(o *Options, prh PRHandler) error {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
 
-	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, github.DefaultGraphQLEndpoint, github.DefaultAPIEndpoint)
+	githubHost := "github.com"
+	gitHubGraphQLEndpoint := github.DefaultGraphQLEndpoint
+	gitHubAPIEndpoint := github.DefaultAPIEndpoint
+	if o.GitHubHost != "" {
+		// Override the default endpoints if a custom GitHub host is provided.
+		// Use default endpoint for GitHub Enterprise Server.
+		// See: https://docs.github.com/en/enterprise-server@3.12/rest/quickstart?apiVersion=2022-11-28#using-curl-in-the-command-line
+		// See: https://docs.github.com/en/enterprise-server@3.12/graphql/overview/about-the-graphql-api
+		githubHost = o.GitHubHost
+		gitHubAPIEndpoint = fmt.Sprintf("https://%s/api/v3", o.GitHubHost)
+		gitHubGraphQLEndpoint = fmt.Sprintf("https://%s/api/graphql", o.GitHubHost)
+	}
+
+	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, gitHubGraphQLEndpoint, gitHubAPIEndpoint)
 	if err != nil {
 		return err
 	}
@@ -299,12 +319,12 @@ func processGitHub(o *Options, prh PRHandler) error {
 			return fmt.Errorf("add changes to commit %w", err)
 		}
 
-		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr); err != nil {
+		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr, o.Signoff); err != nil {
 			return fmt.Errorf("commit changes to the remote branch: %w", err)
 		}
 	}
 
-	remote := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName)
+	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
 	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
