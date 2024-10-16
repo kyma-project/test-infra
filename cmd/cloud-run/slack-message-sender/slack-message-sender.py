@@ -3,8 +3,7 @@ import os
 import sys
 import traceback
 import base64
-import time
-from typing import Dict, Any
+from typing import Dict, Optional , Any
 from flask import Flask, request, make_response, Response
 from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
@@ -159,37 +158,49 @@ def release_cluster_created() -> Response:
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
 
+# Global user cache
 
-def get_user_id_by_username(username: str) -> str:
-    try:
-        users = []
-        next_cursor = None
 
-        while True:
-            if next_cursor:
-                response = slack_app.client.users_list(cursor=next_cursor)
-            else:
-                response = slack_app.client.users_list()
+user_cache: Dict[str, str] = {}
 
-            users.extend(response['members'])
+def get_user_id_by_username(username: str) -> Optional[str]:
+    username_lower = username.lower()
 
-            next_cursor = response['response_metadata'].get('next_cursor')
-            if not next_cursor:
-                break
+    if username_lower in user_cache:
+        return user_cache[username_lower]
+
+    next_cursor = None
+
+    while True:
+        try:
+            response = slack_app.client.users_list(limit=200, cursor=next_cursor)
+        except SlackApiError as e:
+            print(f"Slack API error: {e.response['error']}")
+            return None
+
+        users = response['members']
 
         for user in users:
             slack_username = user.get('name')
             real_name = user['profile'].get('real_name')
+            user_id = user['id']
 
-            if slack_username and slack_username.lower() == username.lower():
-                return user['id']
-            if real_name and real_name.lower() == username.lower():
-                return user['id']
+            if slack_username:
+                user_cache[slack_username.lower()] = user_id
+                if slack_username.lower() == username_lower:
+                    return user_id
 
-        return "Slack user not found"
-    except SlackApiError as e:
-        print(f"Error slack API: {e.response['error']}")
-        return "Slack API error"
+            if real_name:
+                user_cache[real_name.lower()] = user_id
+                if real_name.lower() == username_lower:
+                    return user_id
+
+        next_cursor = response.get('response_metadata', {}).get('next_cursor')
+        if not next_cursor:
+            break
+
+    user_cache[username_lower] = None
+    return None
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
@@ -209,21 +220,29 @@ def issue_labeled() -> Response:
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
+                # Find Slack ID for assignee
                 assignee_login = payload["issue"].get("assignee", {}).get("login")
                 if assignee_login:
                     assignee_slack_id = get_user_id_by_username(assignee_login)
                     if assignee_slack_id:
-                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_slack_id}>"
+                        assignee_mention = f"<@{assignee_slack_id}>"
                     else:
-                        assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to {assignee_login}"
+                        assignee_mention = assignee_login  # Use GitHub login without mention
                 else:
-                    assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                    assignee_mention = "not assigned"
 
+                # Find Slack ID for sender
                 sender_login = payload["sender"]["login"]
                 sender_slack_id = get_user_id_by_username(sender_login)
-                if not sender_slack_id:
-                    sender_slack_id = sender_login
+                if sender_slack_id:
+                    sender_mention = f"<@{sender_slack_id}>"
+                else:
+                    sender_mention = sender_login  # Use GitHub login without mention
 
+                # Prepare assignee information
+                assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to {assignee_mention}"
+
+                # Send message to Slack
                 print(LogEntry(
                     severity="INFO",
                     message=f"Sending notification to {slack_team_channel_id}.",
@@ -264,7 +283,7 @@ def issue_labeled() -> Response:
                             "text": {
                                 "type": "mrkdwn",
                                 "text": (
-                                    f"<@{sender_slack_id}> labeled issue `{title}` as `{label}`.\n"
+                                    f"{sender_mention} labeled issue `{title}` as `{label}`.\n"
                                     f"{assignee_info} <{issue_url}|See the issue here.>"
                                 )
                             }
