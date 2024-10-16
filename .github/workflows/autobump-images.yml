@@ -1,0 +1,10 @@
+name: autobump-images
+
+on:
+  schedule:
+    - cron: 45 * * * 1-5
+  workflow_dispatch:
+
+jobs:
+  autobump:
+    uses: kyma-project/test-infra/.github/workflows/image-autobumper.yml@main

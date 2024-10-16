@@ -425,6 +425,13 @@ tide:
         - kyma-project/template-operator
         - kyma-project/cloud-manager
         - kyma-project/cloud-manager-tests
+        - kyma-project/telemetry-manager
+        - kyma-project/directory-size-exporter
+        - kyma-project/opentelemetry-collector-components
+        - kyma-project/kyma-metrics-collector
+        - kyma-project/istio
+        - kyma-project/api-gateway
+        - kyma-project/networking-dev-tools
       reviewApprovedRequired: true
     - labels:
         - lgtm
