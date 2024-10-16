@@ -160,6 +160,18 @@ def release_cluster_created() -> Response:
         return prepare_error_response(str(err), log_fields)
 
 
+def get_user_id_by_displayname(displayname: str) -> str:
+    try:
+        response = slack_app.client.users_list()
+        users = response['members']
+        for user in users:
+            if user['profile']['display_name'] == displayname:
+                return user['id']
+        raise ValueError(f"User with display name '{displayname}' not found")
+    except SlackApiError as e:
+        print(f"Error fetching users: {e.response['error']}")
+        return None
+
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
     '''This function sends information about labeled issues in a Slack channel'''
@@ -178,12 +190,15 @@ def issue_labeled() -> Response:
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["issue"].get("assignee"):
-                    assignee_login = payload["issue"]["assignee"]["login"]
-                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to @{assignee_login}"
+                assignee_login = payload["issue"].get("assignee", {}).get("login")
+                if assignee_login:
+                    assignee_slack_id = get_user_id_by_displayname(assignee_login)
+                    assignee_info = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_slack_id}>"
+                else:
+                    assignee_info = f"Issue #{number} in repository {org}/{repo} is not assigned."
 
                 sender_login = payload["sender"]["login"]
+                sender_slack_id = get_user_id_by_displayname(sender_login)
 
                 print(LogEntry(
                     severity="INFO",
@@ -222,14 +237,13 @@ def issue_labeled() -> Response:
                         },
                         {
                             "type": "section",
-                            "text":
-                                {
-                                    "type": "mrkdwn",
-                                    "text": (
-                                        f"@here @{sender_login} labeled issue `{title}` as `{label}`.\n"
-                                        f"{assignee_info} <{issue_url}|See the issue here.>"
-                                    )
-                                }
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": (
+                                    f"<@{sender_slack_id}> labeled issue `{title}` as `{label}`.\n"
+                                    f"{assignee_info} <{issue_url}|See the issue here.>"
+                                )
+                            }
                         },
                     ],
                 )
