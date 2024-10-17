@@ -177,7 +177,7 @@ def get_user_id_by_username(username: str) -> Optional[str]:
 
     while True:
         try:
-            response = slack_app.client.users_list(limit=20, cursor=next_cursor)
+            response = slack_app.client.users_list(limit=1000, cursor=next_cursor)
         except SlackApiError as e:
             print(f"Slack API error: {e.response['error']}")
             return None
