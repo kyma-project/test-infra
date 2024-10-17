@@ -7,14 +7,12 @@ on:
     inputs:
       name:
         description: Name of the build image
-        required: false
+        required: true
         type: string
-        default: test-infra/ginkgo
       dockerfile:
         description: Path to the dockerfile used to build docker image
-        required: false
+        required: true
         type: string
-        default: "prow/images/ginkgo/Dockerfile"
       context:
         description: Build context to build container from
         required: false
