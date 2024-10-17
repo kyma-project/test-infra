@@ -347,6 +347,10 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// }
 
 		for _, file := range filesToBeAdded {
+			if file == "-A" {
+				workTree.AddWithOptions(&git.AddOptions{All: true})
+				continue
+			}
 			if _, err := workTree.Add(file); err != nil {
 				return fmt.Errorf("add file %s to the worktree: %w", file, err)
 			}
@@ -369,8 +373,6 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// 	return fmt.Errorf("commit changes to the remote branch: %w", err)
 		// }
 	}
-
-	gitRepo.Fetch(&git.FetchOptions{})
 
 	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
 	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
