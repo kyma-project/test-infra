@@ -9,7 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/github"
@@ -47,6 +50,8 @@ type Options struct {
 	Labels []string `json:"labels" yaml:"labels"`
 	// The GitHub host to use, defaulting to github.com
 	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
+	// The path to the git repository. If not specified, the current directory is used.
+	RepoPath string `json:"repoPath" yaml:"repoPath"`
 }
 
 const (
@@ -244,6 +249,15 @@ func validateOptions(o *Options) error {
 		}
 	}
 
+	if o.RepoPath == "" {
+		wd, err := os.Getwd()
+		if err != nil {
+			return fmt.Errorf("get current working directory: %w", err)
+		}
+
+		o.RepoPath = wd
+	}
+
 	return nil
 }
 
@@ -300,29 +314,63 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
+	gitRepo, err := git.PlainOpen(o.RepoPath)
+	if err != nil {
+		return fmt.Errorf("open git repo: %w", err)
+	}
+	workTree, err := gitRepo.Worktree()
+	if err != nil {
+		return fmt.Errorf("get worktree: %w", err)
+	}
+
 	for i, changeFunc := range prh.Changes() {
 		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
 		if err != nil {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
 		}
 
-		resp, err := gitStatus(stdout, stderr)
+		status, err := workTree.Status()
 		if err != nil {
-			return fmt.Errorf("git status: %w", err)
+			return fmt.Errorf("get worktree status: %w", err)
 		}
-		if strings.Contains(resp, "nothing to commit, working tree clean") {
-			fmt.Println("No changes, quitting.")
+		if status.IsClean() {
+			logrus.Info("No changes, quitting.")
 			return nil
 		}
+		// resp, err := gitStatus(stdout, stderr)
+		// if err != nil {
+		// 	return fmt.Errorf("git status: %w", err)
+		// }
+		// if strings.Contains(resp, "nothing to commit, working tree clean") {
+		// 	fmt.Println("No changes, quitting.")
+		// 	return nil
+		// }
 
-		if err := gitAdd(filesToBeAdded, stdout, stderr); err != nil {
-			return fmt.Errorf("add changes to commit %w", err)
+		for _, file := range filesToBeAdded {
+			if _, err := workTree.Add(file); err != nil {
+				return fmt.Errorf("add file %s to the worktree: %w", file, err)
+			}
 		}
+		// if err := gitAdd(filesToBeAdded, stdout, stderr); err != nil {
+		// 	return fmt.Errorf("add changes to commit %w", err)
+		// }
 
-		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr, o.Signoff); err != nil {
+		commitOpts := &git.CommitOptions{
+			Author: &object.Signature{
+				Name:  o.GitName,
+				Email: o.GitEmail,
+				When:  time.Now(),
+			},
+		}
+		if _, err := workTree.Commit(commitMsg, commitOpts); err != nil {
 			return fmt.Errorf("commit changes to the remote branch: %w", err)
 		}
+		// if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr, o.Signoff); err != nil {
+		// 	return fmt.Errorf("commit changes to the remote branch: %w", err)
+		// }
 	}
+
+	gitRepo.Fetch(&git.FetchOptions{})
 
 	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
 	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
