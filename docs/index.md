@@ -76,7 +76,7 @@
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` Google Cloud project. We use two workload clusters for trusted and untrusted Prow jobs.
 
-[Prow Runtime Images](/cmd/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
+[Prow Runtime Images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
 
 [PR Tag Builder](/pkg/tools/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request (PR) number for a commit.
 
@@ -86,4 +86,4 @@
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
-[Images](/cmd/images/README.md) - > DEPRECATED: Use the [`images`](/cmd/images) directory instead.
+[Images](/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
