@@ -8,6 +8,7 @@ on:
       - 'cmd/image-autobumper/**'
       - 'go.mod'
       - 'go.sum'
+      - "pkg/**"
   workflow_dispatch: {}
 
 jobs:
