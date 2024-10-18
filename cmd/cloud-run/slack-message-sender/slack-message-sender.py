@@ -72,18 +72,22 @@ def prepare_success_response() -> Response:
 
 
 def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
-    '''prepare_error_response return error response with stacktrace'''
-    _, exc_value, _ = sys.exc_info()
-    stacktrace = repr(traceback.format_exception(exc_value))
+    '''prepare_error_response returns an error response with a stack trace if available'''
+    exc_type, exc_value, tb = sys.exc_info()
+    if exc_value is not None:
+        stacktrace = ''.join(traceback.format_exception(exc_type, exc_value, tb))
+    else:
+        stacktrace = 'No stacktrace available'
     print(LogEntry(
         severity="ERROR",
-        message=f"Error: {err}\nStack:\n {stacktrace}",
+        message=f"Error: {err}\nStack:\n{stacktrace}",
         **log_fields,
     ))
     resp = make_response()
     resp.content_type = 'application/json'
     resp.status_code = 500
     return resp
+
 
 
 @app.route("/release-cluster-created", methods=["POST"])
