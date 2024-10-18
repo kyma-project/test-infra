@@ -391,6 +391,15 @@ def issue_labeled() -> Response:
                     **log_fields,
                 ))
 
+                # Limit the output to the first 10 items
+                sample_mapping = dict(list(slack_user_mapping.items())[:10])
+
+                print(LogEntry(
+                    severity="INFO",
+                    message=f'Print me some data from slack_user_mapping here: {sample_mapping}',
+                    **log_fields,
+                ))
+
             return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
