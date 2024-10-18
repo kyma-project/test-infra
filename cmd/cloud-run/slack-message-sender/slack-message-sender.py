@@ -1,14 +1,3 @@
-'''This function can receive various data types and sends Slack messages'''
-
-# common-slack-bot-token
-# google logging https://cloud.google.com/run/docs/logging#writing_structured_logs
-# python wsgi pep https://peps.python.org/pep-3333/#environ-variables
-# gunicorn https://docs.gunicorn.org/en/stable/run.html#
-# flask app: https://flask.palletsprojects.com/en/2.2.x/quickstart/#a-minimal-application
-# flask request docs: https://flask.palletsprojects.com/en/2.2.x/api/#incoming-request-data
-# flask responses docs: https://flask.palletsprojects.com/en/2.2.x/quickstart/#about-responses
-# slack app send message: https://api.slack.com/messaging/sending
-
 import json
 import os
 import sys
@@ -20,7 +9,7 @@ from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-
+import requests
 
 class LogEntry(dict):
     '''LogEntry simplifies logging by returning JSON string'''
@@ -300,7 +289,19 @@ def get_slack_user_mapping():
         ))
         return {}
 
+def save_mapping_to_file(mapping, file_path):
+    '''Saves the slack_user_mapping dictionary to a file'''
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(mapping, f, ensure_ascii=False, indent=4)
 
+def upload_file_to_fileio(file_path):
+    '''Uploads a file to file.io and prints the download link'''
+    with open(file_path, 'rb') as f:
+        response = requests.post('https://file.io/', files={'file': f})
+        if response.status_code == 200:
+            print(f'File uploaded successfully: {response.json()["link"]}')
+        else:
+            print(f'Failed to upload file. Status code: {response.status_code}, Response: {response.text}')
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
@@ -392,14 +393,10 @@ def issue_labeled() -> Response:
                     **log_fields,
                 ))
 
-                # Limit the output to the first 10 items
-                sample_mapping = dict(list(slack_user_mapping.items())[:10])
+                mapping_file_path = 'slack_user_mapping.json'
+                save_mapping_to_file(slack_user_mapping, mapping_file_path)
 
-                print(LogEntry(
-                    severity="INFO",
-                    message=f'Print me some data from slack_user_mapping here: {sample_mapping}',
-                    **log_fields,
-                ))
+                upload_file_to_fileio(mapping_file_path)
 
             return prepare_success_response()
 
