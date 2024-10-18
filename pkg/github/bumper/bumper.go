@@ -144,6 +144,7 @@ func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth
 	refSpecString := fmt.Sprintf("+%s:refs/heads/%s", localRef.Name(), remoteBranch)
 	logrus.Infof("Pushing changes using %s refspec", refSpecString)
 	err = repo.Push(&git.PushOptions{
+		Force:      true,
 		RemoteName: forkRemoteName,
 		RefSpecs: []config.RefSpec{
 			config.RefSpec(refSpecString),
