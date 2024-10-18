@@ -305,8 +305,6 @@ def get_slack_user_mapping():
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
     '''This function sends information about labeled issues in a Slack channel'''
-    # Cache the user mapping to avoid frequent API calls
-    slack_user_mapping = get_slack_user_mapping()
     log_fields: Dict[str, Any] = prepare_log_fields()
     log_fields["labels"]["io.kyma.app"] = "issue-labeled"
     try:
@@ -321,6 +319,9 @@ def issue_labeled() -> Response:
                 repo = payload["repository"]["name"]
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
+
+                # Cache the user mapping to avoid frequent API calls
+                slack_user_mapping = get_slack_user_mapping()
 
                 assignee_name = payload.get("assigneeName")
                 assignee_slack_id = None
