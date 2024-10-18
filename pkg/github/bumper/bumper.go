@@ -1,15 +1,17 @@
 package bumper
 
 import (
-	"bytes"
 	"context"
-	"errors"
 	"fmt"
-	"io"
 	"os"
-	"os/exec"
-	"strings"
+	"time"
 
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
+	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/github"
@@ -47,14 +49,14 @@ type Options struct {
 	Labels []string `json:"labels" yaml:"labels"`
 	// The GitHub host to use, defaulting to github.com
 	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
+	// The path to the git repository. If not specified, the current directory is used.
+	RepoPath string `json:"repoPath" yaml:"repoPath"`
 }
 
 const (
 	forkRemoteName = "bumper-fork-remote"
 
 	defaultHeadBranchName = "autobump"
-
-	gitCmd = "git"
 )
 
 // PRHandler is the interface implemented by consumer of prcreator, for
@@ -68,124 +70,81 @@ type PRHandler interface {
 	PRTitleBody() (string, string, error)
 }
 
-func Call(stdout, stderr io.Writer, cmd string, args ...string) error {
-	(&logrus.Logger{
-		Out:       stderr,
-		Formatter: logrus.StandardLogger().Formatter,
-		Hooks:     logrus.StandardLogger().Hooks,
-		Level:     logrus.StandardLogger().Level,
-	}).WithField("cmd", cmd).
-		// The default formatting uses a space as separator, which is hard to read if an arg contains a space
-		WithField("args", fmt.Sprintf("['%s']", strings.Join(args, "', '"))).
-		Info("running command")
-
-	c := exec.Command(cmd, args...)
-	c.Stdout = stdout
-	c.Stderr = stderr
-	return c.Run()
-}
-
-func getTreeRef(stderr io.Writer, refname string) (string, error) {
-	revParseStdout := &bytes.Buffer{}
-	if err := Call(revParseStdout, stderr, gitCmd, "rev-parse", refname+":"); err != nil {
-		return "", fmt.Errorf("parse ref: %w", err)
-	}
-	fields := strings.Fields(revParseStdout.String())
-	if n := len(fields); n < 1 {
-		return "", errors.New("got no otput when trying to rev-parse")
-	}
-	return fields[0], nil
-}
-
-func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
-	tmpRead, tmpWrite, err := os.Pipe()
-	if err != nil {
-		return "", err
-	}
-
-	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
-		return "", fmt.Errorf("git status: %w", err)
-	}
-	tmpWrite.Close()
-	output, err := io.ReadAll(tmpRead)
-	if err != nil {
-		return "", err
-	}
-	stdout.Write(output)
-	return string(output), nil
-}
-
-func gitAdd(files []string, stdout, stderr io.Writer) error {
-	if err := Call(stdout, stderr, gitCmd, "add", strings.Join(files, " ")); err != nil {
-		return fmt.Errorf("git add: %w", err)
+func gitAdd(files []string, workTree *git.Worktree) error {
+	for _, file := range files {
+		// image-autobumper doesn't provide list of files to be added, so we need to add all files if -A is provided.
+		if file == "-A" {
+			if err := workTree.AddWithOptions(&git.AddOptions{All: true}); err != nil {
+				return fmt.Errorf("add all files to the worktree: %w", err)
+			}
+			continue
+		}
+		if _, err := workTree.Add(file); err != nil {
+			return fmt.Errorf("add file %s to the worktree: %w", file, err)
+		}
 	}
 
 	return nil
 }
 
-func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bool) error {
-	commitArgs := []string{"commit", "-m", message}
-	if name != "" && email != "" {
-		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
+func gitCommit(commitMsg string, committerName, committerEmail string, workTree *git.Worktree) error {
+	commitOpts := &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  committerName,
+			Email: committerEmail,
+			When:  time.Now(),
+		},
 	}
-	if signoff {
-		commitArgs = append(commitArgs, "--signoff")
-	}
-	if err := Call(stdout, stderr, gitCmd, commitArgs...); err != nil {
-		return fmt.Errorf("git commit: %w", err)
+	if _, err := workTree.Commit(commitMsg, commitOpts); err != nil {
+		return fmt.Errorf("commit changes to the remote branch: %w", err)
 	}
 	return nil
 }
 
-func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool) error {
-	if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
-		return fmt.Errorf("add remote: %w", err)
+func gitPush(remote, remoteBranch string, repo *git.Repository, auth transport.AuthMethod, dryrun bool) error {
+	if _, err := repo.CreateRemote(&config.RemoteConfig{
+		Name: forkRemoteName,
+		URLs: []string{remote},
+	}); err != nil && err != git.ErrRemoteExists {
+		return fmt.Errorf("create remote: %w", err)
 	}
-	fetchStderr := &bytes.Buffer{}
-	var remoteTreeRef string
-	if err := Call(stdout, fetchStderr, gitCmd, "fetch", forkRemoteName, remoteBranch); err != nil {
-		logrus.Info("fetchStderr is : ", fetchStderr.String())
-		if !strings.Contains(strings.ToLower(fetchStderr.String()), fmt.Sprintf("couldn't find remote ref %s", remoteBranch)) {
-			return fmt.Errorf("fetch from fork: %w", err)
-		}
-	} else {
-		var err error
-		remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch))
-		if err != nil {
-			return fmt.Errorf("get remote tree ref: %w", err)
-		}
+
+	remoteRef, err := repo.Reference(plumbing.ReferenceName(fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch)), true)
+	if err != nil && err != plumbing.ErrReferenceNotFound {
+		return fmt.Errorf("get remote ref: %w", err)
 	}
-	localTreeRef, err := getTreeRef(stderr, "HEAD")
+
+	remoteTreeRef := ""
+	if remoteRef != nil {
+		remoteTreeRef = remoteRef.Hash().String()
+	}
+
+	localRef, err := repo.Head()
 	if err != nil {
-		return fmt.Errorf("get local tree ref: %w", err)
+		return fmt.Errorf("get local ref: %w", err)
 	}
+
+	localTreeRef := localRef.Hash().String()
 
 	if dryrun {
 		logrus.Info("[Dryrun] Skip git push with: ")
-		logrus.Info(forkRemoteName, remoteBranch, stdout, stderr, "")
+		logrus.Info(forkRemoteName, remoteBranch)
 		return nil
 	}
 	// Avoid doing metadata-only pushes that re-trigger tests and remove lgtm
 	if localTreeRef != remoteTreeRef {
-		if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, ""); err != nil {
-			return err
+		logrus.Info("Pushing to remote...")
+		if err := repo.Push(&git.PushOptions{
+			Force:      true,
+			RemoteName: forkRemoteName,
+			RefSpecs:   []config.RefSpec{config.RefSpec(fmt.Sprintf("HEAD:%s", remoteBranch))},
+			Auth:       auth,
+			// Do not fail if the remote branch is already up-to-date
+		}); err != nil && err != git.NoErrAlreadyUpToDate {
+			return fmt.Errorf("push to remote: %w", err)
 		}
 	} else {
 		logrus.Info("Not pushing as up-to-date remote branch already exists")
-	}
-	return nil
-}
-
-// GitPush push the changes to the given remote and branch.
-func GitPush(remote, remoteBranch string, stdout, stderr io.Writer, workingDir string) error {
-	logrus.Info("Pushing to remote...")
-	gc := GitCommand{
-		baseCommand: gitCmd,
-		args:        []string{"push", "-f", remote, fmt.Sprintf("HEAD:%s", remoteBranch)},
-		workingDir:  workingDir,
-	}
-	if err := gc.Call(stdout, stderr); err != nil {
-		return fmt.Errorf("%s: %w", gc.getCommand(), err)
 	}
 	return nil
 }
@@ -244,6 +203,15 @@ func validateOptions(o *Options) error {
 		}
 	}
 
+	if o.RepoPath == "" {
+		wd, err := os.Getwd()
+		if err != nil {
+			return fmt.Errorf("get current working directory: %w", err)
+		}
+
+		o.RepoPath = wd
+	}
+
 	return nil
 }
 
@@ -261,8 +229,6 @@ func Run(_ context.Context, o *Options, prh PRHandler) error {
 }
 
 func processGitHub(o *Options, prh PRHandler) error {
-	stdout := CensoredWriter{Delegate: os.Stdout, Censor: secret.Censor}
-	stderr := CensoredWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
@@ -300,32 +266,48 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
+	gitRepo, err := git.PlainOpen(o.RepoPath)
+	if err != nil {
+		return fmt.Errorf("open git repo: %w", err)
+	}
+	workTree, err := gitRepo.Worktree()
+	if err != nil {
+		return fmt.Errorf("get worktree: %w", err)
+	}
+
 	for i, changeFunc := range prh.Changes() {
 		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
 		if err != nil {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
 		}
 
-		resp, err := gitStatus(stdout, stderr)
+		logrus.Info("Checking status of the worktree")
+		status, err := workTree.Status()
 		if err != nil {
-			return fmt.Errorf("git status: %w", err)
+			return fmt.Errorf("get worktree status: %w", err)
 		}
-		if strings.Contains(resp, "nothing to commit, working tree clean") {
-			fmt.Println("No changes, quitting.")
+		if status.IsClean() {
+			logrus.Info("No changes, quitting.")
 			return nil
 		}
 
-		if err := gitAdd(filesToBeAdded, stdout, stderr); err != nil {
-			return fmt.Errorf("add changes to commit %w", err)
+		logrus.Info("Adding changes to the stage")
+		if err := gitAdd(filesToBeAdded, workTree); err != nil {
+			return fmt.Errorf("add files to the worktree: %w", err)
 		}
 
-		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr, o.Signoff); err != nil {
-			return fmt.Errorf("commit changes to the remote branch: %w", err)
+		logrus.Infof("Committing changes with message: %s", commitMsg)
+		if err := gitCommit(commitMsg, o.GitName, o.GitEmail, workTree); err != nil {
+			return fmt.Errorf("commit changes to the worktree: %w", err)
 		}
 	}
 
 	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
-	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
+	authMethod := &http.BasicAuth{
+		Username: o.GitHubLogin,
+		Password: string(secret.GetTokenGenerator(o.GitHubToken)()),
+	}
+	if err := gitPush(remote, o.HeadBranchName, gitRepo, authMethod, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
