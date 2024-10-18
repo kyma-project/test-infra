@@ -274,12 +274,17 @@ def get_slack_user_mapping():
     '''Fetches Slack users and returns a mapping of real names to Slack IDs'''
     try:
         users = {}
-        response = slack_client.users_list()
-        for member in response['members']:
-            real_name = member.get('real_name')
-            slack_id = member.get('id')
-            if real_name and slack_id:
-                users[real_name] = slack_id
+        cursor = None
+        while True:
+            response = slack_client.users_list(cursor=cursor)
+            for member in response['members']:
+                real_name = member.get('real_name')
+                slack_id = member.get('id')
+                if real_name and slack_id:
+                    users[real_name] = slack_id
+            cursor = response['response_metadata'].get('next_cursor')
+            if not cursor:
+                break
         return users
     except SlackApiError as e:
         print(LogEntry(
