@@ -150,7 +150,7 @@ func gitPush(remote, remoteBranch string, repo *git.Repository, auth transport.A
 	if _, err := repo.CreateRemote(&config.RemoteConfig{
 		Name: forkRemoteName,
 		URLs: []string{remote},
-	}); err != nil {
+	}); err != nil && err != git.ErrRemoteExists {
 		return fmt.Errorf("create remote: %w", err)
 	}
 	// if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
