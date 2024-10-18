@@ -289,19 +289,35 @@ def get_slack_user_mapping():
         ))
         return {}
 
-def save_mapping_to_file(mapping, file_path):
-    '''Saves the slack_user_mapping dictionary to a file'''
+
+def save_mapping_to_file(mapping, file_path, log_fields):
+    '''Saves the slack_user_mapping dictionary to a file and logs the action'''
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(mapping, f, ensure_ascii=False, indent=4)
+    print(LogEntry(
+        severity="INFO",
+        message=f'Slack user mapping saved to file: {file_path}',
+        **log_fields,
+    ))
 
-def upload_file_to_fileio(file_path):
-    '''Uploads a file to file.io and prints the download link'''
+
+def upload_file_to_fileio(file_path, log_fields):
+    '''Uploads a file to file.io and logs the download link using LogEntry'''
     with open(file_path, 'rb') as f:
         response = requests.post('https://file.io/', files={'file': f})
         if response.status_code == 200:
-            print(f'File uploaded successfully: {response.json()["link"]}')
+            download_link = response.json()["link"]
+            print(LogEntry(
+                severity="INFO",
+                message=f'File uploaded successfully: {download_link}',
+                **log_fields,
+            ))
         else:
-            print(f'Failed to upload file. Status code: {response.status_code}, Response: {response.text}')
+            print(LogEntry(
+                severity="ERROR",
+                message=f'Failed to upload file. Status code: {response.status_code}, Response: {response.text}',
+                **log_fields,
+            ))
 
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
@@ -394,9 +410,9 @@ def issue_labeled() -> Response:
                 ))
 
                 mapping_file_path = 'slack_user_mapping.json'
-                save_mapping_to_file(slack_user_mapping, mapping_file_path)
+                save_mapping_to_file(slack_user_mapping, mapping_file_path, log_fields)
 
-                upload_file_to_fileio(mapping_file_path)
+                upload_file_to_fileio(mapping_file_path, log_fields)
 
             return prepare_success_response()
 
