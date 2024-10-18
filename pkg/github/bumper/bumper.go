@@ -101,51 +101,56 @@ func gitCommit(commitMsg string, committerName, committerEmail string, workTree 
 	return nil
 }
 
-func gitPush(remote, remoteBranch string, repo *git.Repository, auth transport.AuthMethod, dryrun bool) error {
-	if _, err := repo.CreateRemote(&config.RemoteConfig{
-		Name: forkRemoteName,
-		URLs: []string{remote},
-	}); err != nil && err != git.ErrRemoteExists {
-		return fmt.Errorf("create remote: %w", err)
-	}
-
-	remoteRef, err := repo.Reference(plumbing.ReferenceName(fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch)), true)
-	if err != nil && err != plumbing.ErrReferenceNotFound {
-		return fmt.Errorf("get remote ref: %w", err)
-	}
-
-	remoteTreeRef := ""
-	if remoteRef != nil {
-		remoteTreeRef = remoteRef.Hash().String()
-	}
-
-	localRef, err := repo.Head()
+func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth transport.AuthMethod, dryrun bool) error {
+	// Add the remote if it doesn't exist with the remote url
+	_, err := repo.Remote(forkRemoteName)
 	if err != nil {
-		return fmt.Errorf("get local ref: %w", err)
+		_, err := repo.CreateRemote(&config.RemoteConfig{
+			Name: forkRemoteName,
+			URLs: []string{remote},
+		})
+		if err != nil {
+			return fmt.Errorf("create remote: %w", err)
+		}
 	}
 
-	localTreeRef := localRef.Hash().String()
+	// Get the remote head commit
+	remoteRef, err := repo.Reference(plumbing.NewRemoteReferenceName(forkRemoteName, remoteBranch), true)
+	if err != nil {
+		return fmt.Errorf("get remote reference: %w", err)
+	}
 
-	if dryrun {
-		logrus.Info("[Dryrun] Skip git push with: ")
-		logrus.Info(forkRemoteName, remoteBranch)
+	// Get the local head commit
+	localRef, err := repo.Reference(plumbing.NewBranchReferenceName(baseBranch), true)
+	if err != nil {
+		return fmt.Errorf("get local reference: %w", err)
+	}
+
+	// Check if the remote head commit is the same as the local head commit
+	if remoteRef.Hash() == localRef.Hash() {
+		logrus.Info("Remote is up to date, quitting.")
 		return nil
 	}
-	// Avoid doing metadata-only pushes that re-trigger tests and remove lgtm
-	if localTreeRef != remoteTreeRef {
-		logrus.Info("Pushing to remote...")
-		if err := repo.Push(&git.PushOptions{
-			Force:      true,
-			RemoteName: forkRemoteName,
-			RefSpecs:   []config.RefSpec{config.RefSpec(fmt.Sprintf("HEAD:%s", remoteBranch))},
-			Auth:       auth,
-			// Do not fail if the remote branch is already up-to-date
-		}); err != nil && err != git.NoErrAlreadyUpToDate {
-			return fmt.Errorf("push to remote: %w", err)
-		}
-	} else {
-		logrus.Info("Not pushing as up-to-date remote branch already exists")
+
+	if dryrun {
+		logrus.Infof("[Dryrun] Pushing to %s %s", remote, remoteRef.Name())
+		return nil
 	}
+
+	// Push the changes from local main to the remote
+	refSpecString := fmt.Sprintf("+%s:refs/heads/%s", localRef.Name(), remoteBranch)
+	logrus.Infof("Pushing changes using %s refspec", refSpecString)
+	err = repo.Push(&git.PushOptions{
+		RemoteName: forkRemoteName,
+		RefSpecs: []config.RefSpec{
+			config.RefSpec(refSpecString),
+		},
+		Auth: auth,
+	})
+	if err != nil {
+		return fmt.Errorf("push changes to the remote branch: %w", err)
+	}
+
 	return nil
 }
 
@@ -266,6 +271,14 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
+	if o.GitHubBaseBranch == "" {
+		repo, err := gc.GetRepo(o.GitHubOrg, o.GitHubRepo)
+		if err != nil {
+			return fmt.Errorf("detect default remote branch for %s/%s: %w", o.GitHubOrg, o.GitHubRepo, err)
+		}
+		o.GitHubBaseBranch = repo.DefaultBranch
+	}
+
 	gitRepo, err := git.PlainOpen(o.RepoPath)
 	if err != nil {
 		return fmt.Errorf("open git repo: %w", err)
@@ -302,25 +315,18 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
-	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
+	remote := fmt.Sprintf("https://%s/%s/%s.git", githubHost, o.GitHubLogin, o.RemoteName)
 	authMethod := &http.BasicAuth{
 		Username: o.GitHubLogin,
 		Password: string(secret.GetTokenGenerator(o.GitHubToken)()),
 	}
-	if err := gitPush(remote, o.HeadBranchName, gitRepo, authMethod, o.SkipPullRequest); err != nil {
+	if err := gitPush(remote, o.HeadBranchName, o.GitHubBaseBranch, gitRepo, authMethod, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
 	summary, body, err := prh.PRTitleBody()
 	if err != nil {
 		return fmt.Errorf("creating PR summary and body: %w", err)
-	}
-	if o.GitHubBaseBranch == "" {
-		repo, err := gc.GetRepo(o.GitHubOrg, o.GitHubRepo)
-		if err != nil {
-			return fmt.Errorf("detect default remote branch for %s/%s: %w", o.GitHubOrg, o.GitHubRepo, err)
-		}
-		o.GitHubBaseBranch = repo.DefaultBranch
 	}
 	if err := updatePRWithLabels(gc, o.GitHubOrg, o.GitHubRepo, getAssignment(o.AssignTo), o.GitHubLogin, o.GitHubBaseBranch, o.HeadBranchName, updater.PreventMods, summary, body, o.Labels, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("to create the PR: %w", err)
