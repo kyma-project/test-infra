@@ -15,6 +15,8 @@ import (
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/github"
@@ -144,7 +146,7 @@ func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bo
 	return nil
 }
 
-func gitPush(remote, remoteBranch string, repo *git.Repository, dryrun bool) error {
+func gitPush(remote, remoteBranch string, repo *git.Repository, auth transport.AuthMethod, dryrun bool) error {
 	if _, err := repo.CreateRemote(&config.RemoteConfig{
 		Name: forkRemoteName,
 		URLs: []string{remote},
@@ -203,6 +205,7 @@ func gitPush(remote, remoteBranch string, repo *git.Repository, dryrun bool) err
 			Force:      true,
 			RemoteName: forkRemoteName,
 			RefSpecs:   []config.RefSpec{config.RefSpec(fmt.Sprintf("HEAD:%s", remoteBranch))},
+			Auth:       auth,
 		}); err != nil {
 			return fmt.Errorf("push to remote: %w", err)
 		}
@@ -414,8 +417,12 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// }
 	}
 
-	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
-	if err := gitPush(remote, o.HeadBranchName, gitRepo, o.SkipPullRequest); err != nil {
+	remote := fmt.Sprintf("https://%s/%s/%s.git", githubHost, o.GitHubLogin, o.RemoteName)
+	authMethod := &http.BasicAuth{
+		Username: o.GitHubLogin,
+		Password: string(secret.GetTokenGenerator(o.GitHubToken)()),
+	}
+	if err := gitPush(remote, o.HeadBranchName, gitRepo, authMethod, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
