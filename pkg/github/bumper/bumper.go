@@ -115,9 +115,13 @@ func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth
 	}
 
 	// Get the remote head commit
+	var remoteRefHash plumbing.Hash
 	remoteRef, err := repo.Reference(plumbing.NewRemoteReferenceName(forkRemoteName, remoteBranch), true)
-	if err != nil {
+	// Ignore the error if the remote branch does not exist
+	if err != nil && err != plumbing.ErrReferenceNotFound {
 		return fmt.Errorf("get remote reference: %w", err)
+	} else {
+		remoteRefHash = remoteRef.Hash()
 	}
 
 	// Get the local head commit
@@ -127,13 +131,13 @@ func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth
 	}
 
 	// Check if the remote head commit is the same as the local head commit
-	if remoteRef.Hash() == localRef.Hash() {
+	if remoteRefHash == localRef.Hash() {
 		logrus.Info("Remote is up to date, quitting.")
 		return nil
 	}
 
 	if dryrun {
-		logrus.Infof("[Dryrun] Pushing to %s %s", remote, remoteRef.Name())
+		logrus.Infof("[Dryrun] Pushing to %s refs/heads/%s", remote, remoteBranch)
 		return nil
 	}
 
