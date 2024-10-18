@@ -137,7 +137,10 @@ func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth
 		return nil
 	}
 
-	// Push the changes from local main to the remote
+	// Push the changes from local main to the remote.
+	// We need to use the + sign to force push the changes.
+	// We need refs/heads/* on the remote branch correctly push the branch using go-git.
+	// See: https://github.com/go-git/go-git/issues/712#issuecomment-1467085888
 	refSpecString := fmt.Sprintf("+%s:refs/heads/%s", localRef.Name(), remoteBranch)
 	logrus.Infof("Pushing changes using %s refspec", refSpecString)
 	err = repo.Push(&git.PushOptions{
