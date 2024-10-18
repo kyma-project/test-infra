@@ -1,14 +1,3 @@
-'''This function can receive various data types and sends Slack messages'''
-
-# common-slack-bot-token
-# google logging https://cloud.google.com/run/docs/logging#writing_structured_logs
-# python wsgi pep https://peps.python.org/pep-3333/#environ-variables
-# gunicorn https://docs.gunicorn.org/en/stable/run.html#
-# flask app: https://flask.palletsprojects.com/en/2.2.x/quickstart/#a-minimal-application
-# flask request docs: https://flask.palletsprojects.com/en/2.2.x/api/#incoming-request-data
-# flask responses docs: https://flask.palletsprojects.com/en/2.2.x/quickstart/#about-responses
-# slack app send message: https://api.slack.com/messaging/sending
-
 import json
 import os
 import sys
@@ -18,10 +7,13 @@ from typing import Dict, Any
 from flask import Flask, request, make_response, Response
 from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
-
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+import requests
 
 class LogEntry(dict):
     '''LogEntry simplifies logging by returning JSON string'''
+
     def __str__(self):
         return json.dumps(self)
 
@@ -36,12 +28,14 @@ slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars
-with open('/etc/slack-secret/common-slack-bot-token', encoding='utf-8') as token_file:
+with open('/etc/slack-secret/common-slack-bot-token-test', encoding='utf-8') as token_file:
     slack_bot_token = token_file.readline()
 slack_app = App(token=slack_bot_token)
+slack_client = WebClient(token=slack_bot_token)
 
 slack_usergroups = slack_app.client.usergroups_list()
-tmp_groups = [usergroup["id"] for usergroup in slack_usergroups["usergroups"] if usergroup["handle"] == "btp-kyma-security"]
+tmp_groups = [usergroup["id"] for usergroup in slack_usergroups["usergroups"] if
+              usergroup["handle"] == "btp-kyma-security"]
 if len(tmp_groups) != 1:
     print(LogEntry(
         severity="ERROR",
@@ -276,9 +270,34 @@ def release_cluster_created() -> Response:
         return prepare_error_response(str(err), log_fields)
 
 
+def get_slack_user_mapping():
+    '''Fetches Slack users and returns a mapping of real names to Slack IDs'''
+    try:
+        users = {}
+        cursor = None
+        while True:
+            response = slack_client.users_list(cursor=cursor)
+            for member in response['members']:
+                real_name = member.get('real_name')
+                slack_id = member.get('id')
+                if real_name and slack_id:
+                    users[real_name] = slack_id
+            cursor = response['response_metadata'].get('next_cursor')
+            if not cursor:
+                break
+        return users
+    except SlackApiError as e:
+        print(LogEntry(
+            severity="ERROR",
+            message=f"Error fetching Slack users: {e.response['error']}",
+            **prepare_log_fields(),
+        ))
+        return {}
+
+
 @app.route("/issue-labeled", methods=["POST"])
 def issue_labeled() -> Response:
-    '''this function sends information about labeled issues in a Slack channel'''
+    '''This function sends information about labeled issues in a Slack channel'''
     log_fields: Dict[str, Any] = prepare_log_fields()
     log_fields["labels"]["io.kyma.app"] = "issue-labeled"
     try:
@@ -287,20 +306,35 @@ def issue_labeled() -> Response:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
 
             label = payload["label"]["name"]
-            if label in ("internal-incident", "customer-incident"):
+            if label in ("internal-incident", "customer-incident", "neighbors-test"):
                 title = payload["issue"]["title"]
                 number = payload["issue"]["number"]
                 repo = payload["repository"]["name"]
                 org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
 
-                assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-                if payload["assigneeSlackUsername"]:
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['assigneeSlackUsername']}>"
+                # Cache the user mapping to avoid frequent API calls
+                slack_user_mapping = get_slack_user_mapping()
 
-                sender = payload["senderSlackUsername"]
-                if payload["senderSlackUsername"]:
-                    sender = f"<@{payload['senderSlackUsername']}>"
+                assignee_name = payload["issue"].get("assignee", {}).get("login")
+                assignee_slack_id = None
+                if assignee_name:
+                    assignee_slack_id = slack_user_mapping.get(assignee_name)
+
+                if assignee_slack_id:
+                    assignee_text = f"Issue #{number} in repository {org}/{repo} is assigned to <@{assignee_slack_id}>."
+                else:
+                    assignee_text = f"Issue #{number} in repository {org}/{repo} is not assigned."
+
+                sender_name = payload["sender"]["login"]
+                sender_slack_id = None
+                if sender_name:
+                    sender_slack_id = slack_user_mapping.get(sender_name)
+
+                if sender_slack_id:
+                    sender_text = f"<@{sender_slack_id}>"
+                else:
+                    sender_text = sender_name or "Someone"
 
                 print(LogEntry(
                     severity="INFO",
@@ -310,52 +344,49 @@ def issue_labeled() -> Response:
 
                 result = slack_app.client.chat_postMessage(
                     channel=slack_team_channel_id,
-                    text=f"issue {title} #{number} labeld as {label} in {repo}",
+                    text=f"Issue {title} #{number} labeled as {label} in {repo}",
                     username="GithubBot",
                     unfurl_links=True,
                     unfurl_media=True,
                     blocks=[
                         {
                             "type": "context",
-                            "elements":
-                                [
-                                    {
-                                        "type": "image",
-                                        "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                                        "alt_text": "label"
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "SAP Github issue labeled"
-                                    }
-                                ]
+                            "elements": [
+                                {
+                                    "type": "image",
+                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                    "alt_text": "label"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "GitHub issue labeled"
+                                }
+                            ]
                         },
                         {
                             "type": "header",
                             "text": {
                                 "type": "plain_text",
-                                "text": f"SAP Github {label}"
+                                "text": f"GitHub {label}"
                             }
                         },
                         {
                             "type": "section",
-                            "text":
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
-                                }
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": f"@here {sender_text} labeled issue `{title}` as `{label}`.\n{assignee_text} <{issue_url}|See the issue here.>"
+                            }
                         },
                     ],
                 )
                 print(LogEntry(
                     severity="INFO",
-                    message=f'Slack message send, message id: {result["ts"]}',
+                    message=f'Slack message sent, message id: {result["ts"]}',
                     **log_fields,
                 ))
 
             return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
-    # pylint: disable=broad-exception-caught
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
