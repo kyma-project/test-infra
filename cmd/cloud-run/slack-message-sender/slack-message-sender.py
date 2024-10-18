@@ -323,7 +323,7 @@ def issue_labeled() -> Response:
                 # Cache the user mapping to avoid frequent API calls
                 slack_user_mapping = get_slack_user_mapping()
 
-                assignee_name = payload.get("assigneeName")
+                assignee_name = payload["issue"].get("assignee", {}).get("login")
                 assignee_slack_id = None
                 if assignee_name:
                     assignee_slack_id = slack_user_mapping.get(assignee_name)
@@ -333,7 +333,7 @@ def issue_labeled() -> Response:
                 else:
                     assignee_text = f"Issue #{number} in repository {org}/{repo} is not assigned."
 
-                sender_name = payload.get("senderName")
+                sender_name = payload["sender"]["login"]
                 sender_slack_id = None
                 if sender_name:
                     sender_slack_id = slack_user_mapping.get(sender_name)
