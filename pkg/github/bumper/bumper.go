@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
@@ -142,39 +144,71 @@ func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bo
 	return nil
 }
 
-func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool) error {
-	if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
-		return fmt.Errorf("add remote: %w", err)
+func gitPush(remote, remoteBranch string, repo *git.Repository, dryrun bool) error {
+	if _, err := repo.CreateRemote(&config.RemoteConfig{
+		Name: forkRemoteName,
+		URLs: []string{remote},
+	}); err != nil {
+		return fmt.Errorf("create remote: %w", err)
 	}
-	fetchStderr := &bytes.Buffer{}
-	var remoteTreeRef string
-	if err := Call(stdout, fetchStderr, gitCmd, "fetch", forkRemoteName, remoteBranch); err != nil {
-		logrus.Info("fetchStderr is : ", fetchStderr.String())
-		if !strings.Contains(strings.ToLower(fetchStderr.String()), fmt.Sprintf("couldn't find remote ref %s", remoteBranch)) {
-			return fmt.Errorf("fetch from fork: %w", err)
-		}
-	} else {
-		var err error
-		remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch))
-		if err != nil {
-			return fmt.Errorf("get remote tree ref: %w", err)
-		}
+	// if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
+	// 	return fmt.Errorf("add remote: %w", err)
+	// }
+
+	remoteRef, err := repo.Reference(plumbing.ReferenceName(fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch)), true)
+	if err != nil && err != plumbing.ErrReferenceNotFound {
+		return fmt.Errorf("get remote ref: %w", err)
 	}
-	localTreeRef, err := getTreeRef(stderr, "HEAD")
+
+	remoteTreeRef := ""
+	if remoteRef != nil {
+		remoteTreeRef = remoteRef.Hash().String()
+	}
+
+	// fetchStderr := &bytes.Buffer{}
+	// var remoteTreeRef string
+	// if err := Call(stdout, fetchStderr, gitCmd, "fetch", forkRemoteName, remoteBranch); err != nil {
+	// 	logrus.Info("fetchStderr is : ", fetchStderr.String())
+	// 	if !strings.Contains(strings.ToLower(fetchStderr.String()), fmt.Sprintf("couldn't find remote ref %s", remoteBranch)) {
+	// 		return fmt.Errorf("fetch from fork: %w", err)
+	// 	}
+	// } else {
+	// 	var err error
+	// 	remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch))
+	// 	if err != nil {
+	// 		return fmt.Errorf("get remote tree ref: %w", err)
+	// 	}
+	// }
+
+	localRef, err := repo.Head()
 	if err != nil {
-		return fmt.Errorf("get local tree ref: %w", err)
+		return fmt.Errorf("get local ref: %w", err)
 	}
+
+	localTreeRef := localRef.Hash().String()
+	// localTreeRef, err := getTreeRef(stderr, "HEAD")
+	// if err != nil {
+	// 	return fmt.Errorf("get local tree ref: %w", err)
+	// }
 
 	if dryrun {
 		logrus.Info("[Dryrun] Skip git push with: ")
-		logrus.Info(forkRemoteName, remoteBranch, stdout, stderr, "")
+		logrus.Info(forkRemoteName, remoteBranch)
 		return nil
 	}
 	// Avoid doing metadata-only pushes that re-trigger tests and remove lgtm
 	if localTreeRef != remoteTreeRef {
-		if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, ""); err != nil {
-			return err
+		logrus.Info("Pushing to remote...")
+		if err := repo.Push(&git.PushOptions{
+			Force:      true,
+			RemoteName: forkRemoteName,
+			RefSpecs:   []config.RefSpec{config.RefSpec(fmt.Sprintf("HEAD:%s", remoteBranch))},
+		}); err != nil {
+			return fmt.Errorf("push to remote: %w", err)
 		}
+		// if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, ""); err != nil {
+		// 	return err
+		// }
 	} else {
 		logrus.Info("Not pushing as up-to-date remote branch already exists")
 	}
@@ -275,8 +309,8 @@ func Run(_ context.Context, o *Options, prh PRHandler) error {
 }
 
 func processGitHub(o *Options, prh PRHandler) error {
-	stdout := CensoredWriter{Delegate: os.Stdout, Censor: secret.Censor}
-	stderr := CensoredWriter{Delegate: os.Stderr, Censor: secret.Censor}
+	// stdout := CensoredWriter{Delegate: os.Stdout, Censor: secret.Censor}
+	// stderr := CensoredWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
@@ -329,6 +363,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 			return fmt.Errorf("failed to process function %d: %s", i, err)
 		}
 
+		logrus.Info("Checking status of the worktree")
 		status, err := workTree.Status()
 		if err != nil {
 			return fmt.Errorf("get worktree status: %w", err)
@@ -346,9 +381,13 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// 	return nil
 		// }
 
+		logrus.Info("Adding changes to the stage")
 		for _, file := range filesToBeAdded {
+			// image-autobumper doesn't provide list of files to be added, so we need to add all files if -A is provided.
 			if file == "-A" {
-				workTree.AddWithOptions(&git.AddOptions{All: true})
+				if err := workTree.AddWithOptions(&git.AddOptions{All: true}); err != nil {
+					return fmt.Errorf("add all files to the worktree: %w", err)
+				}
 				continue
 			}
 			if _, err := workTree.Add(file); err != nil {
@@ -359,6 +398,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 		// 	return fmt.Errorf("add changes to commit %w", err)
 		// }
 
+		logrus.Infof("Committing changes with message: %s", commitMsg)
 		commitOpts := &git.CommitOptions{
 			Author: &object.Signature{
 				Name:  o.GitName,
@@ -375,7 +415,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 	}
 
 	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName)
-	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
+	if err := gitPush(remote, o.HeadBranchName, gitRepo, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
