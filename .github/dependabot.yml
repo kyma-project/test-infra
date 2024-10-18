@@ -362,3 +362,4 @@ updates:
       - dependency-name: "slackapi/slack-github-action"
       - dependency-name: "shmokmt/actions-setup-tfcmt"
       - dependency-name: "gitleaks/gitleaks-action"
+      - dependency-name: "golangci/golangci-lint-action"
