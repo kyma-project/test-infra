@@ -56,8 +56,6 @@ type Options struct {
 	Labels []string `json:"labels" yaml:"labels"`
 	// The GitHub host to use, defaulting to github.com
 	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
-	// WorkingDir is the directory where the git commands will be executed. If not specified, the current working directory will be used.
-	WorkingDir string `json:"workingDir" yaml:"workingDir"`
 }
 
 // PRHandler is the interface implemented by consumer of prcreator, for
@@ -137,14 +135,6 @@ func validateOptions(o *Options) error {
 		}
 	}
 
-	if o.WorkingDir == "" {
-		wd, err := os.Getwd()
-		if err != nil {
-			return fmt.Errorf("get working directory: %w", err)
-		}
-		o.WorkingDir = wd
-	}
-
 	return nil
 }
 
@@ -205,7 +195,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
-	if err := configureGit(o.GitName, o.GitEmail, "", stdout, stderr); err != nil {
+	if err := configureGit(o.GitName, o.GitEmail); err != nil {
 		return fmt.Errorf("configure git: %w", err)
 	}
 
@@ -463,7 +453,7 @@ func getTreeRef(stderr io.Writer, refname string, opts ...CallOption) (string, e
 	return fields[0], nil
 }
 
-func configureGit(name, email, workspacePath string, stdout, stderr io.Writer) error {
+func configureGit(name, email string) error {
 	// Configure Git to fix the dubious ownership of the workspace directory
 	additionalArgs := []string{"config", "user.email", email}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
@@ -482,7 +472,11 @@ func configureGit(name, email, workspacePath string, stdout, stderr io.Writer) e
 	}
 
 	// Configure Git to recognize the workspace directory as safe
-	configArgs := []string{"config", "--global", "--add", "safe.directory", workspacePath}
+	wd, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("get working directory: %w", err)
+	}
+	configArgs := []string{"config", "--global", "--add", "safe.directory", wd}
 	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
 	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
 	if configErr != nil {
