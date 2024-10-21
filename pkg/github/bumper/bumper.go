@@ -455,7 +455,7 @@ func getTreeRef(stderr io.Writer, refname string, opts ...CallOption) (string, e
 
 func configureGit(name, email string) error {
 	// Configure Git to fix the dubious ownership of the workspace directory
-	additionalArgs := []string{"config", "user.email", email}
+	additionalArgs := []string{"config", "--global", "user.email", email}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
 	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
 	if configErr != nil {
@@ -463,7 +463,7 @@ func configureGit(name, email string) error {
 		return fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
 	}
 
-	additionalArgs2 := []string{"config", "user.name", name}
+	additionalArgs2 := []string{"config", "--global", "user.name", name}
 	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
 	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
 	if configErr != nil {
