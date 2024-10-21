@@ -1,21 +1,28 @@
 package bumper
 
 import (
+	"bytes"
 	"context"
+	"errors"
+	"flag"
 	"fmt"
+	"io"
 	"os"
-	"time"
+	"os/exec"
+	"strings"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/config"
-	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/transport"
-	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/kyma-project/test-infra/cmd/image-autobumper/updater"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/github"
-	"k8s.io/test-infra/robots/pr-creator/updater"
+)
+
+const (
+	forkRemoteName = "bumper-fork-remote"
+
+	defaultHeadBranchName = "autobump"
+
+	gitCmd = "git"
 )
 
 // Options is the options for autobumper operations.
@@ -49,145 +56,64 @@ type Options struct {
 	Labels []string `json:"labels" yaml:"labels"`
 	// The GitHub host to use, defaulting to github.com
 	GitHubHost string `json:"gitHubHost" yaml:"gitHubHost"`
-	// The path to the git repository. If not specified, the current directory is used.
-	RepoPath string `json:"repoPath" yaml:"repoPath"`
+	// WorkingDir is the directory where the git commands will be executed. If not specified, the current working directory will be used.
+	WorkingDir string `json:"workingDir" yaml:"workingDir"`
 }
-
-const (
-	forkRemoteName = "bumper-fork-remote"
-
-	defaultHeadBranchName = "autobump"
-)
 
 // PRHandler is the interface implemented by consumer of prcreator, for
 // manipulating the repo, and provides commit messages, PR title and body.
 type PRHandler interface {
 	// Changes returns a slice of functions, each one does some stuff, and
-	// returns commit message for the changes and list of files that should be added to commit
-	Changes() []func(context.Context) (string, []string, error)
+	// returns commit message for the changes
+	Changes() []func(context.Context) (string, error)
 	// PRTitleBody returns the body of the PR, this function runs after all
 	// changes have been executed
-	PRTitleBody() (string, string, error)
+	PRTitleBody() (string, string)
 }
 
-func gitAdd(files []string, workTree *git.Worktree) error {
-	for _, file := range files {
-		// image-autobumper doesn't provide list of files to be added, so we need to add all files if -A is provided.
-		if file == "-A" {
-			if err := workTree.AddWithOptions(&git.AddOptions{All: true}); err != nil {
-				return fmt.Errorf("add all files to the worktree: %w", err)
-			}
-			continue
-		}
-		if _, err := workTree.Add(file); err != nil {
-			return fmt.Errorf("add file %s to the worktree: %w", file, err)
-		}
-	}
-
-	return nil
+// GitAuthorOptions is specifically to read the author info for a commit
+type GitAuthorOptions struct {
+	GitName  string
+	GitEmail string
 }
 
-func gitCommit(commitMsg string, committerName, committerEmail string, workTree *git.Worktree) error {
-	commitOpts := &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  committerName,
-			Email: committerEmail,
-			When:  time.Now(),
-		},
-	}
-	if _, err := workTree.Commit(commitMsg, commitOpts); err != nil {
-		return fmt.Errorf("commit changes to the remote branch: %w", err)
+// AddFlags will read the author info from the command line parameters
+func (o *GitAuthorOptions) AddFlags(fs *flag.FlagSet) {
+	fs.StringVar(&o.GitName, "git-name", "", "The name to use on the git commit.")
+	fs.StringVar(&o.GitEmail, "git-email", "", "The email to use on the git commit.")
+}
+
+// Validate will validate the input GitAuthorOptions
+func (o *GitAuthorOptions) Validate() error {
+	if (o.GitEmail == "") != (o.GitName == "") {
+		return fmt.Errorf("--git-name and --git-email must be specified together")
 	}
 	return nil
 }
 
-func gitPush(remote, remoteBranch, baseBranch string, repo *git.Repository, auth transport.AuthMethod, dryrun bool) error {
-	// Add the remote if it doesn't exist with the remote url
-	_, err := repo.Remote(forkRemoteName)
-	if err != nil {
-		_, err := repo.CreateRemote(&config.RemoteConfig{
-			Name: forkRemoteName,
-			URLs: []string{remote},
-		})
-		if err != nil {
-			return fmt.Errorf("create remote: %w", err)
-		}
-	}
-
-	// Get the remote head commit
-	remoteRef, err := repo.Reference(plumbing.NewRemoteReferenceName(forkRemoteName, remoteBranch), true)
-	if err != nil {
-		return fmt.Errorf("get remote reference: %w", err)
-	}
-
-	// Get the local head commit
-	localRef, err := repo.Reference(plumbing.NewBranchReferenceName(baseBranch), true)
-	if err != nil {
-		return fmt.Errorf("get local reference: %w", err)
-	}
-
-	// Check if the remote head commit is the same as the local head commit
-	if remoteRef.Hash() == localRef.Hash() {
-		logrus.Info("Remote is up to date, quitting.")
-		return nil
-	}
-
-	if dryrun {
-		logrus.Infof("[Dryrun] Pushing to %s %s", remote, remoteRef.Name())
-		return nil
-	}
-
-	// Push the changes from local main to the remote.
-	// We need to use the + sign to force push the changes.
-	// We need refs/heads/* on the remote branch correctly push the branch using go-git.
-	// See: https://github.com/go-git/go-git/issues/712#issuecomment-1467085888
-	refSpecString := fmt.Sprintf("+%s:refs/heads/%s", localRef.Name(), remoteBranch)
-	logrus.Infof("Pushing changes using %s refspec", refSpecString)
-	err = repo.Push(&git.PushOptions{
-		RemoteName: forkRemoteName,
-		RefSpecs: []config.RefSpec{
-			config.RefSpec(refSpecString),
-		},
-		Auth: auth,
-	})
-	if err != nil {
-		return fmt.Errorf("push changes to the remote branch: %w", err)
-	}
-
-	return nil
+// GitCommand is used to pass the various components of the git command which needs to be executed
+type GitCommand struct {
+	baseCommand string
+	args        []string
+	workingDir  string
 }
 
-// UpdatePullRequestWithLabels updates with github client "gc" the PR of github repo org/repo
-// with "title" and "body" of PR matching author and headBranch from "source" to "baseBranch" with labels
-func UpdatePullRequestWithLabels(gc github.Client, org, repo, title, body, source, baseBranch,
-	headBranch string, allowMods bool, labels []string, dryrun bool) error {
-	logrus.Info("Creating or updating PR...")
-	if dryrun {
-		logrus.Info("[Dryrun] ensure PR with:")
-		logrus.Info(org, repo, title, body, source, baseBranch, headBranch, allowMods, gc, labels, dryrun)
-		return nil
-	}
-	n, err := updater.EnsurePRWithLabels(org, repo, title, body, source, baseBranch, headBranch, allowMods, gc, labels)
-	if err != nil {
-		return fmt.Errorf("ensure PR exists: %w", err)
-	}
-	logrus.Infof("PR %s/%s#%d will merge %s into %s: %s", org, repo, *n, source, baseBranch, title)
-	return nil
+// Call will execute the Git command and switch the working directory if specified
+func (gc GitCommand) Call(stdout, stderr io.Writer, opts ...CallOption) error {
+	return Call(stdout, stderr, gc.baseCommand, gc.buildCommand(), opts...)
 }
 
-func generatePRBody(body, assignment string) string {
-	return body + assignment + "\n"
-}
-
-func updatePRWithLabels(gc github.Client, org, repo string, extraLineInPRBody, login, baseBranch, headBranch string, allowMods bool, summary, body string, labels []string, dryrun bool) error {
-	return UpdatePullRequestWithLabels(gc, org, repo, summary, generatePRBody(body, extraLineInPRBody), login+":"+headBranch, baseBranch, headBranch, allowMods, labels, dryrun)
-}
-
-func getAssignment(assignTo string) string {
-	if assignTo != "" {
-		return "/cc @" + assignTo
+func (gc GitCommand) buildCommand() []string {
+	args := []string{}
+	if gc.workingDir != "" {
+		args = append(args, "-C", gc.workingDir)
 	}
-	return ""
+	args = append(args, gc.args...)
+	return args
+}
+
+func (gc GitCommand) getCommand() string {
+	return fmt.Sprintf("%s %s", gc.baseCommand, strings.Join(gc.buildCommand(), " "))
 }
 
 func validateOptions(o *Options) error {
@@ -211,20 +137,22 @@ func validateOptions(o *Options) error {
 		}
 	}
 
-	if o.RepoPath == "" {
+	if o.WorkingDir == "" {
 		wd, err := os.Getwd()
 		if err != nil {
-			return fmt.Errorf("get current working directory: %w", err)
+			return fmt.Errorf("get working directory: %w", err)
 		}
-
-		o.RepoPath = wd
+		o.WorkingDir = wd
 	}
 
 	return nil
 }
 
-// Run is the entrypoint which will update files based on the provided options and PRHandler.
-func Run(_ context.Context, o *Options, prh PRHandler) error {
+// Run is the entrypoint which will update Prow config files based on the
+// provided options.
+//
+// updateFunc: a function that returns commit message and error
+func Run(ctx context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
 	}
@@ -233,10 +161,12 @@ func Run(_ context.Context, o *Options, prh PRHandler) error {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
 
-	return processGitHub(o, prh)
+	return processGitHub(ctx, o, prh)
 }
 
-func processGitHub(o *Options, prh PRHandler) error {
+func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
+	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
+	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
@@ -256,8 +186,9 @@ func processGitHub(o *Options, prh PRHandler) error {
 
 	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, gitHubGraphQLEndpoint, gitHubAPIEndpoint)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to construct GitHub client: %v", err)
 	}
+
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
 		if err != nil {
@@ -274,6 +205,43 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
+	if err := configureGit(o.GitName, o.GitEmail, "", stdout, stderr); err != nil {
+		return fmt.Errorf("configure git: %w", err)
+	}
+
+	// Make change, commit and push
+	var anyChange bool
+	for i, changeFunc := range prh.Changes() {
+		msg, err := changeFunc(ctx)
+		if err != nil {
+			return fmt.Errorf("process function %d: %w", i, err)
+		}
+
+		changed, err := HasChanges(o)
+		if err != nil {
+			return fmt.Errorf("checking changes: %w", err)
+		}
+
+		if !changed {
+			logrus.WithField("function", i).Info("Nothing changed, skip commit ...")
+			continue
+		}
+
+		anyChange = true
+		if err := gitCommit(o.GitName, o.GitEmail, msg, stdout, stderr, o.Signoff); err != nil {
+			return fmt.Errorf("git commit: %w", err)
+		}
+	}
+	if !anyChange {
+		logrus.Info("Nothing changed from all functions, skip PR ...")
+		return nil
+	}
+
+	if err := MinimalGitPush(fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
+		return fmt.Errorf("push changes to the remote branch: %w", err)
+	}
+
+	summary, body := prh.PRTitleBody()
 	if o.GitHubBaseBranch == "" {
 		repo, err := gc.GetRepo(o.GitHubOrg, o.GitHubRepo)
 		if err != nil {
@@ -281,58 +249,236 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 		o.GitHubBaseBranch = repo.DefaultBranch
 	}
-
-	gitRepo, err := git.PlainOpen(o.RepoPath)
-	if err != nil {
-		return fmt.Errorf("open git repo: %w", err)
-	}
-	workTree, err := gitRepo.Worktree()
-	if err != nil {
-		return fmt.Errorf("get worktree: %w", err)
-	}
-
-	for i, changeFunc := range prh.Changes() {
-		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
-		if err != nil {
-			return fmt.Errorf("failed to process function %d: %s", i, err)
-		}
-
-		logrus.Info("Checking status of the worktree")
-		status, err := workTree.Status()
-		if err != nil {
-			return fmt.Errorf("get worktree status: %w", err)
-		}
-		if status.IsClean() {
-			logrus.Info("No changes, quitting.")
-			return nil
-		}
-
-		logrus.Info("Adding changes to the stage")
-		if err := gitAdd(filesToBeAdded, workTree); err != nil {
-			return fmt.Errorf("add files to the worktree: %w", err)
-		}
-
-		logrus.Infof("Committing changes with message: %s", commitMsg)
-		if err := gitCommit(commitMsg, o.GitName, o.GitEmail, workTree); err != nil {
-			return fmt.Errorf("commit changes to the worktree: %w", err)
-		}
-	}
-
-	remote := fmt.Sprintf("https://%s/%s/%s.git", githubHost, o.GitHubLogin, o.RemoteName)
-	authMethod := &http.BasicAuth{
-		Username: o.GitHubLogin,
-		Password: string(secret.GetTokenGenerator(o.GitHubToken)()),
-	}
-	if err := gitPush(remote, o.HeadBranchName, o.GitHubBaseBranch, gitRepo, authMethod, o.SkipPullRequest); err != nil {
-		return fmt.Errorf("push changes to the remote branch: %w", err)
-	}
-
-	summary, body, err := prh.PRTitleBody()
-	if err != nil {
-		return fmt.Errorf("creating PR summary and body: %w", err)
-	}
 	if err := updatePRWithLabels(gc, o.GitHubOrg, o.GitHubRepo, getAssignment(o.AssignTo), o.GitHubLogin, o.GitHubBaseBranch, o.HeadBranchName, updater.PreventMods, summary, body, o.Labels, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("to create the PR: %w", err)
 	}
+	return nil
+}
+
+type callOptions struct {
+	ctx context.Context
+	dir string
+}
+
+type CallOption func(*callOptions)
+
+func Call(stdout, stderr io.Writer, cmd string, args []string, opts ...CallOption) error {
+	var options callOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
+	logger := (&logrus.Logger{
+		Out:       stderr,
+		Formatter: logrus.StandardLogger().Formatter,
+		Hooks:     logrus.StandardLogger().Hooks,
+		Level:     logrus.StandardLogger().Level,
+	}).WithField("cmd", cmd).
+		// The default formatting uses a space as separator, which is hard to read if an arg contains a space
+		WithField("args", fmt.Sprintf("['%s']", strings.Join(args, "', '")))
+
+	if options.dir != "" {
+		logger = logger.WithField("dir", options.dir)
+	}
+	logger.Info("running command")
+
+	var c *exec.Cmd
+	if options.ctx != nil {
+		c = exec.CommandContext(options.ctx, cmd, args...)
+	} else {
+		c = exec.Command(cmd, args...)
+	}
+	c.Stdout = stdout
+	c.Stderr = stderr
+	if options.dir != "" {
+		c.Dir = options.dir
+	}
+	return c.Run()
+}
+
+type HideSecretsWriter struct {
+	Delegate io.Writer
+	Censor   func(content []byte) []byte
+}
+
+func (w HideSecretsWriter) Write(content []byte) (int, error) {
+	_, err := w.Delegate.Write(w.Censor(content))
+	if err != nil {
+		return 0, err
+	}
+	return len(content), nil
+}
+
+func updatePRWithLabels(gc github.Client, org, repo string, extraLineInPRBody, login, baseBranch, headBranch string, allowMods bool, summary, body string, labels []string, dryrun bool) error {
+	return UpdatePullRequestWithLabels(gc, org, repo, summary, generatePRBody(body, extraLineInPRBody), login+":"+headBranch, baseBranch, headBranch, allowMods, labels, dryrun)
+}
+
+// UpdatePullRequestWithLabels updates with GitHub client "gc" the PR of GitHub repo org/repo
+// with "title" and "body" of PR matching author and headBranch from "source" to "baseBranch" with labels
+func UpdatePullRequestWithLabels(gc github.Client, org, repo, title, body, source, baseBranch,
+	headBranch string, allowMods bool, labels []string, dryrun bool) error {
+	logrus.Info("Creating or updating PR...")
+	if dryrun {
+		logrus.Info("[Dryrun] ensure PR with:")
+		logrus.Info(org, repo, title, body, source, baseBranch, headBranch, allowMods, gc, labels, dryrun)
+		return nil
+	}
+	n, err := updater.EnsurePRWithLabels(org, repo, title, body, source, baseBranch, headBranch, allowMods, gc, labels)
+	if err != nil {
+		return fmt.Errorf("ensure PR exists: %w", err)
+	}
+	logrus.Infof("PR %s/%s#%d will merge %s into %s: %s", org, repo, *n, source, baseBranch, title)
+	return nil
+}
+
+// HasChanges checks if the current git repo contains any changes
+func HasChanges(o *Options) (bool, error) {
+	// Check for changes using git status
+	statusArgs := []string{"status", "--porcelain"}
+	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).Info("running command ...")
+	combinedOutput, err := exec.Command(gitCmd, statusArgs...).CombinedOutput()
+	if err != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(combinedOutput))
+		return false, fmt.Errorf("running command %s %s: %w", gitCmd, statusArgs, err)
+	}
+	hasChanges := len(strings.TrimSuffix(string(combinedOutput), "\n")) > 0
+
+	// If there are changes, get the diff
+	if hasChanges {
+		diffArgs := []string{"diff"}
+		logrus.WithField("cmd", gitCmd).WithField("args", diffArgs).Info("running command ...")
+		diffOutput, diffErr := exec.Command(gitCmd, diffArgs...).CombinedOutput()
+		if diffErr != nil {
+			logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(diffOutput))
+			return true, fmt.Errorf("running command %s %s: %w", gitCmd, diffArgs, diffErr)
+		}
+		logrus.WithField("cmd", gitCmd).Debugf("diff output is '%s'", string(diffOutput))
+	}
+
+	return hasChanges, nil
+}
+
+func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bool) error {
+	if err := Call(stdout, stderr, gitCmd, []string{"add", "-A"}); err != nil {
+		return fmt.Errorf("git add: %w", err)
+	}
+	commitArgs := []string{"commit", "-m", message}
+	if name != "" && email != "" {
+		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
+	}
+	if signoff {
+		commitArgs = append(commitArgs, "--signoff")
+	}
+	if err := Call(stdout, stderr, gitCmd, commitArgs); err != nil {
+		return fmt.Errorf("git commit: %w", err)
+	}
+	return nil
+}
+
+// MinimalGitPush pushes the content of the local repository to the remote, checking to make
+// sure that there are real changes that need updating by diffing the tree refs, ensuring that
+// no metadata-only pushes occur, as those re-trigger tests, remove LGTM, and cause churn without
+// changing the content being proposed in the PR.
+func MinimalGitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool, opts ...CallOption) error {
+	if err := Call(stdout, stderr, gitCmd, []string{"remote", "add", forkRemoteName, remote}, opts...); err != nil {
+		return fmt.Errorf("add remote: %w", err)
+	}
+	fetchStderr := &bytes.Buffer{}
+	var remoteTreeRef string
+	if err := Call(stdout, fetchStderr, gitCmd, []string{"fetch", forkRemoteName, remoteBranch}, opts...); err != nil {
+		logrus.Info("fetchStderr is : ", fetchStderr.String())
+		if !strings.Contains(strings.ToLower(fetchStderr.String()), fmt.Sprintf("couldn't find remote ref %s", remoteBranch)) {
+			return fmt.Errorf("fetch from fork: %w", err)
+		}
+	} else {
+		var err error
+		remoteTreeRef, err = getTreeRef(stderr, fmt.Sprintf("refs/remotes/%s/%s", forkRemoteName, remoteBranch), opts...)
+		if err != nil {
+			return fmt.Errorf("get remote tree ref: %w", err)
+		}
+	}
+	localTreeRef, err := getTreeRef(stderr, "HEAD", opts...)
+	if err != nil {
+		return fmt.Errorf("get local tree ref: %w", err)
+	}
+
+	if dryrun {
+		logrus.Info("[Dryrun] Skip git push with: ")
+		logrus.Info(forkRemoteName, remoteBranch, stdout, stderr, "")
+		return nil
+	}
+	// Avoid doing metadata-only pushes that re-trigger tests and remove lgtm
+	if localTreeRef != remoteTreeRef {
+		if err := GitPush(forkRemoteName, remoteBranch, stdout, stderr, "", opts...); err != nil {
+			return err
+		}
+	} else {
+		logrus.Info("Not pushing as up-to-date remote branch already exists")
+	}
+	return nil
+}
+
+// GitPush push the changes to the given remote and branch.
+func GitPush(remote, remoteBranch string, stdout, stderr io.Writer, workingDir string, opts ...CallOption) error {
+	logrus.Info("Pushing to remote...")
+	gc := GitCommand{
+		baseCommand: gitCmd,
+		args:        []string{"push", "-f", remote, fmt.Sprintf("HEAD:%s", remoteBranch)},
+		workingDir:  workingDir,
+	}
+	if err := gc.Call(stdout, stderr, opts...); err != nil {
+		return fmt.Errorf("%s: %w", gc.getCommand(), err)
+	}
+	return nil
+}
+func generatePRBody(body, assignment string) string {
+	return body + assignment + "\n"
+}
+
+func getAssignment(assignTo string) string {
+	if assignTo != "" {
+		return "/cc @" + assignTo
+	}
+	return ""
+}
+
+func getTreeRef(stderr io.Writer, refname string, opts ...CallOption) (string, error) {
+	revParseStdout := &bytes.Buffer{}
+	if err := Call(revParseStdout, stderr, gitCmd, []string{"rev-parse", refname + ":"}, opts...); err != nil {
+		return "", fmt.Errorf("parse ref: %w", err)
+	}
+	fields := strings.Fields(revParseStdout.String())
+	if n := len(fields); n < 1 {
+		return "", errors.New("got no output when trying to rev-parse")
+	}
+	return fields[0], nil
+}
+
+func configureGit(name, email, workspacePath string, stdout, stderr io.Writer) error {
+	// Configure Git to fix the dubious ownership of the workspace directory
+	additionalArgs := []string{"config", "user.email", email}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs).Info("running command ...")
+	additionalOutput, configErr := exec.Command(gitCmd, additionalArgs...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput))
+		return fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs, configErr)
+	}
+
+	additionalArgs2 := []string{"config", "user.name", name}
+	logrus.WithField("cmd", gitCmd).WithField("args", additionalArgs2).Info("running command ...")
+	additionalOutput2, configErr := exec.Command(gitCmd, additionalArgs2...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(additionalOutput2))
+		return fmt.Errorf("running command %s %s: %w", gitCmd, additionalArgs2, configErr)
+	}
+
+	// Configure Git to recognize the workspace directory as safe
+	configArgs := []string{"config", "--global", "--add", "safe.directory", workspacePath}
+	logrus.WithField("cmd", gitCmd).WithField("args", configArgs).Info("running command ...")
+	configOutput, configErr := exec.Command(gitCmd, configArgs...).CombinedOutput()
+	if configErr != nil {
+		logrus.WithField("cmd", gitCmd).Debugf("output is '%s'", string(configOutput))
+		return fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
+	}
+
 	return nil
 }
