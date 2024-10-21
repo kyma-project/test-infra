@@ -64,8 +64,8 @@ type Options struct {
 // manipulating the repo, and provides commit messages, PR title and body.
 type PRHandler interface {
 	// Changes returns a slice of functions, each one does some stuff, and
-	// returns commit message for the changes
-	Changes() []func(context.Context) (string, error)
+	// returns commit message for the changes and list of files that should be added to commit
+	Changes() []func(context.Context) (string, []string, error)
 	// PRTitleBody returns the body of the PR, this function runs after all
 	// changes have been executed
 	PRTitleBody() (string, string)
@@ -212,7 +212,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	// Make change, commit and push
 	var anyChange bool
 	for i, changeFunc := range prh.Changes() {
-		msg, err := changeFunc(ctx)
+		msg, files, err := changeFunc(ctx)
 		if err != nil {
 			return fmt.Errorf("process function %d: %w", i, err)
 		}
@@ -225,6 +225,10 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		if !changed {
 			logrus.WithField("function", i).Info("Nothing changed, skip commit ...")
 			continue
+		}
+
+		if err := gitAdd(files, stdout, stderr); err != nil {
+			return fmt.Errorf("git add: %w", err)
 		}
 
 		anyChange = true
@@ -357,10 +361,16 @@ func HasChanges(o *Options) (bool, error) {
 	return hasChanges, nil
 }
 
-func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bool) error {
-	if err := Call(stdout, stderr, gitCmd, []string{"add", "-A"}); err != nil {
+func gitAdd(files []string, stdout, stderr io.Writer) error {
+	args := []string{"add"}
+	args = append(args, files...)
+	if err := Call(stdout, stderr, gitCmd, args); err != nil {
 		return fmt.Errorf("git add: %w", err)
 	}
+	return nil
+}
+
+func gitCommit(name, email, message string, stdout, stderr io.Writer, signoff bool) error {
 	commitArgs := []string{"commit", "-m", message}
 	if name != "" && email != "" {
 		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
