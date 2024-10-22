@@ -100,12 +100,6 @@ resource "google_service_account" "sa-secret-update" {
   description  = "Can update secrets in Secret Manager"
 }
 
-resource "google_service_account" "sa-kyma-dns-serviceuser" {
-  account_id   = "sa-kyma-dns-serviceuser"
-  display_name = "sa-kyma-dns-serviceuser"
-  description  = "<Used by api-gateway> Service Account used to manipulate DNS entries in sap-kyma-prow-workloads. Will be removed with Prow"
-}
-
 resource "google_service_account" "sa-security-dashboard-oauth" {
   account_id   = "sa-security-dashboard-oauth"
   display_name = "sa-security-dashboard-oauth"

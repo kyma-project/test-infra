@@ -16,10 +16,6 @@ output "terraform_executor_gcp_prow_project_iam_member" {
   value = google_project_iam_member.terraform_executor_prow_project_owner
 }
 
-output "terraform_executor_gcp_workloads_project_iam_member" {
-  value = google_project_iam_member.terraform_executor_workloads_project_owner
-}
-
 output "terraform_executor_gcp_workload_identity" {
   value = google_service_account_iam_binding.terraform_workload_identity
 }
