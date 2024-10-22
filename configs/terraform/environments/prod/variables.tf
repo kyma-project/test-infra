@@ -16,6 +16,12 @@ variable "gcp_project_id" {
   description = "Google Cloud project to create resources."
 }
 
+variable "workloads_project_id" {
+  type        = string
+  default     = "sap-kyma-prow-workloads"
+  description = "Additional Google Cloud project ID."
+}
+
 variable "gatekeeper_manifest_path" {
   type        = string
   default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
