@@ -1,4 +1,4 @@
-name: push-update-security-config
+name: autobump-security-config
 
 on:
   schedule:
@@ -69,7 +69,8 @@ jobs:
             -v ${{ github.workspace }}:/github/workspace \
             --workdir /github/workspace \
             --rm \
-            --user $UID \
+            --privileged \
+            --cap-drop ALL \
             europe-docker.pkg.dev/kyma-project/prod/image-detector:v20241022-0ba5f3bb \
             --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR }} \
             --sec-scanner-config=${{ env.SEC_SCANNERS_CONFIG_PATH }} \

@@ -57,7 +57,8 @@ jobs:
             -v ~/token:/etc/github/token:ro \
             -v ${{ github.workspace }}:/github/test-infra \
             --workdir /github/test-infra \
-            --user $UID \
+            --privileged \
+            --cap-drop ALL \
             europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241022-0ba5f3bb \
             --config=${{ env.AUTOBUMP_CONFIG_PATH }} \
             --labels-override=kind/chore,area/documentation
