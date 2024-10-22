@@ -20,7 +20,7 @@ resource "google_container_cluster" "trusted_workload" {
     business_tag  = "corporate"
     exposure_tag  = "internet_ingress"
     landscape_tag = "production"
-    name_cluster  = "trusted-workload-kyma-prow"
+    name_cluster  = "untrusted-workload-kyma-prow"
   }
 }
 
