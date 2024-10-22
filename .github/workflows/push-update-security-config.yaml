@@ -70,7 +70,7 @@ jobs:
             --workdir /github/workspace \
             --rm \
             --user $UID \
-            europe-docker.pkg.dev/kyma-project/prod/image-detector:v20241018-c202ad3e \
+            europe-docker.pkg.dev/kyma-project/prod/image-detector:v20241022-db7fb7b8 \
             --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR }} \
             --sec-scanner-config=${{ env.SEC_SCANNERS_CONFIG_PATH }} \
             --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
