@@ -28,14 +28,6 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
   service_account_id = google_service_account.terraform_executor.name
 }
 
-
-# Grant owner role to terraform executor service account in the gcp workloads project.
-resource "google_project_iam_member" "terraform_executor_workloads_project_owner" {
-  project = var.workloads_project_id
-  role    = "roles/owner"
-  member  = "serviceAccount:${google_service_account.terraform_executor.email}"
-}
-
 # Create the terraform planner GCP service account.
 # Grants the browser permissions to refresh state of the resources.
 
@@ -74,16 +66,6 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
-}
-
-
-resource "google_project_iam_member" "terraform_planner_workloads_project_read_access" {
-  for_each = toset([
-    "roles/viewer",
-  ])
-  project = var.workloads_project_id
-  role    = each.key
-  member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
 resource "google_service_account_iam_member" "terraform_executor_workload_identity_user" {
