@@ -22,6 +22,6 @@ LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/image-autobu
 # Copy the built Go app from the builder stage
 COPY --from=builder /app/cmd/image-autobumper/main /image-autobumper
 
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates git && \
     chmod +x /image-autobumper
 ENTRYPOINT ["/image-autobumper"]

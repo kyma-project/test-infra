@@ -142,12 +142,12 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
-func (c *client) PRTitleBody() (string, string, error) {
+func (c *client) PRTitleBody() (string, string) {
 	body := generatePRBody(c.images, c.o.Prefixes)
 	if c.o.AdditionalPRBody != "" {
 		body += c.o.AdditionalPRBody + "\n"
 	}
-	return makeCommitSummary(c.o.Prefixes, c.versions), body, nil
+	return makeCommitSummary(c.o.Prefixes, c.versions), body
 }
 
 var rootCmd = &cobra.Command{
