@@ -84,4 +84,3 @@
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
-[Images](/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
