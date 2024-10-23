@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
@@ -168,6 +169,10 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 	verifierConfig.SkipIssuerCheck = false
 	verifierConfig.InsecureSkipSignatureCheck = false
 	verifierConfig.SupportedSigningAlgs = SupportedSigningAlgorithms
+
+	verifierConfig.Now = func() time.Time {
+		return time.Now().UTC()
+	}
 
 	logger.Debugw("Created Verifier config with default values",
 		"clientID", clientID,
