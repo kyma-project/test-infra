@@ -15,6 +15,7 @@ data:
             - changedFiles:
                 - '^docs/index.md$'
                 - '.*\.yaml$'
+                - '.*\.yml$'
                 - '.*\.tf$'
                 - '.*\.tfvars$'
                 - 'development/tools/jobs/tester/tester.go'
