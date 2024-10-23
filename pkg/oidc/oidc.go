@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
@@ -117,6 +118,7 @@ type Claims struct {
 	jwt.Claims
 	GithubClaims
 	LoggerInterface
+	Expiry time.Time `json:"exp,omitempty"`
 }
 
 // GithubClaims provide the GitHub specific claims.
@@ -379,11 +381,44 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 // It uses the provided verifier to verify the token signature and expiration time.
 // It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.
+// Implements a fallback mechanism in case the token has expired.
 func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
 	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
 	if err != nil {
-		return fmt.Errorf("failed to verify token: %w", err)
+		if isTokenExpiredError(err) {
+			logger.Warnw("Token expired, attempting fallback verification without expiry check")
+
+			fallbackConfig := tokenProcessor.verifierConfig
+			fallbackConfig.SkipExpiryCheck = true
+
+			providerVerifier := verifier.(*TokenVerifier).Verifier
+			fallbackVerifier := TokenVerifier{
+				Verifier: providerVerifier,
+				Logger:   logger,
+			}
+
+			token, err = fallbackVerifier.Verify(ctx, tokenProcessor.rawToken)
+			if err != nil {
+				return fmt.Errorf("fallback verification failed: %w", err)
+			}
+
+			var tokenClaims Claims
+			err = token.Claims(&tokenClaims)
+			if err != nil {
+				return fmt.Errorf("failed to extract claims during fallback: %w", err)
+			}
+
+			if time.Now().After(tokenClaims.Expiry) {
+				return fmt.Errorf("token is expired even after fallback verification")
+			}
+
+			logger.Debugw("Token verified successfully with fallback verification")
+		} else {
+			return fmt.Errorf("failed to verify token: %w", err)
+		}
+	} else {
+		logger.Debugw("Token verified successfully")
 	}
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
@@ -394,6 +429,20 @@ func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context
 	err = claims.ValidateExpectations(tokenProcessor.issuer)
 	if err != nil {
 		return fmt.Errorf("failed to validate claims: %w", err)
+	}
+	return nil
+}
+
+// isTokenExpiredError checks if the error is related to token expiration.
+func isTokenExpiredError(err error) bool {
+	var expiredErr *oidc.TokenExpiredError
+	return errors.As(err, &expiredErr)
+}
+
+// ValidateManualExpiry manually validates the token's expiry time.
+func (claims *Claims) ValidateManualExpiry() error {
+	if time.Now().After(claims.Expiry) {
+		return fmt.Errorf("token has expired at %v", claims.Expiry)
 	}
 	return nil
 }
