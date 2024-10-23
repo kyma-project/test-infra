@@ -84,7 +84,4 @@
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
-[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
-
-[Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
-
+[Images](/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
