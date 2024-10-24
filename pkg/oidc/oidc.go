@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
@@ -382,9 +383,14 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
 	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
+	var tokenExpiryError *oidc.TokenExpiredError
+	if errors.As(err, &tokenExpiryError) {
+		token, err = tokenProcessor.handleExpiredToken(ctx, tokenExpiryError, logger, err)
+	}
 	if err != nil {
 		return fmt.Errorf("failed to verify token: %w", err)
 	}
+
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
 	if err != nil {
@@ -396,4 +402,31 @@ func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context
 		return fmt.Errorf("failed to validate claims: %w", err)
 	}
 	return nil
+}
+
+func (tokenProcessor *TokenProcessor) handleExpiredToken(ctx context.Context, tokenExpiryError *oidc.TokenExpiredError, logger LoggerInterface, err error) (Token, error) {
+	expiryTime := tokenExpiryError.Expiry
+	now := time.Now()
+	elapsed := now.Sub(expiryTime)
+	gracePeriod := 10 * time.Minute
+	if elapsed <= gracePeriod {
+		newVerifierConfig := tokenProcessor.verifierConfig
+		newVerifierConfig.SkipExpiryCheck = true
+
+		provider, err := NewProviderFromDiscovery(ctx, logger, tokenProcessor.issuer.IssuerURL)
+		if err != nil {
+			return Token{}, fmt.Errorf("failed to create provider: %w", err)
+		}
+
+		newVerifier := provider.NewVerifier(logger, newVerifierConfig)
+		token, err := newVerifier.Verify(ctx, tokenProcessor.rawToken)
+
+		if err != nil {
+			return Token{}, fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
+		}
+
+		return token, nil
+	} else {
+		return Token{}, fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
+	}
 }
