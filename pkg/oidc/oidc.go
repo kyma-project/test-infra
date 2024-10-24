@@ -5,15 +5,23 @@
 package oidc
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
-	"github.com/kyma-project/test-infra/pkg/logging"
-	"golang.org/x/net/context"
 )
+
+type LoggerInterface interface {
+	Debugw(msg string, keysAndValues ...string)
+	Infow(msg string, keysAndValues ...string)
+	Errorw(msg string, keysAndValues ...string)
+	Errorf(msg string, args ...interface{})
+}
 
 var (
 	// SupportedSigningAlgorithms is a list of supported oidc token signing algorithms.
@@ -65,11 +73,6 @@ type VerifierProvider interface {
 type ClaimsInterface interface {
 	// Validate(jwt.Expected) error
 	ValidateExpectations(Issuer) error
-}
-
-type LoggerInterface interface {
-	logging.StructuredLoggerInterface
-	logging.WithLoggerInterface
 }
 
 // Issuer is the OIDC issuer.
@@ -171,11 +174,11 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 
 	logger.Debugw("Created Verifier config with default values",
 		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+		"SkipClientIDCheck", strconv.FormatBool(verifierConfig.SkipClientIDCheck),
+		"SkipExpiryCheck", strconv.FormatBool(verifierConfig.SkipExpiryCheck),
+		"SkipIssuerCheck", strconv.FormatBool(verifierConfig.SkipIssuerCheck),
+		"InsecureSkipSignatureCheck", strconv.FormatBool(verifierConfig.InsecureSkipSignatureCheck),
+		"SupportedSigningAlgs", fmt.Sprintf("%v", verifierConfig.SupportedSigningAlgs),
 	)
 	logger.Debugw("Applying VerifierConfigOptions")
 	for _, option := range options {
@@ -186,11 +189,11 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 	}
 	logger.Debugw("Applied all VerifierConfigOptions",
 		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+		"SkipClientIDCheck", strconv.FormatBool(verifierConfig.SkipClientIDCheck),
+		"SkipExpiryCheck", strconv.FormatBool(verifierConfig.SkipExpiryCheck),
+		"SkipIssuerCheck", strconv.FormatBool(verifierConfig.SkipIssuerCheck),
+		"InsecureSkipSignatureCheck", strconv.FormatBool(verifierConfig.InsecureSkipSignatureCheck),
+		"SupportedSigningAlgs", fmt.Sprintf("%v", verifierConfig.SupportedSigningAlgs),
 	)
 	return verifierConfig, nil
 }
@@ -231,7 +234,8 @@ func (claims *Claims) ValidateExpectations(issuer Issuer) error {
 	logger := claims.LoggerInterface
 	logger.Debugw("Validating job_workflow_ref claim against expected value", "job_workflow_ref", claims.JobWorkflowRef, "expected", issuer.ExpectedJobWorkflowRef)
 	if claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
-		return fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: %s, provided: %s", claims.JobWorkflowRef, issuer.ExpectedJobWorkflowRef)
+		logger.Errorw("Job workflow ref validation failed", "expected", issuer.ExpectedJobWorkflowRef, "provided", claims.JobWorkflowRef)
+		return fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: %s, provided: %s", issuer.ExpectedJobWorkflowRef, claims.JobWorkflowRef)
 	}
 	logger.Debugw("Claims validated successfully")
 	return nil
@@ -289,11 +293,11 @@ func NewTokenProcessor(
 	tokenProcessor.verifierConfig = config
 	logger.Debugw("Added Verifier config to token processor",
 		"clientID", config.ClientID,
-		"SkipClientIDCheck", config.SkipClientIDCheck,
-		"SkipExpiryCheck", config.SkipExpiryCheck,
-		"SkipIssuerCheck", config.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", config.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", config.SupportedSigningAlgs,
+		"SkipClientIDCheck", strconv.FormatBool(config.SkipClientIDCheck),
+		"SkipExpiryCheck", strconv.FormatBool(config.SkipExpiryCheck),
+		"SkipIssuerCheck", strconv.FormatBool(config.SkipIssuerCheck),
+		"InsecureSkipSignatureCheck", strconv.FormatBool(config.InsecureSkipSignatureCheck),
+		"SupportedSigningAlgs", fmt.Sprintf("%v", config.SupportedSigningAlgs),
 	)
 	if tokenProcessor.verifierConfig.ClientID == "" {
 		return TokenProcessor{}, errors.New("verifierConfig clientID is empty")
@@ -310,7 +314,7 @@ func NewTokenProcessor(
 		return TokenProcessor{}, err
 	}
 	tokenProcessor.issuer = trustedIssuer
-	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
+	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", fmt.Sprintf("%+v", tokenProcessor.issuer))
 
 	logger.Debugw("Applying TokenProcessorOptions")
 	for _, option := range options {
@@ -321,7 +325,7 @@ func NewTokenProcessor(
 	}
 	logger.Debugw("Applied all TokenProcessorOptions")
 
-	logger.Debugw("Created token processor", "issuer", tokenProcessor.issuer)
+	logger.Debugw("Created token processor", "issuer", fmt.Sprintf("%+v", tokenProcessor.issuer))
 	return tokenProcessor, nil
 }
 
@@ -360,7 +364,7 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssuers map[string]Issuer) (Issuer, error) {
 	logger := tokenProcessor.logger
 	logger.Debugw("Checking if issuer is trusted", "issuer", issuer)
-	logger.Debugw("Trusted issuers", "trustedIssuers", trustedIssuers)
+	logger.Debugw("Trusted issuers", "trustedIssuers", fmt.Sprintf("%+v", trustedIssuers))
 	if trustedIssuer, exists := trustedIssuers[issuer]; exists {
 		logger.Debugw("Issuer is trusted", "issuer", issuer)
 		return trustedIssuer, nil
@@ -382,18 +386,59 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
 	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
+	var tokenExpiryError *oidc.TokenExpiredError
+	if errors.As(err, &tokenExpiryError) {
+		token, err = tokenProcessor.handleExpiredToken(ctx, tokenExpiryError, logger, err)
+	}
 	if err != nil {
+		logger.Errorf("Failed to verify token", "error", err)
 		return fmt.Errorf("failed to verify token: %w", err)
 	}
+
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
 	if err != nil {
+		logger.Errorf("Failed to get claims from token", "error", err)
 		return fmt.Errorf("failed to get claims from token: %w", err)
 	}
 	logger.Debugw("Got claims from token", "claims", fmt.Sprintf("%+v", claims))
 	err = claims.ValidateExpectations(tokenProcessor.issuer)
 	if err != nil {
+		logger.Errorf("Failed to validate claims", "error", err)
 		return fmt.Errorf("failed to validate claims: %w", err)
 	}
+	logger.Infow("Token verified and claims extracted successfully")
 	return nil
+}
+
+func (tokenProcessor *TokenProcessor) handleExpiredToken(ctx context.Context, tokenExpiryError *oidc.TokenExpiredError, logger LoggerInterface, err error) (Token, error) {
+	expiryTime := tokenExpiryError.Expiry
+	now := time.Now()
+	elapsed := now.Sub(expiryTime)
+	gracePeriod := 10 * time.Minute
+	if elapsed <= gracePeriod {
+		logger.Infow("Token expired recently, attempting to verify without expiry check", "elapsed", elapsed.String())
+		newVerifierConfig := tokenProcessor.verifierConfig
+		newVerifierConfig.SkipExpiryCheck = true
+
+		provider, err := NewProviderFromDiscovery(ctx, logger, tokenProcessor.issuer.IssuerURL)
+		if err != nil {
+			logger.Errorw("Failed to create provider", "error", err.Error())
+			return Token{}, fmt.Errorf("failed to create provider: %w", err)
+		}
+
+		newVerifier := provider.NewVerifier(logger, newVerifierConfig)
+		token, err := newVerifier.Verify(ctx, tokenProcessor.rawToken)
+
+		if err != nil {
+			logger.Errorw("Failed to verify token after skipping expiry check", "error", err.Error())
+			return Token{}, fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
+		}
+
+		logger.Debugw("Token verified successfully after skipping expiry check")
+		return token, nil
+	} else {
+		logger.Errorw("Token expired too long ago", "elapsed", elapsed.String(), "gracePeriod", gracePeriod.String())
+		return Token{}, fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
+	}
 }

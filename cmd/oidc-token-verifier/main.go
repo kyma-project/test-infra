@@ -3,20 +3,22 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/kyma-project/test-infra/pkg/logging"
+	gcpLogging "github.com/kyma-project/test-infra/pkg/gcp/logging"
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 	"golang.org/x/net/context"
 )
 
 // Cobra root command for the OIDC claim extractor
 // Path: cmd/oidc-token-verifier/main.go
 
-type Logger interface {
-	logging.StructuredLoggerInterface
-	logging.WithLoggerInterface
+type LoggerInterface interface {
+	Debugw(msg string, keysAndValues ...string)
+	Infow(msg string, keysAndValues ...string)
+	Errorw(msg string, keysAndValues ...string)
+	Errorf(msg string, args ...interface{})
 }
 
 type options struct {
@@ -80,7 +82,7 @@ func init() {
 // isTokenProvided checks if the token flag is set.
 // If not, check if AUTHORIZATION environment variable is set.
 // If neither is set, return an error.
-func isTokenProvided(logger Logger, opts *options) error {
+func isTokenProvided(logger tioidc.LoggerInterface, opts *options) error {
 	if opts.token == "" {
 		logger.Infow("Token flag not provided, checking for AUTHORIZATION environment variable")
 		opts.token = os.Getenv("AUTHORIZATION")
@@ -103,26 +105,32 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It uses OIDC discovery to get the identity provider public keys.
 func (opts *options) extractClaims() error {
 	var (
-		zapLogger *zap.Logger
-		err       error
+		logger tioidc.LoggerInterface
+		err    error
 	)
-	if opts.debug {
-		zapLogger, err = zap.NewDevelopment()
-	} else {
-		zapLogger, err = zap.NewProduction()
-	}
+
+	ctx := context.Background()
+
+	loggingClient, err := gcpLogging.NewClient(ctx)
 	if err != nil {
 		return err
 	}
-	logger := zapLogger.Sugar()
 
+	logger, err = loggingClient.NewLogger(
+		gcpLogging.WithTrace("OIDC Token Verifier"),
+	)
+	if err != nil {
+		return err
+	}
+
+	// Now you can use logger with your functions
 	err = isTokenProvided(logger, opts)
 	if err != nil {
 		return err
 	}
 
 	// Print used options values.
-	logger.Infow("Using the following trusted workflows", "trusted-workflows", opts.trustedWorkflows)
+	logger.Infow("Using the following trusted workflows", "trusted-workflows", strings.Join(opts.trustedWorkflows, ","))
 	logger.Infow("Using the following client ID", "client-id", opts.clientID)
 	logger.Infow("Using the following public key path", "public-key-path", opts.publicKeyPath)
 	logger.Infow("Using the following new public keys environment variable", "new-keys-var", opts.newPublicKeysVarName)
@@ -134,7 +142,7 @@ func (opts *options) extractClaims() error {
 	if err != nil {
 		return err
 	}
-	logger.Infow("Verifier config created", "config", verifyConfig)
+	logger.Infow("Verifier config created", "config", fmt.Sprintf("%+v", verifyConfig))
 
 	// Create a new token processor
 	// It reads issuer from the token and verifies if the issuer is trusted.
@@ -147,7 +155,6 @@ func (opts *options) extractClaims() error {
 	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
 	fmt.Printf("GITHUB_URL=%s\n", tokenProcessor.GetIssuer().GetGithubURL())
 
-	ctx := context.Background()
 	// Create a new provider using OIDC discovery to get the public keys.
 	// It uses the issuer from the token to get the OIDC discovery endpoint.
 	provider, err := tioidc.NewProviderFromDiscovery(ctx, logger, tokenProcessor.Issuer())

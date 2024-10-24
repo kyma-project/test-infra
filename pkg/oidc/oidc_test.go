@@ -3,10 +3,6 @@ package oidc_test
 import (
 	"errors"
 	"fmt"
-
-	// "time"
-
-	// "fmt"
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -16,15 +12,22 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/mock"
-	"go.uber.org/zap"
 	"golang.org/x/net/context"
 )
+
+// MockLogger implements the LoggerInterface for testing purposes
+type MockLogger struct{}
+
+func (l *MockLogger) Debugw(msg string, keysAndValues ...string)      {}
+func (l *MockLogger) Infow(msg string, keysAndValues ...string)       {}
+func (l *MockLogger) Errorw(msg string, keysAndValues ...string)      {}
+func (l *MockLogger) Errorf(msg string, keysAndValues ...interface{}) {}
 
 var _ = Describe("OIDC", func() {
 	var (
 		err            error
 		ctx            context.Context
-		logger         *zap.SugaredLogger
+		logger         tioidc.LoggerInterface
 		trustedIssuers map[string]tioidc.Issuer
 		rawToken       []byte
 		verifierConfig tioidc.VerifierConfig
@@ -33,10 +36,7 @@ var _ = Describe("OIDC", func() {
 	)
 
 	BeforeEach(func() {
-		l, err := zap.NewDevelopment()
-		Expect(err).NotTo(HaveOccurred())
-
-		logger = l.Sugar()
+		logger = &MockLogger{}
 		clientID = "testClientID"
 	})
 
@@ -243,7 +243,8 @@ var _ = Describe("OIDC", func() {
 
 				// Verify
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to validate claims: job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
+				Expect(err).To(MatchError("failed to validate claims: job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main"))
+
 			})
 			It("should return an error when token was not verified", func() {
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
