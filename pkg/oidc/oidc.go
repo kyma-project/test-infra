@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
@@ -383,7 +384,24 @@ func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context
 	logger := tokenProcessor.logger
 	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
 	if err != nil {
-		return fmt.Errorf("failed to verify token: %w", err)
+		var tokenExpiryError *oidc.TokenExpiredError
+		if errors.As(err, &tokenExpiryError) {
+			expiryTime := tokenExpiryError.Expiry
+			now := time.Now()
+			elapsed := now.Sub(expiryTime)
+			gracePeriod := 10 * time.Minute
+			if elapsed <= gracePeriod {
+				tokenProcessor.verifierConfig.SkipExpiryCheck = true
+				token, err = verifier.Verify(ctx, tokenProcessor.rawToken)
+				if err != nil {
+					return fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
+				}
+			} else {
+				return fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
+			}
+		} else {
+			return fmt.Errorf("failed to verify token: %w", err)
+		}
 	}
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
