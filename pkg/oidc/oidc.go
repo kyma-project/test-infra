@@ -383,26 +383,34 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
 	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
-	if err != nil {
-		var tokenExpiryError *oidc.TokenExpiredError
-		if errors.As(err, &tokenExpiryError) {
-			expiryTime := tokenExpiryError.Expiry
-			now := time.Now()
-			elapsed := now.Sub(expiryTime)
-			gracePeriod := 10 * time.Minute
-			if elapsed <= gracePeriod {
-				tokenProcessor.verifierConfig.SkipExpiryCheck = true
-				token, err = verifier.Verify(ctx, tokenProcessor.rawToken)
-				if err != nil {
-					return fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
-				}
-			} else {
-				return fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
+
+	var tokenExpiryError *oidc.TokenExpiredError
+	if errors.As(err, &tokenExpiryError) {
+		expiryTime := tokenExpiryError.Expiry
+		now := time.Now()
+		elapsed := now.Sub(expiryTime)
+		gracePeriod := 10 * time.Minute
+		if elapsed <= gracePeriod {
+			newVerifierConfig := tokenProcessor.verifierConfig
+			newVerifierConfig.SkipExpiryCheck = true
+
+			provider, err := NewProviderFromDiscovery(ctx, logger, tokenProcessor.issuer.IssuerURL)
+			if err != nil {
+				return fmt.Errorf("failed to create provider: %w", err)
+			}
+
+			newVerifier := provider.NewVerifier(logger, newVerifierConfig)
+			token, err = newVerifier.Verify(ctx, tokenProcessor.rawToken)
+			if err != nil {
+				return fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
 			}
 		} else {
-			return fmt.Errorf("failed to verify token: %w", err)
+			return fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
 		}
+	} else if err != nil {
+		return fmt.Errorf("failed to verify token: %w", err)
 	}
+
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
 	if err != nil {
