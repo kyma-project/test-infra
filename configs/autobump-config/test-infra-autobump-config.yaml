@@ -35,7 +35,6 @@ extraFiles:
   - "configs/terraform/environments/prod/artifact-registry.tf"
   - "configs/terraform/environments/prod/backend.tf"
   - "configs/terraform/environments/prod/cors-proxy.tf"
-  - "configs/terraform/environments/prod/dns-collector.tf"
   - "configs/terraform/environments/prod/dns.tf"
   - "configs/terraform/environments/prod/gcp-workfload-identity-federation-variables.tf"
   - "configs/terraform/environments/prod/gcp-workfload-identity-federation.tf"
