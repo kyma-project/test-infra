@@ -329,7 +329,7 @@ func NewTokenProcessor(
 // It doesn't verify the token, just parses its claims.
 // It's used to create a new TokenProcessor.
 // TODO: signAlgorithm should be a TokenProcessor field.
-// TODO: should we abstract usage of jwt and go-jose libraries?
+// TODO: should we abstrf jwt and go-jose libraries?
 func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (string, error) {
 	logger := tokenProcessor.logger
 	logger.Debugw("Getting issuer from token")
