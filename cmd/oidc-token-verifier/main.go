@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
@@ -20,13 +22,14 @@ type Logger interface {
 }
 
 type options struct {
-	token                string
-	clientID             string
-	outputPath           string
-	publicKeyPath        string
-	newPublicKeysVarName string
-	trustedWorkflows     []string
-	debug                bool
+	token                   string
+	clientID                string
+	outputPath              string
+	publicKeyPath           string
+	newPublicKeysVarName    string
+	trustedWorkflows        []string
+	debug                   bool
+	oidcTokenExpirationTime int // OIDC token expiration time in minutes
 }
 
 var (
@@ -53,6 +56,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID, this is used to verify the audience claim in the token. The value should be the same as the audience claim value in the token.")
 	rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
+	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
 	return rootCmd
 }
 
@@ -103,8 +107,10 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It uses OIDC discovery to get the identity provider public keys.
 func (opts *options) extractClaims() error {
 	var (
-		zapLogger *zap.Logger
-		err       error
+		zapLogger         *zap.Logger
+		err               error
+		tokenExpiredError *oidc.TokenExpiredError
+		token             *tioidc.Token
 	)
 	if opts.debug {
 		zapLogger, err = zap.NewDevelopment()
@@ -161,17 +167,34 @@ func (opts *options) extractClaims() error {
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
-	// claims will store the extracted claim values from the token.
-	claims := tioidc.NewClaims(logger)
-	// Verifies the token and check if the claims have expected values.
-	// Verifies custom claim values too.
-	// Extract the claim values from the token into the claims struct.
-	// It provides a final result if the token is valid and the claims have expected values.
-	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, &claims)
+	// Verify the token
+	token, err = verifier.Verify(ctx, opts.token)
+	if errors.As(err, &tokenExpiredError) {
+		err = verifier.VerifyExtendedExpiration(err.(*oidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
+		if err != nil {
+			return err
+		}
+		verifyConfig.SkipExpiryCheck = false
+		verifierWithoutExpiration := provider.NewVerifier(logger, verifyConfig)
+		token, err = verifierWithoutExpiration.Verify(ctx, opts.token)
+	}
 	if err != nil {
 		return err
 	}
 	logger.Infow("Token verified successfully")
+
+	// Create claims
+	claims := tioidc.NewClaims(logger)
+	logger.Infow("Verifying token claims")
+
+	// Pass the token to ValidateClaims
+	err = tokenProcessor.ValidateClaims(&claims, token)
+
+	if err != nil {
+		return err
+	}
+	logger.Infow("Token claims expectations verified successfully")
+	logger.Infow("All token checks passed successfully")
 
 	return nil
 }
