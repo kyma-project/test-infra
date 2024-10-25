@@ -24,9 +24,6 @@ type Logger interface {
 type options struct {
 	token                   string
 	clientID                string
-	outputPath              string
-	publicKeyPath           string
-	newPublicKeysVarName    string
 	trustedWorkflows        []string
 	debug                   bool
 	oidcTokenExpirationTime int // OIDC token expiration time in minutes
@@ -46,7 +43,6 @@ func NewRootCmd() *cobra.Command {
 	It uses OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
 	}
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token to verify")
-	rootCmd.PersistentFlags().StringVarP(&opts.newPublicKeysVarName, "new-keys-var", "n", "OIDC_NEW_PUBLIC_KEYS", "Name of the environment variable to set when new public keys are fetched")
 	// This flag should be enabled once we add support for it in the code.
 	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
 	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
@@ -54,7 +50,6 @@ func NewRootCmd() *cobra.Command {
 	// 	panic(err)
 	// }
 	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID, this is used to verify the audience claim in the token. The value should be the same as the audience claim value in the token.")
-	rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
 	return rootCmd
@@ -65,7 +60,7 @@ func NewVerifyCmd() *cobra.Command {
 		Use:   "verify",
 		Short: "Verify token and expected claims values",
 		RunE: func(_ *cobra.Command, _ []string) error {
-			if err := opts.extractClaims(); err != nil {
+			if err := opts.verifyToken(); err != nil {
 				return err
 			}
 			return nil
@@ -105,7 +100,7 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It verifies the token signature and expiration time, verifies if the token is issued by a trusted issuer,
 // and the claims have expected values.
 // It uses OIDC discovery to get the identity provider public keys.
-func (opts *options) extractClaims() error {
+func (opts *options) verifyToken() error {
 	var (
 		zapLogger         *zap.Logger
 		err               error
@@ -130,9 +125,6 @@ func (opts *options) extractClaims() error {
 	// Print used options values.
 	logger.Infow("Using the following trusted workflows", "trusted-workflows", opts.trustedWorkflows)
 	logger.Infow("Using the following client ID", "client-id", opts.clientID)
-	logger.Infow("Using the following public key path", "public-key-path", opts.publicKeyPath)
-	logger.Infow("Using the following new public keys environment variable", "new-keys-var", opts.newPublicKeysVarName)
-	logger.Infow("Using the following claims output path", "claims-output-path", opts.outputPath)
 
 	// Create a new verifier config that will be used to verify the token.
 	// The clientID is used to verify the audience claim in the token.
@@ -198,30 +190,6 @@ func (opts *options) extractClaims() error {
 
 	return nil
 }
-
-// If the public keys are not cached or expired, it uses OIDC discovery to get the public keys.
-// New public keys are written to the file specified by the --public-key-path flag.
-// If new public keys are fetched, it sets ado environment variable to true.
-
-// loadPublicKeysFromLocal loads the public keys from the file specified by the --public-key-path flag.
-// example implementation https://gist.github.com/nilsmagnus/199d56ce849b83bdd7df165b25cb2f56
-// func (opts *options) loadPublicKeysFromLocal() error {
-//
-// }
-//
-
-// savePublicKeysFromRemote fetches the public keys from the OIDC discovery endpoint.
-// It writes the public keys to the file specified by the --public-key-path flag.
-// It sets the environment variable specified by --new-public-keys-var-name to true to indicate that new public keys are fetched.
-// func (opts *options) savePublicKeysFromRemote(issuer string) error {
-//
-// }
-
-// setAdoEnvVar sets the Azure DevOps pipeline environment variable to true.
-// Environment variable name is specified by --new-public-keys-var-name flag.
-// func (opts *options) setAdoEnvVar() error {
-//
-// }
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {

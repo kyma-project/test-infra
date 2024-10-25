@@ -95,6 +95,13 @@ type VerifierConfig struct {
 	oidc.Config
 }
 
+// String returns the string representation of the VerifierConfig.
+// It's used for logging purposes.
+func (config *VerifierConfig) String() string {
+	return fmt.Sprintf("ClientID: %s, SkipClientIDCheck: %t, SkipExpiryCheck: %t, SkipIssuerCheck: %t, InsecureSkipSignatureCheck: %t, SupportedSigningAlgs: %v, Now: %T",
+		config.ClientID, config.SkipClientIDCheck, config.SkipExpiryCheck, config.SkipIssuerCheck, config.InsecureSkipSignatureCheck, config.SupportedSigningAlgs, config.Now)
+}
+
 // TokenProcessor is responsible for processing the token.
 type TokenProcessor struct {
 	rawToken       string
