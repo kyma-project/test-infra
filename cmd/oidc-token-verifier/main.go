@@ -170,7 +170,7 @@ func (opts *options) extractClaims() error {
 	// Verify the token
 	token, err = verifier.Verify(ctx, opts.token)
 	if errors.As(err, &tokenExpiredError) {
-		err = verifier.VerifyExtendedExpiration(err.(*oidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
+		err = verifier.VerifyExtendedExpiration(tokenExpiredError.Expiry, opts.oidcTokenExpirationTime)
 		if err != nil {
 			return err
 		}
