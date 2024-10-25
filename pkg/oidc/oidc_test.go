@@ -158,7 +158,6 @@ var _ = Describe("OIDC", func() {
 
 	Describe("TokenProcessor", func() {
 		var (
-			verifier       *oidcmocks.MockTokenVerifierInterface
 			Token          oidcmocks.MockTokenInterface
 			claims         tioidc.Claims
 			token          tioidc.Token
@@ -187,7 +186,6 @@ var _ = Describe("OIDC", func() {
 
 			token = tioidc.Token{}
 			mockToken = oidcmocks.MockClaimsReader{}
-			verifier = &oidcmocks.MockTokenVerifierInterface{}
 		})
 		Describe("Issuer", func() {
 			It("should return the issuer", func() {
@@ -211,7 +209,6 @@ var _ = Describe("OIDC", func() {
 					},
 				).Return(nil)
 				token.Token = &mockToken
-				// verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
 				err = tokenProcessor.ValidateClaims(&claims, &token)
@@ -236,7 +233,6 @@ var _ = Describe("OIDC", func() {
 				).Return(nil)
 				expectedError := fmt.Errorf("expecations validation failed: %w", fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
 				token.Token = &mockToken
-				// verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
 				err = tokenProcessor.ValidateClaims(&claims, &token)
@@ -245,21 +241,9 @@ var _ = Describe("OIDC", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError(expectedError))
 			})
-			It("should return an error when token was not verified", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(tioidc.Token{}, fmt.Errorf("token validation failed"))
-
-				// Run
-				err = tokenProcessor.ValidateClaims(&claims, &token)
-
-				// Verify
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to verify token: token validation failed"))
-				Expect(claims).To(Equal(tioidc.NewClaims(logger)))
-			})
 			It("should return an error when claims are not set", func() {
 				mockToken.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 				Token.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 
 				// Run
