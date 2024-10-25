@@ -3,11 +3,10 @@ package oidc_test
 import (
 	"errors"
 	"fmt"
-
-	// "time"
-
 	// "fmt"
 	"os"
+
+	// "time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4/jwt"
@@ -223,7 +222,7 @@ var _ = Describe("OIDC", func() {
 				Expect(claims.Subject).To(Equal("mysub"))
 				Expect(claims.Audience).To(Equal(jwt.Audience{"myaudience"}))
 			})
-			It("should return an error when unexpected job workflow reference is provided", func() {
+			It("should return  when unexpected job workflow reference is provided", func() {
 				mockToken.On(
 					"Claims", &claims).Run(
 					func(args mock.Arguments) {
