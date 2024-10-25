@@ -65,7 +65,7 @@ type VerifierProvider interface {
 
 type ClaimsInterface interface {
 	// Validate(jwt.Expected) error
-	ValidateExpectations(Issuer) error
+	validateExpectations(Issuer) error
 }
 
 type LoggerInterface interface {
@@ -214,6 +214,21 @@ func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string)
 	return token, nil
 }
 
+// VerifyExtendedExpiration checks the OIDC token expiration timestamp against the provided expiration time.
+// It allows to accept tokens after the token original expiration time elapsed.
+// The other aspects of the token must be verified separately with expiration check disabled.
+func (tokenVerifier *TokenVerifier) VerifyExtendedExpiration(expirationTimestamp time.Time, gracePeriodMinutes int) error {
+	logger := tokenVerifier.Logger
+	logger.Debugw("Verifying token expiration time", "expirationTimestamp", expirationTimestamp, "gracePeriodMinutes", gracePeriodMinutes)
+	now := time.Now()
+	elapsed := now.Sub(expirationTimestamp)
+	gracePeriod := *time.Minute
+	if elapsed <= gracePeriod {
+		return nil
+	}
+	return fmt.Errorf("token expired more than %v ago", gracePeriod)
+}
+
 // Claims gets the claims from the token and unmarshal them into the provided claims struct.
 func (token *Token) Claims(claims interface{}) error {
 	return token.Token.Claims(claims)
@@ -228,7 +243,7 @@ func NewClaims(logger LoggerInterface) Claims {
 
 // ValidateExpectations validates the claims against the trusted issuer expected values.
 // It checks audience, issuer, and job_workflow_ref claims.
-func (claims *Claims) ValidateExpectations(issuer Issuer) error {
+func (claims *Claims) validateExpectations(issuer Issuer) error {
 	logger := claims.LoggerInterface
 	logger.Debugw("Validating job_workflow_ref claim against expected value", "job_workflow_ref", claims.JobWorkflowRef, "expected", issuer.ExpectedJobWorkflowRef)
 	if claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
@@ -380,36 +395,8 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 // It uses the provided verifier to verify the token signature and expiration time.
 // It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.
-func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context, verifier TokenVerifierInterface, claims ClaimsInterface) error {
+func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface) error {
 	logger := tokenProcessor.logger
-	token, err := verifier.Verify(ctx, tokenProcessor.rawToken)
-
-	var tokenExpiryError *oidc.TokenExpiredError
-	if errors.As(err, &tokenExpiryError) {
-		expiryTime := tokenExpiryError.Expiry
-		now := time.Now()
-		elapsed := now.Sub(expiryTime)
-		gracePeriod := 10 * time.Minute
-		if elapsed <= gracePeriod {
-			newVerifierConfig := tokenProcessor.verifierConfig
-			newVerifierConfig.SkipExpiryCheck = true
-
-			provider, err := NewProviderFromDiscovery(ctx, logger, tokenProcessor.issuer.IssuerURL)
-			if err != nil {
-				return fmt.Errorf("failed to create provider: %w", err)
-			}
-
-			newVerifier := provider.NewVerifier(logger, newVerifierConfig)
-			token, err = newVerifier.Verify(ctx, tokenProcessor.rawToken)
-			if err != nil {
-				return fmt.Errorf("failed to verify token after skipping expiry check: %w", err)
-			}
-		} else {
-			return fmt.Errorf("token expired more than %v ago: %w", gracePeriod, err)
-		}
-	} else if err != nil {
-		return fmt.Errorf("failed to verify token: %w", err)
-	}
 
 	logger.Debugw("Getting claims from token")
 	err = token.Claims(claims)
@@ -417,7 +404,7 @@ func (tokenProcessor *TokenProcessor) VerifyAndExtractClaims(ctx context.Context
 		return fmt.Errorf("failed to get claims from token: %w", err)
 	}
 	logger.Debugw("Got claims from token", "claims", fmt.Sprintf("%+v", claims))
-	err = claims.ValidateExpectations(tokenProcessor.issuer)
+	err = claims.validateExpectations(tokenProcessor.issuer)
 	if err != nil {
 		return fmt.Errorf("failed to validate claims: %w", err)
 	}
