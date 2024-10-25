@@ -1,6 +1,6 @@
 // Package pipelines allows calling Azure DevOps pipelines API to interact with kyma-project pipelines.
 // It provides a set of functions totrigger a pipeline, get its status, and check the logs.
-// It also includes functions to run tests on the build logs and timeline.
+// It also inclues functions to run tests on the build logs and timeline.
 // These functions are designed to interact with kyma-project pipelines and it's tests.
 // TODO: Add more structured logging with debug severity to track execution in case of troubleshooting
 package pipelines
