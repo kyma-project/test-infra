@@ -1,15 +1,18 @@
 # Image Autobumper
 
-Image Autobumper is a tool for automatically updating the version of a Docker image in a GitHub repository. It is designed to automatically detected the latest version of the image and update the version in the repository based on the provided configuration.
+Image Autobumper is a tool for automatically updating the version of a Docker image in a GitHub repository.
 
 Key features:
 * Automatically detects the latest Docker image version  in a GitHub repository
 * Automatically detects places in the file where image URLs are defined
 * Automatically updates the image version in the repository based on the provided configuration
+* Automatically finds `.yaml` and `.yml` files in the repository
+* Supports any file format provided in `extraFiles` option.
 
 ## Quickstart Guide
 
-Use Image Autobumper in your GitHub workflow to detect YAML files (both `.yaml` and `.yml`) in the repository. With the `extraFiles' option in the configuration file, you can also configure the tool to update the version of the image in other files.
+To use Image Autobumper in your repository, create a GitHub workflow that references the Image Autobumper reusable workflow.
+
 See the following examples:
 * [GitHub workflow updating the Docker image version using Image Autobumper](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/autobump-images.yml)
 * [Configuration file for Image Autobumper](https://github.com/kyma-project/test-infra/blob/main/configs/autobump-config/test-infra-autobump-config.yaml)
