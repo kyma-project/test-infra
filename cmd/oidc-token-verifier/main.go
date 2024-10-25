@@ -103,8 +103,10 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It uses OIDC discovery to get the identity provider public keys.
 func (opts *options) extractClaims() error {
 	var (
-		zapLogger *zap.Logger
-		err       error
+		zapLogger         *zap.Logger
+		err               error
+		tokenExpiredError *tioidc.TokenExpiredError
+		token             Token
 	)
 	if opts.debug {
 		zapLogger, err = zap.NewDevelopment()
@@ -161,17 +163,34 @@ func (opts *options) extractClaims() error {
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
-	// claims will store the extracted claim values from the token.
-	claims := tioidc.NewClaims(logger)
-	// Verifies the token and check if the claims have expected values.
-	// Verifies custom claim values too.
-	// Extract the claim values from the token into the claims struct.
-	// It provides a final result if the token is valid and the claims have expected values.
-	err = tokenProcessor.VerifyAndExtractClaims(ctx, &verifier, &claims)
+	token, err = verifier.VerifyToken(ctx, opts.token)
+	if errors.As(err, &tokenExpiredError) {
+		err = verifier.VerifyExtendedExpiration(err.(tioidc.TokenExpiredError).Expiry, 5)
+		if err != nil {
+			return err
+		}
+		verifyConfig.SkipExpiryCheck = false
+		verifierWithoutExpiration := provider.NewVerifier(logger, verifyConfig)
+		token, err = verifierWithoutExpiration.VerifyToken(ctx, opts.token)
+	}
 	if err != nil {
 		return err
 	}
 	logger.Infow("Token verified successfully")
+
+	// claims will store the extracted claim values from the token.
+	claims := tioidc.NewClaims(logger)
+	logger.Infow("Verifying token claims")
+	// Verifies the token and check if the claims have expected values.
+	// Verifies custom claim values too.
+	// Extract the claim values from the token into the claims struct.
+	// It provides a final result if the token is valid and the claims have expected values.
+	err = tokenProcessor.ValidateClaims(ctx, &claims)
+	if err != nil {
+		return err
+	}
+	logger.Infow("Token claims expectations verified successfully")
+	logger.Infow("All token checks passed successfully")
 
 	return nil
 }
