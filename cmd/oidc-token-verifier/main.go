@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
@@ -107,8 +109,8 @@ func (opts *options) extractClaims() error {
 	var (
 		zapLogger         *zap.Logger
 		err               error
-		tokenExpiredError *tioidc.TokenExpiredError
-		token             Token
+		tokenExpiredError *oidc.TokenExpiredError
+		token             *tioidc.Token
 	)
 	if opts.debug {
 		zapLogger, err = zap.NewDevelopment()
@@ -165,28 +167,29 @@ func (opts *options) extractClaims() error {
 	verifier := provider.NewVerifier(logger, verifyConfig)
 	logger.Infow("New verifier created")
 
-	token, err = verifier.VerifyToken(ctx, opts.token)
+	// Verify the token
+	token, err = verifier.Verify(ctx, opts.token)
 	if errors.As(err, &tokenExpiredError) {
-		// Verify the token expiration time using the extended expiration time.
-		err = verifier.VerifyExtendedExpiration(err.(tioidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
+		err = verifier.VerifyExtendedExpiration(err.(*oidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
 		if err != nil {
 			return err
 		}
 		verifyConfig.SkipExpiryCheck = false
 		verifierWithoutExpiration := provider.NewVerifier(logger, verifyConfig)
-		token, err = verifierWithoutExpiration.VerifyToken(ctx, opts.token)
+		token, err = verifierWithoutExpiration.Verify(ctx, opts.token)
 	}
 	if err != nil {
 		return err
 	}
 	logger.Infow("Token verified successfully")
 
-	// claims will store the extracted claim values from the token.
+	// Create claims
 	claims := tioidc.NewClaims(logger)
 	logger.Infow("Verifying token claims")
-	// Verifies if custom claims has expected values.
-	// Extract the claim values from the token into the claims struct.
-	err = tokenProcessor.ValidateClaims(ctx, &claims)
+
+	// Pass the token to ValidateClaims
+	err = tokenProcessor.ValidateClaims(&claims, token)
+
 	if err != nil {
 		return err
 	}

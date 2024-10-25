@@ -205,20 +205,20 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 
 // Verify verifies the raw OIDC token.
 // It returns a Token struct which contains the verified token if successful.
-func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string) (Token, error) {
+func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string) (*Token, error) {
 	logger := tokenVerifier.Logger
 	logger.Debugw("Verifying token")
 	logger.Debugw("Got raw token value", "rawToken", maskToken(rawToken))
 	idToken, err := tokenVerifier.Verifier.Verify(ctx, rawToken)
 	if err != nil {
 		token := Token{}
-		return token, fmt.Errorf("failed to verify token: %w", err)
+		return &token, fmt.Errorf("failed to verify token: %w", err)
 	}
 	logger.Debugw("Token verified successfully")
 	token := Token{
 		Token: idToken,
 	}
-	return token, nil
+	return &token, nil
 }
 
 // VerifyExtendedExpiration checks the OIDC token expiration timestamp against the provided expiration time.
@@ -229,7 +229,7 @@ func (tokenVerifier *TokenVerifier) VerifyExtendedExpiration(expirationTimestamp
 	logger.Debugw("Verifying token expiration time", "expirationTimestamp", expirationTimestamp, "gracePeriodMinutes", gracePeriodMinutes)
 	now := time.Now()
 	elapsed := now.Sub(expirationTimestamp)
-	gracePeriod := *time.Minute
+	gracePeriod := time.Minute
 	if elapsed <= gracePeriod {
 		return nil
 	}
@@ -402,15 +402,21 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 // It uses the provided verifier to verify the token signature and expiration time.
 // It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.
-func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface) error {
+func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface, token *Token) error {
 	logger := tokenProcessor.logger
 
+	// Ensure that the token is initialized
+	if token.Token == nil {
+		return fmt.Errorf("failed to verify token: token validation failed")
+	}
+
 	logger.Debugw("Getting claims from token")
-	err = token.Claims(claims)
+	err := token.Claims(claims)
 	if err != nil {
 		return fmt.Errorf("failed to get claims from token: %w", err)
 	}
 	logger.Debugw("Got claims from token", "claims", fmt.Sprintf("%+v", claims))
+
 	err = claims.validateExpectations(tokenProcessor.issuer)
 	if err != nil {
 		return fmt.Errorf("failed to validate claims: %w", err)
