@@ -76,12 +76,6 @@ resource "google_service_account" "sa-kyma-project" {
   description  = "SA to manage PROD Artifact Registry in SAP CX Kyma Project"
 }
 
-resource "google_service_account" "sa-prow-job-resource-cleaners" {
-  account_id   = "sa-prow-job-resource-cleaners"
-  display_name = "sa-prow-job-resource-cleaners"
-  description  = "SA used by multiple resource cleaner prowjobs. Will be removed with Prow"
-}
-
 resource "google_service_account" "sa-kyma-artifacts" {
   account_id   = "sa-kyma-artifacts"
   display_name = "sa-kyma-artifacts"
