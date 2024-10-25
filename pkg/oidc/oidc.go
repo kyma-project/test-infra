@@ -155,6 +155,13 @@ type TokenVerifier struct {
 	Logger   LoggerInterface
 }
 
+func maskToken(token string) string {
+	if len(token) < 15 {
+		return "********"
+	}
+	return token[:2] + "********" + token[len(token)-2:]
+}
+
 // NewVerifierConfig creates a new VerifierConfig.
 // It verifies the clientID is not empty.
 func NewVerifierConfig(logger LoggerInterface, clientID string, options ...VerifierConfigOption) (VerifierConfig, error) {
@@ -201,7 +208,7 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string) (Token, error) {
 	logger := tokenVerifier.Logger
 	logger.Debugw("Verifying token")
-	logger.Debugw("Got raw token value", "rawToken", rawToken)
+	logger.Debugw("Got raw token value", "rawToken", maskToken(rawToken))
 	idToken, err := tokenVerifier.Verifier.Verify(ctx, rawToken)
 	if err != nil {
 		token := Token{}
@@ -241,7 +248,7 @@ func NewClaims(logger LoggerInterface) Claims {
 	}
 }
 
-// ValidateExpectations validates the claims against the trusted issuer expected values.
+// validateExpectations validates the claims against the trusted issuer expected values.
 // It checks audience, issuer, and job_workflow_ref claims.
 func (claims *Claims) validateExpectations(issuer Issuer) error {
 	logger := claims.LoggerInterface
@@ -300,7 +307,7 @@ func NewTokenProcessor(
 	tokenProcessor.logger = logger
 
 	tokenProcessor.rawToken = rawToken
-	logger.Debugw("Added raw token to token processor", "rawToken", rawToken)
+	logger.Debugw("Added raw token to token processor", "rawToken", maskToken(rawToken))
 
 	tokenProcessor.verifierConfig = config
 	logger.Debugw("Added Verifier config to token processor",
@@ -391,7 +398,7 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 	return tokenProcessor.issuer.IssuerURL
 }
 
-// VerifyAndExtractClaims verify and parse the token to get the token claims.
+// ValidateClaims verify and parse the token to get the token claims.
 // It uses the provided verifier to verify the token signature and expiration time.
 // It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.

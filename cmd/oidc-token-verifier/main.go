@@ -20,13 +20,14 @@ type Logger interface {
 }
 
 type options struct {
-	token                string
-	clientID             string
-	outputPath           string
-	publicKeyPath        string
-	newPublicKeysVarName string
-	trustedWorkflows     []string
-	debug                bool
+	token                   string
+	clientID                string
+	outputPath              string
+	publicKeyPath           string
+	newPublicKeysVarName    string
+	trustedWorkflows        []string
+	debug                   bool
+	oidcTokenExpirationTime int // OIDC token expiration time in minutes
 }
 
 var (
@@ -53,6 +54,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID, this is used to verify the audience claim in the token. The value should be the same as the audience claim value in the token.")
 	rootCmd.PersistentFlags().StringVarP(&opts.publicKeyPath, "public-key-path", "p", "", "Path to the cached public keys directory")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
+	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
 	return rootCmd
 }
 
@@ -165,7 +167,8 @@ func (opts *options) extractClaims() error {
 
 	token, err = verifier.VerifyToken(ctx, opts.token)
 	if errors.As(err, &tokenExpiredError) {
-		err = verifier.VerifyExtendedExpiration(err.(tioidc.TokenExpiredError).Expiry, 5)
+		// Verify the token expiration time using the extended expiration time.
+		err = verifier.VerifyExtendedExpiration(err.(tioidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
 		if err != nil {
 			return err
 		}
@@ -181,10 +184,8 @@ func (opts *options) extractClaims() error {
 	// claims will store the extracted claim values from the token.
 	claims := tioidc.NewClaims(logger)
 	logger.Infow("Verifying token claims")
-	// Verifies the token and check if the claims have expected values.
-	// Verifies custom claim values too.
+	// Verifies if custom claims has expected values.
 	// Extract the claim values from the token into the claims struct.
-	// It provides a final result if the token is valid and the claims have expected values.
 	err = tokenProcessor.ValidateClaims(ctx, &claims)
 	if err != nil {
 		return err
