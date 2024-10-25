@@ -340,7 +340,7 @@ func (tokenProcessor *TokenProcessor) tokenIssuer(signAlgorithm []string) (strin
 		logger.Debugw("Added sign algorithm to token processor", "signAlgorithm", alg)
 	}
 	logger.Debugw("Added sign algorithms to token processor")
-	// TODO(dekiel) research if we can use jwt.DecodeSegment instead of jwt.ParseSigned
+	// TODO(dekiel) research if we can use2Segment instead of jwt.ParseSigned
 	//  to avoid parsing the token twice.
 	parsedJWT, err := jwt.ParseSigned(tokenProcessor.rawToken, signAlgs)
 	if err != nil {
