@@ -3,6 +3,8 @@ package oidc_test
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	// "fmt"
 	"os"
 
@@ -170,10 +172,6 @@ var _ = Describe("OIDC", func() {
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
 
-			tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(tokenProcessor).NotTo(BeNil())
-
 			trustedIssuers = map[string]tioidc.Issuer{
 				"https://fakedings.dev-gcp.nais.io/fake": {
 					Name:                   "github",
@@ -182,6 +180,11 @@ var _ = Describe("OIDC", func() {
 					ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main",
 				},
 			}
+
+			tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tokenProcessor).NotTo(BeNil())
+
 			token = tioidc.Token{}
 			mockToken = oidcmocks.MockClaimsReader{}
 			verifier = &oidcmocks.MockTokenVerifierInterface{}
@@ -192,7 +195,7 @@ var _ = Describe("OIDC", func() {
 				Expect(issuer).To(Equal("https://fakedings.dev-gcp.nais.io/fake"))
 			})
 		})
-		Describe("VerifyAndExtractClaims", func() {
+		Describe("ValidateClaims", func() {
 			BeforeEach(func() {
 				claims = tioidc.NewClaims(logger)
 			})
@@ -208,7 +211,7 @@ var _ = Describe("OIDC", func() {
 					},
 				).Return(nil)
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
+				// verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
 				err = tokenProcessor.ValidateClaims(&claims, &token)
@@ -231,15 +234,16 @@ var _ = Describe("OIDC", func() {
 						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main"
 					},
 				).Return(nil)
+				expectedError := fmt.Errorf("expecations validation failed: %w", fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
+				// verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
 				err = tokenProcessor.ValidateClaims(&claims, &token)
 
 				// Verify
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to validate claims: job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
+				Expect(err).To(MatchError(expectedError))
 			})
 			It("should return an error when token was not verified", func() {
 				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(tioidc.Token{}, fmt.Errorf("token validation failed"))
@@ -292,6 +296,44 @@ var _ = Describe("OIDC", func() {
 				token, err = tokenVerifier.Verify(ctx, string(rawToken))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(token).To(BeAssignableToTypeOf(&tioidc.Token{}))
+			})
+
+			It("should return an error when the token is invalid", func() {
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(&oidc.IDToken{}, errors.New("invalid token"))
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: invalid token"))
+				Expect(token).To(Equal(&tioidc.Token{}))
+			})
+		})
+		Describe("VerifyExtendedExpiration", func() {
+			var (
+				expirationTimestamp time.Time
+				gracePeriodMinutes  int
+			)
+
+			BeforeEach(func() {
+				gracePeriodMinutes = 1
+			})
+
+			It("should return no error when the token is within the grace period", func() {
+				expirationTimestamp = time.Now().Add(-30 * time.Second)
+				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should return an error when the token is expired beyond the grace period", func() {
+				expirationTimestamp = time.Now().Add(-2 * time.Minute)
+				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("token expired more than 1m0s ago"))
+			})
+
+			It("should return an error when the token expiration timestamp is in the future", func() {
+				expirationTimestamp = time.Now().Add(1 * time.Minute)
+				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(fmt.Sprintf("token expiration time is in the future: %v", expirationTimestamp)))
 			})
 		})
 	})

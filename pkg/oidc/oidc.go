@@ -228,6 +228,10 @@ func (tokenVerifier *TokenVerifier) VerifyExtendedExpiration(expirationTimestamp
 	logger := tokenVerifier.Logger
 	logger.Debugw("Verifying token expiration time", "expirationTimestamp", expirationTimestamp, "gracePeriodMinutes", gracePeriodMinutes)
 	now := time.Now()
+	// check if expirationTimestamp is in the future
+	if expirationTimestamp.After(now) {
+		return fmt.Errorf("token expiration time is in the future: %v", expirationTimestamp)
+	}
 	elapsed := now.Sub(expirationTimestamp)
 	gracePeriod := time.Minute
 	if elapsed <= gracePeriod {
@@ -402,12 +406,12 @@ func (tokenProcessor *TokenProcessor) Issuer() string {
 // It uses the provided verifier to verify the token signature and expiration time.
 // It verifies if the token claims have expected values.
 // It unmarshal the claims into the provided claims struct.
-func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface, token *Token) error {
+func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface, token ClaimsReader) error {
 	logger := tokenProcessor.logger
 
 	// Ensure that the token is initialized
-	if token.Token == nil {
-		return fmt.Errorf("failed to verify token: token validation failed")
+	if token == nil {
+		return fmt.Errorf("token cannot be nil")
 	}
 
 	logger.Debugw("Getting claims from token")
@@ -419,7 +423,7 @@ func (tokenProcessor *TokenProcessor) ValidateClaims(claims ClaimsInterface, tok
 
 	err = claims.validateExpectations(tokenProcessor.issuer)
 	if err != nil {
-		return fmt.Errorf("failed to validate claims: %w", err)
+		return fmt.Errorf("expecations validation failed: %w", err)
 	}
 	return nil
 }
