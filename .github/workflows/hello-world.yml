@@ -47,6 +47,6 @@ jobs:
             -v ${{ github.workspace }}:/github/workspace \
             --workdir /github/workspace \
             --user $UID \
-            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241025-15339bf5 \
+            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241025-cea435c9 \
             --config=${{ env.AUTOBUMP_CONFIG_PATH }} \
             --labels-override=kind/chore,area/documentation
