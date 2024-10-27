@@ -1,11 +1,9 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
-	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
@@ -102,10 +100,9 @@ func isTokenProvided(logger Logger, opts *options) error {
 // It uses OIDC discovery to get the identity provider public keys.
 func (opts *options) verifyToken() error {
 	var (
-		zapLogger         *zap.Logger
-		err               error
-		tokenExpiredError *oidc.TokenExpiredError
-		token             *tioidc.Token
+		zapLogger *zap.Logger
+		err       error
+		token     *tioidc.Token
 	)
 	if opts.debug {
 		zapLogger, err = zap.NewDevelopment()
@@ -128,7 +125,7 @@ func (opts *options) verifyToken() error {
 
 	// Create a new verifier config that will be used to verify the token.
 	// The clientID is used to verify the audience claim in the token.
-	verifyConfig, err := tioidc.NewVerifierConfig(logger, opts.clientID)
+	verifyConfig, err := tioidc.NewVerifierConfig(logger, opts.clientID, tioidc.SkipExpiryCheck())
 	if err != nil {
 		return err
 	}
@@ -156,20 +153,14 @@ func (opts *options) verifyToken() error {
 
 	// Create a new verifier using the provider and the verifier config.
 	// The verifier is used to verify the token signature, expiration time and execute standard OIDC validation.
-	verifier := provider.NewVerifier(logger, verifyConfig)
+	verifier, err := provider.NewVerifier(logger, verifyConfig, tioidc.WithExtendedExpiration(opts.oidcTokenExpirationTime))
+	if err != nil {
+		return err
+	}
 	logger.Infow("New verifier created")
 
 	// Verify the token
 	token, err = verifier.Verify(ctx, opts.token)
-	if errors.As(err, &tokenExpiredError) {
-		err = verifier.VerifyExtendedExpiration(err.(*oidc.TokenExpiredError).Expiry, opts.oidcTokenExpirationTime)
-		if err != nil {
-			return err
-		}
-		verifyConfig.SkipExpiryCheck = false
-		verifierWithoutExpiration := provider.NewVerifier(logger, verifyConfig)
-		token, err = verifierWithoutExpiration.Verify(ctx, opts.token)
-	}
 	if err != nil {
 		return err
 	}

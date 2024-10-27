@@ -141,6 +141,16 @@ type GithubClaims struct {
 // VerifierConfigOption is a function that modifies the VerifierConfig.
 type VerifierConfigOption func(*VerifierConfig) error
 
+// SkipExpiryCheck set verifier config to skip the token expiration check.
+// It's used to allow longer token expiration time.
+// The Verifier must run its own expiration check for extended expiration time.
+func SkipExpiryCheck() VerifierConfigOption {
+	return func(config *VerifierConfig) error {
+		config.SkipExpiryCheck = true
+		return nil
+	}
+}
+
 // Provider is the OIDC provider.
 // It abstracts the provider implementation.
 // VerifierProvider provides the OIDC token verifier.
@@ -152,16 +162,31 @@ type Provider struct {
 // Token is the OIDC token.
 // It abstracts the IDToken implementation.
 type Token struct {
-	Token ClaimsReader
+	Token    ClaimsReader
+	IssuedAt time.Time
 }
 
 // TokenVerifier is the OIDC token verifier.
 // It abstracts the Verifier implementation.
 type TokenVerifier struct {
-	Verifier Verifier
-	Logger   LoggerInterface
+	Config                VerifierConfig
+	ExpirationTimeMinutes int
+	Verifier              Verifier
+	Logger                LoggerInterface
 }
 
+// TokenVerifierOption is a function that modifies the TokenVerifier.
+type TokenVerifierOption func(verifier *TokenVerifier) error
+
+// WithExtendedExpiration sets the custom expiration time used by the TokenVerifier.
+func WithExtendedExpiration(expirationTimeMinutes int) TokenVerifierOption {
+	return func(verifier *TokenVerifier) error {
+		verifier.ExpirationTimeMinutes = expirationTimeMinutes
+		return nil
+	}
+}
+
+// maskToken masks the token value. It's used for debug logging purposes.
 func maskToken(token string) string {
 	if len(token) < 15 {
 		return "********"
@@ -212,42 +237,57 @@ func NewVerifierConfig(logger LoggerInterface, clientID string, options ...Verif
 
 // Verify verifies the raw OIDC token.
 // It returns a Token struct which contains the verified token if successful.
+// Verify allow checking extended expiration time for the token.
+// It runs the token expiration check if the upstream verifier is configured to skip it.
 func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string) (*Token, error) {
 	logger := tokenVerifier.Logger
-	logger.Debugw("Verifying token")
-	logger.Debugw("Got raw token value", "rawToken", maskToken(rawToken))
+	logger.Debugw("verifying token", "rawToken", maskToken(rawToken))
 	idToken, err := tokenVerifier.Verifier.Verify(ctx, rawToken)
 	if err != nil {
-		token := Token{}
-		return &token, fmt.Errorf("failed to verify token: %w", err)
+		return nil, fmt.Errorf("failed to verify token: %w", err)
 	}
-	logger.Debugw("Token verified successfully")
+	logger.Debugw("upstream verifier checks finished")
 	token := Token{
-		Token: idToken,
+		Token:    idToken,
+		IssuedAt: idToken.IssuedAt,
 	}
+	logger.Debugw("checking if upstream verifier is configured to skip token expiration check", "SkipExpiryCheck", tokenVerifier.Config.SkipExpiryCheck)
+	if tokenVerifier.Config.SkipExpiryCheck {
+		logger.Debugw("upstream verifier configured to skip token expiration check, running our own check", "expirationTimeMinutes", tokenVerifier.ExpirationTimeMinutes, "tokenIssuedAt", token.IssuedAt)
+		err = token.IsTokenExpired(logger, tokenVerifier.ExpirationTimeMinutes)
+		logger.Debugw("finished token expiration check")
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to verify token: %w", err)
+	}
+	logger.Debugw("token verified successfully")
 	return &token, nil
 }
 
-// VerifyExtendedExpiration checks the OIDC token expiration timestamp against the provided expiration time.
-// It allows to accept tokens after the token original expiration time elapsed.
-// The other aspects of the token must be verified separately with expiration check disabled.
-func (tokenVerifier *TokenVerifier) VerifyExtendedExpiration(expirationTimestamp time.Time, gracePeriodMinutes int) error {
-	logger := tokenVerifier.Logger
-	logger.Debugw("Verifying token expiration time", "expirationTimestamp", expirationTimestamp, "gracePeriodMinutes", gracePeriodMinutes)
+// IsTokenExpired checks the OIDC token expiration timestamp against the provided expiration time.
+// It allows accepting tokens after the token original expiration time elapsed.
+// The other aspects of the token must be verified separately with the expiration check disabled.
+func (token *Token) IsTokenExpired(logger LoggerInterface, expirationTimeMinutes int) error {
+	logger.Debugw("verifying token expiration time", "tokenIssuedAt", token.IssuedAt, "expirationTimeMinutes", expirationTimeMinutes)
 	now := time.Now()
-	// check if expirationTimestamp is in the future
-	if expirationTimestamp.After(now) {
-		return fmt.Errorf("token expiration time is in the future: %v", expirationTimestamp)
+	if token.IssuedAt.After(now) {
+		return fmt.Errorf("token issued in the future, tokenIssuedAt: %v, now: %v", token.IssuedAt, now)
 	}
-	elapsed := now.Sub(expirationTimestamp)
-	gracePeriod := time.Minute
-	if elapsed <= gracePeriod {
+	logger.Debugw("token issued in the past")
+	expirationTime := token.IssuedAt.Add(time.Minute * time.Duration(expirationTimeMinutes))
+	logger.Debugw("computed expiration time", "expirationTime", expirationTime)
+	if expirationTime.After(now) || expirationTime.Equal(now) {
+		logger.Debugw("token not expired")
 		return nil
 	}
-	return fmt.Errorf("token expired more than %v ago", gracePeriod)
+	return fmt.Errorf("token expired, tokenIssuedAt: %v, expired at %v", token.IssuedAt, expirationTime)
 }
 
 // Claims gets the claims from the token and unmarshal them into the provided claims struct.
+// TODO: Should we have a tests for this method?
+//
+//	We can test for returned error.
+//	We can test the claims struct is populated with the expected values.
 func (token *Token) Claims(claims interface{}) error {
 	return token.Token.Claims(claims)
 }
@@ -291,15 +331,26 @@ func NewProviderFromDiscovery(ctx context.Context, logger LoggerInterface, issue
 
 // NewVerifier creates a new TokenVerifier for provider.
 // It returns a TokenVerifier struct containing the new Verifier if successful.
-func (provider *Provider) NewVerifier(logger LoggerInterface, verifierConfig VerifierConfig) TokenVerifier {
+func (provider *Provider) NewVerifier(logger LoggerInterface, verifierConfig VerifierConfig, options ...TokenVerifierOption) (TokenVerifier, error) {
 	logger.Debugw("Creating new verifier with config", "config", fmt.Sprintf("%+v", verifierConfig))
 	verifier := provider.VerifierProvider.Verifier(&verifierConfig.Config)
 	tokenVerifier := TokenVerifier{
+		Config:   verifierConfig,
 		Verifier: verifier,
 		Logger:   logger,
 	}
+	if len(options) > 0 {
+		logger.Debugw("Applying TokenVerifierOptions")
+		for _, option := range options {
+			err := option(&tokenVerifier)
+			if err != nil {
+				return TokenVerifier{}, fmt.Errorf("failed to apply TokenVerifierOption: %w", err)
+			}
+		}
+		logger.Debugw("Applied all TokenVerifierOptions")
+	}
 	logger.Debugw("Created new verifier")
-	return tokenVerifier
+	return tokenVerifier, nil
 }
 
 // NewTokenProcessor creates a new TokenProcessor for trusted issuers.
@@ -346,14 +397,16 @@ func NewTokenProcessor(
 	tokenProcessor.issuer = trustedIssuer
 	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
 
-	logger.Debugw("Applying TokenProcessorOptions")
-	for _, option := range options {
-		err := option(&tokenProcessor)
-		if err != nil {
-			return TokenProcessor{}, fmt.Errorf("failed to apply TokenProcessorOption: %w", err)
+	if len(options) > 0 {
+		logger.Debugw("Applying TokenProcessorOptions")
+		for _, option := range options {
+			err := option(&tokenProcessor)
+			if err != nil {
+				return TokenProcessor{}, fmt.Errorf("failed to apply TokenProcessorOption: %w", err)
+			}
 		}
+		logger.Debugw("Applied all TokenProcessorOptions")
 	}
-	logger.Debugw("Applied all TokenProcessorOptions")
 
 	logger.Debugw("Created token processor", "issuer", tokenProcessor.issuer)
 	return tokenProcessor, nil
@@ -403,8 +456,8 @@ func (tokenProcessor *TokenProcessor) isTrustedIssuer(issuer string, trustedIssu
 	return Issuer{}, fmt.Errorf("issuer %s is not trusted", issuer)
 }
 
-// TODO(dekiel): This should return Issuer struct or has a different name.
 // Issuer returns the issuer of the token.
+// TODO(dekiel): This should return Issuer struct or has a different name.
 func (tokenProcessor *TokenProcessor) Issuer() string {
 	return tokenProcessor.issuer.IssuerURL
 }
