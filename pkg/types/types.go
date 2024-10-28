@@ -4,8 +4,8 @@ import (
 	"github.com/zricethezav/gitleaks/v8/report"
 )
 
-// User holds kyma development team user details.
-// It provides mapping of various details used for integration different systems.
+// User holds kyma developmentteam user details.
+// It provids mapping of various details used for integration different systems.
 // It holds information about automerge notification preferences.
 type User struct {
 	ComGithubUsername          string `yaml:"com.github.username,omitempty"`
