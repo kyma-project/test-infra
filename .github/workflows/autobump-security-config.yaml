@@ -71,7 +71,7 @@ jobs:
             --rm \
             --privileged \
             --cap-drop ALL \
-            europe-docker.pkg.dev/kyma-project/prod/image-detector:v20241025-cea435c9 \
+            europe-docker.pkg.dev/kyma-project/prod/image-detector:v20241028-82cd35ff \
             --terraform-dir=${{ env.TERRAFORM_CONFIGS_DIR }} \
             --sec-scanner-config=${{ env.SEC_SCANNERS_CONFIG_PATH }} \
             --autobump-config=${{ env.AUTOBUMP_CONFIG_PATH }}
