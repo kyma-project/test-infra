@@ -14,7 +14,7 @@ type User struct {
 	AutomergeNotifications     bool   `yaml:"automerge.notification,omitempty"`
 }
 
-// Alias holds mapping between owners file alias and slack groups and channels names.
+// Alias holds mapping between owners file alias nd slack groups and channels names.
 // It holds information if automerge notification is enabled.
 type Alias struct {
 	ComGithubAliasname              string   `yaml:"com.github.aliasname,omitempty"`
