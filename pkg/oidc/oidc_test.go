@@ -41,6 +41,16 @@ var _ = Describe("OIDC", func() {
 		clientID = "testClientID"
 	})
 
+	Describe("SkipExpiryCheck", func() {
+		It("should set SkipExpiryCheck to true", func() {
+			config := &tioidc.VerifierConfig{}
+			option := tioidc.SkipExpiryCheck()
+			err := option(config)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(config.SkipExpiryCheck).To(BeTrue())
+		})
+	})
+
 	Describe("NewVerifierConfig", func() {
 		var (
 			verifierConfigOption tioidc.VerifierConfigOption
@@ -270,54 +280,163 @@ var _ = Describe("OIDC", func() {
 				Verifier: verifier,
 				Logger:   logger,
 			}
+			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
+			Expect(err).NotTo(HaveOccurred())
 			ctx = context.Background()
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
 		})
-		Describe("Verify", func() {
-			It("should return Token when the token is valid", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(&oidc.IDToken{}, nil)
-				token, err = tokenVerifier.Verify(ctx, string(rawToken))
-				Expect(err).NotTo(HaveOccurred())
-				Expect(token).To(BeAssignableToTypeOf(&tioidc.Token{}))
-			})
 
-			It("should return an error when the token is invalid", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(&oidc.IDToken{}, errors.New("invalid token"))
-				token, err = tokenVerifier.Verify(ctx, string(rawToken))
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to verify token: invalid token"))
-				Expect(token).To(Equal(&tioidc.Token{}))
+		Describe("WithExtendedExpiration option", func() {
+
+			It("should set expiration time", func() {
+				expirationTime := 1
+				option := tioidc.WithExtendedExpiration(expirationTime)
+				err := option(&tokenVerifier)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tokenVerifier.ExpirationTimeMinutes).To(Equal(expirationTime))
 			})
 		})
-		Describe("VerifyExtendedExpiration", func() {
+
+		Describe("Verify", func() {
+			It("should return Token when the token is valid with standard expiration time", func() {
+				// prepare
+				issuedAt := time.Now().Add(-4 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).NotTo(HaveOccurred())
+				Expect(token).To(Equal(&tioidc.Token{Token: idToken, IssuedAt: issuedAt}))
+			})
+
+			It("should return Token when the token is valid with extended expiration time", func() {
+				// prepare
+				issuedAt := time.Now().Add(-9 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).NotTo(HaveOccurred())
+				Expect(token).To(Equal(&tioidc.Token{Token: idToken, IssuedAt: issuedAt}))
+			})
+
+			It("should return an error when the token is invalid with standard expiration time", func() {
+				// prepare
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("invalid token"))
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: invalid token"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when the token is invalid with extended expiration time", func() {
+				// prepare
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("invalid token"))
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: invalid token"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when token expired with standard expiration check", func() {
+				// prepare
+				// issuedAt := time.Now().Add(-6 * time.Minute)
+				// idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("token expired"))
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: token expired"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when token expired with extended expiration check", func() {
+				// prepare
+				issuedAt := time.Now().Add(-11 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(fmt.Errorf("failed to verify token: %w",
+					fmt.Errorf("token expired, tokenIssuedAt: %v, expired at %v", issuedAt, issuedAt.Add(time.Minute*time.Duration(tokenVerifier.ExpirationTimeMinutes))),
+				)))
+				Expect(token).To(BeNil())
+			})
+		})
+	})
+
+	Describe("Token", func() {
+
+		Describe("IsTokenExpired", func() {
 			var (
-				expirationTimestamp time.Time
-				gracePeriodMinutes  int
+				now                   time.Time
+				expirationTimeMinutes int
 			)
 
 			BeforeEach(func() {
-				gracePeriodMinutes = 1
+				now = time.Now()
+				expirationTimeMinutes = 1
 			})
 
-			It("should return no error when the token is within the grace period", func() {
-				expirationTimestamp = time.Now().Add(-30 * time.Second)
-				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+			It("should return no error when the token is within the expiration time", func() {
+				token := tioidc.Token{
+					IssuedAt: now,
+				}
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("should return an error when the token is expired beyond the grace period", func() {
-				expirationTimestamp = time.Now().Add(-2 * time.Minute)
-				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+			It("should return an error when the token is expired", func() {
+				token := tioidc.Token{
+					IssuedAt: now.Add(-2 * time.Minute), // 2 minutes ago
+				}
+				extendedExpiration := token.IssuedAt.Add(time.Minute * time.Duration(expirationTimeMinutes))
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("token expired more than 1m0s ago"))
+				Expect(err).To(MatchError(fmt.Errorf("token expired, tokenIssuedAt: %v, expired at %v", token.IssuedAt, extendedExpiration)))
 			})
 
-			It("should return an error when the token expiration timestamp is in the future", func() {
-				expirationTimestamp = time.Now().Add(1 * time.Minute)
-				err := tokenVerifier.VerifyExtendedExpiration(expirationTimestamp, gracePeriodMinutes)
+			It("should return an error when the token issued in the future", func() {
+				token := tioidc.Token{
+					IssuedAt: now.Add(2 * time.Minute), // 2 minutes ago
+				}
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError(fmt.Sprintf("token expiration time is in the future: %v", expirationTimestamp)))
+				Expect(err).To(MatchError(MatchRegexp("token issued in the future, tokenIssuedAt: .+, now: .+")))
 			})
 		})
 	})
@@ -339,7 +458,8 @@ var _ = Describe("OIDC", func() {
 		Describe("NewVerifier", func() {
 			It("should return a new TokenVerifier", func() {
 				oidcProvider.On("Verifier", &verifierConfig.Config).Return(&oidc.IDTokenVerifier{})
-				verifier := provider.NewVerifier(logger, verifierConfig)
+				verifier, err := provider.NewVerifier(logger, verifierConfig)
+				Expect(err).NotTo(HaveOccurred())
 				Expect(verifier).NotTo(BeNil())
 				Expect(verifier).To(BeAssignableToTypeOf(tioidc.TokenVerifier{}))
 			})
