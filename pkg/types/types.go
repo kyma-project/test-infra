@@ -5,7 +5,7 @@ import (
 )
 
 // User holds kyma development team user details.
-// It provides mapping of various details used for integration different systems.
+// It provides mapping of varous details used for integration different systems.
 // It holds information about automerge notification preferences.
 type User struct {
 	ComGithubUsername          string `yaml:"com.github.username,omitempty"`
