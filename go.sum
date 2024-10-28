@@ -669,8 +669,8 @@ github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
-github.com/zricethezav/gitleaks/v8 v8.21.1 h1:DSBzsltNAZekyBem9T9Xp7QaM+6nKDOqV4AA3vSfxvQ=
-github.com/zricethezav/gitleaks/v8 v8.21.1/go.mod h1:5HpElkNYAzjyv93hZWjohiNol6+nsveKzm9MTgmkWtI=
+github.com/zricethezav/gitleaks/v8 v8.21.2 h1:Wk4vazk5aIyqa4EeITrSwXg+cp4b69wGd7iyHEw+jbc=
+github.com/zricethezav/gitleaks/v8 v8.21.2/go.mod h1:5HpElkNYAzjyv93hZWjohiNol6+nsveKzm9MTgmkWtI=
 go.einride.tech/aip v0.68.0 h1:4seM66oLzTpz50u4K1zlJyOXQ3tCzcJN7I22tKkjipw=
 go.einride.tech/aip v0.68.0/go.mod h1:7y9FF8VtPWqpxuAxl0KQWqaULxW4zFIesD6zF5RIHHg=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
