@@ -221,7 +221,7 @@ func (tokenVerifier *TokenVerifier) Verify(ctx context.Context, rawToken string)
 	return &token, nil
 }
 
-// VerifyExtendedExpiration checks the OIDC token expiration timestamp against the provided expiration time.
+// VerifyExtendedExpiration checks the OIDC token xpiration timestamp against the provided expiration time.
 // It allows to accept tokens after the token original expiration time elapsed.
 // The other aspects of the token must be verified separately with expiration check disabled.
 func (tokenVerifier *TokenVerifier) VerifyExtendedExpiration(expirationTimestamp time.Time, gracePeriodMinutes int) error {
