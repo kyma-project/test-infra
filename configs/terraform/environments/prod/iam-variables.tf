@@ -3,9 +3,3 @@ variable "kyma_developer_admins_email" {
   type = string
   default = "kyma_developer_admin@sap.com"
 }
-
-variable "kyma_developers_email" {
-  description = "The email of the Kyma Developers group."
-  type = string
-  default = "kyma_developers@sap.com"
-}
