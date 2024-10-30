@@ -4,12 +4,6 @@ resource "google_service_account" "sa-gke-kyma-integration" {
   description  = "Service account is used by Prow to integrate with GKE. Will be removed with Prow"
 }
 
-resource "google_service_account" "gcr-cleaner" {
-  account_id   = "gcr-cleaner"
-  display_name = "gcr-cleaner"
-  description  = "Service account is used by gcr-cleaner tool."
-}
-
 resource "google_service_account" "control-plane" {
   account_id   = "control-plane"
   display_name = "control-plane"
