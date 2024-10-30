@@ -1,6 +1,6 @@
 # Setups IAM for the project administrators in the kyma-project GCP project.
 import {
-  id = "kyma-project roles/editor group:kyma_developer_admins@sap.com"
+  id = "kyma-project roles/editor group:kyma_developer_admin@sap.com"
   to = google_project_iam_member.kyma_developer_admins_editor
 }
 
@@ -12,10 +12,6 @@ resource "google_project_iam_member" "kyma_developer_admins_editor" {
 }
 
 # Add roles required to see audit logs in kyma-project GCP project.
-import {
-  id = "kyma-project roles/logging.viewer group:kyma_developer_admins@sap.com"
-  to = google_project_iam_member.kyma_developer_admins_logging_viewer
-}
 resource "google_project_iam_member" "kyma_developer_admins_logging_viewer" {
   provider = google.kyma_project
   project = var.kyma_project_gcp_project_id
