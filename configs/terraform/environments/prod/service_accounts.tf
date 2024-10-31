@@ -4,12 +4,6 @@ resource "google_service_account" "sa-gke-kyma-integration" {
   description  = "Service account is used by Prow to integrate with GKE. Will be removed with Prow"
 }
 
-resource "google_service_account" "gcr-cleaner" {
-  account_id   = "gcr-cleaner"
-  display_name = "gcr-cleaner"
-  description  = "Service account is used by gcr-cleaner tool."
-}
-
 resource "google_service_account" "control-plane" {
   account_id   = "control-plane"
   display_name = "control-plane"
@@ -76,12 +70,6 @@ resource "google_service_account" "sa-kyma-project" {
   description  = "SA to manage PROD Artifact Registry in SAP CX Kyma Project"
 }
 
-resource "google_service_account" "sa-prow-job-resource-cleaners" {
-  account_id   = "sa-prow-job-resource-cleaners"
-  display_name = "sa-prow-job-resource-cleaners"
-  description  = "SA used by multiple resource cleaner prowjobs. Will be removed with Prow"
-}
-
 resource "google_service_account" "sa-kyma-artifacts" {
   account_id   = "sa-kyma-artifacts"
   display_name = "sa-kyma-artifacts"
@@ -98,12 +86,6 @@ resource "google_service_account" "sa-secret-update" {
   account_id   = "sa-secret-update"
   display_name = "sa-secret-update"
   description  = "Can update secrets in Secret Manager"
-}
-
-resource "google_service_account" "sa-kyma-dns-serviceuser" {
-  account_id   = "sa-kyma-dns-serviceuser"
-  display_name = "sa-kyma-dns-serviceuser"
-  description  = "<Used by api-gateway> Service Account used to manipulate DNS entries in sap-kyma-prow-workloads. Will be removed with Prow"
 }
 
 resource "google_service_account" "sa-security-dashboard-oauth" {

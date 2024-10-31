@@ -34,8 +34,8 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
-func (c *client) PRTitleBody() (string, string, error) {
-	return "Update index.md", "", nil
+func (c *client) PRTitleBody() (string, string) {
+	return "Update index.md", ""
 }
 
 // options is the options for autobumper operations.

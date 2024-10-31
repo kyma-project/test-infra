@@ -154,8 +154,8 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
-func (c *client) PRTitleBody() (string, string, error) {
-	return "Update sec-scanners-config.yaml", "", nil
+func (c *client) PRTitleBody() (string, string) {
+	return "Update sec-scanners-config.yaml", ""
 }
 
 // options is the options for autobumper operations.

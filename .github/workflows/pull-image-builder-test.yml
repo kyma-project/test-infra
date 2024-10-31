@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/image-builder.yml
     with:
       name: test-infra/ginkgo
-      dockerfile: prow/images/ginkgo/Dockerfile
+      dockerfile: images/ginkgo/Dockerfile
       context: .
       env-file: "envs"
       tags: ${{ needs.compute-tag.outputs.tag }}

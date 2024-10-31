@@ -530,16 +530,6 @@ presets:
       - name: CLOUDSDK_COMPUTE_REGION
         value: "europe-west4"
   - labels:
-      preset-gc-project-env: "true"
-    env:
-      - name: CLOUDSDK_CORE_PROJECT
-        value: "sap-kyma-prow-workloads"
-  - labels:
-      preset-kms-gc-project-env: "true"
-    env:
-      - name: CLOUDSDK_KMS_PROJECT
-        value: "sap-kyma-prow-workloads"
-  - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS

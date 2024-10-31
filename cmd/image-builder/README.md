@@ -12,9 +12,6 @@ Key features:
 * Supports signing images with signify service
 * Supports pushing images to the Google Cloud Artifact Registry
 
-> [!NOTE]
-> For more information on Image Builder usage in ProwJobs, see [README_deprecated.md](./README_deprecated.md).
-
 ## Quickstart Guide
 
 You can use Image Builder in your GitHub workflow to build an image in an SLC-29-compliant system.
@@ -54,7 +51,7 @@ jobs:
       uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
       with:
          name: test-infra/ginkgo
-         dockerfile: prow/images/ginkgo/Dockerfile
+         dockerfile: images/ginkgo/Dockerfile
          context: .
          env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}
@@ -71,7 +68,7 @@ The example workflow consists of three jobs:
 1. `compute-tag` - computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
 2. `build-image` - builds the image using the Image Builder reusable workflow.
    It uses the `kyma-project/test-infra/.github/workflows/image-builder.yml@main` reusable workflow.
-   It builds the `test-infra/ginkgo` image, using the Dockerfile from the `prow/images/gingko/Dockerfile` path.
+   It builds the `test-infra/ginkgo` image, using the Dockerfile from the `images/gingko/Dockerfile` path.
    The build context is the current directory which effectively means the repository root.
    It uses the `envs` file to load environment variables.
    The image will be tagged with the tag computed in the `compute-tag` job.
@@ -118,6 +115,29 @@ See the accepted inputs description in the [image-builder reusable workflow](/.g
 
 The Image Builder reusable workflow provides outputs to pass the results of the build process.
 See the provided outputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
+
+## Default Tags
+
+Image Builder provides default tags for built images.
+The default tag is computed based on the template provided in the Image Builder configuration file.
+The default tag is always added to the image, even if the user provides custom tags.
+Image Builder supports two default tags:
+
+- **Pull Request Default Tag**: The default tag template for images built on pull requests is `pr-<PR_NUMBER>`.
+  Example tag value: `PR-123`.
+- **Push Default Tag**: The default tag template for images built on push, schedule and manual triggers is `v<DATE>-<SHORT_SHA>`.
+  Example tag value: `v20210930-1234567`.
+
+## Named Tags
+
+Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
+You can use `-tag name=value` to pass the name for the tag.
+
+If the name is not provided, it is evaluated from the value:
+
+- If the value is a string, it is used directly as a name. For example,`-tag latest` is equal to `-tag latest=latest`
+- If the value is go-template, it is converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
+  to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
 ## Supported Image Repositories
 
@@ -168,20 +188,6 @@ The Signify API's structure has also been updated. For more information, see the
 ### Signify API Changes
 
 The JSON structure for signing has changed. See the new structure and examples in the [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
-
-
-## Named Tags
-
-Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
-You can use `-tag name=value` to pass the name for the tag. 
-
-If the name is not provided, it is evaluated from the value:
- - if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
- - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
-
-> [!Note]
-> When running on the `pull_request_target` event, Image Builder ignores additional tags provided with tags input.
-> The image will be tagged only with the default PR-<PR_NUMBER> tag.
 
 ## Environment File
 
