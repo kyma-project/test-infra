@@ -7,8 +7,9 @@ on:
     inputs:
       name:
         description: Name of the build image
-        required: true
+        required: false
         type: string
+        default: ${{ github.event.repository.name }}
       dockerfile:
         description: Path to the dockerfile used to build docker image
         required: false
