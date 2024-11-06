@@ -11,9 +11,9 @@ on:
         type: string
       dockerfile:
         description: Path to the dockerfile used to build docker image
-        required: true
+        required: false
         type: string
-        default: "images/ginkgo/Dockerfile"
+        default: "./Dockerfile"
       context:
         description: Build context to build container from
         required: false
