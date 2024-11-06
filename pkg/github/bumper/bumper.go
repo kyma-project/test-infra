@@ -207,7 +207,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 			return fmt.Errorf("process function %d: %w", i, err)
 		}
 
-		changed, err := HasChanges(o)
+		changed, err := HasChanges()
 		if err != nil {
 			return fmt.Errorf("checking changes: %w", err)
 		}
@@ -325,7 +325,7 @@ func UpdatePullRequestWithLabels(gc github.Client, org, repo, title, body, sourc
 }
 
 // HasChanges checks if the current git repo contains any changes
-func HasChanges(o *Options) (bool, error) {
+func HasChanges() (bool, error) {
 	// Check for changes using git status
 	statusArgs := []string{"status", "--porcelain"}
 	logrus.WithField("cmd", gitCmd).WithField("args", statusArgs).Info("running command ...")
