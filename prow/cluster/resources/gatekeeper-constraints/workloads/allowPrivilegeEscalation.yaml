@@ -20,6 +20,3 @@ spec:
       - "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:*"
-      - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"

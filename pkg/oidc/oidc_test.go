@@ -3,11 +3,12 @@ package oidc_test
 import (
 	"errors"
 	"fmt"
-
-	// "time"
+	"time"
 
 	// "fmt"
 	"os"
+
+	// "time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4/jwt"
@@ -22,8 +23,8 @@ import (
 
 var _ = Describe("OIDC", func() {
 	var (
-		err            error
-		ctx            context.Context
+		err error
+
 		logger         *zap.SugaredLogger
 		trustedIssuers map[string]tioidc.Issuer
 		rawToken       []byte
@@ -38,6 +39,16 @@ var _ = Describe("OIDC", func() {
 
 		logger = l.Sugar()
 		clientID = "testClientID"
+	})
+
+	Describe("SkipExpiryCheck", func() {
+		It("should set SkipExpiryCheck to true", func() {
+			config := &tioidc.VerifierConfig{}
+			option := tioidc.SkipExpiryCheck()
+			err := option(config)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(config.SkipExpiryCheck).To(BeTrue())
+		})
 	})
 
 	Describe("NewVerifierConfig", func() {
@@ -90,7 +101,6 @@ var _ = Describe("OIDC", func() {
 					JWKSURL:   "https://fakedings.dev-gcp.nais.io/fake/jwks",
 				},
 			}
-			ctx = context.Background()
 		})
 		When("issuer is trusted", func() {
 			It("should return a new TokenProcessor", func() {
@@ -158,7 +168,6 @@ var _ = Describe("OIDC", func() {
 
 	Describe("TokenProcessor", func() {
 		var (
-			verifier       *oidcmocks.MockTokenVerifierInterface
 			Token          oidcmocks.MockTokenInterface
 			claims         tioidc.Claims
 			token          tioidc.Token
@@ -172,12 +181,6 @@ var _ = Describe("OIDC", func() {
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
 
-			tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(tokenProcessor).NotTo(BeNil())
-
-			ctx = context.Background()
-
 			trustedIssuers = map[string]tioidc.Issuer{
 				"https://fakedings.dev-gcp.nais.io/fake": {
 					Name:                   "github",
@@ -186,9 +189,13 @@ var _ = Describe("OIDC", func() {
 					ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main",
 				},
 			}
+
+			tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken), verifierConfig)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tokenProcessor).NotTo(BeNil())
+
 			token = tioidc.Token{}
 			mockToken = oidcmocks.MockClaimsReader{}
-			verifier = &oidcmocks.MockTokenVerifierInterface{}
 		})
 		Describe("Issuer", func() {
 			It("should return the issuer", func() {
@@ -196,7 +203,7 @@ var _ = Describe("OIDC", func() {
 				Expect(issuer).To(Equal("https://fakedings.dev-gcp.nais.io/fake"))
 			})
 		})
-		Describe("VerifyAndExtractClaims", func() {
+		Describe("ValidateClaims", func() {
 			BeforeEach(func() {
 				claims = tioidc.NewClaims(logger)
 			})
@@ -212,10 +219,9 @@ var _ = Describe("OIDC", func() {
 					},
 				).Return(nil)
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				err = tokenProcessor.ValidateClaims(&claims, &token)
 
 				// Verify
 				Expect(err).NotTo(HaveOccurred())
@@ -235,35 +241,23 @@ var _ = Describe("OIDC", func() {
 						arg.JobWorkflowRef = "kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main"
 					},
 				).Return(nil)
+				expectedError := fmt.Errorf("expecations validation failed: %w", fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 
 				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				err = tokenProcessor.ValidateClaims(&claims, &token)
 
 				// Verify
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to validate claims: job_workflow_ref claim expected value validation failed, expected: kyma-project/test-infra/.github/workflows/unexpected.yml@refs/heads/main, provided: kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main"))
-			})
-			It("should return an error when token was not verified", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, fmt.Errorf("token validation failed"))
-
-				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
-
-				// Verify
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to verify token: token validation failed"))
-				Expect(claims).To(Equal(tioidc.NewClaims(logger)))
+				Expect(err).To(MatchError(expectedError))
 			})
 			It("should return an error when claims are not set", func() {
 				mockToken.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 				token.Token = &mockToken
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(token, nil)
 				Token.On("Claims", &claims).Return(fmt.Errorf("claims are not set"))
 
 				// Run
-				err = tokenProcessor.VerifyAndExtractClaims(ctx, verifier, &claims)
+				err = tokenProcessor.ValidateClaims(&claims, &token)
 
 				// Verify
 				Expect(err).To(HaveOccurred())
@@ -278,7 +272,7 @@ var _ = Describe("OIDC", func() {
 			tokenVerifier tioidc.TokenVerifier
 			verifier      *oidcmocks.MockVerifier
 			ctx           context.Context
-			token         tioidc.Token
+			token         *tioidc.Token
 		)
 		BeforeEach(func() {
 			verifier = &oidcmocks.MockVerifier{}
@@ -286,16 +280,163 @@ var _ = Describe("OIDC", func() {
 				Verifier: verifier,
 				Logger:   logger,
 			}
+			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
+			Expect(err).NotTo(HaveOccurred())
 			ctx = context.Background()
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
 		})
-		Describe("Verify", func() {
-			It("should return Token when the token is valid", func() {
-				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(&oidc.IDToken{}, nil)
-				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+		Describe("WithExtendedExpiration option", func() {
+
+			It("should set expiration time", func() {
+				expirationTime := 1
+				option := tioidc.WithExtendedExpiration(expirationTime)
+				err := option(&tokenVerifier)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(token).To(BeAssignableToTypeOf(tioidc.Token{}))
+				Expect(tokenVerifier.ExpirationTimeMinutes).To(Equal(expirationTime))
+			})
+		})
+
+		Describe("Verify", func() {
+			It("should return Token when the token is valid with standard expiration time", func() {
+				// prepare
+				issuedAt := time.Now().Add(-4 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).NotTo(HaveOccurred())
+				Expect(token).To(Equal(&tioidc.Token{Token: idToken, IssuedAt: issuedAt}))
+			})
+
+			It("should return Token when the token is valid with extended expiration time", func() {
+				// prepare
+				issuedAt := time.Now().Add(-9 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).NotTo(HaveOccurred())
+				Expect(token).To(Equal(&tioidc.Token{Token: idToken, IssuedAt: issuedAt}))
+			})
+
+			It("should return an error when the token is invalid with standard expiration time", func() {
+				// prepare
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("invalid token"))
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: invalid token"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when the token is invalid with extended expiration time", func() {
+				// prepare
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("invalid token"))
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: invalid token"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when token expired with standard expiration check", func() {
+				// prepare
+				// issuedAt := time.Now().Add(-6 * time.Minute)
+				// idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(nil, errors.New("token expired"))
+				tokenVerifier.Config.SkipExpiryCheck = false
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed to verify token: token expired"))
+				Expect(token).To(BeNil())
+			})
+
+			It("should return an error when token expired with extended expiration check", func() {
+				// prepare
+				issuedAt := time.Now().Add(-11 * time.Minute)
+				idToken := &oidc.IDToken{IssuedAt: issuedAt}
+				verifier.On("Verify", mock.AnythingOfType("backgroundCtx"), string(rawToken)).Return(idToken, nil)
+				tokenVerifier.Config.SkipExpiryCheck = true
+				tokenVerifier.ExpirationTimeMinutes = 10
+
+				// execute
+				token, err = tokenVerifier.Verify(ctx, string(rawToken))
+
+				// verify
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(fmt.Errorf("failed to verify token: %w",
+					fmt.Errorf("token expired, tokenIssuedAt: %v, expired at %v", issuedAt, issuedAt.Add(time.Minute*time.Duration(tokenVerifier.ExpirationTimeMinutes))),
+				)))
+				Expect(token).To(BeNil())
+			})
+		})
+	})
+
+	Describe("Token", func() {
+
+		Describe("IsTokenExpired", func() {
+			var (
+				now                   time.Time
+				expirationTimeMinutes int
+			)
+
+			BeforeEach(func() {
+				now = time.Now()
+				expirationTimeMinutes = 1
+			})
+
+			It("should return no error when the token is within the expiration time", func() {
+				token := tioidc.Token{
+					IssuedAt: now,
+				}
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should return an error when the token is expired", func() {
+				token := tioidc.Token{
+					IssuedAt: now.Add(-2 * time.Minute), // 2 minutes ago
+				}
+				extendedExpiration := token.IssuedAt.Add(time.Minute * time.Duration(expirationTimeMinutes))
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(fmt.Errorf("token expired, tokenIssuedAt: %v, expired at %v", token.IssuedAt, extendedExpiration)))
+			})
+
+			It("should return an error when the token issued in the future", func() {
+				token := tioidc.Token{
+					IssuedAt: now.Add(2 * time.Minute), // 2 minutes ago
+				}
+				err := token.IsTokenExpired(logger, expirationTimeMinutes)
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError(MatchRegexp("token issued in the future, tokenIssuedAt: .+, now: .+")))
 			})
 		})
 	})
@@ -311,14 +452,14 @@ var _ = Describe("OIDC", func() {
 			provider = tioidc.Provider{
 				VerifierProvider: oidcProvider,
 			}
-			ctx = context.Background()
 			verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
 			Expect(err).NotTo(HaveOccurred())
 		})
 		Describe("NewVerifier", func() {
 			It("should return a new TokenVerifier", func() {
 				oidcProvider.On("Verifier", &verifierConfig.Config).Return(&oidc.IDTokenVerifier{})
-				verifier := provider.NewVerifier(logger, verifierConfig)
+				verifier, err := provider.NewVerifier(logger, verifierConfig)
+				Expect(err).NotTo(HaveOccurred())
 				Expect(verifier).NotTo(BeNil())
 				Expect(verifier).To(BeAssignableToTypeOf(tioidc.TokenVerifier{}))
 			})

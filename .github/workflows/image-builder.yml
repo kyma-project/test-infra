@@ -13,6 +13,7 @@ on:
         description: Path to the dockerfile used to build docker image
         required: true
         type: string
+        default: "images/ginkgo/Dockerfile"
       context:
         description: Build context to build container from
         required: false

@@ -76,7 +76,7 @@ variable "docker_cache_repository" {
     format                 = "DOCKER"
     immutable_tags         = false
     mode                   = "STANDARD_REPOSITORY"
-    cleanup_policy_dry_run = true
+    cleanup_policy_dry_run = false
     # Google provider does not support the time units,
     # so we need to provide the time in seconds.
     # Time after which the images will be deleted.
