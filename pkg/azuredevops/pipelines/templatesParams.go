@@ -171,3 +171,10 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	}
 	return nil
 }
+
+// SetUseGoInternalModules sets UseGoInternalModules parameter.
+// This parameter is used to setup access to internal Go modules.
+// Prepared file is available under <build context>/.netrc path.
+func (p OCIImageBuilderTemplateParams) SetUseGoInternalModules() {
+	p["UseGoInternalModules"] = "true"
+}
