@@ -24,7 +24,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
     spec {
       service_account_name = google_service_account.github_issue_finder.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241107-bc1434eb"
+        image = "europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241108-ab8cb6f6"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
