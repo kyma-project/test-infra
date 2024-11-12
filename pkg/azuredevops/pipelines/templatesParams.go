@@ -138,6 +138,13 @@ func (p OCIImageBuilderTemplateParams) SetAuthorization(authorizationToken strin
 	p["Authorization"] = authorizationToken
 }
 
+// SetUseGoInternalModules sets UseGoInternalModules parameter.
+// This parameter is used to setup access to internal Go modules.
+// Modules are fetched with go mod vendor command.
+func (p OCIImageBuilderTemplateParams) SetUseGoInternalModules() {
+	p["UseGoInternalModules"] = "true"
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {
