@@ -42,8 +42,8 @@ inputs:
     description: Prevent actual triggering the image builder
     required: false
     default: false
-  use-go-internal-modules:
-    description: Setup access to go internal modules in build environment
+  use-go-internal-sap-modules:
+    description: Setup access to go internal SAP modules in build environment
     required: false
     default: false
 
