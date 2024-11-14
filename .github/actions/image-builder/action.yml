@@ -43,7 +43,7 @@ inputs:
     required: false
     default: false
   use-go-internal-sap-modules:
-    description: Setup access to go internal SAP modules in build environment
+    description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
 
