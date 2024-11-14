@@ -51,20 +51,20 @@ type options struct {
 	platforms  sets.Strings
 	exportTags bool
 	// signOnly only sign images. No build will be performed.
-	signOnly              bool
-	imagesToSign          sets.Strings
-	buildInADO            bool
-	adoPreviewRun         bool
-	adoPreviewRunYamlPath string
-	parseTagsOnly         bool
-	oidcToken             string
-	azureAccessToken      string
-	ciSystem              CISystem
-	gitState              GitStateConfig
-	debug                 bool
-	dryRun                bool
-	tagsOutputFile        string
-	useGoInternalModules  bool
+	signOnly                bool
+	imagesToSign            sets.Strings
+	buildInADO              bool
+	adoPreviewRun           bool
+	adoPreviewRunYamlPath   string
+	parseTagsOnly           bool
+	oidcToken               string
+	azureAccessToken        string
+	ciSystem                CISystem
+	gitState                GitStateConfig
+	debug                   bool
+	dryRun                  bool
+	tagsOutputFile          string
+	useGoInternalSAPModules bool
 }
 
 type Logger interface {
@@ -257,8 +257,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetAuthorization(options.oidcToken)
 	}
 
-	if options.useGoInternalModules {
-		templateParameters.SetUseGoInternalModules()
+	if options.useGoInternalSAPModules {
+		templateParameters.SetUseGoInternalSAPModules()
 	}
 
 	err := templateParameters.Validate()
@@ -838,7 +838,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
 	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
-	flagSet.BoolVar(&o.useGoInternalModules, "use-go-internal-modules", false, "Allow access to Go internal modules in ADO backend")
+	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-interna-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 
 	return flagSet
 }

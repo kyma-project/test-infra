@@ -92,9 +92,9 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["Authorization"]).To(Equal("some-token"))
 	})
 
-	It("sets the correct useGoInternalModules", func() {
-		params.SetUseGoInternalModules()
-		Expect(params["UseGoInternalModules"]).To(Equal("true"))
+	It("sets the correct UseGoInternalSAPModules", func() {
+		params.SetUseGoInternalSAPModules()
+		Expect(params["UseGoInternalSAPModules"]).To(Equal("true"))
 	})
 
 	// TODO: Improve assertions with more specific matchers and values.
