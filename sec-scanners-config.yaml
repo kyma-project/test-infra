@@ -1,4 +1,5 @@
 module-name: test-infra
+rc-tag: rc-tag
 protecode:
     - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241112-fd0d9381
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241112-fd0d9381
