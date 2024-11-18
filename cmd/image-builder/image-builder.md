@@ -166,3 +166,10 @@ The flag value is base64-encoded to avoid issues with special characters in the 
 The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
 All variables and their values are loaded into the environment before the build starts.
 The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
+
+## Access Golang SAP Internal Modules
+
+You can use Image Builder to build images that require access to Go SAP internal modules. To use this feature, set the `--use-go-internal-sap-modules=true` flag.
+The feature is only available for the ADO backend. 
+
+This feature utilizes the `go` vendor mechanism by downloading all the dependencies into the `vendor` directory. There is no option to pass custom credentials for fetching the dependencies; the tool handles it internally.
