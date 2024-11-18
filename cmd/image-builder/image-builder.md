@@ -172,4 +172,4 @@ The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
 You can use Image Builder to build images that require access to Go SAP internal modules. To use this feature, set the `--use-go-internal-sap-modules=true` flag.
 The feature is only available for the ADO backend. 
 
-This feature utilize the `go` vendor mechanism by downloading all the dependencies into the `vendor` directory. There is no option to pass custom credentials for fetching the dependencies, the tool handles it internally.
+This feature utilizes the `go` vendor mechanism by downloading all the dependencies into the `vendor` directory. There is no option to pass custom credentials for fetching the dependencies; the tool handles it internally.
