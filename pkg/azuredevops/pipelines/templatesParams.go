@@ -61,7 +61,7 @@ func (p OCIImageBuilderTemplateParams) SetScheduleJobType() {
 
 // SetMergeGroup sets required parameter JobType to merge_group.
 func (p OCIImageBuilderTemplateParams) SetMergeGroupJobType() {
-	p["JobType"] = "schedule"
+	p["JobType"] = "merge_group"
 }
 
 // SetPullNumber sets optional parameter PullNumber.
