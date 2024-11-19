@@ -21,7 +21,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20241114-13f63321"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20241119-8902f86e"
             securityContext:
               privileged: false
               seccompProfile:
