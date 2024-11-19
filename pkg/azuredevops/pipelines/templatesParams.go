@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch", "schedule"}
+var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch", "schedule", "merge_group"}
 
 func GetValidJobTypes() []string {
 	return validJobTypes
@@ -56,6 +56,11 @@ func (p OCIImageBuilderTemplateParams) SetWorkflowDispatchJobType() {
 
 // SetScheduleJobType sets required parameter JobType to schedule.
 func (p OCIImageBuilderTemplateParams) SetScheduleJobType() {
+	p["JobType"] = "schedule"
+}
+
+// SetMergeGroup sets required parameter JobType to merge_group.
+func (p OCIImageBuilderTemplateParams) SetMergeGroupJobType() {
 	p["JobType"] = "schedule"
 }
 
