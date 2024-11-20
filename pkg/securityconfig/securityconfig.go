@@ -21,6 +21,7 @@ type Whitesource struct {
 type SecurityConfig struct {
 	ModuleName   string       `yaml:"module-name,omitempty"`
 	RcTag        string       `yaml:"rc-tag,omitempty"`
+	Kind         string       `yaml:"kind,omitempty"`
 	Images       []string     `yaml:"protecode"`
 	Whitesource  Whitesource  `yaml:"whitesource,omitempty"`
 	CheckmarxOne CheckmarxOne `yaml:"checkmarxOne,omitempty"`
