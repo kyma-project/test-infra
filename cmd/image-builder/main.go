@@ -215,6 +215,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetWorkflowDispatchJobType()
 	case "schedule":
 		templateParameters.SetScheduleJobType()
+	case "merge_group":
+		templateParameters.SetMergeGroupJobType()
 	default:
 		return nil, fmt.Errorf("unknown JobType received, ensure image-builder runs on supported event")
 	}
