@@ -17,7 +17,7 @@ whitesource:
     language: golang-mod
     exclude:
         - '**/*_test.go'
-checkmarxOne:
+checkmarx-one:
     preset: go-default
     exclude:
         - '**/*_test.go'
