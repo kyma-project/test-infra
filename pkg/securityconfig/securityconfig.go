@@ -24,7 +24,7 @@ type SecurityConfig struct {
 	Kind         string       `yaml:"kind,omitempty"`
 	Images       []string     `yaml:"protecode"`
 	Whitesource  Whitesource  `yaml:"whitesource,omitempty"`
-	CheckmarxOne CheckmarxOne `yaml:"checkmarxOne,omitempty"`
+	CheckmarxOne CheckmarxOne `yaml:"checkmarx-one,omitempty"`
 }
 
 func ParseSecurityConfig(reader io.Reader) (*SecurityConfig, error) {
