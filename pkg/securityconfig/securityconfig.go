@@ -7,6 +7,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type CheckmarxOne struct {
+	Preset    string   `yaml:"preset,omitempty"`
+	Exclude   []string `yaml:"exclude,omitempty"`
+}
+
 type Whitesource struct {
 	Language    string   `yaml:"language,omitempty"`
 	SubProjects bool     `yaml:"subprojects,omitempty"`
@@ -14,10 +19,12 @@ type Whitesource struct {
 }
 
 type SecurityConfig struct {
-	ModuleName  string      `yaml:"module-name,omitempty"`
-	RcTag       string      `yaml:"rc-tag,omitempty"`
-	Images      []string    `yaml:"protecode"`
-	Whitesource Whitesource `yaml:"whitesource,omitempty"`
+	ModuleName   string       `yaml:"module-name,omitempty"`
+	RcTag        string       `yaml:"rc-tag,omitempty"`
+	Kind         string       `yaml:"kind,omitempty"`
+	Images       []string     `yaml:"protecode"`
+	Whitesource  Whitesource  `yaml:"whitesource,omitempty"`
+	CheckmarxOne CheckmarxOne `yaml:"checkmarxOne,omitempty"`
 }
 
 func ParseSecurityConfig(reader io.Reader) (*SecurityConfig, error) {
