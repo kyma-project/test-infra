@@ -1,5 +1,6 @@
 module-name: test-infra
 rc-tag: rc-tag
+kind: kyma
 protecode:
     - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241121-ab2a8cf8
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241121-ab2a8cf8
@@ -14,5 +15,9 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241008-00628e8e
 whitesource:
     language: golang-mod
+    exclude:
+        - '**/*_test.go'
+checkmarx-one:
+    preset: go-default
     exclude:
         - '**/*_test.go'
