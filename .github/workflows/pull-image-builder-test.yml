@@ -8,6 +8,7 @@ on:
       - ".github/workflows/image-builder.yml"
       - ".github/actions/expose-jwt-action/**"
       - ".github/actions/image-builder/**"
+  merge_group:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
