@@ -878,6 +878,8 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to load current git state: %s", err)
 		}
+
+		o.logger.Debugw("Git state loaded", "gitState", o.gitState)
 	}
 
 	// validate if options provided by flags and config file are fine
