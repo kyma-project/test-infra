@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/kyma-project/test-infra/pkg/gcp/dnsclient"
-	flag "github.com/spf13/pflag"
 	"log"
 	"os"
+
+	"github.com/kyma-project/test-infra/pkg/gcp/dnsclient"
+	flag "github.com/spf13/pflag"
 )
 
 var (
