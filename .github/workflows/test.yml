@@ -1,0 +1,18 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - test-merge-group
+  push:
+    branches:
+      - test-merge-group
+  merge_group:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo $GITHUB_EVENT_NAME
+      - run: cat $GITHUB_EVENT_PATH
