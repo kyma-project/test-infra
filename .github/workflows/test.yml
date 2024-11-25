@@ -1,0 +1,12 @@
+name: test
+
+on:
+  merge_group:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo $GITHUB_EVENT_NAME
+      - run: cat $GITHUB_EVENT_PATH
