@@ -318,6 +318,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			BaseCommitSHA:     commitSHA,
 			BaseCommitRef:     gitRef,
 			PullHeadCommitSHA: *payload.MergeGroup.HeadSHA,
+			isPullRequest:     true,
 		}, nil
 
 	default:
