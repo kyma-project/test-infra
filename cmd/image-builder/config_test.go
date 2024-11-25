@@ -358,6 +358,27 @@ func TestLoadGitStateConfig(t *testing.T) {
 				BaseCommitSHA:   "art654",
 			},
 		},
+		{
+			name: "load data from event payload for github merge_group event",
+			options: options{
+				ciSystem: GithubActions,
+			},
+			env: map[string]string{
+				"GITHUB_EVENT_PATH": "./test_fixture/merge-group_event.json",
+				"GITHUB_EVENT_NAME": "merge_group",
+				"GITHUB_SHA":        "659bf74f7b4ecab07d9398eec554217b51bad738",
+				"GITHUB_REF":        "refs/heads/main",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:    "test-infra",
+				RepositoryOwner:   "edplanes",
+				JobType:           "merge_group",
+				BaseCommitSHA:     "659bf74f7b4ecab07d9398eec554217b51bad738",
+				BaseCommitRef:     "refs/heads/main",
+				isPullRequest:     false,
+				PullHeadCommitSHA: "d42c05aa25fc3e8bfff0396086de3fccd4b34c29",
+			},
+		},
 	}
 
 	for _, c := range tc {

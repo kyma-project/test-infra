@@ -317,7 +317,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 			JobType:           "merge_group",
 			BaseCommitSHA:     commitSHA,
 			BaseCommitRef:     gitRef,
-			PullHeadCommitSHA: *payload.MergeGroup.HeadCommit.SHA,
+			PullHeadCommitSHA: *payload.MergeGroup.HeadSHA,
 		}, nil
 
 	default:
