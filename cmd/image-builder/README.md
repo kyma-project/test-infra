@@ -90,6 +90,7 @@ permissions:
 The Image Builder reusable workflow supports the following GitHub events to trigger a workflow:
 
 * `push` - to build images on push to the specified branch.
+* `merge_group` - to build images on merge group events.
 * `pull_request_target` - to build images on pull requests.
 * `workflow_dispatch` - to manually trigger the workflow.
 * `schedule` - to build images on a regular basis.
@@ -167,7 +168,7 @@ By default, Image Builder signs images with the production signify service.
 Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
 
 > [!NOTE]
-> Image Builder only signs images built on the `push`, `schedule`, and `workflow_dispatch` events. Images built on the `pull_request_target` event are not signed.
+> Image Builder only signs images built on the `push`, `schedule`, and `workflow_dispatch` events. Images built on the `pull_request_target` and `merge_group` event are not signed.
 
 ## Image Signing with Signify
 
@@ -183,7 +184,7 @@ The authentication to the Signify API has been updated from using `role id/secre
 The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Repository-Services/Signify/how_to/manage_signatures/).
 
 > [!NOTE]
-> Images are only signed when built on `push`, `schedule`, and `workflow_dispatch` events. Pull request images are not signed.
+> Images are only signed when built on `push`, `schedule`, and `workflow_dispatch` events. Pull request and merge queue images are not signed.
 
 ### Signify API Changes
 
