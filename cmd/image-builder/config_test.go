@@ -371,12 +371,12 @@ func TestLoadGitStateConfig(t *testing.T) {
 			},
 			gitState: GitStateConfig{
 				RepositoryName:    "test-infra",
-				RepositoryOwner:   "edplanes",
+				RepositoryOwner:   "kyma-project",
 				JobType:           "merge_group",
 				BaseCommitSHA:     "659bf74f7b4ecab07d9398eec554217b51bad738",
 				BaseCommitRef:     "refs/heads/main",
-				isPullRequest:     false,
-				PullHeadCommitSHA: "d42c05aa25fc3e8bfff0396086de3fccd4b34c29",
+				isPullRequest:     true,
+				PullHeadCommitSHA: "e47034172c36d3e5fb407b5ba57adf0f7868599d",
 			},
 		},
 	}
