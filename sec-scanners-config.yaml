@@ -12,7 +12,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241125-6c129948
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241125-6c129948
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20241029-03f7576c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241008-00628e8e
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241128-eeb76058
 whitesource:
     language: golang-mod
     exclude:
