@@ -192,23 +192,17 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, aut
 			return err
 		}
 		log.WithField("image", img.Source).Info("Start sync")
-		if img.AMD64Only {
-			// sync whole index if possible, otherwise sync singular image
-			// we force users to set explicit info about single-arch images
-			var isIndex bool
-			isIndex, err = isImageIndex(ctx, img.Source)
-			if err != nil {
-				return err
-			}
-			if isIndex {
-				_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
-			} else {
-				imageType = "Image"
-				_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
-			}
-		} else {
-			// sync whole index
+		// sync whole index if possible, otherwise sync singular image
+		var isIndex bool
+		isIndex, err = isImageIndex(ctx, img.Source)
+		if err != nil {
+			return err
+		}
+		if isIndex {
 			_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
+		} else {
+			imageType = "Image"
+			_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
 		}
 		if err != nil {
 			return err
