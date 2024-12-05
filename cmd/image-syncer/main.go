@@ -192,7 +192,7 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, aut
 			return err
 		}
 		log.WithField("image", img.Source).Info("Start sync")
-		// sync whole index if possible, otherwise sync singular image
+		// Sync the whole index if possible, otherwise sync singular image.
 		var isIndex bool
 		isIndex, err = isImageIndex(ctx, img.Source)
 		if err != nil {
