@@ -15,7 +15,7 @@ WORKDIR /app/cmd/cloud-run/move-gcs-bucket
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
-FROM alpine:3.20.3
+FROM alpine:3.21.0
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/cloud-run/move-gcs-bucket
 
