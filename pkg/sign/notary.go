@@ -42,6 +42,10 @@ type ReferenceInterface interface {
 type ImageInterface interface {
 	// Manifest retrieves the manifest of the image.
 	Manifest() (ManifestInterface, error)
+	// GetDigest returns the digest of the image manifest.
+	GetDigest() (string, error)
+	// GetSize returns the size of the image.
+	GetSize() (int64, error)
 }
 
 // ManifestInterface abstracts the functionality of v1.Manifest.
@@ -119,6 +123,20 @@ type ImageWrapper struct {
 	img v1.Image
 }
 
+// GetDigest returns the digest of the image manifest.
+func (iw *ImageWrapper) GetDigest() (string, error) {
+	digest, err := iw.img.Digest()
+	if err != nil {
+		return "", err
+	}
+	return digest.Hex, nil
+}
+
+// GetSize returns the size of the image.
+func (iw *ImageWrapper) GetSize() (int64, error) {
+	return iw.img.Size()
+}
+
 // Manifest retrieves the manifest of the image.
 func (iw *ImageWrapper) Manifest() (ManifestInterface, error) {
 	manifest, err := iw.img.Manifest()
@@ -138,7 +156,7 @@ func (mw *ManifestWrapper) GetConfigSize() int64 {
 	return mw.manifest.Config.Size
 }
 
-// GetConfigDigest returns the digest of the image config.
+// GetConfigDigest returns the digest of the image config without the algorithm prefix.
 func (mw *ManifestWrapper) GetConfigDigest() string {
 	return mw.manifest.Config.Digest.String()
 }
@@ -177,17 +195,23 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 			return SigningPayload{}, fmt.Errorf("failed to fetch image: %w", err)
 		}
 
-		// Retrieve the image manifest.
-		manifest, err := img.Manifest()
+		// Retrieve the image manifest digest.
+		imageDigest, err := img.GetDigest()
 		if err != nil {
-			return SigningPayload{}, fmt.Errorf("failed to get image manifest: %w", err)
+			return SigningPayload{}, fmt.Errorf("failed to get image digest: %w", err)
+		}
+
+		// Retrieve the image size.
+		imageSize, err := img.GetSize()
+		if err != nil {
+			return SigningPayload{}, fmt.Errorf("failed to get image size: %w", err)
 		}
 
 		// Build the target information.
 		target := Target{
 			Name:     tag,
-			ByteSize: manifest.GetConfigSize(),
-			Digest:   manifest.GetConfigDigest(),
+			ByteSize: imageSize,
+			Digest:   imageDigest,
 		}
 
 		// Build the GUN (Global Unique Name) targets.
