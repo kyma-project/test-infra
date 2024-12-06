@@ -127,6 +127,12 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 						},
 					}, nil
 				},
+				MockGetDigest: func() (string, error) {
+					return "dummy-digest", nil
+				},
+				MockGetSize: func() (int64, error) {
+					return 1024, nil
+				},
 			}, nil
 		},
 	}
@@ -152,6 +158,23 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 	}
 	if manifest.GetConfigDigest() != "sha256:dummy-digest" {
 		t.Errorf("Expected config digest to be 'sha256:dummy-digest', got '%s'", manifest.GetConfigDigest())
+	}
+
+	// Additional checks for new methods
+	digest, err := img.GetDigest()
+	if err != nil {
+		t.Errorf("Expected no error getting digest, got %v", err)
+	}
+	if digest != "dummy-digest" {
+		t.Errorf("Expected digest to be 'dummy-digest', got '%s'", digest)
+	}
+
+	size, err := img.GetSize()
+	if err != nil {
+		t.Errorf("Expected no error getting size, got %v", err)
+	}
+	if size != 1024 {
+		t.Errorf("Expected size to be 1024, got %d", size)
 	}
 }
 
@@ -195,13 +218,19 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 			return 1024
 		},
 		MockGetConfigDigest: func() string {
-			return "sha256:dummy-digest"
+			return "sha256:dummy-config-digest"
 		},
 	}
 
 	mockImage := &MockImage{
 		MockManifest: func() (ManifestInterface, error) {
 			return mockManifest, nil
+		},
+		MockGetDigest: func() (string, error) {
+			return "dummy-manifest-digest", nil
+		},
+		MockGetSize: func() (int64, error) {
+			return 2048, nil
 		},
 	}
 
@@ -224,6 +253,15 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 	}
 	if len(payload.GunTargets) == 0 {
 		t.Errorf("Expected GunTargets to be populated")
+	}
+
+	// Additional checks
+	target := payload.GunTargets[0].Targets[0]
+	if target.Digest != "dummy-manifest-digest" {
+		t.Errorf("Expected digest to be 'dummy-manifest-digest', got '%s'", target.Digest)
+	}
+	if target.ByteSize != 2048 {
+		t.Errorf("Expected byteSize to be 2048, got %d", target.ByteSize)
 	}
 }
 
@@ -345,7 +383,7 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 							{
 								Name:     "latest",
 								ByteSize: 1024,
-								Digest:   "sha256:dummy-digest",
+								Digest:   "dummy-manifest-digest",
 							},
 						},
 					},
