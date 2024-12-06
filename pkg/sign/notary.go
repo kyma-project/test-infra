@@ -140,7 +140,7 @@ func (mw *ManifestWrapper) GetConfigSize() int64 {
 
 // GetConfigDigest returns the digest of the image config.
 func (mw *ManifestWrapper) GetConfigDigest() string {
-	return mw.manifest.Config.Digest.Hex
+	return mw.manifest.Config.Digest.String()
 }
 
 // PayloadBuilderInterface defines the method for constructing the signing payload.
