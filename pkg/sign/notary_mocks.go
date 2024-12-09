@@ -113,13 +113,6 @@ type MockImage struct {
 	MockGetSize   func() (int64, error)
 }
 
-func (mi *MockImage) Manifest() (ManifestInterface, error) {
-	if mi.MockManifest != nil {
-		return mi.MockManifest()
-	}
-	return nil, fmt.Errorf("MockManifest not implemented")
-}
-
 func (mi *MockImage) GetDigest() (string, error) {
 	if mi.MockGetDigest != nil {
 		return mi.MockGetDigest()
@@ -131,7 +124,14 @@ func (mi *MockImage) GetSize() (int64, error) {
 	if mi.MockGetSize != nil {
 		return mi.MockGetSize()
 	}
-	return 0, fmt.Errorf("MockGetSize not implemented")
+	return 0, fmt.Errorf("MockGetDigest not implemented")
+}
+
+func (mi *MockImage) Manifest() (ManifestInterface, error) {
+	if mi.MockManifest != nil {
+		return mi.MockManifest()
+	}
+	return nil, fmt.Errorf("MockManifest not implemented")
 }
 
 // MockManifest implements ManifestInterface
