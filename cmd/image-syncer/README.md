@@ -16,7 +16,7 @@ Contents:
 
 ## Overview
 
-Image-syncer is used to copy container images between two registries.
+Image-syncer is used to copy container images between two registries. Sync the whole index if possible. Otherwise, sync a single image.
 It copies images **only when they are not present** in the target repository.
 The tool guarantees that **tags are immutable** in the target repository.
 That means that if the image tag is already present in the target registry, it is not overwritten by the new image.
@@ -94,8 +94,6 @@ As an input parameter, image-syncer takes a file having the following structure:
 
 - **source**: The source image to be copied. It can be an image name with a tag or a digest.
 - **tag**: The tag of the image in the target repository, which is required when the source uses digest to identify the image.
-- **amd64Only**: A boolean value that indicates if it's allowed to synchronize the image manifest instead of the image index.
-  This is required when the source image is not a multi-platform image.
 
 ```yaml
 images:
@@ -104,10 +102,8 @@ images:
 - source: "busybox@sha256:31a54a0cf86d7354788a8265f60ae6acb4b348a67efbcf7c1007dd3cf7af05ab"
   tag: "1.32.0-v1"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
-  amd64Only: true
 - source: "postgres@sha256:9d7ec48fe46e8bbce55deafff58080e49d161a3ed92e67f645014bb50dc599fd"
   tag: "v20230508-11.19-alpine3.17"
-  amd64Only: true
 ```
 
 ## Developer Guide
@@ -123,10 +119,6 @@ The image-syncer tool consists of the following components:
 The image-syncer binary is responsible for synchronizing images between two registries.
 The binary is released as a container image.
 See the [Dockerfile](https://github.com/kyma-project/test-infra/blob/main/cmd/image-syncer/Dockerfile) for the image-syncer binary.
-
-> [!WARNING]
-> The **amd64Only** field in the images list file allows syncing the image manifest instead of the image index.
-> The flag does not prevent syncing other platforms.
 
 #### Flags
 
