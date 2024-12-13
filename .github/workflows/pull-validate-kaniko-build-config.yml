@@ -50,7 +50,7 @@ jobs:
           secrets: |-
             ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
 
-      - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20241212-be6068ba
+      - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20241213-9b2c637a
         id: build
         with:
           args: --name=test-infra/ginkgo --context=. --dockerfile=images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true --config="./configs/image-builder-client-config.yaml"
