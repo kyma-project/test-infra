@@ -326,6 +326,11 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
+func loadJenksingGitState() (GitStateConfig, error) {
+	// Load from env specific for Jenkins Jobs
+	return GitStateConfig{}, fmt.Errorf("Jenkins is not supported as CI system")
+}
+
 // DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
 // It is used to avoid getting env variables in multiple parts of image builder
 func DetermineUsedCISystem() (CISystem, error) {
