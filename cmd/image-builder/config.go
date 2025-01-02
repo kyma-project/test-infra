@@ -356,7 +356,7 @@ func loadJenkinsGitState() (GitStateConfig, error) {
 		}
 
 		baseRef := os.Getenv("CHANGE_BRANCH")
-		pullRequestHeadSHA := os.Getenv("CHANGE_TARGET")
+		pullRequestHeadSHA := os.Getenv("CHANGE_HEAD_SHA")
 
 		gitState.JobType = "presubmit"
 		gitState.PullRequestNumber = pullNumber

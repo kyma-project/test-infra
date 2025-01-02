@@ -385,11 +385,10 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem: Jenkins,
 			},
 			env: map[string]string{
-				"BRANCH_NAME":   "refs/heads/main",
-				"JENKINS_HOME":  "/some/absolute/path",
-				"GIT_URL":       "github.com/kyma-project/test-infra",
-				"GIT_COMMIT":    "1234",
-				"CHANGE_TARGET": "refs/heads/main",
+				"BRANCH_NAME":  "refs/heads/main",
+				"JENKINS_HOME": "/some/absolute/path",
+				"GIT_URL":      "github.com/kyma-project/test-infra",
+				"GIT_COMMIT":   "1234",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:  "test-infra",
@@ -404,12 +403,12 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem: Jenkins,
 			},
 			env: map[string]string{
-				"BRANCH_NAME":   "refs/heads/main",
-				"JENKINS_HOME":  "/some/absolute/path",
-				"CHANGE_ID":     "14",
-				"GIT_URL":       "github.com/kyma-project/test-infra",
-				"GIT_COMMIT":    "1234",
-				"CHANGE_TARGET": "4321",
+				"BRANCH_NAME":     "refs/heads/main",
+				"JENKINS_HOME":    "/some/absolute/path",
+				"CHANGE_ID":       "14",
+				"GIT_URL":         "github.com/kyma-project/test-infra",
+				"GIT_COMMIT":      "1234",
+				"CHANGE_HEAD_SHA": "4321", // Must be explicitly set when calling docker run
 			},
 			gitState: GitStateConfig{
 				RepositoryName:    "test-infra",
