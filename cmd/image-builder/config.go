@@ -21,6 +21,7 @@ const (
 	Prow          CISystem = "Prow"
 	GithubActions CISystem = "GithubActions"
 	AzureDevOps   CISystem = "AzureDevOps"
+	Jenkins       CISystem = "Jenkins"
 )
 
 type Config struct {
@@ -155,6 +156,8 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	// Load from env specific for Github Actions
 	case GithubActions:
 		return loadGithubActionsGitState()
+	case Jenkins:
+		return loadJenksingGitState()
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
@@ -361,6 +364,12 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 	_, isAdo := envLookup("BUILD_BUILDID")
 	if isAdo {
 		return AzureDevOps, nil
+	}
+
+	// JENKINS_HOME environment variable is set in Jenkins
+	_, isJenkins := envLookup("JENKINS_HOME")
+	if isJenkins {
+		return Jenkins, nil
 	}
 
 	return "", fmt.Errorf("cannot determine ci system: unknown system")

@@ -437,6 +437,13 @@ func Test_determineCISystem(t *testing.T) {
 			ciSystem: GithubActions,
 		},
 		{
+			name: "detect running in jenkins",
+			env: mockEnv{
+				"JENKINS_HOME": "/some/absolute/path",
+			},
+			ciSystem: Jenkins,
+		},
+		{
 			name: "unknown ci system",
 			env: mockEnv{
 				// Prevent false positivie detection of CI system running test
