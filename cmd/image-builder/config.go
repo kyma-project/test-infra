@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 
@@ -157,7 +158,7 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	case GithubActions:
 		return loadGithubActionsGitState()
 	case Jenkins:
-		return loadJenksingGitState()
+		return loadJenkinsGitState()
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
@@ -329,9 +330,55 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
-func loadJenksingGitState() (GitStateConfig, error) {
+func loadJenkinsGitState() (GitStateConfig, error) {
 	// Load from env specific for Jenkins Jobs
-	return GitStateConfig{}, fmt.Errorf("Jenkins is not supported as CI system")
+	prID, isPullRequest := os.LookupEnv("CHANGE_ID")
+	gitURL := os.Getenv("GIT_URL")
+
+	owner, repo, err := extractOwnerAndRepoFromGitURL(gitURL)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
+	}
+
+	baseCommitSHA := os.Getenv("GIT_COMMIT")
+
+	gitState := GitStateConfig{
+		RepositoryName:  repo,
+		RepositoryOwner: owner,
+		JobType:         "postsubmit",
+		BaseCommitSHA:   baseCommitSHA,
+	}
+
+	if isPullRequest {
+		pullNumber, err := strconv.Atoi(prID)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse CHANGE_ID environment variable: %w", err)
+		}
+
+		baseRef := os.Getenv("CHANGE_BRANCH")
+		pullRequestHeadSHA := os.Getenv("CHANGE_TARGET")
+
+		gitState.JobType = "presubmit"
+		gitState.PullRequestNumber = pullNumber
+		gitState.BaseCommitRef = baseRef
+		gitState.PullHeadCommitSHA = pullRequestHeadSHA
+		gitState.isPullRequest = true
+	}
+
+	return gitState, nil
+}
+
+func extractOwnerAndRepoFromGitURL(gitURL string) (string, string, error) {
+	re := regexp.MustCompile(`.*/(.*)/(.*)`)
+
+	matches := re.FindStringSubmatch(gitURL)
+	fmt.Println(matches, gitURL)
+
+	if len(matches) != 3 {
+		return "", "", fmt.Errorf("failed to extract owner and repository from git URL")
+	}
+
+	return matches[1], matches[2], nil
 }
 
 // DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown

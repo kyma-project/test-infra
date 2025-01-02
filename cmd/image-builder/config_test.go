@@ -379,6 +379,48 @@ func TestLoadGitStateConfig(t *testing.T) {
 				PullHeadCommitSHA: "e47034172c36d3e5fb407b5ba57adf0f7868599d",
 			},
 		},
+		{
+			name: "load data from push event for jenkins",
+			options: options{
+				ciSystem: Jenkins,
+			},
+			env: map[string]string{
+				"BRANCH_NAME":   "refs/heads/main",
+				"JENKINS_HOME":  "/some/absolute/path",
+				"GIT_URL":       "github.com/kyma-project/test-infra",
+				"GIT_COMMIT":    "1234",
+				"CHANGE_TARGET": "refs/heads/main",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-infra",
+				RepositoryOwner: "kyma-project",
+				JobType:         "postsubmit",
+				BaseCommitSHA:   "1234",
+			},
+		},
+		{
+			name: "load data from pull request event for jenkins",
+			options: options{
+				ciSystem: Jenkins,
+			},
+			env: map[string]string{
+				"BRANCH_NAME":   "refs/heads/main",
+				"JENKINS_HOME":  "/some/absolute/path",
+				"CHANGE_ID":     "14",
+				"GIT_URL":       "github.com/kyma-project/test-infra",
+				"GIT_COMMIT":    "1234",
+				"CHANGE_TARGET": "4321",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:    "test-infra",
+				RepositoryOwner:   "kyma-project",
+				JobType:           "presubmit",
+				BaseCommitSHA:     "1234",
+				PullRequestNumber: 14,
+				PullHeadCommitSHA: "4321",
+				isPullRequest:     true,
+			},
+		},
 	}
 
 	for _, c := range tc {
