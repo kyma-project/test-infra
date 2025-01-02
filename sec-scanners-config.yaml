@@ -1,15 +1,15 @@
 module-name: test-infra
 kind: kyma
 protecode:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20241230-e979af52
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250102-43ed4c1f
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20241219-999037df
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20241230-e979af52
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250102-43ed4c1f
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20241219-999037df
     - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20241219-999037df
     - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20241219-999037df
     - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241219-999037df
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20241230-e979af52
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20241230-e979af52
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250102-43ed4c1f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250102-43ed4c1f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20241029-03f7576c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241205-fe970df0
 whitesource:
