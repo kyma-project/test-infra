@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 
@@ -21,6 +22,7 @@ const (
 	Prow          CISystem = "Prow"
 	GithubActions CISystem = "GithubActions"
 	AzureDevOps   CISystem = "AzureDevOps"
+	Jenkins       CISystem = "Jenkins"
 )
 
 type Config struct {
@@ -155,6 +157,8 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	// Load from env specific for Github Actions
 	case GithubActions:
 		return loadGithubActionsGitState()
+	case Jenkins:
+		return loadJenkinsGitState()
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
@@ -326,6 +330,57 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
+func loadJenkinsGitState() (GitStateConfig, error) {
+	// Load from env specific for Jenkins Jobs
+	prID, isPullRequest := os.LookupEnv("CHANGE_ID")
+	gitURL := os.Getenv("GIT_URL")
+
+	owner, repo, err := extractOwnerAndRepoFromGitURL(gitURL)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
+	}
+
+	baseCommitSHA := os.Getenv("GIT_COMMIT")
+
+	gitState := GitStateConfig{
+		RepositoryName:  repo,
+		RepositoryOwner: owner,
+		JobType:         "postsubmit",
+		BaseCommitSHA:   baseCommitSHA,
+	}
+
+	if isPullRequest {
+		pullNumber, err := strconv.Atoi(prID)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to parse CHANGE_ID environment variable: %w", err)
+		}
+
+		baseRef := os.Getenv("CHANGE_BRANCH")
+		pullRequestHeadSHA := os.Getenv("CHANGE_HEAD_SHA")
+
+		gitState.JobType = "presubmit"
+		gitState.PullRequestNumber = pullNumber
+		gitState.BaseCommitRef = baseRef
+		gitState.PullHeadCommitSHA = pullRequestHeadSHA
+		gitState.isPullRequest = true
+	}
+
+	return gitState, nil
+}
+
+func extractOwnerAndRepoFromGitURL(gitURL string) (string, string, error) {
+	re := regexp.MustCompile(`.*/(.*)/(.*)`)
+
+	matches := re.FindStringSubmatch(gitURL)
+	fmt.Println(matches, gitURL)
+
+	if len(matches) != 3 {
+		return "", "", fmt.Errorf("failed to extract owner and repository from git URL")
+	}
+
+	return matches[1], matches[2], nil
+}
+
 // DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
 // It is used to avoid getting env variables in multiple parts of image builder
 func DetermineUsedCISystem() (CISystem, error) {
@@ -356,6 +411,12 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 	_, isAdo := envLookup("BUILD_BUILDID")
 	if isAdo {
 		return AzureDevOps, nil
+	}
+
+	// JENKINS_HOME environment variable is set in Jenkins
+	_, isJenkins := envLookup("JENKINS_HOME")
+	if isJenkins {
+		return Jenkins, nil
 	}
 
 	return "", fmt.Errorf("cannot determine ci system: unknown system")
