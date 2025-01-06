@@ -12,7 +12,7 @@ require (
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cloudevents/sdk-go/v2 v2.15.2
-	github.com/coreos/go-oidc/v3 v3.11.0
+	github.com/coreos/go-oidc/v3 v3.12.0
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/go-jose/go-jose/v4 v4.0.4
 	github.com/go-playground/validator/v10 v10.23.0
