@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /serviceaccountkeyscleaner -ldflags="-s -w" ./cmd/cloud-run/service-account-keys-cleaner
 
-FROM alpine:3.21.0
+FROM alpine:3.21.1
 
 COPY --from=builder /serviceaccountkeyscleaner /serviceaccountkeyscleaner
 RUN apk add --no-cache ca-certificates && \
