@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 	"slices"
@@ -365,9 +364,7 @@ func loadJenkinsGitState() (GitStateConfig, error) {
 		gitState.PullHeadCommitSHA = pullRequestHeadSHA
 		gitState.isPullRequest = true
 	}
-	
-	log.Printf("JobType set to: %s", gitState.JobType)
-	
+
 	return gitState, nil
 }
 
