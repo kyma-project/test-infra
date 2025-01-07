@@ -364,7 +364,9 @@ func loadJenkinsGitState() (GitStateConfig, error) {
 		gitState.PullHeadCommitSHA = pullRequestHeadSHA
 		gitState.isPullRequest = true
 	}
-
+	
+	log.Printf("JobType set to: %s", gitState.JobType)
+	
 	return gitState, nil
 }
 
