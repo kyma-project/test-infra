@@ -9,7 +9,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20241219-999037df
     - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20241219-999037df
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250107-704e7b29
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250107-704e7b29
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250107-df53cbd2
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20241029-03f7576c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241205-fe970df0
 whitesource:
