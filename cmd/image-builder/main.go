@@ -920,12 +920,12 @@ func main() {
 		os.Exit(0)
 	}
 	if o.buildInADO {
-		fmt.Printf("Git State: %v\n", o.gitState.JobType)
+		fmt.Printf("Git State1: %v\n", o.gitState.JobType)
 		err = buildInADO(o)
-		fmt.Printf("Git State: %v\n", o.gitState.JobType)
+		fmt.Printf("Git State2: %v\n", o.gitState.JobType)
 		if err != nil {
 			fmt.Printf("Image build failed with error: %s\n", err)
-			fmt.Printf("Git State: %v\n", o.gitState.JobType)
+			fmt.Printf("Git State3: %v\n", o.gitState.JobType)
 			os.Exit(1)
 		}
 		os.Exit(0)
