@@ -1,17 +1,17 @@
 module-name: test-infra
 kind: kyma
 protecode:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250108-4a0bdbe1
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20241029-03f7576c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20241205-fe970df0
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250108-12870a21
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250108-fae88ec9
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250108-fae88ec9
 whitesource:
     language: golang-mod
     exclude:
