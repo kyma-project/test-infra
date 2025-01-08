@@ -149,6 +149,7 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 	return gitState.isPullRequest
 }
 
+// TODO (dekiel): Add logger parameter to all functions reading a git state.
 func LoadGitStateConfig(logger Logger, ciSystem CISystem) (GitStateConfig, error) {
 	switch ciSystem {
 	// Load from env specific for Azure DevOps and Prow Jobs
@@ -330,6 +331,7 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
+// loadJenkinsGitState loads git state from environment variables specific for Jenkins.
 func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 	// Load from env specific for Jenkins Jobs
 	prID, isPullRequest := os.LookupEnv("CHANGE_ID")

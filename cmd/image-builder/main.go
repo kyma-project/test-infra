@@ -869,14 +869,16 @@ func main() {
 
 	// If running inside some CI system, determine which system is used
 	if o.isCI {
-		ciSystem, err := DetermineUsedCISystem()
+		o.ciSystem, err = DetermineUsedCISystem()
 		if err != nil {
-			log.Fatalf("Failed to determine current ci system: %s", err)
+			o.logger.Errorw("Failed to determine current ci system", "error", err)
+			os.Exit(1)
 		}
-		o.ciSystem = ciSystem
-		o.gitState, err = LoadGitStateConfig(o.logger, ciSystem)
+
+		o.gitState, err = LoadGitStateConfig(o.logger, o.ciSystem)
 		if err != nil {
-			log.Fatalf("Failed to load current git state: %s", err)
+			o.logger.Errorw("Failed to load current git state", "error", err)
+			os.Exit(1)
 		}
 
 		o.logger.Debugw("Git state loaded", "gitState", o.gitState)
@@ -920,17 +922,15 @@ func main() {
 		os.Exit(0)
 	}
 	if o.buildInADO {
-		fmt.Printf("Git State1: %v\n", o.gitState.JobType)
 		err = buildInADO(o)
-		fmt.Printf("Git State2: %v\n", o.gitState.JobType)
 		if err != nil {
-			fmt.Printf("Image build failed with error: %s\n", err)
-			fmt.Printf("Git State3: %v\n", o.gitState.JobType)
+			o.logger.Errorw("Image build failed", "error", err, "JobType", o.gitState.JobType)
 			os.Exit(1)
 		}
 		os.Exit(0)
 	}
 
+	o.logger.Warnw("Local build is deprecated and will be removed soon, the tool will not support local building anymore. Please migrate to the ADO build backend.")
 	err = buildLocally(o)
 	if err != nil {
 		fmt.Println(err)
