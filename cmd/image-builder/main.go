@@ -874,7 +874,7 @@ func main() {
 			log.Fatalf("Failed to determine current ci system: %s", err)
 		}
 		o.ciSystem = ciSystem
-		o.gitState, err = LoadGitStateConfig(ciSystem)
+		o.gitState, err = LoadGitStateConfig(o.logger, ciSystem)
 		if err != nil {
 			log.Fatalf("Failed to load current git state: %s", err)
 		}
