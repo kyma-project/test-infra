@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/kyma-project/test-infra/pkg/tags"
+	"go.uber.org/zap"
 )
 
 func Test_ParseConfig(t *testing.T) {
@@ -385,10 +386,10 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem: Jenkins,
 			},
 			env: map[string]string{
-				"BRANCH_NAME":  "refs/heads/main",
-				"JENKINS_HOME": "/some/absolute/path",
-				"GIT_URL":      "github.com/kyma-project/test-infra",
-				"GIT_COMMIT":   "1234",
+				"CHANGE_BRANCH": "refs/heads/main",
+				"JENKINS_HOME":  "/some/absolute/path",
+				"GIT_URL":       "github.com/kyma-project/test-infra.git",
+				"GIT_COMMIT":    "1234",
 			},
 			gitState: GitStateConfig{
 				RepositoryName:  "test-infra",
@@ -403,10 +404,10 @@ func TestLoadGitStateConfig(t *testing.T) {
 				ciSystem: Jenkins,
 			},
 			env: map[string]string{
-				"BRANCH_NAME":     "refs/heads/main",
+				"CHANGE_BRANCH":   "refs/heads/main",
 				"JENKINS_HOME":    "/some/absolute/path",
 				"CHANGE_ID":       "14",
-				"GIT_URL":         "github.com/kyma-project/test-infra",
+				"GIT_URL":         "github.com/kyma-project/test-infra.git",
 				"GIT_COMMIT":      "1234",
 				"CHANGE_HEAD_SHA": "4321", // Must be explicitly set when calling docker run
 			},
@@ -415,6 +416,7 @@ func TestLoadGitStateConfig(t *testing.T) {
 				RepositoryOwner:   "kyma-project",
 				JobType:           "presubmit",
 				BaseCommitSHA:     "1234",
+				BaseCommitRef:     "refs/heads/main",
 				PullRequestNumber: 14,
 				PullHeadCommitSHA: "4321",
 				isPullRequest:     true,
@@ -429,8 +431,15 @@ func TestLoadGitStateConfig(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
+			// Setup logger
+			zapLogger, err := zap.NewDevelopment()
+			if err != nil {
+				t.Errorf("Failed to initialize logger: %s", err)
+			}
+			logger := zapLogger.Sugar()
+
 			// Load git state
-			state, err := LoadGitStateConfig(c.options.ciSystem)
+			state, err := LoadGitStateConfig(logger, c.options.ciSystem)
 			if err != nil && !c.expectError {
 				t.Errorf("unexpected error occured %s", err)
 			}
