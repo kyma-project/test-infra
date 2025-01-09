@@ -183,7 +183,6 @@ func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes
 	defer logger.Sync()
 	logger.Debugf("Checking if PR changed only allowed files: %v", ac.ChangedFiles)
 	for _, change := range changes {
-		change := change
 		logger.Debugf("Checking file: %s", change.Filename)
 		matched := slices.ContainsFunc(ac.ChangedFiles, func(allowedFile string) bool {
 			filesMatcher := regexp.MustCompile(allowedFile)

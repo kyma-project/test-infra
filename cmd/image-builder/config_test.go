@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/kyma-project/test-infra/pkg/tags"
+	"go.uber.org/zap"
 )
 
 func Test_ParseConfig(t *testing.T) {
@@ -379,6 +380,48 @@ func TestLoadGitStateConfig(t *testing.T) {
 				PullHeadCommitSHA: "e47034172c36d3e5fb407b5ba57adf0f7868599d",
 			},
 		},
+		{
+			name: "load data from push event for jenkins",
+			options: options{
+				ciSystem: Jenkins,
+			},
+			env: map[string]string{
+				"CHANGE_BRANCH": "refs/heads/main",
+				"JENKINS_HOME":  "/some/absolute/path",
+				"GIT_URL":       "github.com/kyma-project/test-infra.git",
+				"GIT_COMMIT":    "1234",
+			},
+			gitState: GitStateConfig{
+				RepositoryName:  "test-infra",
+				RepositoryOwner: "kyma-project",
+				JobType:         "postsubmit",
+				BaseCommitSHA:   "1234",
+			},
+		},
+		{
+			name: "load data from pull request event for jenkins",
+			options: options{
+				ciSystem: Jenkins,
+			},
+			env: map[string]string{
+				"CHANGE_BRANCH":   "refs/heads/main",
+				"JENKINS_HOME":    "/some/absolute/path",
+				"CHANGE_ID":       "14",
+				"GIT_URL":         "github.com/kyma-project/test-infra.git",
+				"GIT_COMMIT":      "1234",
+				"CHANGE_HEAD_SHA": "4321", // Must be explicitly set when calling docker run
+			},
+			gitState: GitStateConfig{
+				RepositoryName:    "test-infra",
+				RepositoryOwner:   "kyma-project",
+				JobType:           "presubmit",
+				BaseCommitSHA:     "1234",
+				BaseCommitRef:     "refs/heads/main",
+				PullRequestNumber: 14,
+				PullHeadCommitSHA: "4321",
+				isPullRequest:     true,
+			},
+		},
 	}
 
 	for _, c := range tc {
@@ -388,8 +431,15 @@ func TestLoadGitStateConfig(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
+			// Setup logger
+			zapLogger, err := zap.NewDevelopment()
+			if err != nil {
+				t.Errorf("Failed to initialize logger: %s", err)
+			}
+			logger := zapLogger.Sugar()
+
 			// Load git state
-			state, err := LoadGitStateConfig(c.options.ciSystem)
+			state, err := LoadGitStateConfig(logger, c.options.ciSystem)
 			if err != nil && !c.expectError {
 				t.Errorf("unexpected error occured %s", err)
 			}
@@ -435,6 +485,13 @@ func Test_determineCISystem(t *testing.T) {
 				"GITHUB_ACTIONS": "true",
 			},
 			ciSystem: GithubActions,
+		},
+		{
+			name: "detect running in jenkins",
+			env: mockEnv{
+				"JENKINS_HOME": "/some/absolute/path",
+			},
+			ciSystem: Jenkins,
 		},
 		{
 			name: "unknown ci system",

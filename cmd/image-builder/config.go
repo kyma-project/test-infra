@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 
@@ -21,6 +22,7 @@ const (
 	Prow          CISystem = "Prow"
 	GithubActions CISystem = "GithubActions"
 	AzureDevOps   CISystem = "AzureDevOps"
+	Jenkins       CISystem = "Jenkins"
 )
 
 type Config struct {
@@ -147,7 +149,8 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 	return gitState.isPullRequest
 }
 
-func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
+// TODO (dekiel): Add logger parameter to all functions reading a git state.
+func LoadGitStateConfig(logger Logger, ciSystem CISystem) (GitStateConfig, error) {
 	switch ciSystem {
 	// Load from env specific for Azure DevOps and Prow Jobs
 	case AzureDevOps, Prow:
@@ -155,6 +158,8 @@ func LoadGitStateConfig(ciSystem CISystem) (GitStateConfig, error) {
 	// Load from env specific for Github Actions
 	case GithubActions:
 		return loadGithubActionsGitState()
+	case Jenkins:
+		return loadJenkinsGitState(logger)
 	default:
 		// Unknown CI System, return error and empty git state
 		return GitStateConfig{}, fmt.Errorf("unknown ci system, got %s", ciSystem)
@@ -326,6 +331,75 @@ func loadGithubActionsGitState() (GitStateConfig, error) {
 	}
 }
 
+// loadJenkinsGitState loads git state from environment variables specific for Jenkins.
+func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
+	// Load from env specific for Jenkins Jobs
+	prID, isPullRequest := os.LookupEnv("CHANGE_ID")
+	gitURL, present := os.LookupEnv("GIT_URL")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GIT_URL environment variable is not set, please set it to valid git URL")
+	}
+
+	owner, repo, err := extractOwnerAndRepoFromGitURL(logger, gitURL)
+	if err != nil {
+		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
+	}
+
+	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
+	}
+
+	gitState := GitStateConfig{
+		RepositoryName:  repo,
+		RepositoryOwner: owner,
+		JobType:         "postsubmit",
+		BaseCommitSHA:   baseCommitSHA,
+	}
+
+	if isPullRequest {
+		pullNumber, err := strconv.Atoi(prID)
+		if err != nil {
+			return GitStateConfig{}, fmt.Errorf("failed to convert prID string variable to integer: %w", err)
+		}
+
+		baseRef, present := os.LookupEnv("CHANGE_BRANCH")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("CHANGE_BRANCH environment variable is not set, please set it to valid base branch name")
+		}
+		pullRequestHeadSHA, present := os.LookupEnv("CHANGE_HEAD_SHA")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("CHANGE_HEAD_SHA environment variable is not set, please set it to valid commit SHA")
+		}
+		gitState.JobType = "presubmit"
+		gitState.PullRequestNumber = pullNumber
+		gitState.BaseCommitRef = baseRef
+		gitState.PullHeadCommitSHA = pullRequestHeadSHA
+		gitState.isPullRequest = true
+	}
+
+	return gitState, nil
+}
+
+func extractOwnerAndRepoFromGitURL(logger Logger, gitURL string) (string, string, error) {
+	re := regexp.MustCompile(`.*/(?P<owner>.*)/(?P<repo>.*).git`)
+	matches := re.FindStringSubmatch(gitURL)
+
+	logger.Debugw("Extracted matches from git URL", "matches", matches, "gitURL", gitURL)
+
+	if len(matches) != 3 {
+		return "", "", fmt.Errorf("failed to extract owner and repository from git URL")
+	}
+
+	owner := matches[re.SubexpIndex("owner")]
+	repo := matches[re.SubexpIndex("repo")]
+
+	logger.Debugw("Extracted owner from git URL", "owner", owner)
+	logger.Debugw("Extracted repository from git URL", "repo", repo)
+
+	return owner, repo, nil
+}
+
 // DetermineUsedCISystem return CISystem bind to system in which image builder is running or error if unknown
 // It is used to avoid getting env variables in multiple parts of image builder
 func DetermineUsedCISystem() (CISystem, error) {
@@ -356,6 +430,12 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 	_, isAdo := envLookup("BUILD_BUILDID")
 	if isAdo {
 		return AzureDevOps, nil
+	}
+
+	// JENKINS_HOME environment variable is set in Jenkins
+	_, isJenkins := envLookup("JENKINS_HOME")
+	if isJenkins {
+		return Jenkins, nil
 	}
 
 	return "", fmt.Errorf("cannot determine ci system: unknown system")
