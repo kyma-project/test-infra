@@ -11,6 +11,16 @@ import (
 )
 
 var _ = Describe("OIDC", func() {
+	var (
+		logger *zap.SugaredLogger
+	)
+	BeforeEach(func() {
+		l, err := zap.NewDevelopment()
+		Expect(err).NotTo(HaveOccurred())
+
+		logger = l.Sugar()
+	})
+
 	Describe("maskToken", func() {
 		It("should mask the token if length is less than 15", func() {
 			token := "shorttoken"
@@ -41,7 +51,6 @@ var _ = Describe("OIDC", func() {
 		var (
 			tokenProcessor TokenProcessor
 			err            error
-			logger         *zap.SugaredLogger
 			trustedIssuers map[string]Issuer
 			rawToken       []byte
 		)

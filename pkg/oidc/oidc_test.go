@@ -276,8 +276,6 @@ var _ = Describe("OIDC", func() {
 				Verifier: verifier,
 				Logger:   logger,
 			}
-			// verifierConfig, err = tioidc.NewVerifierConfig(logger, clientID)
-			Expect(err).NotTo(HaveOccurred())
 			ctx = context.Background()
 			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
 			Expect(err).NotTo(HaveOccurred())
