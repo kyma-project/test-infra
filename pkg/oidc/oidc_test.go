@@ -117,7 +117,9 @@ var _ = Describe("OIDC", func() {
 		When("issuer with empty clientID is provided", func() {
 			It("should return an error", func() {
 				// Empty issuer clientID
-				trustedIssuers["https://fakedings.dev-gcp.nais.io/fake"].ClientID = ""
+				issuer := trustedIssuers["https://fakedings.dev-gcp.nais.io/fake"]
+				issuer.ClientID = ""
+				trustedIssuers["https://fakedings.dev-gcp.nais.io/fake"] = issuer
 
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken))
 				Expect(err).To(HaveOccurred())
