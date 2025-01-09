@@ -114,7 +114,6 @@ type TokenProcessor struct {
 	rawToken       string
 	trustedIssuers map[string]Issuer
 	issuer         Issuer
-	// verifierConfig VerifierConfig
 	logger LoggerInterface
 }
 

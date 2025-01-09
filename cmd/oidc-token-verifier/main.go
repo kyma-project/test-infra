@@ -21,7 +21,6 @@ type Logger interface {
 
 type options struct {
 	token                   string
-	trustedWorkflows        []string
 	debug                   bool
 	oidcTokenExpirationTime int // OIDC token expiration time in minutes
 }
@@ -40,12 +39,6 @@ func NewRootCmd() *cobra.Command {
 	It uses OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
 	}
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token to verify")
-	// This flag should be enabled once we add support for it in the code.
-	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
-	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
-	// if err != nil {
-	// 	panic(err)
-	// }
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
 	return rootCmd
