@@ -3,8 +3,11 @@ package oidc
 // oidc_unit_test.go contains tests which require access to non-exported functions and variables.
 
 import (
+	"os"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"go.uber.org/zap"
 )
 
 var _ = Describe("OIDC", func() {
@@ -34,4 +37,41 @@ var _ = Describe("OIDC", func() {
 		})
 	})
 
+	Describe("NewVerifierConfig", func() {
+		var (
+			tokenProcessor TokenProcessor
+			err            error
+			logger         *zap.SugaredLogger
+			trustedIssuers map[string]Issuer
+			rawToken       []byte
+		)
+
+		BeforeEach(func() {
+			rawToken, err = os.ReadFile("test-fixtures/raw-oidc-token")
+			Expect(err).NotTo(HaveOccurred())
+
+			trustedIssuers = map[string]Issuer{
+				"https://fakedings.dev-gcp.nais.io/fake": {
+					Name:                   "github",
+					IssuerURL:              "https://fakedings.dev-gcp.nais.io/fake",
+					JWKSURL:                "https://fakedings.dev-gcp.nais.io/fake/jwks",
+					ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/verify-oidc-token.yml@refs/heads/main",
+					ClientID:               "testClientID",
+				},
+			}
+
+			tokenProcessor, err = NewTokenProcessor(logger, trustedIssuers, string(rawToken))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tokenProcessor).NotTo(BeNil())
+		})
+
+		When("empty clientID is provided", func() {
+			It("should return an error", func() {
+				tokenProcessor.issuer.ClientID = ""
+				verifierConfig, err := tokenProcessor.NewVerifierConfig()
+				Expect(err).To(HaveOccurred())
+				Expect(verifierConfig).To(Equal(VerifierConfig{}))
+			})
+		})
+	})
 })
