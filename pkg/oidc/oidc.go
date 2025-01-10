@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -26,7 +27,7 @@ var (
 		JWKSURL:                "https://token.actions.githubusercontent.com/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
 		GithubURL:              "https://github.com",
-		ClientID: "image-builder",
+		ClientID:               "image-builder",
 	}
 	GithubToolsSAPOIDCIssuer = Issuer{
 		Name:                   "github-tools-sap",
@@ -34,7 +35,7 @@ var (
 		JWKSURL:                "https://github.tools.sap/_services/token/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main",
 		GithubURL:              "https://github.tools.sap",
-		ClientID: "image-builder",
+		ClientID:               "image-builder",
 	}
 	TrustedOIDCIssuers = map[string]Issuer{
 		GithubOIDCIssuer.IssuerURL:         GithubOIDCIssuer,
@@ -92,8 +93,63 @@ type Issuer struct {
 	ClientID string `json:"client_id" yaml:"client_id"`
 }
 
-func (i Issuer) GetGithubURL() string {
-	return i.GithubURL
+func (issuer Issuer) GetGithubURL() string {
+	return issuer.GithubURL
+}
+
+// validateIssuer checks if the issuer is valid.
+func (issuer Issuer) validateIssuer(logger LoggerInterface) error {
+	logger.Debugw("Validating issuer", "issuer", issuer)
+
+	if issuer.Name == "" {
+		return fmt.Errorf("issuer name is empty")
+	}
+
+	if err := validateURL(logger, issuer.IssuerURL, "issuer URL"); err != nil {
+		return err
+	}
+
+	if err := validateURL(logger, issuer.JWKSURL, "issuer JWKS URL"); err != nil {
+		return err
+	}
+
+	if issuer.ClientID == "" {
+		return fmt.Errorf("issuer clientID is empty")
+	}
+
+	logger.Debugw("Issuer validation successful", "issuer", issuer)
+
+	return nil
+}
+
+// validateURL checks if the URL is valid and uses https.
+func validateURL(logger LoggerInterface, rawURL, urlType string) error {
+	logger.Debugw("Validating URL", "urlType", urlType, "rawURL", rawURL)
+
+	if rawURL == "" {
+		return fmt.Errorf("%s is empty", urlType)
+	}
+
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return fmt.Errorf("failed parsing %s: %w", urlType, err)
+	}
+
+	if parsedURL.Scheme == "" {
+		return fmt.Errorf("%s scheme is empty", urlType)
+	}
+
+	if parsedURL.Scheme != "https" {
+		return fmt.Errorf("%s is not using https", urlType)
+	}
+
+	if parsedURL.Host == "" {
+		return fmt.Errorf("%s host is empty", urlType)
+	}
+
+	logger.Debugw("URL validation successful", "urlType", urlType, "parsedURL", parsedURL)
+
+	return nil
 }
 
 // VerifierConfig is the configuration for a verifier.
@@ -114,7 +170,7 @@ type TokenProcessor struct {
 	rawToken       string
 	trustedIssuers map[string]Issuer
 	issuer         Issuer
-	logger LoggerInterface
+	logger         LoggerInterface
 }
 
 func (tokenProcessor *TokenProcessor) GetIssuer() Issuer {
@@ -329,36 +385,19 @@ func NewTokenProcessor(
 ) (TokenProcessor, error) {
 	logger.Debugw("Creating token processor")
 	tokenProcessor := TokenProcessor{}
-
 	tokenProcessor.logger = logger
-
 	tokenProcessor.rawToken = rawToken
+
 	logger.Debugw("Added raw token to token processor", "rawToken", maskToken(rawToken))
 
 	tokenProcessor.trustedIssuers = trustedIssuers
+
 	logger.Debugw("Added trusted issuers to token processor", "trustedIssuers", trustedIssuers)
 
-	issuer, err := tokenProcessor.tokenIssuer(SupportedSigningAlgorithms)
+	err := tokenProcessor.setIssuer()
 	if err != nil {
-		return TokenProcessor{}, fmt.Errorf("failed to get issuer from token: %w", err)
+		return TokenProcessor{}, fmt.Errorf("failed to set issuer: %w", err)
 	}
-
-	logger.Debugw("Got issuer from token", "issuer", issuer)
-
-	trustedIssuer, err := tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers)
-	if err != nil {
-		return TokenProcessor{}, err
-	}
-
-	logger.Debugw("Matched issuer with trusted issuer", "trustedIssuer", trustedIssuer)
-
-	if trustedIssuer.ClientID == "" {
-		return TokenProcessor{}, errors.New("trusted issuer clientID is empty")
-	}
-
-	logger.Debugw("Verified trusted issuer clientID", "clientID", trustedIssuer.ClientID)
-
-	tokenProcessor.issuer = trustedIssuer
 
 	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
 
@@ -376,6 +415,36 @@ func NewTokenProcessor(
 	logger.Debugw("Created token processor", "issuer", tokenProcessor.issuer)
 
 	return tokenProcessor, nil
+}
+
+// setIssuer sets the issuer for the token processor.
+// It reads the issuer from the raw token and checks if the issuer is trusted and valid.
+func (tokenProcessor *TokenProcessor) setIssuer() error {
+	logger := tokenProcessor.logger
+	issuer, err := tokenProcessor.tokenIssuer(SupportedSigningAlgorithms)
+	if err != nil {
+		return fmt.Errorf("failed to get issuer from token: %w", err)
+	}
+
+	logger.Debugw("Got issuer from token", "issuer", issuer)
+
+	trustedIssuer, err := tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers)
+	if err != nil {
+		return err
+	}
+
+	logger.Debugw("Matched issuer with trusted issuer", "trustedIssuer", trustedIssuer)
+
+	err = trustedIssuer.validateIssuer(logger)
+	if err != nil {
+		return errors.New("trusted issuer clientID is empty")
+	}
+
+	logger.Debugw("Verified trusted issuer clientID", "clientID", trustedIssuer.ClientID)
+
+	tokenProcessor.issuer = trustedIssuer
+
+	return nil
 }
 
 // NewVerifierConfig creates a new VerifierConfig for trusted issuer.

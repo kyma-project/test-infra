@@ -123,7 +123,7 @@ var _ = Describe("OIDC", func() {
 
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken))
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("trusted issuer clientID is empty"))
+				Expect(err).To(MatchError("failed to set issuer: trusted issuer clientID is empty"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -141,7 +141,7 @@ var _ = Describe("OIDC", func() {
 
 				tokenProcessor, err = tioidc.NewTokenProcessor(logger, trustedIssuers, string(rawToken))
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
+				Expect(err).To(MatchError("failed to set issuer: issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -149,7 +149,7 @@ var _ = Describe("OIDC", func() {
 			It("should return an error", func() {
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, nil, string(rawToken))
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
+				Expect(err).To(MatchError("failed to set issuer: issuer https://fakedings.dev-gcp.nais.io/fake is not trusted"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
@@ -169,7 +169,7 @@ var _ = Describe("OIDC", func() {
 			It("should return an error", func() {
 				tokenProcessor, err := tioidc.NewTokenProcessor(logger, trustedIssuers, "invalidToken")
 				Expect(err).To(HaveOccurred())
-				Expect(err).To(MatchError("failed to get issuer from token: failed to parse oidc token: go-jose/go-jose: compact JWS format must have three parts"))
+				Expect(err).To(MatchError("failed to set issuer: failed to get issuer from token: failed to parse oidc token: go-jose/go-jose: compact JWS format must have three parts"))
 				Expect(tokenProcessor).To(Equal(tioidc.TokenProcessor{}))
 			})
 		})
