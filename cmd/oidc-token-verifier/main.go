@@ -85,8 +85,8 @@ type TrustedIssuerProvider interface {
 // The data provided in this struct is relevant for the component that uses the OIDC token verifier.
 // The output values are printed to the file in the json format.
 type output struct {
-	GithubURL string
-	ClientID  string
+	GithubURL string `json:"github_url" yaml:"github_url"`
+	ClientID  string `json:"client_id" yaml:"client_id"`
 }
 
 // setGithubURLOutput sets the Github URL value to the output struct.
