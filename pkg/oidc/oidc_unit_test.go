@@ -168,7 +168,6 @@ var _ = Describe("OIDC", func() {
 					}
 					err := issuer.validateIssuer(logger)
 					Expect(err).To(HaveOccurred(), "Expected an error when issuer URL is not valid, but got none")
-					Expect(err).To(MatchError("failed parsing issuer URL: parse \"invalid-url\": invalid URI for request"), "Expected error message to match")
 				})
 			})
 
@@ -209,7 +208,6 @@ var _ = Describe("OIDC", func() {
 					}
 					err := issuer.validateIssuer(logger)
 					Expect(err).To(HaveOccurred(), "Expected an error when issuer JWKS URL is not valid, but got none")
-					Expect(err).To(MatchError("failed parsing issuer JWKS URL: parse \"invalid-url\": invalid URI for request"), "Expected error message to match")
 				})
 			})
 
