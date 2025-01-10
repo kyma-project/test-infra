@@ -83,6 +83,7 @@ type Issuer struct {
 	JWKSURL                string `json:"jwks_url" yaml:"jwks_url"`
 	ExpectedJobWorkflowRef string `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
 	GithubURL              string `json:"github_url" yaml:"github_url"`
+	ClientID string `json:"client_id" yaml:"client_id"`
 }
 
 func (i Issuer) GetGithubURL() string {
