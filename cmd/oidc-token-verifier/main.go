@@ -21,8 +21,6 @@ type Logger interface {
 
 type options struct {
 	token                   string
-	clientID                string
-	trustedWorkflows        []string
 	debug                   bool
 	oidcTokenExpirationTime int // OIDC token expiration time in minutes
 }
@@ -41,13 +39,6 @@ func NewRootCmd() *cobra.Command {
 	It uses OIDC discovery to get the public keys and verify the token whenever the public keys are not cached or expired.`,
 	}
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token to verify")
-	// This flag should be enabled once we add support for it in the code.
-	// rootCmd.PersistentFlags().StringSliceVarP(&opts.trustedWorkflows, "trusted-workflows", "w", []string{}, "List of trusted workflows")
-	// err := rootCmd.MarkPersistentFlagRequired("trusted-workflows")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	rootCmd.PersistentFlags().StringVarP(&opts.clientID, "client-id", "c", "image-builder", "OIDC token client ID, this is used to verify the audience claim in the token. The value should be the same as the audience claim value in the token.")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
 	return rootCmd
@@ -119,28 +110,31 @@ func (opts *options) verifyToken() error {
 		return err
 	}
 
-	// Print used options values.
-	logger.Infow("Using the following trusted workflows", "trusted-workflows", opts.trustedWorkflows)
-	logger.Infow("Using the following client ID", "client-id", opts.clientID)
-
-	// Create a new verifier config that will be used to verify the token.
-	// The clientID is used to verify the audience claim in the token.
-	verifyConfig, err := tioidc.NewVerifierConfig(logger, opts.clientID, tioidc.SkipExpiryCheck())
-	if err != nil {
-		return err
-	}
-	logger.Infow("Verifier config created", "config", verifyConfig)
-
 	// Create a new token processor
 	// It reads issuer from the token and verifies if the issuer is trusted.
 	// The tokenProcessor is a main object that is used to verify the token and extract the claim values.
 	// TODO(dekiel): add support for providing trusted issuers instead of using the value from the package.
-	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token, verifyConfig)
+	tokenProcessor, err := tioidc.NewTokenProcessor(logger, tioidc.TrustedOIDCIssuers, opts.token)
 	if err != nil {
 		return err
 	}
+
 	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
+
+	// TODO (dekiel): implement writing output data to the file. This will give us separated clear output for a data and logs.
 	fmt.Printf("GITHUB_URL=%s\n", tokenProcessor.GetIssuer().GetGithubURL())
+
+	// Create a new verifier config that will be used to verify the token.
+	// The standard expiration check is skipped.
+	// We use custom expiration time check to allow longer token expiration time than the value in the token.
+	// The extended expiration time is needed due to Azure DevOps delays in starting the pipeline.
+	// The delay was causing the token to expire before the pipeline started.
+	verifierConfig, err := tokenProcessor.NewVerifierConfig(tioidc.SkipExpiryCheck())
+	if err != nil {
+		return err
+	}
+
+	logger.Infow("Verifier config created")
 
 	ctx := context.Background()
 	// Create a new provider using OIDC discovery to get the public keys.
@@ -153,10 +147,15 @@ func (opts *options) verifyToken() error {
 
 	// Create a new verifier using the provider and the verifier config.
 	// The verifier is used to verify the token signature, expiration time and execute standard OIDC validation.
-	verifier, err := provider.NewVerifier(logger, verifyConfig, tioidc.WithExtendedExpiration(opts.oidcTokenExpirationTime))
+	// TODO (dekiel): Consider using verifier config as the only way to parametrize the verification process.
+	//   The WithExtendedExpiration could be moved to the verifier config.
+	//   The WithExtendedExpiration could disable the standard expiration check.
+	//   This would allow to have a single place to configure the verification process.
+	verifier, err := provider.NewVerifier(logger, verifierConfig, tioidc.WithExtendedExpiration(opts.oidcTokenExpirationTime))
 	if err != nil {
 		return err
 	}
+
 	logger.Infow("New verifier created")
 
 	// Verify the token
@@ -164,10 +163,12 @@ func (opts *options) verifyToken() error {
 	if err != nil {
 		return err
 	}
+
 	logger.Infow("Token verified successfully")
 
 	// Create claims
 	claims := tioidc.NewClaims(logger)
+
 	logger.Infow("Verifying token claims")
 
 	// Pass the token to ValidateClaims

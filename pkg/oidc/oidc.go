@@ -7,6 +7,7 @@ package oidc
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -26,6 +27,7 @@ var (
 		JWKSURL:                "https://token.actions.githubusercontent.com/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main",
 		GithubURL:              "https://github.com",
+		ClientID:               "image-builder",
 	}
 	GithubToolsSAPOIDCIssuer = Issuer{
 		Name:                   "github-tools-sap",
@@ -33,8 +35,12 @@ var (
 		JWKSURL:                "https://github.tools.sap/_services/token/.well-known/jwks",
 		ExpectedJobWorkflowRef: "kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main",
 		GithubURL:              "https://github.tools.sap",
+		ClientID:               "image-builder",
 	}
-	TrustedOIDCIssuers = map[string]Issuer{GithubOIDCIssuer.IssuerURL: GithubOIDCIssuer, GithubToolsSAPOIDCIssuer.IssuerURL: GithubToolsSAPOIDCIssuer}
+	TrustedOIDCIssuers = map[string]Issuer{
+		GithubOIDCIssuer.IssuerURL:         GithubOIDCIssuer,
+		GithubToolsSAPOIDCIssuer.IssuerURL: GithubToolsSAPOIDCIssuer,
+	}
 )
 
 // TODO(dekiel) interfaces need to be clenup up to remove redundancy.
@@ -83,10 +89,67 @@ type Issuer struct {
 	JWKSURL                string `json:"jwks_url" yaml:"jwks_url"`
 	ExpectedJobWorkflowRef string `json:"expected_job_workflow_ref" yaml:"expected_job_workflow_ref"`
 	GithubURL              string `json:"github_url" yaml:"github_url"`
+	// The clientID is used to verify the audience claim in the token.
+	ClientID string `json:"client_id" yaml:"client_id"`
 }
 
-func (i Issuer) GetGithubURL() string {
-	return i.GithubURL
+func (issuer Issuer) GetGithubURL() string {
+	return issuer.GithubURL
+}
+
+// validateIssuer checks if the issuer is valid.
+func (issuer Issuer) validateIssuer(logger LoggerInterface) error {
+	logger.Debugw("Validating issuer", "issuer", issuer)
+
+	if issuer.Name == "" {
+		return fmt.Errorf("issuer name is empty")
+	}
+
+	if err := validateURL(logger, issuer.IssuerURL, "issuer URL"); err != nil {
+		return err
+	}
+
+	if err := validateURL(logger, issuer.JWKSURL, "issuer JWKS URL"); err != nil {
+		return err
+	}
+
+	if issuer.ClientID == "" {
+		return fmt.Errorf("issuer clientID is empty")
+	}
+
+	logger.Debugw("Issuer validation successful", "issuer", issuer)
+
+	return nil
+}
+
+// validateURL checks if the URL is valid and uses https.
+func validateURL(logger LoggerInterface, rawURL, urlType string) error {
+	logger.Debugw("Validating URL", "urlType", urlType, "rawURL", rawURL)
+
+	if rawURL == "" {
+		return fmt.Errorf("%s is empty", urlType)
+	}
+
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return fmt.Errorf("failed parsing %s: %w", urlType, err)
+	}
+
+	if parsedURL.Scheme == "" {
+		return fmt.Errorf("%s scheme is empty", urlType)
+	}
+
+	if parsedURL.Scheme != "https" {
+		return fmt.Errorf("%s is not using https", urlType)
+	}
+
+	if parsedURL.Host == "" {
+		return fmt.Errorf("%s host is empty", urlType)
+	}
+
+	logger.Debugw("URL validation successful", "urlType", urlType, "parsedURL", parsedURL)
+
+	return nil
 }
 
 // VerifierConfig is the configuration for a verifier.
@@ -107,7 +170,6 @@ type TokenProcessor struct {
 	rawToken       string
 	trustedIssuers map[string]Issuer
 	issuer         Issuer
-	verifierConfig VerifierConfig
 	logger         LoggerInterface
 }
 
@@ -192,47 +254,6 @@ func maskToken(token string) string {
 		return "********"
 	}
 	return token[:2] + "********" + token[len(token)-2:]
-}
-
-// NewVerifierConfig creates a new VerifierConfig.
-// It verifies the clientID is not empty.
-func NewVerifierConfig(logger LoggerInterface, clientID string, options ...VerifierConfigOption) (VerifierConfig, error) {
-	if clientID == "" {
-		return VerifierConfig{}, fmt.Errorf("clientID is empty")
-	}
-
-	verifierConfig := VerifierConfig{}
-	verifierConfig.ClientID = clientID
-	verifierConfig.SkipClientIDCheck = false
-	verifierConfig.SkipExpiryCheck = false
-	verifierConfig.SkipIssuerCheck = false
-	verifierConfig.InsecureSkipSignatureCheck = false
-	verifierConfig.SupportedSigningAlgs = SupportedSigningAlgorithms
-
-	logger.Debugw("Created Verifier config with default values",
-		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
-	)
-	logger.Debugw("Applying VerifierConfigOptions")
-	for _, option := range options {
-		err := option(&verifierConfig)
-		if err != nil {
-			return VerifierConfig{}, fmt.Errorf("failed to apply VerifierConfigOption: %w", err)
-		}
-	}
-	logger.Debugw("Applied all VerifierConfigOptions",
-		"clientID", clientID,
-		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
-		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
-		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
-	)
-	return verifierConfig, nil
 }
 
 // Verify verifies the raw OIDC token.
@@ -353,48 +374,31 @@ func (provider *Provider) NewVerifier(logger LoggerInterface, verifierConfig Ver
 	return tokenVerifier, nil
 }
 
-// NewTokenProcessor creates a new TokenProcessor for trusted issuers.
-// It reads the token, gets the issuer from the token, and checks if the issuer is trusted.
-// It verifies the VerifierConfig has a clientID.
+// NewTokenProcessor creates a new TokenProcessor for a trusted issuer.
+// It reads the issuer from the raw token and checks if the issuer is trusted.
+// It verifies the trusted issuer has a non-empty clientID.
 func NewTokenProcessor(
 	logger LoggerInterface,
 	trustedIssuers map[string]Issuer,
 	rawToken string,
-	config VerifierConfig,
 	options ...TokenProcessorOption,
 ) (TokenProcessor, error) {
 	logger.Debugw("Creating token processor")
 	tokenProcessor := TokenProcessor{}
-
 	tokenProcessor.logger = logger
-
 	tokenProcessor.rawToken = rawToken
+
 	logger.Debugw("Added raw token to token processor", "rawToken", maskToken(rawToken))
 
-	tokenProcessor.verifierConfig = config
-	logger.Debugw("Added Verifier config to token processor",
-		"clientID", config.ClientID,
-		"SkipClientIDCheck", config.SkipClientIDCheck,
-		"SkipExpiryCheck", config.SkipExpiryCheck,
-		"SkipIssuerCheck", config.SkipIssuerCheck,
-		"InsecureSkipSignatureCheck", config.InsecureSkipSignatureCheck,
-		"SupportedSigningAlgs", config.SupportedSigningAlgs,
-	)
-	if tokenProcessor.verifierConfig.ClientID == "" {
-		return TokenProcessor{}, errors.New("verifierConfig clientID is empty")
+	tokenProcessor.trustedIssuers = trustedIssuers
+
+	logger.Debugw("Added trusted issuers to token processor", "trustedIssuers", trustedIssuers)
+
+	err := tokenProcessor.setIssuer()
+	if err != nil {
+		return TokenProcessor{}, fmt.Errorf("failed to set issuer: %w", err)
 	}
 
-	tokenProcessor.trustedIssuers = trustedIssuers
-	issuer, err := tokenProcessor.tokenIssuer(SupportedSigningAlgorithms)
-	if err != nil {
-		return TokenProcessor{}, fmt.Errorf("failed to get issuer from token: %w", err)
-	}
-	logger.Debugw("Got issuer from token", "issuer", issuer)
-	trustedIssuer, err := tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers)
-	if err != nil {
-		return TokenProcessor{}, err
-	}
-	tokenProcessor.issuer = trustedIssuer
 	logger.Debugw("Added trusted issuer to TokenProcessor", "issuer", tokenProcessor.issuer)
 
 	if len(options) > 0 {
@@ -409,7 +413,87 @@ func NewTokenProcessor(
 	}
 
 	logger.Debugw("Created token processor", "issuer", tokenProcessor.issuer)
+
 	return tokenProcessor, nil
+}
+
+// setIssuer sets the issuer for the token processor.
+// It reads the issuer from the raw token and checks if the issuer is trusted and valid.
+func (tokenProcessor *TokenProcessor) setIssuer() error {
+	logger := tokenProcessor.logger
+	issuer, err := tokenProcessor.tokenIssuer(SupportedSigningAlgorithms)
+	if err != nil {
+		return fmt.Errorf("failed to get issuer from token: %w", err)
+	}
+
+	logger.Debugw("Got issuer from token", "issuer", issuer)
+
+	trustedIssuer, err := tokenProcessor.isTrustedIssuer(issuer, tokenProcessor.trustedIssuers)
+	if err != nil {
+		return err
+	}
+
+	logger.Debugw("Matched issuer with trusted issuer", "trustedIssuer", trustedIssuer)
+
+	err = trustedIssuer.validateIssuer(logger)
+	if err != nil {
+		return errors.New("trusted issuer clientID is empty")
+	}
+
+	logger.Debugw("Verified trusted issuer clientID", "clientID", trustedIssuer.ClientID)
+
+	tokenProcessor.issuer = trustedIssuer
+
+	return nil
+}
+
+// NewVerifierConfig creates a new VerifierConfig for trusted issuer.
+// It verifies if the clientID in the tokenProcessor is not empty.
+func (tokenProcessor *TokenProcessor) NewVerifierConfig(options ...VerifierConfigOption) (VerifierConfig, error) {
+	logger := tokenProcessor.logger
+
+	if tokenProcessor.issuer.ClientID == "" {
+		return VerifierConfig{}, fmt.Errorf("clientID is empty")
+	}
+
+	logger.Debugw("TokenProcessor clientID is not empty", "clientID", tokenProcessor.issuer.ClientID)
+
+	verifierConfig := VerifierConfig{}
+	verifierConfig.ClientID = tokenProcessor.issuer.ClientID
+	verifierConfig.SkipClientIDCheck = false
+	verifierConfig.SkipExpiryCheck = false
+	verifierConfig.SkipIssuerCheck = false
+	verifierConfig.InsecureSkipSignatureCheck = false
+	verifierConfig.SupportedSigningAlgs = SupportedSigningAlgorithms
+
+	logger.Debugw("Created Verifier config with default values",
+		"clientID", verifierConfig.ClientID,
+		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
+		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
+		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
+		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
+		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+	)
+
+	logger.Debugw("Applying VerifierConfigOptions")
+
+	for _, option := range options {
+		err := option(&verifierConfig)
+		if err != nil {
+			return VerifierConfig{}, fmt.Errorf("failed to apply VerifierConfigOption: %w", err)
+		}
+	}
+
+	logger.Debugw("Applied all VerifierConfigOptions",
+		"clientID", verifierConfig.ClientID,
+		"SkipClientIDCheck", verifierConfig.SkipClientIDCheck,
+		"SkipExpiryCheck", verifierConfig.SkipExpiryCheck,
+		"SkipIssuerCheck", verifierConfig.SkipIssuerCheck,
+		"InsecureSkipSignatureCheck", verifierConfig.InsecureSkipSignatureCheck,
+		"SupportedSigningAlgs", verifierConfig.SupportedSigningAlgs,
+	)
+
+	return verifierConfig, nil
 }
 
 // tokenIssuer gets the issuer from the token.
