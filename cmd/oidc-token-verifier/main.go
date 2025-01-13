@@ -119,7 +119,9 @@ func (opts *options) verifyToken() error {
 		return err
 	}
 
-	logger.Infow("Token processor created for trusted issuer", "issuer", tokenProcessor.Issuer())
+	logger = logger.With("issuer", tokenProcessor.Issuer(), "client-id", tokenProcessor.GetIssuer().ClientID, "github-url", tokenProcessor.GetIssuer().GithubURL)
+
+	logger.Infow("Token processor created for trusted issuer")
 
 	// TODO (dekiel): implement writing output data to the file. This will give us separated clear output for a data and logs.
 	fmt.Printf("GITHUB_URL=%s\n", tokenProcessor.GetIssuer().GetGithubURL())
