@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -23,6 +24,7 @@ type options struct {
 	token                   string
 	debug                   bool
 	oidcTokenExpirationTime int // OIDC token expiration time in minutes
+	outputPath              string
 }
 
 var (
@@ -41,6 +43,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().StringVarP(&opts.token, "token", "t", "", "OIDC token to verify")
 	rootCmd.PersistentFlags().BoolVarP(&opts.debug, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().IntVarP(&opts.oidcTokenExpirationTime, "oidc-token-expiration-time", "e", 10, "OIDC token expiration time in minutes")
+	rootCmd.PersistentFlags().StringVarP(&opts.outputPath, "output-path", "o", "/oidc-verifier-output.json", "Path to the file where the output data will be saved")
 	return rootCmd
 }
 
@@ -63,6 +66,67 @@ func init() {
 	rootCmd = NewRootCmd()
 	verifyCmd = NewVerifyCmd()
 	rootCmd.AddCommand(verifyCmd)
+}
+
+type TrustedIssuerProvider interface {
+	GetIssuer() tioidc.Issuer
+}
+
+// output is a struct that holds the output values that are printed to the file.
+// The data provided in this struct is relevant for the component that uses the OIDC token verifier.
+// The output values are printed to the file in the json format.
+type output struct {
+	GithubURL string `json:"github_url" yaml:"github_url"`
+	ClientID  string `json:"client_id" yaml:"client_id"`
+}
+
+// setGithubURLOutput sets the Github URL value to the output struct.
+// The Github URL value is read from the TokenProcessor trusted issuer.
+func (output *output) setGithubURLOutput(logger Logger, issuerProvider TrustedIssuerProvider) error {
+	var githubURL string
+
+	if githubURL = issuerProvider.GetIssuer().GetGithubURL(); githubURL == "" {
+		return fmt.Errorf("github URL not found in the tokenProcessor trusted issuer: %s", issuerProvider.GetIssuer())
+	}
+
+	output.GithubURL = githubURL
+
+	logger.Debugw("Set output Github URL value", "githubURL", output.GithubURL)
+
+	return nil
+}
+
+// setClientIDOutput sets the client ID value to the output struct.
+// The client ID value is read from the TokenProcessor trusted issuer.
+func (output *output) setClientIDOutput(logger Logger, issuerProvider TrustedIssuerProvider) error {
+	var clientID string
+	if clientID = issuerProvider.GetIssuer().ClientID; clientID == "" {
+		return fmt.Errorf("client ID not found in the tokenProcessor trusted issuer: %s", issuerProvider.GetIssuer())
+	}
+
+	output.ClientID = clientID
+
+	logger.Debugw("Set output client ID value", "clientID", output.ClientID)
+
+	return nil
+}
+
+// writeOutputFile writes the output values to the json file.
+// The file path is specified by the --output-path flag.
+func (output *output) writeOutputFile(logger Logger, path string) error {
+	outputFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	err = json.NewEncoder(outputFile).Encode(output)
+	if err != nil {
+		return err
+	}
+
+	logger.Debugw("Output values written to the file", "path", path, "output", output)
+
+	return nil
 }
 
 // isTokenProvided checks if the token flag is set.
@@ -123,9 +187,6 @@ func (opts *options) verifyToken() error {
 
 	logger.Infow("Token processor created for trusted issuer")
 
-	// TODO (dekiel): implement writing output data to the file. This will give us separated clear output for a data and logs.
-	fmt.Printf("GITHUB_URL=%s\n", tokenProcessor.GetIssuer().GetGithubURL())
-
 	// Create a new verifier config that will be used to verify the token.
 	// The standard expiration check is skipped.
 	// We use custom expiration time check to allow longer token expiration time than the value in the token.
@@ -179,8 +240,27 @@ func (opts *options) verifyToken() error {
 	if err != nil {
 		return err
 	}
+
 	logger.Infow("Token claims expectations verified successfully")
 	logger.Infow("All token checks passed successfully")
+
+	outputData := output{}
+	err = outputData.setGithubURLOutput(logger, &tokenProcessor)
+	if err != nil {
+		return err
+	}
+
+	err = outputData.setClientIDOutput(logger, &tokenProcessor)
+	if err != nil {
+		return err
+	}
+
+	err = outputData.writeOutputFile(logger, opts.outputPath)
+	if err != nil {
+		return err
+	}
+
+	logger.Infow("Output data written to the file", "path", opts.outputPath)
 
 	return nil
 }
