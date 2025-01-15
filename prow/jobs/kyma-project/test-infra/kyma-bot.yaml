@@ -22,7 +22,7 @@ presubmits: # runs on PRs
       spec:
         serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/usersmapchecker:v20250113-d40ee930"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/usersmapchecker:v20250115-3f681778"
             imagePullPolicy: Always
             securityContext:
               privileged: false
