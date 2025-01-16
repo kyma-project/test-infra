@@ -308,7 +308,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 		return nil
 	}
 	updateYAMLFile := func(name string) error {
-		if (strings.HasSuffix(name, ".yaml") || strings.HasSuffix(name, ".yml") || strings.HasSuffix(name, ".tf")) || strings.HasSuffix(name, ".tfvars")) && !isUnderPath(name, o.ExcludedConfigPaths) {
+		if (strings.HasSuffix(name, ".yaml") || strings.HasSuffix(name, ".yml") || strings.HasSuffix(name, ".tf") || strings.HasSuffix(name, ".tfvars")) && !isUnderPath(name, o.ExcludedConfigPaths) {
 			return updateFile(name)
 		}
 		return nil
