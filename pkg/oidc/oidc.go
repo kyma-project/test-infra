@@ -37,9 +37,17 @@ var (
 		GithubURL:              "https://github.tools.sap",
 		ClientID:               "image-builder",
 	}
+	SREJenkinsOIDCIssuer = Issuer{
+		Name:      "sre-jenkins",
+		IssuerURL: "https://storage.googleapis.com/kyma-mps-prod-artifacts/jaas/oidc",
+		JWKSURL:   "https://storage.googleapis.com/kyma-mps-prod-artifacts/jaas/oidc/jwks",
+		GithubURL: "https://github.tools.sap",
+		ClientID:  "sre-jenkins-image-builder",
+	}
 	TrustedOIDCIssuers = map[string]Issuer{
 		GithubOIDCIssuer.IssuerURL:         GithubOIDCIssuer,
 		GithubToolsSAPOIDCIssuer.IssuerURL: GithubToolsSAPOIDCIssuer,
+		SREJenkinsOIDCIssuer.IssuerURL:     SREJenkinsOIDCIssuer,
 	}
 )
 
@@ -325,7 +333,7 @@ func NewClaims(logger LoggerInterface) Claims {
 func (claims *Claims) validateExpectations(issuer Issuer) error {
 	logger := claims.LoggerInterface
 	logger.Debugw("Validating job_workflow_ref claim against expected value", "job_workflow_ref", claims.JobWorkflowRef, "expected", issuer.ExpectedJobWorkflowRef)
-	if claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
+	if issuer.ExpectedJobWorkflowRef != "" && claims.JobWorkflowRef != issuer.ExpectedJobWorkflowRef {
 		return fmt.Errorf("job_workflow_ref claim expected value validation failed, expected: %s, provided: %s", claims.JobWorkflowRef, issuer.ExpectedJobWorkflowRef)
 	}
 	logger.Debugw("Claims validated successfully")
