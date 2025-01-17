@@ -18,6 +18,7 @@ import (
 type Logger interface {
 	logging.StructuredLoggerInterface
 	logging.WithLoggerInterface
+	Sync() error
 }
 
 type options struct {
