@@ -6,10 +6,10 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250120-7cbeb783
     - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250120-7cbeb783
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250120-7cbeb783
-    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250120-7cbeb783
+    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250120-6318b30f
     - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250120-7cbeb783
     - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250120-7cbeb783
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250120-7cbeb783
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250120-724a9f0b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250120-7cbeb783
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250108-fae88ec9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250108-fae88ec9
