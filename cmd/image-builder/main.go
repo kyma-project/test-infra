@@ -255,7 +255,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetImageTags(options.tags.String())
 	}
 
-	if options.ciSystem == GithubActions {
+	if options.oidcToken != "" {
 		templateParameters.SetAuthorization(options.oidcToken)
 	}
 
