@@ -345,6 +345,9 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
 	}
 
+	// TODO(kacpermalachowski): For PRs this is a head commit, not a base commit.
+	// There is no reliable way to get the base commit SHA in Jenkins.
+	// See: https://github.tools.sap/kyma/oci-image-builder/issues/165
 	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
 	if !present {
 		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
@@ -367,14 +370,10 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		if !present {
 			return GitStateConfig{}, fmt.Errorf("CHANGE_BRANCH environment variable is not set, please set it to valid base branch name")
 		}
-		pullRequestHeadSHA, present := os.LookupEnv("CHANGE_HEAD_SHA")
-		if !present {
-			return GitStateConfig{}, fmt.Errorf("CHANGE_HEAD_SHA environment variable is not set, please set it to valid commit SHA")
-		}
 		gitState.JobType = "presubmit"
 		gitState.PullRequestNumber = pullNumber
 		gitState.BaseCommitRef = baseRef
-		gitState.PullHeadCommitSHA = pullRequestHeadSHA
+		gitState.PullHeadCommitSHA = baseCommitSHA
 		gitState.isPullRequest = true
 	}
 
