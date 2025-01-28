@@ -432,6 +432,7 @@ tide:
         - kyma-project/istio
         - kyma-project/api-gateway
         - kyma-project/networking-dev-tools
+        - kyma-project/test-infra
       reviewApprovedRequired: true
     - labels:
         - lgtm
