@@ -1,0 +1,26 @@
+name: all-checks-passed
+on:
+  pull_request:
+    types:
+      [
+        opened,
+        synchronize,
+        reopened,
+        ready_for_review,
+        edited,
+        labeled,
+        milestoned,
+      ]
+
+jobs:
+  all-checks:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - uses: wechuli/allcheckspassed@2e5e8bbc775f5680ed5d02e3a22e2fc7219792ac
+        with:
+          delay: '3'
+          retries: '30'
+          polling_interval: '1'
