@@ -921,7 +921,7 @@ func main() {
 		}
 
 		if o.adoStateOutput {
-			adopipelines.SetVariable("signing_success", "failed", false, true)
+			adopipelines.SetVariable("signing_success", true, false, true)
 		}
 		os.Exit(0)
 	}
