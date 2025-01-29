@@ -65,6 +65,12 @@ type options struct {
 	dryRun                  bool
 	tagsOutputFile          string
 	useGoInternalSAPModules bool
+	// buildReportPath is a path to the file where the build report will be saved
+	// build report will be used by SRE team to gather information about the build
+	buildReportPath string
+	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
+	// reported as an output variable in Azure DevOps
+	adoStateOutput bool
 }
 
 type Logger interface {
@@ -841,6 +847,8 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
 	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
+	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
+	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
 
 	return flagSet
 }
@@ -904,8 +912,16 @@ func main() {
 	if o.signOnly {
 		err = signImages(&o, o.imagesToSign)
 		if err != nil {
+			if o.adoStateOutput {
+				adopipelines.SetVariable("signing_success", false, false, true)
+			}
+
 			fmt.Println(err)
 			os.Exit(1)
+		}
+
+		if o.adoStateOutput {
+			adopipelines.SetVariable("signing_success", "failed", false, true)
 		}
 		os.Exit(0)
 	}
