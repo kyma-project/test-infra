@@ -22,6 +22,7 @@ import (
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
+	"github.com/kyma-project/test-infra/pkg/imagebuilder"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
@@ -336,6 +337,7 @@ func buildInADO(o options) error {
 	var (
 		pipelineRunResult *pipelines.RunResult
 		logs              string
+		buildReport       *imagebuilder.BuildReport
 	)
 	if !o.dryRun {
 		ctx := context.Background()
@@ -377,6 +379,12 @@ func buildInADO(o options) error {
 		} else {
 			fmt.Printf("ADO pipeline image build logs:\n%s", logs)
 		}
+
+		// Parse the build report from the ADO pipeline run logs.
+		buildReport, err = imagebuilder.NewBuildReportFromLogs(logs)
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed parsing build report from ADO pipeline run logs, err: %s", err)
+		}
 	} else {
 		dryRunPipelineRunResult := pipelines.RunResult("Succeeded")
 		pipelineRunResult = &dryRunPipelineRunResult
@@ -387,9 +395,8 @@ func buildInADO(o options) error {
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
 		fmt.Println("Setting GitHub outputs.")
-		var images []string
+		images := buildReport.GetImages()
 		if !o.dryRun {
-			images = extractImagesFromADOLogs(logs)
 			fmt.Printf("Extracted built images from ADO logs: %v\n", images)
 		} else {
 			fmt.Println("Running in dry-run mode. Skipping extracting images and results from ADO.")
@@ -410,6 +417,13 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot set adoResult GitHub output: %w", err)
 		}
 		fmt.Println("adoResult GitHub output set")
+	}
+
+	if o.buildReportPath != "" {
+		err = imagebuilder.WriteReportToFile(buildReport, o.buildReportPath)
+		if err != nil {
+			return fmt.Errorf("failed writing build report to file: %w", err)
+		}
 	}
 
 	// Handle the ADO pipeline run failure.
