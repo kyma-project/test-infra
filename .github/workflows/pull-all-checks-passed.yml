@@ -13,5 +13,5 @@ on:
       ]
 
 jobs:
-  pull-all-checks:
+  all-checks:
     uses: ./.github/workflows/all-checks-passed.yml
