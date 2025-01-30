@@ -433,6 +433,7 @@ tide:
         - kyma-project/api-gateway
         - kyma-project/networking-dev-tools
         - kyma-project/test-infra
+        - kyma-project/kyma
       reviewApprovedRequired: true
     - labels:
         - lgtm
