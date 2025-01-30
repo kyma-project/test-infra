@@ -14,13 +14,11 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
-	"github.com/kyma-project/test-infra/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/imagebuilder"
 	"github.com/kyma-project/test-infra/pkg/logging"
@@ -1131,25 +1129,4 @@ func getDockerfileDirPath(logger Logger, o options) (string, error) {
 	dockerfileDirPath := filepath.Join(context, filepath.Dir(o.dockerfile))
 	logger.Debugw("dockerfile directory path constructed", "dockerfileDirPath", dockerfileDirPath)
 	return dockerfileDirPath, err
-}
-
-// extractImagesFromADOLogs extract docker images from Azure DevOps logs to allow us prepare list of images built in ADO backend
-// The list can be than saved and provided as input for developers to use in next steps of their workflows.
-// ADO Logs that we fetch anyway are the simplest solution to get such list from ADO backend.
-func extractImagesFromADOLogs(logs string) []string {
-	re := regexp.MustCompile(`--images-to-sign=(([a-z0-9]+(?:[.-][a-z0-9]+)*/)*([a-z0-9]+(?:[.-][a-z0-9]+)*)(?::[a-z0-9.-]+)?/([a-z0-9-]+)/([a-z0-9-]+)(?::[a-zA-Z0-9.-]+))`)
-	matches := re.FindAllStringSubmatch(logs, -1)
-
-	images := []string{}
-	if len(matches) > 0 {
-		for _, match := range matches {
-			if len(match) > 1 {
-				images = append(images, match[1])
-			}
-		}
-	}
-
-	images = extractimageurls.UniqueImages(images)
-
-	return images
 }
