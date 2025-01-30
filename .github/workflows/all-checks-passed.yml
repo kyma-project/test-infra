@@ -2,7 +2,7 @@ name: pull-all-checks-passed
 on: workflow_call
 
 jobs:
-  all-checks-reusable:
+  all-checks:
     runs-on: ubuntu-latest
     permissions:
       checks: read
