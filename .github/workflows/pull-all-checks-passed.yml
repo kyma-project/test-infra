@@ -1,0 +1,17 @@
+name: pull-all-checks-passed
+on:
+  pull_request:
+    types:
+      [
+        opened,
+        synchronize,
+        reopened,
+        ready_for_review,
+        edited,
+        labeled,
+        milestoned,
+      ]
+
+jobs:
+  pull-all-checks:
+    uses: ./.github/workflows/all-checks-passed.yml

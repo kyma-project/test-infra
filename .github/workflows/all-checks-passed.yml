@@ -1,16 +1,5 @@
-name: all-checks-passed
-on:
-  pull_request:
-    types:
-      [
-        opened,
-        synchronize,
-        reopened,
-        ready_for_review,
-        edited,
-        labeled,
-        milestoned,
-      ]
+name: pull-all-checks-passed
+on: workflow_call
 
 jobs:
   all-checks:
