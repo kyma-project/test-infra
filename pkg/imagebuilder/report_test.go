@@ -19,7 +19,7 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/p
 ---IMAGE BUILD REPORT---
 {
     "status": "Succeeded",
-		"pushed": true,
+    "pushed": true,
     "signed": true,
     "is_production": true,
     "image_spec": {
