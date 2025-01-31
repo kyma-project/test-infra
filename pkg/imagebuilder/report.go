@@ -72,13 +72,8 @@ func WriteReportToFile(report *BuildReport, path string) error {
 		return fmt.Errorf("failed to marshal report: %w", err)
 	}
 
-	file, err := os.Open(path)
+	err = os.WriteFile(path, data, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("failed to open file: %w", err)
-	}
-	defer file.Close()
-
-	if _, err := file.Write(data); err != nil {
 		return fmt.Errorf("failed to write report to file: %w", err)
 	}
 

@@ -383,6 +383,8 @@ func buildInADO(o options) error {
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed parsing build report from ADO pipeline run logs, err: %s", err)
 		}
+
+		o.logger.Debugw("Parsed build report from ADO logs", "buildReport", buildReport)
 	} else {
 		dryRunPipelineRunResult := pipelines.RunResult("Succeeded")
 		pipelineRunResult = &dryRunPipelineRunResult
@@ -394,9 +396,10 @@ func buildInADO(o options) error {
 	if o.ciSystem == GithubActions {
 		fmt.Println("Setting GitHub outputs.")
 		images := buildReport.GetImages()
-		if !o.dryRun {
-			fmt.Printf("Extracted built images from ADO logs: %v\n", images)
-		} else {
+
+		o.logger.Debugw("Extracted built images from ADO logs", "images", images)
+
+		if o.dryRun {
 			fmt.Println("Running in dry-run mode. Skipping extracting images and results from ADO.")
 			images = []string{"registry/repo/image1:tag1", "registry/repo/image2:tag2"}
 		}
