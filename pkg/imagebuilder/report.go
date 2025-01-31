@@ -11,10 +11,16 @@ import (
 var reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---\n(.*)\n---END OF IMAGE BUILD REPORT---`)
 
 type BuildReport struct {
-	Status       string    `json:"status"`
-	IsSigned     bool      `json:"signed"`
-	IsProduction bool      `json:"is_production"`
-	ImageSpec    ImageSpec `json:"image_spec"`
+	// Status is the overall status of the build including signing and pushing
+	Status string `json:"status"`
+	// IsPushed indicates whether the image was pushed to a registry
+	IsPushed bool `json:"pushed"`
+	// IsSigned indicates whether the image was signed
+	IsSigned bool `json:"signed"`
+	// IsProduction indicates whether the image is a production image
+	IsProduction bool `json:"is_production"`
+	// ImageSpec contains the image name, tags, and repository path
+	ImageSpec ImageSpec `json:"image_spec"`
 }
 
 type ImageSpec struct {
