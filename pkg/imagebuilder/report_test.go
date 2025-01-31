@@ -51,18 +51,26 @@ var _ = Describe("Report", func() {
 
 			Expect(actual).To(Equal(expectedReport))
 		})
+
+		It("returns an error if the log does not contain the image build report", func() {
+			logs := `2025-01-31T08:32:23.5327056Z ##[section]Starting: prepare_image_build_report`
+
+			_, err := NewBuildReportFromLogs(logs)
+			Expect(err).To(HaveOccurred())
+		})
 	})
 
 	Describe("GetImages", func() {
-		report := &BuildReport{
-			ImageSpec: ImageSpec{
-				Name:           "ginkgo-test-image/ginkgo",
-				Tags:           []string{"1.23.0-50049457", "wartosc", "innytag", "v20250129-50049457", "1.23.0"},
-				RepositoryPath: "europe-docker.pkg.dev/kyma-project/prod/",
-			},
-		}
 
-		It("returns the list of images", func() {
+		It("returns the list of images from build report", func() {
+			report := &BuildReport{
+				ImageSpec: ImageSpec{
+					Name:           "ginkgo-test-image/ginkgo",
+					Tags:           []string{"1.23.0-50049457", "wartosc", "innytag", "v20250129-50049457", "1.23.0"},
+					RepositoryPath: "europe-docker.pkg.dev/kyma-project/prod/",
+				},
+			}
+
 			expectedImages := []string{
 				"europe-docker.pkg.dev/kyma-project/prod/ginkgo-test-image/ginkgo:1.23.0-50049457",
 				"europe-docker.pkg.dev/kyma-project/prod/ginkgo-test-image/ginkgo:wartosc",
@@ -75,13 +83,37 @@ var _ = Describe("Report", func() {
 		})
 
 		It("returns an empty list if there are no tags", func() {
-			report.ImageSpec.Tags = []string{}
+			report := &BuildReport{
+				ImageSpec: ImageSpec{
+					Name:           "ginkgo-test-image/ginkgo",
+					Tags:           []string{},
+					RepositoryPath: "europe-docker.pkg.dev/kyma-project/prod/",
+				},
+			}
+
 			Expect(report.GetImages()).To(BeEmpty())
 		})
+	})
 
-		It("returns an empty list if build report is nil", func() {
-			var nilReport *BuildReport
-			Expect(nilReport.GetImages()).To(BeEmpty())
+	Describe("WriteReportToFile", func() {
+		report := &BuildReport{
+			Status:       "Succeeded",
+			IsPushed:     true,
+			IsSigned:     false,
+			IsProduction: false,
+			ImageSpec: ImageSpec{
+				Name:           "github-tools-sap/conduit-cli",
+				Tags:           []string{"PR-477"},
+				RepositoryPath: "europe-docker.pkg.dev/kyma-project/dev/",
+			},
+		}
+
+		It("writes the report to a file", func() {
+			path := "/tmp/report.json"
+			err := WriteReportToFile(report, path)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(path).To(BeAnExistingFile())
 		})
 	})
 })

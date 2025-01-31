@@ -11,7 +11,7 @@ import (
 var (
 	reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---\n(.*)\n---END OF IMAGE BUILD REPORT---`)
 
-	timestampRegex = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s+`)
+	timestampRegex = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s`)
 )
 
 type BuildReport struct {
@@ -36,10 +36,6 @@ type ImageSpec struct {
 func (br *BuildReport) GetImages() []string {
 	var images []string
 
-	if br == nil {
-		return images
-	}
-
 	for _, tag := range br.ImageSpec.Tags {
 		images = append(images, fmt.Sprintf("%s%s:%s", br.ImageSpec.RepositoryPath, br.ImageSpec.Name, tag))
 	}
@@ -54,7 +50,7 @@ func NewBuildReportFromLogs(log string) (*BuildReport, error) {
 	// Find the report in the log
 	matches := reportRegex.FindStringSubmatch(log)
 	if len(matches) < 2 {
-		return nil, nil
+		return nil, fmt.Errorf("no image build report found in log")
 	}
 
 	// Parse the report data
@@ -72,13 +68,8 @@ func WriteReportToFile(report *BuildReport, path string) error {
 		return fmt.Errorf("failed to marshal report: %w", err)
 	}
 
-	file, err := os.Open(path)
+	err = os.WriteFile(path, data, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("failed to open file: %w", err)
-	}
-	defer file.Close()
-
-	if _, err := file.Write(data); err != nil {
 		return fmt.Errorf("failed to write report to file: %w", err)
 	}
 
