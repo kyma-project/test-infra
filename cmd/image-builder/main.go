@@ -399,25 +399,22 @@ func buildInADO(o options) error {
 
 		o.logger.Debugw("Extracted built images from ADO logs", "images", images)
 
-		if o.dryRun {
-			fmt.Println("Running in dry-run mode. Skipping extracting images and results from ADO.")
-			images = []string{"registry/repo/image1:tag1", "registry/repo/image2:tag2"}
-		}
 		data, err := json.Marshal(images)
 		if err != nil {
 			return fmt.Errorf("cannot marshal list of images: %w", err)
 		}
 
+		o.logger.Debugw("Set GitHub outputs", "images", string(data), "adoResult", string(*pipelineRunResult))
+
 		err = actions.SetOutput("images", string(data))
 		if err != nil {
 			return fmt.Errorf("cannot set images GitHub output: %w", err)
 		}
-		fmt.Println("images GitHub output set")
+
 		err = actions.SetOutput("adoResult", string(*pipelineRunResult))
 		if err != nil {
 			return fmt.Errorf("cannot set adoResult GitHub output: %w", err)
 		}
-		fmt.Println("adoResult GitHub output set")
 	}
 
 	if o.buildReportPath != "" {

@@ -51,6 +51,13 @@ var _ = Describe("Report", func() {
 
 			Expect(actual).To(Equal(expectedReport))
 		})
+
+		It("returns an error if the log does not contain the image build report", func() {
+			logs := `2025-01-31T08:32:23.5327056Z ##[section]Starting: prepare_image_build_report`
+
+			_, err := NewBuildReportFromLogs(logs)
+			Expect(err).To(HaveOccurred())
+		})
 	})
 
 	Describe("GetImages", func() {
@@ -85,11 +92,6 @@ var _ = Describe("Report", func() {
 			}
 
 			Expect(report.GetImages()).To(BeEmpty())
-		})
-
-		It("returns an empty list if build report is nil", func() {
-			var nilReport *BuildReport
-			Expect(nilReport.GetImages()).To(BeEmpty())
 		})
 	})
 
