@@ -8,7 +8,11 @@ import (
 )
 
 // reportRegex is a regular expression that matches the image build report
-var reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---\n(.*)\n---END OF IMAGE BUILD REPORT---`)
+var (
+	reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---\n(.*)\n---END OF IMAGE BUILD REPORT---`)
+
+	timestampRegex = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s+`)
+)
 
 type BuildReport struct {
 	// Status is the overall status of the build including signing and pushing
@@ -45,7 +49,7 @@ func (br *BuildReport) GetImages() []string {
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
 	// Strip all timestamps from log
-	log = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s+`).ReplaceAllString(log, "")
+	log = timestampRegex.ReplaceAllString(log, "")
 
 	// Find the report in the log
 	matches := reportRegex.FindStringSubmatch(log)
