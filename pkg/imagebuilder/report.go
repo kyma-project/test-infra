@@ -44,11 +44,16 @@ func (br *BuildReport) GetImages() []string {
 }
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
+	// Strip all timestamps from log
+	log = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s+`).ReplaceAllString(log, "")
+
+	// Find the report in the log
 	matches := reportRegex.FindStringSubmatch(log)
 	if len(matches) < 2 {
 		return nil, nil
 	}
 
+	// Parse the report data
 	var report BuildReport
 	if err := json.Unmarshal([]byte(matches[1]), &report); err != nil {
 		return nil, err
