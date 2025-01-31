@@ -19,6 +19,7 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/p
 ---IMAGE BUILD REPORT---
 {
     "status": "Succeeded",
+		"pushed": true,
     "signed": true,
     "is_production": true,
     "image_spec": {
@@ -38,6 +39,7 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/p
 Finishing: prepare_image_build_report`
 		expectedReport := &BuildReport{
 			Status:       "Succeeded",
+			IsPushed:     true,
 			IsSigned:     true,
 			IsProduction: true,
 			ImageSpec: ImageSpec{
