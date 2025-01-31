@@ -36,10 +36,6 @@ type ImageSpec struct {
 func (br *BuildReport) GetImages() []string {
 	var images []string
 
-	if br == nil {
-		return images
-	}
-
 	for _, tag := range br.ImageSpec.Tags {
 		images = append(images, fmt.Sprintf("%s%s:%s", br.ImageSpec.RepositoryPath, br.ImageSpec.Name, tag))
 	}
