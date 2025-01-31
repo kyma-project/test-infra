@@ -378,6 +378,7 @@ func buildInADO(o options) error {
 			fmt.Printf("ADO pipeline image build logs:\n%s", logs)
 		}
 
+		fmt.Println("Getting build report.")
 		// Parse the build report from the ADO pipeline run logs.
 		buildReport, err = imagebuilder.NewBuildReportFromLogs(logs)
 		if err != nil {

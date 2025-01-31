@@ -9,7 +9,7 @@ import (
 
 // reportRegex is a regular expression that matches the image build report
 var (
-	reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---\n(.*)\n---END OF IMAGE BUILD REPORT---`)
+	reportRegex = regexp.MustCompile(`(?s)---IMAGE BUILD REPORT---(.*)---END OF IMAGE BUILD REPORT---`)
 
 	timestampRegex = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s`)
 )
@@ -50,7 +50,7 @@ func NewBuildReportFromLogs(log string) (*BuildReport, error) {
 	// Find the report in the log
 	matches := reportRegex.FindStringSubmatch(log)
 	if len(matches) < 2 {
-		return nil, fmt.Errorf("no image build report found in log")
+		return nil, fmt.Errorf("failed to find image build report in log")
 	}
 
 	// Parse the report data
