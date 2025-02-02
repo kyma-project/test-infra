@@ -19,7 +19,7 @@ func TestLoadSecurityConfig(t *testing.T) {
 			ExpectedConfig: &SecurityConfig{
 				ModuleName: "test-infra",
 				Images:     []string{"europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee"},
-				Whitesource: Whitesource{
+				Mend: Mend{
 					Language:    "golang-mod",
 					SubProjects: true,
 					Exclude:     []string{"**/examples/**"},
@@ -39,6 +39,27 @@ whitesource:
 			WantErr:        true,
 			ExpectedConfig: nil,
 			FileContent:    ``,
+		},
+		{
+			Name:    "Valid config with mend, pass",
+			WantErr: false,
+			ExpectedConfig: &SecurityConfig{
+				ModuleName: "test-infra",
+				Images:     []string{"europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee"},
+				Mend: Mend{
+					Language:    "golang-mod",
+					SubProjects: true,
+					Exclude:     []string{"**/examples/**"},
+				},
+			},
+			FileContent: `module-name: test-infra
+protecode:
+  - europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee
+mend:
+  language: golang-mod
+  subprojects: true
+  exclude:
+    - "**/examples/**"`,
 		},
 	}
 
