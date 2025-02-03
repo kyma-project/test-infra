@@ -52,6 +52,7 @@ func (config *SecurityConfig) UnmarshalYAML(value *yaml.Node) error {
 	config.Kind = cfg.Kind
 	config.Images = cfg.Images
 	config.Mend = cfg.Mend
+	config.CheckmarxOne = cfg.CheckmarxOne
 
 	if len(cfg.Protecode) > 0 {
 		config.Images = cfg.Protecode
