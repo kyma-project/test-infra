@@ -2,15 +2,15 @@ module-name: test-infra
 rc-tag: rc-tag
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250131-885542fa
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250131-885542fa
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250203-448df428
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250203-448df428
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250108-fae88ec9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250108-fae88ec9
 mend:
