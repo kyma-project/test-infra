@@ -53,7 +53,7 @@ whitesource:
 				},
 			},
 			FileContent: `module-name: test-infra
-protecode:
+bdba:
   - europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee
 mend:
   language: golang-mod
