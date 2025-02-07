@@ -345,18 +345,6 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
 	}
 
-	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
-	if !present {
-		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
-	}
-
-	gitState := GitStateConfig{
-		RepositoryName:  repo,
-		RepositoryOwner: owner,
-		JobType:         "postsubmit",
-		BaseCommitSHA:   baseCommitSHA,
-	}
-
 	if isPullRequest {
 		pullNumber, err := strconv.Atoi(prID)
 		if err != nil {
@@ -370,22 +358,39 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 
 		// In Jenkins, the GIT_COMMIT is head commit SHA for pull request
 		// See: https://github.tools.sap/kyma/oci-image-builder/issues/165
-		headCommitSHA := baseCommitSHA
+		headCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid head commit SHA")
+		}
 
-		baseCommitSHA, present = os.LookupEnv("CHANGE_BASE_SHA")
+		baseCommitSHA, present := os.LookupEnv("CHANGE_BASE_SHA")
 		if !present {
 			return GitStateConfig{}, fmt.Errorf("CHANGE_BASE_SHA environment variable is not set, please set it to valid base commit SHA")
 		}
 
-		gitState.JobType = "presubmit"
-		gitState.PullRequestNumber = pullNumber
-		gitState.BaseCommitRef = baseRef
-		gitState.BaseCommitSHA = baseCommitSHA
-		gitState.PullHeadCommitSHA = headCommitSHA
-		gitState.isPullRequest = true
-	}
+		return GitStateConfig{
+			RepositoryName:    repo,
+			RepositoryOwner:   owner,
+			JobType:           "presubmit",
+			PullRequestNumber: pullNumber,
+			BaseCommitRef:     baseRef,
+			BaseCommitSHA:     baseCommitSHA,
+			PullHeadCommitSHA: headCommitSHA,
+			isPullRequest:     true,
+		}, nil
+	} else {
+		baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
+		}
 
-	return gitState, nil
+		return GitStateConfig{
+			RepositoryName:  repo,
+			RepositoryOwner: owner,
+			JobType:         "postsubmit",
+			BaseCommitSHA:   baseCommitSHA,
+		}, nil
+	}
 }
 
 func extractOwnerAndRepoFromGitURL(logger Logger, gitURL string) (string, string, error) {
