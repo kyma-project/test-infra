@@ -345,6 +345,11 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
 	}
 
+	gitState := GitStateConfig{
+		RepositoryName:  repo,
+		RepositoryOwner: owner,
+	}
+
 	if isPullRequest {
 		pullNumber, err := strconv.Atoi(prID)
 		if err != nil {
@@ -368,16 +373,14 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 			return GitStateConfig{}, fmt.Errorf("CHANGE_BASE_SHA environment variable is not set, please set it to valid base commit SHA")
 		}
 
-		return GitStateConfig{
-			RepositoryName:    repo,
-			RepositoryOwner:   owner,
-			JobType:           "presubmit",
-			PullRequestNumber: pullNumber,
-			BaseCommitRef:     baseRef,
-			BaseCommitSHA:     baseCommitSHA,
-			PullHeadCommitSHA: headCommitSHA,
-			isPullRequest:     true,
-		}, nil
+		gitState.JobType = "presubmit"
+		gitState.PullRequestNumber = pullNumber
+		gitState.BaseCommitSHA = baseCommitSHA
+		gitState.PullHeadCommitSHA = headCommitSHA
+		gitState.BaseCommitRef = baseRef
+		gitState.isPullRequest = true
+
+		return gitState, nil
 	}
 
 	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
@@ -385,13 +388,10 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
 	}
 
-	return GitStateConfig{
-		RepositoryName:  repo,
-		RepositoryOwner: owner,
-		JobType:         "postsubmit",
-		BaseCommitSHA:   baseCommitSHA,
-	}, nil
+	gitState.JobType = "postsubmit"
+	gitState.BaseCommitSHA = baseCommitSHA
 
+	return gitState, nil
 }
 
 func extractOwnerAndRepoFromGitURL(logger Logger, gitURL string) (string, string, error) {
