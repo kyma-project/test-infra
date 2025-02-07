@@ -378,19 +378,20 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 			PullHeadCommitSHA: headCommitSHA,
 			isPullRequest:     true,
 		}, nil
-	} else {
-		baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
-		if !present {
-			return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
-		}
-
-		return GitStateConfig{
-			RepositoryName:  repo,
-			RepositoryOwner: owner,
-			JobType:         "postsubmit",
-			BaseCommitSHA:   baseCommitSHA,
-		}, nil
 	}
+
+	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
+	}
+
+	return GitStateConfig{
+		RepositoryName:  repo,
+		RepositoryOwner: owner,
+		JobType:         "postsubmit",
+		BaseCommitSHA:   baseCommitSHA,
+	}, nil
+
 }
 
 func extractOwnerAndRepoFromGitURL(logger Logger, gitURL string) (string, string, error) {
