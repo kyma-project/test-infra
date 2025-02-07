@@ -345,19 +345,9 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		return GitStateConfig{}, fmt.Errorf("failed to extract owner and repository from git URL %s: %w", gitURL, err)
 	}
 
-	// TODO(kacpermalachowski): For PRs this is a head commit, not a base commit.
-	// There is no reliable way to get the base commit SHA in Jenkins.
-	// See: https://github.tools.sap/kyma/oci-image-builder/issues/165
-	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
-	if !present {
-		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
-	}
-
 	gitState := GitStateConfig{
 		RepositoryName:  repo,
 		RepositoryOwner: owner,
-		JobType:         "postsubmit",
-		BaseCommitSHA:   baseCommitSHA,
 	}
 
 	if isPullRequest {
@@ -370,12 +360,36 @@ func loadJenkinsGitState(logger Logger) (GitStateConfig, error) {
 		if !present {
 			return GitStateConfig{}, fmt.Errorf("CHANGE_BRANCH environment variable is not set, please set it to valid base branch name")
 		}
+
+		// In Jenkins, the GIT_COMMIT is head commit SHA for pull request
+		// See: https://github.tools.sap/kyma/oci-image-builder/issues/165
+		headCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid head commit SHA")
+		}
+
+		baseCommitSHA, present := os.LookupEnv("CHANGE_BASE_SHA")
+		if !present {
+			return GitStateConfig{}, fmt.Errorf("CHANGE_BASE_SHA environment variable is not set, please set it to valid base commit SHA")
+		}
+
 		gitState.JobType = "presubmit"
 		gitState.PullRequestNumber = pullNumber
+		gitState.BaseCommitSHA = baseCommitSHA
+		gitState.PullHeadCommitSHA = headCommitSHA
 		gitState.BaseCommitRef = baseRef
-		gitState.PullHeadCommitSHA = baseCommitSHA
 		gitState.isPullRequest = true
+
+		return gitState, nil
 	}
+
+	baseCommitSHA, present := os.LookupEnv("GIT_COMMIT")
+	if !present {
+		return GitStateConfig{}, fmt.Errorf("GIT_COMMIT environment variable is not set, please set it to valid commit SHA")
+	}
+
+	gitState.JobType = "postsubmit"
+	gitState.BaseCommitSHA = baseCommitSHA
 
 	return gitState, nil
 }
