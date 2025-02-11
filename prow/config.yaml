@@ -339,6 +339,8 @@ branch-protection:
           unmanaged: true
         busola:
           unmanaged: true
+        kyma-dashboard:
+          unmanaged: true
 
 tide:
   sync_period: 2m
@@ -415,6 +417,7 @@ tide:
         - kyma-project/test-infra
         - kyma-project/kyma
         - kyma-project/busola
+        - kyma-project/kyma-dashboard
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -460,6 +463,8 @@ tide:
           docker-registry:
             skip-unknown-contexts: true
           busola:
+            skip-unknown-contexts: true
+          kyma-dashboard:
             skip-unknown-contexts: true
 
 presets:
