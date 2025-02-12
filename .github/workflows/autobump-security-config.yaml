@@ -12,6 +12,7 @@ on:
       - '**/*.yaml'
       - '**/*.tf'
       - '**/*.tfvars'
+  workflow_dispatch:
 
 env:
   AUTOBUMP_CONFIG_PATH: configs/autobump-config/test-infra-sec-config-autobump-config.yaml
