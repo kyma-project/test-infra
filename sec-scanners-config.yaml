@@ -11,7 +11,7 @@ bdba:
     - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250211-fbc77d1c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250211-fbc77d1c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250211-fbc77d1c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250108-fae88ec9
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250212-2fd330c2
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250210-934b480d
 mend:
     language: golang-mod
