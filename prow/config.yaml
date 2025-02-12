@@ -261,28 +261,6 @@ branch-protection:
           enforce_admins: false
         private-fn-for-e2e-serverless-tests:
           protect: false
-        busola:
-          required_status_checks:
-            contexts:
-              - "run-cluster-test"
-              - "run-namespace-test"
-              - "run-unit-test"
-              - "build-local-image / Build image"
-              - "run-lint-check"
-              - "markdown-link-check"
-          branches:
-            ui5:
-              protect: false
-        kyma-dashboard:
-          required_status_checks:
-            contexts:
-              - "check-extensibility"
-              - "build-web-dev / Build image"
-              - "build-backend-dev / Build image"
-              - "build-local-dev / Build image"
-              - "run-integration-test"
-              - "run-smoke-test-prod"
-              - "run-smoke-test-stage"
         price-calculator:
           branches:
             gh-pages:
@@ -359,6 +337,10 @@ branch-protection:
           unmanaged: true
         cloud-manager-tests:
           unmanaged: true
+        busola:
+          unmanaged: true
+        kyma-dashboard:
+          unmanaged: true
 
 tide:
   sync_period: 2m
@@ -434,6 +416,8 @@ tide:
         - kyma-project/networking-dev-tools
         - kyma-project/test-infra
         - kyma-project/kyma
+        - kyma-project/busola
+        - kyma-project/kyma-dashboard
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -477,6 +461,10 @@ tide:
           warden:
             skip-unknown-contexts: true
           docker-registry:
+            skip-unknown-contexts: true
+          busola:
+            skip-unknown-contexts: true
+          kyma-dashboard:
             skip-unknown-contexts: true
 
 presets:
