@@ -13,7 +13,6 @@ To update a Prow cluster follow these steps:
     * gcr.io/k8s-prow/sinker
     * gcr.io/k8s-prow/deck
     * gcr.io/k8s-prow/horologium
-    * gcr.io/k8s-prow/tide
 3. Copy the commit ID into a comment at the top of the file to keep track of the current release used for the deployments.
 4. Use your preferred diff tool to check and copy the stability update in a Prow component and additional configurations on existing components.
 5. Open both [`config.yaml`](../../prow/config.yaml) in the current project and [`config.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/config.yaml) in the Kubernetes project and copy new tags for these containers:

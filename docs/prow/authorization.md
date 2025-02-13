@@ -42,7 +42,6 @@ Following roles exist on Prow cluster:
 | **plank** | - `prowjobs.prow.k8s.io` <br> - `pods` | create, list, update <br> create, list, delete |
 | **sinker** | - `prowjobs.prow.k8s.io` <br> - `pods` | delete, list <br> delete, list |
 | **hook** | - `prowjobs.prow.k8s.io` <br> - `configmaps` | create, get <br> get, update |
-| **tide** | - `prowjobs.prow.k8s.io` |  create, list  |
 | **crier** | - `prowjobs.prow.k8s.io` | get, watch <br> list, patch |
 
 ## User Permissions on GitHub

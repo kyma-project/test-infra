@@ -38,9 +38,6 @@ Branch Protector is a Prow component that is responsible for defining branch pro
 ### gcsweb
 gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/main/apps/gcsweb) document.
 
-### Tide
-Tide is a Prow component that automatically checks the acceptance criteria against opened PRs in the repository. If the given PR passes all the criteria, Tide automatically merges it.
-
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
 For more information about installed plugins in the `kyma-project` organisation, refer to the [plugins.yaml](../../prow/plugins.yaml) file.
