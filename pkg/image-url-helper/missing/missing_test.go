@@ -28,10 +28,10 @@ func TestImageMissing(t *testing.T) {
 		{
 			name: "Existing image with tag",
 			image: createComponentImage(common.Image{
-				ContainerRegistryURL:    "eu.gcr.io/kyma-project",
-				ContainerRepositoryPath: "tpi",
-				Name:                    "k8s-tools",
-				Version:                 "20220516-9f87ea89",
+				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
+				ContainerRepositoryPath: "prod",
+				Name:                    "automated-approver",
+				Version:                 "v20250213-8adb8ce9",
 				SHA:                     "",
 			}),
 			expected: false,
@@ -39,20 +39,20 @@ func TestImageMissing(t *testing.T) {
 		{
 			name: "Existing image with SHA",
 			image: createComponentImage(common.Image{
-				ContainerRegistryURL:    "eu.gcr.io/kyma-project",
-				ContainerRepositoryPath: "tpi",
-				Name:                    "k8s-tools",
+				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
+				ContainerRepositoryPath: "prod",
+				Name:                    "automated-approver",
 				Version:                 "",
-				SHA:                     "02317e1d351951f85b96bef7f058fc40181e3b93ac4109f3f4858a8e36ec0962",
+				SHA:                     "1109d8e8187bcf502f0e950af18708030b2ef908907fd33b8b4cd485edcda077",
 			}),
 			expected: false,
 		},
 		{
 			name: "Nonexistent image",
 			image: createComponentImage(common.Image{
-				ContainerRegistryURL:    "eu.gcr.io/kyma-project",
-				ContainerRepositoryPath: "tpi",
-				Name:                    "k8s-tools",
+				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
+				ContainerRepositoryPath: "prod",
+				Name:                    "automated-approver",
 				Version:                 "missing-image",
 				SHA:                     "",
 			}),
