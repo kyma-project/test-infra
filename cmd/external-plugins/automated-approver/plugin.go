@@ -213,7 +213,6 @@ func (hb *HandlerBackend) ReadConfig() error {
 }
 
 // checkPrStatuses checks if all statuses are in success state.
-// Tide required status check is not taken into account. It will be always pending until PR is ready to merge.
 // Timeout limits time waiting for statuses became success.
 func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prHeadSha string, prNumber int) error {
 	defer logger.Sync()
@@ -240,8 +239,8 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 				logger.Error(gherr.Error())
 				return gherr
 			}
-			// Don't check if pr checks status is success as that means all context are success, even tide context.
-			// That means a pr was already approved and is ready for merge, because tide context transition to success
+			// Don't check if pr checks status is success as that means all context are success.
+			// That means a pr was already approved and is ready for merge.
 			// when pr is ready for merge.
 			logger.Debugf("Pull request %d status: %s", prNumber, prStatuses.State)
 			switch prState := prStatuses.State; prState {
@@ -252,7 +251,7 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 				for _, prStatus := range prStatuses.Statuses {
 					if prStatus.State == "failure" {
 						return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
-					} else if prStatus.State == "pending" && prStatus.Context != "tide" {
+					} else if prStatus.State == "pending" {
 						statusErr := fmt.Errorf("pull request status check %s is pending", prStatus.Context)
 						logger.Debug(statusErr.Error())
 						return statusErr
