@@ -158,10 +158,6 @@ var _ = Describe("automated-approver", func() {
 							State: github.StatePending,
 							Statuses: []github.Status{
 								{
-									State:   github.StatusPending,
-									Context: "tide",
-								},
-								{
 									State:   github.StatusSuccess,
 									Context: "test1",
 								},
@@ -211,10 +207,6 @@ var _ = Describe("automated-approver", func() {
 								State: github.StatePending,
 								Statuses: []github.Status{
 									{
-										State:   github.StatusPending,
-										Context: "tide",
-									},
-									{
 										State:   github.StatusSuccess,
 										Context: "test1",
 									},
@@ -253,10 +245,6 @@ var _ = Describe("automated-approver", func() {
 						prHeadSha: {
 							State: github.StatePending,
 							Statuses: []github.Status{
-								{
-									State:   github.StatusPending,
-									Context: "tide",
-								},
 								{
 									State:   github.StatusFailure,
 									Context: "test1",
