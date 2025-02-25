@@ -396,11 +396,10 @@ func buildInADO(o options) error {
 	// if run in github actions, set output parameters
 	if o.ciSystem == GithubActions {
 		fmt.Println("Setting GitHub outputs.")
-		images := buildReport.GetImages()
 
-		o.logger.Debugw("Extracted built images from ADO logs", "images", images)
+		o.logger.Debugw("Extracted built images from ADO logs", "images", buildReport.Images)
 
-		data, err := json.Marshal(images)
+		data, err := json.Marshal(buildReport.Images)
 		if err != nil {
 			return fmt.Errorf("cannot marshal list of images: %w", err)
 		}

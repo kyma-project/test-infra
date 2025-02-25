@@ -24,23 +24,9 @@ type BuildReport struct {
 	// IsProduction indicates whether the image is a production image
 	IsProduction bool `json:"is_production"`
 	// ImageSpec contains the image name, tags, and repository path
-	ImageSpec ImageSpec `json:"image_spec"`
-}
-
-type ImageSpec struct {
-	Name           string   `json:"image_name"`
-	Tags           []string `json:"tags"`
-	RepositoryPath string   `json:"repository_path"`
-}
-
-func (br *BuildReport) GetImages() []string {
-	var images []string
-
-	for _, tag := range br.ImageSpec.Tags {
-		images = append(images, fmt.Sprintf("%s%s:%s", br.ImageSpec.RepositoryPath, br.ImageSpec.Name, tag))
-	}
-
-	return images
+	Images []string `json:"images_list"`
+	// Digest is the digest of the image
+	Digest string `json:"digest"`
 }
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
