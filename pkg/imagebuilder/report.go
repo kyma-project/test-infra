@@ -40,7 +40,7 @@ type ImageSpec struct {
 	RepositoryPath string   `json:"repository_path"`
 }
 
-// Remove when the imagebuilder is updated to use the new report format
+// TODO(kacpermalachowski): Remove when new format is introduced
 func (br *BuildReport) UnmarshalJSON(data []byte) error {
 	type Alias BuildReport
 	aux := &struct {
