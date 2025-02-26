@@ -23,24 +23,43 @@ type BuildReport struct {
 	IsSigned bool `json:"signed"`
 	// IsProduction indicates whether the image is a production image
 	IsProduction bool `json:"is_production"`
-	// ImageSpec contains the image name, tags, and repository path
-	ImageSpec ImageSpec `json:"image_spec"`
+	// Images is a list of all built images
+	Images []string `json:"images_list"`
+	// Digest is the digest of the image
+	Digest string `json:"digest"`
 }
 
+// TODO(kacpermalachowski): Remove when new format is introduced
 type ImageSpec struct {
 	Name           string   `json:"image_name"`
 	Tags           []string `json:"tags"`
 	RepositoryPath string   `json:"repository_path"`
 }
 
-func (br *BuildReport) GetImages() []string {
-	var images []string
-
-	for _, tag := range br.ImageSpec.Tags {
-		images = append(images, fmt.Sprintf("%s%s:%s", br.ImageSpec.RepositoryPath, br.ImageSpec.Name, tag))
+// TODO(kacpermalachowski): Remove when new format is introduced
+func (br *BuildReport) UnmarshalJSON(data []byte) error {
+	type Alias BuildReport
+	aux := &struct {
+		ImageSpec ImageSpec `json:"image_spec"`
+		*Alias
+	}{
+		Alias: (*Alias)(br),
 	}
 
-	return images
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	if len(br.Images) == 0 {
+		images := []string{}
+		for _, tag := range aux.ImageSpec.Tags {
+			images = append(images, fmt.Sprintf("%s%s:%s", aux.ImageSpec.RepositoryPath, aux.ImageSpec.Name, tag))
+		}
+
+		br.Images = images
+	}
+
+	return nil
 }
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
