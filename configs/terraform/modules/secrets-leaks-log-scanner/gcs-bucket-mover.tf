@@ -47,7 +47,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
     spec {
       service_account_name = google_service_account.gcs_bucket_mover.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250226-fc9a5d7c"
+        image = "europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250226-b5c60d82"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
