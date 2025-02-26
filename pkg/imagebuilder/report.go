@@ -33,6 +33,7 @@ type BuildReport struct {
 	RegistryURL string `json:"repository_path"`
 }
 
+// TODO(kacpermalachowski): Remove when new format is introduced
 type ImageSpec struct {
 	Name           string   `json:"image_name"`
 	Tags           []string `json:"tags"`
