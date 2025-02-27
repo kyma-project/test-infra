@@ -21,12 +21,16 @@ type BuildReport struct {
 	IsPushed bool `json:"pushed"`
 	// IsSigned indicates whether the image was signed
 	IsSigned bool `json:"signed"`
-	// IsProduction indicates whether the image is a production image
-	IsProduction bool `json:"is_production"`
 	// Images is a list of all built images
 	Images []string `json:"images_list"`
 	// Digest is the digest of the image
 	Digest string `json:"digest"`
+	// Name is the name of the image
+	Name string `json:"image_name"`
+	// Tags is a list of tags for the image
+	Tags []string `json:"tags"`
+	// RegistryURL is the URL of the registry where the image was pushed
+	RegistryURL string `json:"repository_path"`
 }
 
 // TODO(kacpermalachowski): Remove when new format is introduced
@@ -57,6 +61,18 @@ func (br *BuildReport) UnmarshalJSON(data []byte) error {
 		}
 
 		br.Images = images
+	}
+
+	if br.Name == "" {
+		br.Name = aux.ImageSpec.Name
+	}
+
+	if br.RegistryURL == "" {
+		br.RegistryURL = aux.ImageSpec.RepositoryPath
+	}
+
+	if len(br.Tags) == 0 {
+		br.Tags = aux.ImageSpec.Tags
 	}
 
 	return nil
