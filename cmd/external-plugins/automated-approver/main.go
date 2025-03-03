@@ -5,8 +5,8 @@ import (
 	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
-	"k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/prow/pluginhelp"
+	"sigs.k8s.io/prow/pkg/config"
+	"sigs.k8s.io/prow/pkg/pluginhelp"
 )
 
 const (

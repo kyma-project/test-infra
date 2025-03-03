@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/go-github/v48/github"
 	"github.com/sirupsen/logrus"
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-	"k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/prow/pod-utils/downwardapi"
+	prowapi "sigs.k8s.io/prow/pkg/apis/prowjobs/v1"
+	"sigs.k8s.io/prow/pkg/config"
+	"sigs.k8s.io/prow/pkg/pod-utils/downwardapi"
 )
 
 const (

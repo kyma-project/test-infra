@@ -21,7 +21,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"k8s.io/test-infra/prow/github"
+	"sigs.k8s.io/prow/pkg/github"
 )
 
 // Constants to indicate whether maintainers can modify a pull request in a fork.

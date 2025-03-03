@@ -7,16 +7,17 @@ import (
 	"crypto/sha256"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	"github.com/kyma-project/test-infra/pkg/types"
 	"hash"
 	"net/http"
 	"sync"
 
+	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
+	"github.com/kyma-project/test-infra/pkg/types"
+
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
-	"k8s.io/test-infra/prow/config/secret"
+	"sigs.k8s.io/prow/pkg/config/secret"
 )
 
 const (

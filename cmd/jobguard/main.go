@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"github.com/kyma-project/test-infra/pkg/jobguard/v2"
 	"os"
 
+	"github.com/kyma-project/test-infra/pkg/jobguard/v2"
+
 	"github.com/sirupsen/logrus"
-	"k8s.io/test-infra/prow/config/secret"
-	"k8s.io/test-infra/prow/flagutil"
+	"sigs.k8s.io/prow/pkg/config/secret"
+	"sigs.k8s.io/prow/pkg/flagutil"
 )
 
 type options struct {
