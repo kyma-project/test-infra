@@ -15,7 +15,7 @@ const (
 	DefaultPollInterval = 1 * time.Minute
 )
 
-// Options holds configuration to the JobGuard client.
+// Options hnews configuration to the JobGuard client.
 type Options struct {
 	Timeout      time.Duration
 	PollInterval time.Duration

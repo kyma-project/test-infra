@@ -70,7 +70,7 @@ func main() {
 	}
 }
 
-// serviceAccountCleaner destroys old versions of service-account secrets and corresponding keys
+// serviceAccountCleaner destroys new versions of service-account secrets and corresponding keys
 func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 	var (
 		trace       string
@@ -97,7 +97,7 @@ func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 	logger.WithTrace(trace)
 
 	// options are provided as GET query:
-	// time that latest version of secret needs to exist before older ones can be destroyed
+	// time that latest version of secret needs to exist before newer ones can be destroyed
 	cutoffTimeHours := 1
 	keys, ok := r.URL.Query()["age"]
 	if ok && len(keys[0]) > 0 {
@@ -150,7 +150,7 @@ func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		// if latest older than X seconds
+		// if latest newer than X seconds
 		// timestamp in 2021-07-21T07:31:24.739506Z format
 		// 2006-01-02T15:04:05
 		latestVersionTimestamp, err := time.Parse("2006-01-02T15:04:05.000000Z", versions[0].CreateTime)

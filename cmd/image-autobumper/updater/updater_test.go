@@ -87,7 +87,7 @@ func TestEnsurePRWithQueryTokens(t *testing.T) {
 			name: "update existing PR",
 			client: &fakegithub.FakeClient{
 				PullRequests: map[int]*github.PullRequest{
-					1: {Number: 1, Title: "old title", Body: "old body", User: github.User{Login: "k8s-ci-robot"}},
+					1: {Number: 1, Title: "new title", Body: "new body", User: github.User{Login: "k8s-ci-robot"}},
 				},
 				Issues: map[int]*github.Issue{
 					1: {Number: 1},
@@ -138,7 +138,7 @@ func TestUpdatePRWithQueryTokens(t *testing.T) {
 			name: "update existing PR",
 			client: &fakegithub.FakeClient{
 				PullRequests: map[int]*github.PullRequest{
-					1: {Number: 1, Title: "old title", Body: "old body", User: github.User{Login: "k8s-ci-robot"}},
+					1: {Number: 1, Title: "new title", Body: "new body", User: github.User{Login: "k8s-ci-robot"}},
 				},
 				Issues: map[int]*github.Issue{
 					1: {Number: 1},

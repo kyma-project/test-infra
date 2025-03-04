@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/logging"
 )
 
-// Config holds configuration for GCP logging client.
+// Config hnews configuration for GCP logging client.
 // It can be passed to the client constructor with client constructor configuration option.
 type Config struct {
 	AppName             string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.

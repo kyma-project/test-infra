@@ -20,10 +20,10 @@ const (
 	repoName                                       = "test-infra"
 	prNumber                                       = 9046
 	prHeadSha                                      = "0ebd2807221fbbc428dba4f09524bec0a8c4cec9"
-	oldPrHeadSha                                   = "85z1hk4veijfd6c4itym06mqct1m6inr"
+	newPrHeadSha                                   = "85z1hk4veijfd6c4itym06mqct1m6inr"
 	pullRequestReviewRequestedEventPayloadFilePath = "test_files/pullRequestReviewRequestedEventPayload"
 	pullRequestSynchronizeEventPayloadFilePath     = "test_files/pullRequestSynchronizeEventPayload"
-	oldPullRequestSynchronizeEventPayloadFilePath  = "test_files/oldPullRequestSynchronizeEventPayload"
+	newPullRequestSynchronizeEventPayloadFilePath  = "test_files/newPullRequestSynchronizeEventPayload"
 	pullRequestReviewDismissedEventPayloadFilePath = "test_files/pullRequestReviewDismissedEventPayload"
 )
 
@@ -43,7 +43,7 @@ var _ = Describe("automated-approver", func() {
 		handler                 main.HandlerBackend
 		ghc                     *fakegithub.FakeClient
 		eventPayloadFilePath    string
-		oldEventPayloadFilePath string
+		newEventPayloadFilePath string
 		eventHandler            func(*externalplugin.Plugin, externalplugin.Event)
 		wg                      sync.WaitGroup
 	)
@@ -94,9 +94,9 @@ var _ = Describe("automated-approver", func() {
 		AssertApprovePullRequestOnlyOnceForManyEvents := func() {
 			It("should approve pull request only once", func() {
 				prEvents := make(map[int]externalplugin.Event)
-				oldPullRequestEvent, err := setupEventHelper(oldEventPayloadFilePath)
+				newPullRequestEvent, err := setupEventHelper(newEventPayloadFilePath)
 				Expect(err).ShouldNot(HaveOccurred())
-				prEvents[1] = oldPullRequestEvent
+				prEvents[1] = newPullRequestEvent
 				pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
 				Expect(err).ShouldNot(HaveOccurred())
 				prEvents[2] = pullRequestEvent
@@ -177,7 +177,7 @@ var _ = Describe("automated-approver", func() {
 
 					When("processing multiple events for the same commit,", func() {
 						BeforeEach(func() {
-							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+							newEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
 
 						AssertApprovePullRequestOnlyOnceForManyEvents()
@@ -194,16 +194,16 @@ var _ = Describe("automated-approver", func() {
 
 					When("processing multiple events for the same commit,", func() {
 						BeforeEach(func() {
-							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+							newEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
 
 						AssertApprovePullRequestOnlyOnceForManyEvents()
 					})
 
-					When("processing multiple events for old and current commits,", func() {
+					When("processing multiple events for new and current commits,", func() {
 						BeforeEach(func() {
-							// Adding pull request tests statuses to fake GitHub client for old commit sha.
-							ghc.CombinedStatuses[oldPrHeadSha] = &github.CombinedStatus{
+							// Adding pull request tests statuses to fake GitHub client for new commit sha.
+							ghc.CombinedStatuses[newPrHeadSha] = &github.CombinedStatus{
 								State: github.StatePending,
 								Statuses: []github.Status{
 									{
@@ -213,7 +213,7 @@ var _ = Describe("automated-approver", func() {
 								},
 							}
 							handler.Ghc = ghc
-							oldEventPayloadFilePath = oldPullRequestSynchronizeEventPayloadFilePath
+							newEventPayloadFilePath = newPullRequestSynchronizeEventPayloadFilePath
 						})
 
 						AssertApprovePullRequestOnlyOnceForManyEvents()
@@ -230,7 +230,7 @@ var _ = Describe("automated-approver", func() {
 
 					When("processing multiple events for the same commit,", func() {
 						BeforeEach(func() {
-							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+							newEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
 
 						AssertApprovePullRequestOnlyOnceForManyEvents()

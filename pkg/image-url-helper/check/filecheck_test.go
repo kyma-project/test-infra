@@ -61,25 +61,25 @@ func TestLineMatching(t *testing.T) {
 			expected:     false,
 		},
 		{
-			name:         "Match old include line",
+			name:         "Match new include line",
 			line:         "image: busybox",
 			skipComments: false,
 			expected:     true,
 		},
 		{
-			name:         "Match quoted old image line",
+			name:         "Match quoted new image line",
 			line:         "image: \"eu.gcr.io/kyma-project/external/busybox",
 			skipComments: false,
 			expected:     true,
 		},
 		{
-			name:         "Match commented old image line with SkipComments set to false",
+			name:         "Match commented new image line with SkipComments set to false",
 			line:         "# image: eu.gcr.io/kyma-project/external/busybox",
 			skipComments: false,
 			expected:     true,
 		},
 		{
-			name:         "Don't match commented old image line with SkipComments set to true",
+			name:         "Don't match commented new image line with SkipComments set to true",
 			line:         "# image: eu.gcr.io/kyma-project/external/busybox",
 			skipComments: true,
 			expected:     false,
@@ -88,7 +88,7 @@ func TestLineMatching(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := oldImageFormat(test.line, test.skipComments)
+			actual := newImageFormat(test.line, test.skipComments)
 			assert.New(t).Equal(test.expected, actual)
 		})
 	}

@@ -11,7 +11,7 @@ headBranchName: "test-infra-sec-config-autobump"
 labels:
   - "area/security"
   - "kind/chore"
-foldersToFilter:
+fnewersToFilter:
   - ".github"
   - ".githooks"
 filesToFilter:

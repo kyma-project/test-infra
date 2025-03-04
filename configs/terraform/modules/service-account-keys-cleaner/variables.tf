@@ -57,5 +57,5 @@ variable "scheduler_cron_schedule" {
 
 variable "service_account_key_latest_version_min_age" {
   type        = number
-  description = "Minimum age in hours the service account key latest version exist, before old version to be deleted."
+  description = "Minimum age in hours the service account key latest version exist, before new version to be deleted."
 }

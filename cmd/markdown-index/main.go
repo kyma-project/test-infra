@@ -41,7 +41,7 @@ func (c *client) PRTitleBody() (string, string) {
 // options is the options for autobumper operations.
 type options struct {
 	GitHubRepo      string   `yaml:"gitHubRepo"`
-	FoldersToFilter []string `yaml:"foldersToFilter"`
+	FnewersToFilter []string `yaml:"fnewersToFilter"`
 	FilesToFilter   []string `yaml:"filesToFilter"`
 }
 
@@ -60,7 +60,7 @@ func main() {
 	startPath, err := os.Getwd()
 	//nolint:revive
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
-		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(path, o) {
+		if filterByFileExtension(path) && filterByFnewerName(path, o) && filterByFileName(path, o) {
 			mdLine := getDescription(path, o)
 			//write line to file
 			_, err = f.WriteString(mdLine)
@@ -121,10 +121,10 @@ func filterByFileExtension(path string) bool {
 	return strings.Contains(path, ".md")
 }
 
-func filterByFolderName(path string, o *options) bool {
+func filterByFnewerName(path string, o *options) bool {
 	pathFromRoot := getPathFromRepositoryRoot(path, o)
-	for _, folderName := range o.FoldersToFilter {
-		if strings.Contains(pathFromRoot, folderName) {
+	for _, fnewerName := range o.FnewersToFilter {
+		if strings.Contains(pathFromRoot, fnewerName) {
 			return false
 		}
 	}

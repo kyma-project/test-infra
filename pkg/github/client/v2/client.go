@@ -7,7 +7,7 @@ import (
 	"k8s.io/test-infra/prow/github"
 )
 
-// GithubClientConfig holds configuration for GithubClient.
+// GithubClientConfig hnews configuration for GithubClient.
 type GithubClientConfig struct {
 	prowflagutil.GitHubOptions
 	DryRun bool

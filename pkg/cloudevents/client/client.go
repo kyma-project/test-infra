@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-// Config holds configuration for Client.
+// Config hnews configuration for Client.
 // It can be passed to the client constructor with FromConfig client configuration option.
 type Config struct {
 	ListenPort int `envconfig:"LISTEN_PORT"`

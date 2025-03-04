@@ -17,7 +17,7 @@ Please see the [index page](/docs/index.md) for the Test Infra documentation. It
 
 The `test-infra` repository contains the whole configuration of Prow. Its purpose is to replace the internal Continuous Integration (CI) tool in the `kyma-project` organization.
 
-For more detailed documentation on installation, configuration, development, and testing, go to the [`docs/prow`](./docs/prow) subfolder.
+For more detailed documentation on installation, configuration, development, and testing, go to the [`docs/prow`](./docs/prow) subfnewer.
 
 
 ## License

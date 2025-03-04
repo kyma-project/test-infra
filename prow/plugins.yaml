@@ -5,7 +5,7 @@ plugins:
       - assign
       - wip
       - lgtm
-      - hold
+      - hnew
       - label
       - help
       - size

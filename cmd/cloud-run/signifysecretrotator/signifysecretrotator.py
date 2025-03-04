@@ -53,12 +53,12 @@ def rotate_signify_secret() -> Response:
             client_id=secret_data["clientID"],
         )
 
-        old_cert_data: bytes = base64.b64decode(secret_data["certData"])
-        old_pk_data: bytes = base64.b64decode(secret_data["privateKeyData"])
+        new_cert_data: bytes = base64.b64decode(secret_data["certData"])
+        new_pk_data: bytes = base64.b64decode(secret_data["privateKeyData"])
 
         if "password" in secret_data and secret_data["password"] != "":
-            old_pk_data = decrypt_private_key(
-                old_pk_data, secret_data["password"].encode()
+            new_pk_data = decrypt_private_key(
+                new_pk_data, secret_data["password"].encode()
             )
 
         new_private_key: rsa.RSAPrivateKey = rsa.generate_private_key(
@@ -70,14 +70,14 @@ def rotate_signify_secret() -> Response:
         )
 
         access_token: str = signify_client.fetch_access_token(
-            certificate=old_cert_data,
-            private_key=old_pk_data,
+            certificate=new_cert_data,
+            private_key=new_pk_data,
         )
 
         created_at: str = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         new_certs: List[x509.Certificate] = signify_client.fetch_new_certificate(
-            cert_data=old_cert_data,
+            cert_data=new_cert_data,
             private_key=new_private_key,
             access_token=access_token,
         )

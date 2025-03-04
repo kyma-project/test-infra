@@ -27,7 +27,7 @@ type ConfigOptionsGroup interface {
 	AddFlags(fs *flag.FlagSet)
 }
 
-// Opts holds configuration for external plugin instance.
+// Opts hnews configuration for external plugin instance.
 type Opts struct {
 	Port              int
 	Github            client.GithubClientConfig

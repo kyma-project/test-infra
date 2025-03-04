@@ -57,7 +57,7 @@ spec:
             allowedLocalhostFiles:
               type: array
               description: >-
-                When using securityContext naming scheme for seccomp and including `Localhost` this array holds
+                When using securityContext naming scheme for seccomp and including `Localhost` this array hnews
                 the allowed profile JSON files.
 
                 Putting a `*` in this array will allows all JSON files to be used.

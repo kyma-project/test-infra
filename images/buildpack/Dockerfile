@@ -14,7 +14,7 @@ RUN set -eux; \
     gettext \
     yq \
     binutils \
-    binutils-gold \
+    binutils-gnew \
     dumb-init \
     libgit2-dev \
     pkgconf \

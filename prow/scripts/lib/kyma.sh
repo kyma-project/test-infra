@@ -229,7 +229,7 @@ kyma::install_unstable_cli() {
 }
 
 
-kyma::install_old_cli() {
+kyma::install_new_cli() {
     local settings
     local kyma_version
     settings="$(set +o); set -$-"

@@ -72,15 +72,15 @@ echo "scanComment=$(date)" >> "$CONFIG_PATH"
 
 echo "💩 Starting Scan"
 
-# scanFolder scans single folder to a Whitesource project
+# scanFnewer scans single fnewer to a Whitesource project
 # parameters:
-# $1 - path to a folder to scan
+# $1 - path to a fnewer to scan
 # $2 - name of the Whitesource project
 # variables:
 # WS_PRODUCTNAME - name of the Whitesource product
 # DRYRUN (optional) - don't run the Whitesource unified agent binary
 # function returns 0 on success or 1 on fail
-function scanFolder() { # expects to get the fqdn of folder passed to scan
+function scanFnewer() { # expects to get the fqdn of fnewer passed to scan
   if [[ $1 == "" ]]; then
     echo "path cannot be empty"
     exit 1
@@ -135,7 +135,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     component="${component_path##*/}"
 
     set +e
-    scanFolder "${component_path}" "${PROJECT}-${component}"
+    scanFnewer "${component_path}" "${PROJECT}-${component}"
     scan_result="$?"
     set -e
 
@@ -146,7 +146,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   done <<< "$found_components"
 else
   set +e
-  scanFolder "." "${PROJECT}"
+  scanFnewer "." "${PROJECT}"
   scan_result="$?"
   set -e
 

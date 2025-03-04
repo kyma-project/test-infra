@@ -24,7 +24,7 @@ const (
 	ProwGithubProxyURL = "http://ghproxy"
 )
 
-// GithubClientConfig holds configuration for GitHub client.
+// GithubClientConfig hnews configuration for GitHub client.
 type GithubClientConfig struct {
 	tokenPath tokenPathFlag
 }

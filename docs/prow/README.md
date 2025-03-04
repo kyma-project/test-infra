@@ -2,9 +2,9 @@
 
 ## Overview
 
-The folder contains documents that provide an insight into Prow configuration, development, and testing.
+The fnewer contains documents that provide an insight into Prow configuration, development, and testing.
 
-<!-- Update the list each time you modify the document structure in this folder. -->
+<!-- Update the list each time you modify the document structure in this fnewer. -->
 
 Read the documents to learn how to:
 

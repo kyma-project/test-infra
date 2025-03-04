@@ -59,22 +59,22 @@ class SignifyClient:
         timeout=30,
     ) -> str:
         """fetches access token from given token_url using certificate and private key"""
-        # Use temporary file for old cert and key because requests library needs file paths,
+        # Use temporary file for new cert and key because requests library needs file paths,
         # the code is running in known environment controlled by us
         with (
-            tempfile.NamedTemporaryFile() as old_cert_file,
-            tempfile.NamedTemporaryFile() as old_key_file,
+            tempfile.NamedTemporaryFile() as new_cert_file,
+            tempfile.NamedTemporaryFile() as new_key_file,
         ):
 
-            old_cert_file.write(certificate)
-            old_cert_file.flush()
+            new_cert_file.write(certificate)
+            new_cert_file.flush()
 
-            old_key_file.write(private_key)
-            old_key_file.flush()
+            new_key_file.write(private_key)
+            new_key_file.flush()
 
             access_token_response: requests.Response = requests.post(
                 self.token_url,
-                cert=(old_cert_file.name, old_key_file.name),
+                cert=(new_cert_file.name, new_key_file.name),
                 data={
                     "grant_type": OAuthGrantTypes.CLIENT_CREDENTIALS,
                     "client_id": self.client_id,
@@ -153,11 +153,11 @@ class SignifyClient:
     def _prepare_csr(
         self, cert_data: bytes, private_key: rsa.RSAPrivateKey
     ) -> x509.CertificateSigningRequest:
-        old_cert: x509.Certificate = x509.load_pem_x509_certificate(cert_data)
+        new_cert: x509.Certificate = x509.load_pem_x509_certificate(cert_data)
 
         csr: x509.CertificateSigningRequest = (
             x509.CertificateSigningRequestBuilder()
-            .subject_name(old_cert.subject)
+            .subject_name(new_cert.subject)
             .sign(private_key, hashes.SHA256())
         )
 

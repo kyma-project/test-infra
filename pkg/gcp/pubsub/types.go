@@ -7,7 +7,7 @@ import (
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
-// ClientConfig holds configuration for pubsub Client.
+// ClientConfig hnews configuration for pubsub Client.
 type ClientConfig struct {
 	ProjectID           string
 	CredentialsFilePath string

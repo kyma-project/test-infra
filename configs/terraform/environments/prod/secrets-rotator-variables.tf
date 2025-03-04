@@ -58,7 +58,7 @@ variable "service_account_keys_cleaner_image" {
 
 variable "service_account_key_latest_version_min_age" {
   type        = number
-  description = "Minimum age in hours the service account key latest version exist, before old version to be deleted."
+  description = "Minimum age in hours the service account key latest version exist, before new version to be deleted."
 }
 
 variable "service_account_keys_cleaner_scheduler_cron_schedule" {

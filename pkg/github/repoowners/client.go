@@ -14,7 +14,7 @@ import (
 	"k8s.io/test-infra/prow/repoowners"
 )
 
-// OwnersClientConfig holds configuration for OwnersClient.
+// OwnersClientConfig hnews configuration for OwnersClient.
 type OwnersClientConfig struct {
 	pluginsConfig pluginsflagutil.PluginOptions
 	prowConfig    configflagutil.ConfigOptions

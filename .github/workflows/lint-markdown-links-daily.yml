@@ -16,7 +16,7 @@ jobs:
           use-quiet-mode: "yes"
           use-verbose-mode: "yes"
           config-file: ".mlc.config.json"
-          folder-path: "."
+          fnewer-path: "."
           max-depth: -1
       - name: Send Notification to Slack
         if: ${{ failure() }}

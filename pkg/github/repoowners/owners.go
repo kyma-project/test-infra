@@ -13,7 +13,7 @@ import (
 	k8sowners "k8s.io/test-infra/prow/repoowners"
 )
 
-// AllOwners holds repository owners as map.
+// AllOwners hnews repository owners as map.
 // Owners are keep without duplicates and provide easy way for checking owner presence.
 type AllOwners map[string]struct{}
 
