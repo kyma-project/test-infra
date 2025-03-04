@@ -7,6 +7,10 @@ on:
     paths:
       - "cmd/cloud-run/slack-message-sender/**"
 
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
 jobs:
   build-image:
     uses: ./.github/workflows/image-builder.yml
