@@ -39,7 +39,7 @@ type HandlerBackend struct {
 	WaitForContextsCreationTimeout int                                                         // in seconds
 	RulesPath                      string                                                      // Path to yaml config file
 	Conditions                     map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
-	PrLocks                        map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
+	PrLocks                        map[string]map[string]map[int]map[string]context.CancelFunc // Hnews head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
 	PrMutex                        sync.Mutex
 }
 
@@ -440,3 +440,4 @@ func (hb *HandlerBackend) PullRequestReviewEventHandler(_ *externalplugin.Plugin
 		hb.handleReviewDismissedAction(ctx, cancel, logger, reviewEvent)
 	}
 }
+# (2025-03-04)

@@ -6,3 +6,4 @@ service_account_keys_cleaner_service_name            = "service-account-keys-cle
 service_account_keys_cleaner_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250227-8109a085" #gitleaks:allow
 service_account_key_latest_version_min_age           = 24
 service_account_keys_cleaner_scheduler_cron_schedule = "0 0 * * 1-5"
+# (2025-03-04)

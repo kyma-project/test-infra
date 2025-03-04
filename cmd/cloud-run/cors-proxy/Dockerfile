@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/cloud-run/cors-proxy/main /cors-proxy
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /cors-proxy
 ENTRYPOINT ["/cors-proxy"]
+# (2025-03-04)

@@ -34,3 +34,4 @@ resource "kubernetes_cluster_role_binding" "access_pjtester_secrets_trusted_work
     name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }
+# (2025-03-04)

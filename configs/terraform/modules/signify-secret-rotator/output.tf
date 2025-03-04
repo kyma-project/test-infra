@@ -9,3 +9,4 @@ output "signify_secret_rotator_cloud_run_service" {
 output "signify_secret_rotator_subscription" {
   value = google_pubsub_subscription.signify_secret_rotator
 }
+# (2025-03-04)

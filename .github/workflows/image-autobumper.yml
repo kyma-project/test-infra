@@ -62,4 +62,4 @@ jobs:
             -v ~/token:/etc/github/token:ro \
             -w /workspace \
             ${{ inputs.docker-image }} \
-            --autobump-config=${{ inputs.autobump-config-path }}
+            --autobump-config=${{ inputs.autobump-config-path }}# (2025-03-04)

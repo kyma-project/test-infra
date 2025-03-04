@@ -72,7 +72,7 @@ type TrustedIssuerProvider interface {
 	GetIssuer() tioidc.Issuer
 }
 
-// output is a struct that holds the output values that are printed to the file.
+// output is a struct that hnews the output values that are printed to the file.
 // The data provided in this struct is relevant for the component that uses the OIDC token verifier.
 // The output values are printed to the file in the json format.
 type output struct {
@@ -269,4 +269,4 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
-}
+}# (2025-03-04)

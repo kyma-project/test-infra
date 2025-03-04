@@ -11,4 +11,4 @@ This tutorial describes how to name a secret in Google Secret Manager.
 3. Apply the `type` label to the secret in Secret Manager to help identify the secret type. For example: `type: service-account-token`.
 4. Apply the `tool` label to the secret in Secret Manager to help identify the tool where secret is used. For example: `tool: security-backend`.
 5. Apply the `component` label to the secret in Secret Manager to help identify the component of the tool where secret is used. For example: `component: publisher`.
-6. Apply the `entity` label to the secret in Secret Manager to help identify the entity of the secret. For example: `entity: github-kyma-bot-token`.
+6. Apply the `entity` label to the secret in Secret Manager to help identify the entity of the secret. For example: `entity: github-kyma-bot-token`.# (2025-03-04)

@@ -105,11 +105,11 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
   cleanup_policy_dry_run = false
 
   cleanup_policies {
-    id = "cleanup-old-images"
+    id = "cleanup-new-images"
     action = "DELETE"
 
     condition {
-      older_than = var.dockerhub_mirror.cleanup_age
+      newer_than = var.dockerhub_mirror.cleanup_age
       tag_state  = "ANY"
     }
   }
@@ -136,11 +136,11 @@ resource "google_artifact_registry_repository" "docker_cache" {
   }
 
   cleanup_policies {
-    id     = "delete-old-cache"
+    id     = "delete-new-cache"
     action = "DELETE"
     condition {
       tag_state  = "ANY"
-      older_than = var.docker_cache_repository.cache_images_max_age
+      newer_than = var.docker_cache_repository.cache_images_max_age
     }
   }
 }
@@ -158,4 +158,4 @@ resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_acce
   repository = google_artifact_registry_repository.dockerhub_mirror.repository_id
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.kyma_project_image_builder.email}"
-}
+}# (2025-03-04)

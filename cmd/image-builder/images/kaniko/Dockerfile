@@ -9,4 +9,4 @@ FROM gcr.io/kaniko-project/executor:v1.23.2
 
 COPY --from=builder /app/image-builder /image-builder
 
-ENTRYPOINT ["/image-builder"]
+ENTRYPOINT ["/image-builder"]# (2025-03-04)

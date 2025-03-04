@@ -29,3 +29,4 @@ prefixes:
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
     consistentImages: false
+# (2025-03-04)

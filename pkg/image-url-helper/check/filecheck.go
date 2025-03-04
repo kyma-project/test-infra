@@ -100,7 +100,7 @@ func FileHasIncorrectImage(resourcesDirectory, path string, skipComments bool, e
 	lineNumber := 1
 	scanner := bufio.NewScanner(fileHandle)
 	for scanner.Scan() {
-		if oldImageFormat(scanner.Text(), skipComments) {
+		if newImageFormat(scanner.Text(), skipComments) {
 			if !imageInExcludeList(resourcesDirectory, path, scanner.Text(), excludesList) {
 				incompatible = append(incompatible, ImageLine{Filename: path, LineNumber: lineNumber, Line: strings.Trim(scanner.Text(), " ")})
 			}
@@ -133,8 +133,8 @@ func imageInExcludeList(resourcesDirectory, filename, line string, excludesList 
 	return false
 }
 
-// oldImageFormat checks and prints lines that doesn't use the "imageurl" or "shortimageurl" template
-func oldImageFormat(line string, skipComments bool) bool {
+// newImageFormat checks and prints lines that doesn't use the "imageurl" or "shortimageurl" template
+func newImageFormat(line string, skipComments bool) bool {
 	// skip all uninteresting lines and just "name:" in its own line
 	if imageRegexp.MatchString(line) {
 		// check if we should ship commented out lines or not
@@ -147,3 +147,4 @@ func oldImageFormat(line string, skipComments bool) bool {
 	}
 	return false
 }
+# (2025-03-04)

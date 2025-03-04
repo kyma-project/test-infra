@@ -23,4 +23,4 @@ jobs:
         with:
           delay: '3'
           retries: '30'
-          polling_interval: '1'
+          polling_interval: '1'# (2025-03-04)

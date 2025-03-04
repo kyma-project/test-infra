@@ -38,3 +38,4 @@ templates/data/
 # In such case a human approver from prow group must approve the pull request.
 /docs/index.md @kyma-project/prow @neighbors-dev-bot
 /docs/security/imagemitigation.json @TorstenD-SAP
+# (2025-03-04)

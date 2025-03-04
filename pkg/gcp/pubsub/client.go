@@ -126,3 +126,4 @@ func (c *Client) PublishMessage(ctx context.Context, message interface{}, topicN
 func (c *Client) PublishMessageWithAttributes(ctx context.Context, message interface{}, topicName string, attributes map[string]string) (*string, error) {
 	return c.publishPubSubMessage(ctx, message, topicName, attributes)
 }
+# (2025-03-04)

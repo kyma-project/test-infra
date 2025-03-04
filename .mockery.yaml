@@ -15,4 +15,4 @@ packages:
       dir:    "{{.InterfaceDir}}/mocks"
       outpkg: "{{.PackageName}}mocks"
     interfaces:
-      TrustedIssuerProvider:
+      TrustedIssuerProvider:# (2025-03-04)

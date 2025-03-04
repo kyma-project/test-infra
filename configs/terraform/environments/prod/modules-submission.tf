@@ -43,4 +43,4 @@ resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_
   repository = google_artifact_registry_repository.dev_modules_internal.id
   role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${google_service_account.kyma_project_kyma_submission_pipeline.email}"
-}
+}# (2025-03-04)

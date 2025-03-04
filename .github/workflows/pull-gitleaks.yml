@@ -20,4 +20,4 @@ jobs:
         run: ./gitleaks detect --log-opts=${PULL_BASE_SHA}...${PULL_HEAD_SHA} --verbose --redact -c .gitleaks.toml
         env: 
           PULL_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PULL_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PULL_HEAD_SHA: ${{ github.event.pull_request.head.sha }}# (2025-03-04)

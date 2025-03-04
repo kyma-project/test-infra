@@ -22,4 +22,4 @@ resource "google_service_account_iam_binding" "gitleaks_workload_identity_federa
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.gitleaks_secret_accesor.name
-}
+}# (2025-03-04)

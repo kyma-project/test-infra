@@ -24,4 +24,4 @@ jobs:
         # Use find to ensure each file is checked
       - run: find "." -type f -name "*.sh" -exec "shellcheck" -x {} +
         env:
-          SHELLCHECK_OPTS: "-e SC2034 -e SC2181 -e SC2155"
+          SHELLCHECK_OPTS: "-e SC2034 -e SC2181 -e SC2155"# (2025-03-04)

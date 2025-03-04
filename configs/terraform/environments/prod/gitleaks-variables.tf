@@ -30,3 +30,4 @@ variable "gitleaks_repositories" {
 
   description = "List of repositories that can use gitleaks secrets accesor service account"
 }
+# (2025-03-04)

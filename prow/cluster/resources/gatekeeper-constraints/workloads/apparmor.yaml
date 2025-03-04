@@ -17,3 +17,4 @@ spec:
       - "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:*"
+# (2025-03-04)

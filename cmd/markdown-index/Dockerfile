@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/markdown-index/main /markdown-index
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /markdown-index
 ENTRYPOINT ["/markdown-index"]
+# (2025-03-04)

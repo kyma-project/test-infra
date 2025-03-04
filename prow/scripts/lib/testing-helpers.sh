@@ -231,3 +231,4 @@ function testing::remove_addons_if_necessary() {
       log::info "- Skipping removing ClusterAddonsConfiguration"
   fi
 }
+# (2025-03-04)

@@ -24,4 +24,4 @@ COPY --from=builder /app/cmd/image-autobumper/main /image-autobumper
 
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /image-autobumper
-ENTRYPOINT ["/image-autobumper"]
+ENTRYPOINT ["/image-autobumper"]# (2025-03-04)

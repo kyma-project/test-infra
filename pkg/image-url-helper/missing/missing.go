@@ -34,3 +34,4 @@ func getImageError(imageReference name.Reference) error {
 	_, err := remote.Image(imageReference)
 	return err
 }
+# (2025-03-04)

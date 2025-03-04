@@ -24,4 +24,4 @@ COPY --from=builder /app/cmd/image-detector/main /image-detector
 
 RUN apk add --no-cache ca-certificates git && \
 	chmod +x /image-detector
-ENTRYPOINT ["/image-detector"]
+ENTRYPOINT ["/image-detector"]# (2025-03-04)

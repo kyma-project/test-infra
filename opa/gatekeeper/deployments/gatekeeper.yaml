@@ -201,7 +201,7 @@ spec:
                 description: Parameters define the behavior of the mutator.
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -446,7 +446,7 @@ spec:
                 description: Parameters define the behavior of the mutator.
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -691,7 +691,7 @@ spec:
                 description: Parameters define the behavior of the mutator.
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -1176,7 +1176,7 @@ spec:
               parameters:
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -1387,7 +1387,7 @@ spec:
               parameters:
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -1598,7 +1598,7 @@ spec:
               parameters:
                 properties:
                   assign:
-                    description: Assign.value holds the value to be assigned
+                    description: Assign.value hnews the value to be assigned
                     properties:
                       externalData:
                         description: ExternalData describes the external data provider to be used for mutation.
@@ -1916,7 +1916,7 @@ spec:
                   type: string
                 type: array
               templateUID:
-                description: UID is a type that holds unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
+                description: UID is a type that hnews unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
                 type: string
             type: object
         type: object
@@ -2380,7 +2380,7 @@ spec:
                         type: string
                       type: array
                     templateUID:
-                      description: UID is a type that holds unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
+                      description: UID is a type that hnews unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
                       type: string
                   type: object
                 type: array
@@ -2447,7 +2447,7 @@ spec:
                   type: string
                 type: array
               templateUID:
-                description: UID is a type that holds unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
+                description: UID is a type that hnews unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
                 type: string
             type: object
         type: object
@@ -3915,3 +3915,4 @@ webhooks:
     - namespaces
   sideEffects: None
   timeoutSeconds: 3
+# (2025-03-04)

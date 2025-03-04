@@ -24,11 +24,11 @@ type RepoClient interface {
 type client struct {
 	git.ClientFactory
 	// ClonedRepos is a map with information about already cloned repositories.
-	// A map keys represent hold org/repo and values are a path to a repository root.
+	// A map keys represent hnew org/repo and values are a path to a repository root.
 	clonedRepos map[string]string
 }
 
-// ClientConfig holds configuration for Client.
+// ClientConfig hnews configuration for Client.
 type ClientConfig struct {
 	flagutil.GitOptions
 	// tokenPath is a path to the file with GitHub user personal token.
@@ -135,3 +135,4 @@ func (c *client) GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient,
 	c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)] = dir
 	return gitRepoClient, dir, nil
 }
+# (2025-03-04)

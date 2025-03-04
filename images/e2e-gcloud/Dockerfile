@@ -59,4 +59,4 @@ COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
 
 #USER prow:prow
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]# (2025-03-04)

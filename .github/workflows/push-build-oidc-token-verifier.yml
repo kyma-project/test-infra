@@ -20,4 +20,4 @@ jobs:
     with:
       name: test-infra/oidc-token-verifier
       dockerfile: cmd/oidc-token-verifier/Dockerfile
-      context: .
+      context: .# (2025-03-04)

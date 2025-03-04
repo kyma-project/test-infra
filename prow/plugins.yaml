@@ -5,7 +5,7 @@ plugins:
       - assign
       - wip
       - lgtm
-      - hold
+      - hnew
       - label
       - help
       - size
@@ -97,3 +97,4 @@ approve:
       - kyma-project/k8s-prow
     require_self_approval: false
     ignore_review_state: false
+# (2025-03-04)

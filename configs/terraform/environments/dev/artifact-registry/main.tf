@@ -15,4 +15,4 @@ module "artifact_registry" {
   writer_serviceaccounts = each.value.writer_serviceaccounts
   reader_serviceaccounts = each.value.reader_serviceaccounts
   public                 = each.value.public
-}
+}# (2025-03-04)

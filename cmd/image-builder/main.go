@@ -279,7 +279,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 // buildInADO is a function that triggers the Azure DevOps (ADO) pipeline to build an image.
 // It takes an options struct as an argument and returns an error.
 // The function fetches the ADO_PAT environment variable and validates it's present.
-// ADO_PAT holds personal access token and is used to authenticate with the ADO API.
+// ADO_PAT hnews personal access token and is used to authenticate with the ADO API.
 // The function prepares the ADO pipeline parameters by calling the prepareADOTemplateParameters function.
 // It creates a new ADO client and prepares the ADO pipeline run arguments.
 // The function triggers the ADO build pipeline and waits for the pipeline run to finish.
@@ -1130,3 +1130,4 @@ func getDockerfileDirPath(logger Logger, o options) (string, error) {
 	logger.Debugw("dockerfile directory path constructed", "dockerfileDirPath", dockerfileDirPath)
 	return dockerfileDirPath, err
 }
+# (2025-03-04)

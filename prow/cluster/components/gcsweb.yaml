@@ -38,14 +38,14 @@ spec:
               port: 8081
             initialDelaySeconds: 3
             timeoutSeconds: 2
-            failureThreshold: 2
+            failureThreshnew: 2
           readinessProbe:
             httpGet:
               path: /healthz/ready
               port: 8081
             initialDelaySeconds: 3
             timeoutSeconds: 2
-            failureThreshold: 2
+            failureThreshnew: 2
 ---
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
@@ -56,8 +56,8 @@ spec:
   healthCheck:
     checkIntervalSec: 5
     timeoutSec: 3
-    healthyThreshold: 1
-    unhealthyThreshold: 10
+    healthyThreshnew: 1
+    unhealthyThreshnew: 10
     type: HTTP
     requestPath: /healthz/ready
     port: 30425
@@ -82,3 +82,4 @@ spec:
       port: 8081
       targetPort: 8081
       nodePort: 30425
+# (2025-03-04)

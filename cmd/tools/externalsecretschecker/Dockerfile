@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/tools/externalsecretschecker/main /externalsecretsc
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /externalsecretschecker
 ENTRYPOINT ["/externalsecretschecker"]
+# (2025-03-04)

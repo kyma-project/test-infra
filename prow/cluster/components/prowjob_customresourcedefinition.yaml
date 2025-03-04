@@ -89,7 +89,7 @@ spec:
                     back to GitHub
                   type: string
                 decoration_config:
-                  description: DecorationConfig holds configuration options for decorating
+                  description: DecorationConfig hnews configuration options for decorating
                     PodSpecs that users provide
                   properties:
                     censor_secrets:
@@ -160,7 +160,7 @@ spec:
                         specified in the podspec.
                       type: string
                     gcs_configuration:
-                      description: GCSConfiguration holds options for pushing logs and
+                      description: GCSConfiguration hnews options for pushing logs and
                         artifacts to GCS from a job.
                       properties:
                         bucket:
@@ -179,7 +179,7 @@ spec:
                             the legacy or simple strategy
                           type: string
                         job_url_prefix:
-                          description: JobURLPrefix holds the baseURL under which the
+                          description: JobURLPrefix hnews the baseURL under which the
                             jobs output can be viewed. If unset, this will be derived
                             based on org/repo from the job_url_prefix_config.
                           type: string
@@ -192,7 +192,7 @@ spec:
                         mediaTypes:
                           additionalProperties:
                             type: string
-                          description: 'MediaTypes holds additional extension media
+                          description: 'MediaTypes hnews additional extension media
                           types to add to Go''s builtin''s and the local system''s
                           defaults.  This maps extensions to media types, for example:
                           MediaTypes["log"] = "text/plain"'
@@ -208,7 +208,7 @@ spec:
                       type: object
                     gcs_credentials_secret:
                       description: GCSCredentialsSecret is the name of the Kubernetes
-                        secret that holds GCS push credentials.
+                        secret that hnews GCS push credentials.
                       type: string
                     github_api_endpoints:
                       description: GitHubAPIEndpoints are the endpoints of GitHub APIs.
@@ -226,7 +226,7 @@ spec:
                       properties:
                         key:
                           description: Key is the key of the corresponding kubernetes
-                            secret that holds the value of the GitHub App private key.
+                            secret that hnews the value of the GitHub App private key.
                           type: string
                         name:
                           description: Name is the name of a kubernetes secret.
@@ -244,14 +244,14 @@ spec:
                       properties:
                         key:
                           description: Key is the key of the corresponding kubernetes
-                            secret that holds the value of the OAuth token.
+                            secret that hnews the value of the OAuth token.
                           type: string
                         name:
                           description: Name is the name of a kubernetes secret.
                           type: string
                       type: object
                     resources:
-                      description: Resources holds resource requests and limits for
+                      description: Resources hnews resource requests and limits for
                         utility containers used to decorate a PodSpec.
                       properties:
                         clonerefs:
@@ -369,7 +369,7 @@ spec:
                       type: object
                     s3_credentials_secret:
                       description: S3CredentialsSecret is the name of the Kubernetes
-                        secret that holds blob storage push credentials.
+                        secret that hnews blob storage push credentials.
                       type: string
                     set_limit_equals_memory_request:
                       description: SetLimitEqualsMemoryRequest sets memory limit equal
@@ -403,7 +403,7 @@ spec:
                         exits cleanly before starting an upload.
                       type: boolean
                     utility_images:
-                      description: UtilityImages holds pull specs for utility container
+                      description: UtilityImages hnews pull specs for utility container
                         images used to decorate a PodSpec.
                       properties:
                         clonerefs:
@@ -526,7 +526,7 @@ spec:
                     setting.
                   type: boolean
                 jenkins_spec:
-                  description: JenkinsSpec holds configuration specific to Jenkins jobs
+                  description: JenkinsSpec hnews configuration specific to Jenkins jobs
                   properties:
                     github_branch_source_job:
                       type: boolean
@@ -566,7 +566,7 @@ spec:
                           name:
                             type: string
                           value:
-                            description: 'ArrayOrString is a type that can hold a single
+                            description: 'ArrayOrString is a type that can hnew a single
                             string or string array. Used in JSON unmarshalling so
                             that a single JSON field can accept either an individual
                             string or an array of strings. TODO (@chuangw6): This
@@ -802,7 +802,7 @@ spec:
                                             type: string
                                           value:
                                             description: 'ArrayOrString is a type that
-                                            can hold a single string or string array.
+                                            can hnew a single string or string array.
                                             Used in JSON unmarshalling so that a single
                                             JSON field can accept either an individual
                                             string or an array of strings. TODO (@chuangw6):
@@ -895,7 +895,7 @@ spec:
                                       type: string
                                     value:
                                       description: 'ArrayOrString is a type that can
-                                      hold a single string or string array. Used in
+                                      hnew a single string or string array. Used in
                                       JSON unmarshalling so that a single JSON field
                                       can accept either an individual string or an
                                       array of strings. TODO (@chuangw6): This struct
@@ -936,7 +936,7 @@ spec:
                                   to this task as inputs and outputs.
                                 properties:
                                   inputs:
-                                    description: Inputs holds the mapping from the PipelineResources
+                                    description: Inputs hnews the mapping from the PipelineResources
                                       declared in DeclaredPipelineResources to the input
                                       PipelineResources required by the Task.
                                     items:
@@ -969,7 +969,7 @@ spec:
                                     type: array
                                     x-kubernetes-list-type: atomic
                                   outputs:
-                                    description: Outputs holds the mapping from the
+                                    description: Outputs hnews the mapping from the
                                       PipelineResources declared in DeclaredPipelineResources
                                       to the input PipelineResources required by the
                                       Task.
@@ -1352,7 +1352,7 @@ spec:
                                       in TaskRuns as bindings to instances of PipelineResources.
                                     properties:
                                       inputs:
-                                        description: Inputs holds the mapping from the
+                                        description: Inputs hnews the mapping from the
                                           PipelineResources declared in DeclaredPipelineResources
                                           to the input PipelineResources required by
                                           the Task.
@@ -1404,7 +1404,7 @@ spec:
                                         type: array
                                         x-kubernetes-list-type: atomic
                                       outputs:
-                                        description: Outputs holds the mapping from
+                                        description: Outputs hnews the mapping from
                                           the PipelineResources declared in DeclaredPipelineResources
                                           to the input PipelineResources required by
                                           the Task.
@@ -1992,7 +1992,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -2085,7 +2085,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -2233,7 +2233,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -2326,7 +2326,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -2670,7 +2670,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -2763,7 +2763,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -3487,7 +3487,7 @@ spec:
                                                   type: string
                                                 type: array
                                             type: object
-                                          failureThreshold:
+                                          failureThreshnew:
                                             description: Minimum consecutive failures
                                               for the probe to be considered failed
                                               after having succeeded. Defaults to 3.
@@ -3580,7 +3580,7 @@ spec:
                                               value is 1.
                                             format: int32
                                             type: integer
-                                          successThreshold:
+                                          successThreshnew:
                                             description: Minimum consecutive successes
                                               for the probe to be considered successful
                                               after having failed. Defaults to 1. Must
@@ -3727,7 +3727,7 @@ spec:
                                                   type: string
                                                 type: array
                                             type: object
-                                          failureThreshold:
+                                          failureThreshnew:
                                             description: Minimum consecutive failures
                                               for the probe to be considered failed
                                               after having succeeded. Defaults to 3.
@@ -3820,7 +3820,7 @@ spec:
                                               value is 1.
                                             format: int32
                                             type: integer
-                                          successThreshold:
+                                          successThreshnew:
                                             description: Minimum consecutive successes
                                               for the probe to be considered successful
                                               after having failed. Defaults to 1. Must
@@ -4150,7 +4150,7 @@ spec:
                                                   type: string
                                                 type: array
                                             type: object
-                                          failureThreshold:
+                                          failureThreshnew:
                                             description: Minimum consecutive failures
                                               for the probe to be considered failed
                                               after having succeeded. Defaults to 3.
@@ -4243,7 +4243,7 @@ spec:
                                               value is 1.
                                             format: int32
                                             type: integer
-                                          successThreshold:
+                                          successThreshnew:
                                             description: Minimum consecutive successes
                                               for the probe to be considered successful
                                               after having failed. Defaults to 1. Must
@@ -4952,7 +4952,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -5045,7 +5045,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -5205,7 +5205,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -5298,7 +5298,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -5643,7 +5643,7 @@ spec:
                                                     type: string
                                                   type: array
                                               type: object
-                                            failureThreshold:
+                                            failureThreshnew:
                                               description: Minimum consecutive failures
                                                 for the probe to be considered failed
                                                 after having succeeded. Defaults to
@@ -5736,7 +5736,7 @@ spec:
                                                 Minimum value is 1.
                                               format: int32
                                               type: integer
-                                            successThreshold:
+                                            successThreshnew:
                                               description: Minimum consecutive successes
                                                 for the probe to be considered successful
                                                 after having failed. Defaults to 1.
@@ -6826,7 +6826,7 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               description: 'options is Optional: this
-                                              field holds extra command options if
+                                              field hnews extra command options if
                                               any.'
                                               type: object
                                             readOnly:
@@ -7488,9 +7488,9 @@ spec:
                                                           account token. The kubelet
                                                           will start trying to rotate
                                                           the token if the token is
-                                                          older than 80 percent of its
+                                                          newer than 80 percent of its
                                                           time to live or if the token
-                                                          is older than 24 hours.Defaults
+                                                          is newer than 24 hours.Defaults
                                                           to 1 hour and must be at least
                                                           10 minutes.
                                                         format: int64
@@ -7942,7 +7942,7 @@ spec:
                           type: array
                       type: object
                     podTemplate:
-                      description: PodTemplate holds pod specific configuration
+                      description: PodTemplate hnews pod specific configuration
                       properties:
                         affinity:
                           description: If specified, the pod's scheduling constraints
@@ -8895,7 +8895,7 @@ spec:
                             IPs that will be injected into the pod's hosts file if specified.
                             This is only valid for non-hostNetwork pods.
                           items:
-                            description: HostAlias holds the mapping between IP and
+                            description: HostAlias hnews the mapping between IP and
                               hostnames that will be injected as an entry in the pod's
                               hosts file.
                             properties:
@@ -8961,7 +8961,7 @@ spec:
                             to dispatch the Pod
                           type: string
                         securityContext:
-                          description: 'SecurityContext holds pod-level security attributes
+                          description: 'SecurityContext hnews pod-level security attributes
                           and common container settings. Optional: Defaults to empty.  See
                           type description for default values of each field.'
                           properties:
@@ -9079,7 +9079,7 @@ spec:
                                 type: integer
                               type: array
                             sysctls:
-                              description: Sysctls hold a list of namespaced sysctls
+                              description: Sysctls hnew a list of namespaced sysctls
                                 used for the pod. Pods with unsupported sysctls (by
                                 the container runtime) might fail to launch. Note that
                                 this field cannot be set when spec.os.name is windows.
@@ -9919,7 +9919,7 @@ spec:
                                   options:
                                     additionalProperties:
                                       type: string
-                                    description: 'options is Optional: this field holds
+                                    description: 'options is Optional: this field hnews
                                     extra command options if any.'
                                     type: object
                                   readOnly:
@@ -10492,8 +10492,8 @@ spec:
                                                 plugin will proactively rotate the service
                                                 account token. The kubelet will start
                                                 trying to rotate the token if the token
-                                                is older than 80 percent of its time
-                                                to live or if the token is older than
+                                                is newer than 80 percent of its time
+                                                to live or if the token is newer than
                                                 24 hours.Defaults to 1 hour and must
                                                 be at least 10 minutes.
                                               format: int64
@@ -10909,14 +10909,14 @@ spec:
                         later on)
                       type: string
                     taskRunSpecs:
-                      description: TaskRunSpecs holds a set of task specific specs
+                      description: TaskRunSpecs hnews a set of task specific specs
                       items:
-                        description: PipelineTaskRunSpec holds task specific specs
+                        description: PipelineTaskRunSpec hnews task specific specs
                         properties:
                           pipelineTaskName:
                             type: string
                           taskPodTemplate:
-                            description: Template holds pod specific configuration
+                            description: Template hnews pod specific configuration
                             properties:
                               affinity:
                                 description: If specified, the pod's scheduling constraints
@@ -11956,7 +11956,7 @@ spec:
                                   file if specified. This is only valid for non-hostNetwork
                                   pods.
                                 items:
-                                  description: HostAlias holds the mapping between IP
+                                  description: HostAlias hnews the mapping between IP
                                     and hostnames that will be injected as an entry
                                     in the pod's hosts file.
                                   properties:
@@ -12025,7 +12025,7 @@ spec:
                                   be used to dispatch the Pod
                                 type: string
                               securityContext:
-                                description: 'SecurityContext holds pod-level security
+                                description: 'SecurityContext hnews pod-level security
                                 attributes and common container settings. Optional:
                                 Defaults to empty.  See type description for default
                                 values of each field.'
@@ -12152,7 +12152,7 @@ spec:
                                       type: integer
                                     type: array
                                   sysctls:
-                                    description: Sysctls hold a list of namespaced sysctls
+                                    description: Sysctls hnew a list of namespaced sysctls
                                       used for the pod. Pods with unsupported sysctls
                                       (by the container runtime) might fail to launch.
                                       Note that this field cannot be set when spec.os.name
@@ -13060,7 +13060,7 @@ spec:
                                           additionalProperties:
                                             type: string
                                           description: 'options is Optional: this field
-                                          holds extra command options if any.'
+                                          hnews extra command options if any.'
                                           type: object
                                         readOnly:
                                           description: 'readOnly is Optional: defaults
@@ -13676,9 +13676,9 @@ spec:
                                                       proactively rotate the service
                                                       account token. The kubelet will
                                                       start trying to rotate the token
-                                                      if the token is older than 80
+                                                      if the token is newer than 80
                                                       percent of its time to live or
-                                                      if the token is older than 24
+                                                      if the token is newer than 24
                                                       hours.Defaults to 1 hour and must
                                                       be at least 10 minutes.
                                                     format: int64
@@ -14023,7 +14023,7 @@ spec:
                       format: https://golang.org/pkg/time/#ParseDuration'
                       type: string
                     workspaces:
-                      description: Workspaces holds a set of workspace bindings that
+                      description: Workspaces hnews a set of workspace bindings that
                         must match names with those declared in the pipeline.
                       items:
                         description: WorkspaceBinding maps a Task's declared workspace
@@ -15832,7 +15832,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -15912,7 +15912,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -16040,7 +16040,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -16120,7 +16120,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -16405,7 +16405,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -16485,7 +16485,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -17135,7 +17135,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -17215,7 +17215,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -17334,7 +17334,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -17414,7 +17414,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -17692,7 +17692,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -17772,7 +17772,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -17954,7 +17954,7 @@ spec:
                         that will be injected into the pod's hosts file if specified.
                         This is only valid for non-hostNetwork pods.
                       items:
-                        description: HostAlias holds the mapping between IP and hostnames
+                        description: HostAlias hnews the mapping between IP and hostnames
                           that will be injected as an entry in the pod's hosts file.
                         properties:
                           hostnames:
@@ -18438,7 +18438,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -18518,7 +18518,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -18646,7 +18646,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -18726,7 +18726,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -19011,7 +19011,7 @@ spec:
                                       type: string
                                     type: array
                                 type: object
-                              failureThreshold:
+                              failureThreshnew:
                                 description: Minimum consecutive failures for the probe
                                   to be considered failed after having succeeded. Defaults
                                   to 3. Minimum value is 1.
@@ -19091,7 +19091,7 @@ spec:
                                   Default to 10 seconds. Minimum value is 1.
                                 format: int32
                                 type: integer
-                              successThreshold:
+                              successThreshnew:
                                 description: Minimum consecutive successes for the probe
                                   to be considered successful after having failed. Defaults
                                   to 1. Must be 1 for liveness and startup. Minimum
@@ -19374,7 +19374,7 @@ spec:
                         scheduler.
                       type: string
                     securityContext:
-                      description: 'SecurityContext holds pod-level security attributes
+                      description: 'SecurityContext hnews pod-level security attributes
                       and common container settings. Optional: Defaults to empty.  See
                       type description for default values of each field.'
                       properties:
@@ -19487,7 +19487,7 @@ spec:
                             type: integer
                           type: array
                         sysctls:
-                          description: Sysctls hold a list of namespaced sysctls used
+                          description: Sysctls hnew a list of namespaced sysctls used
                             for the pod. Pods with unsupported sysctls (by the container
                             runtime) might fail to launch. Note that this field cannot
                             be set when spec.os.name is windows.
@@ -20477,7 +20477,7 @@ spec:
                               options:
                                 additionalProperties:
                                   type: string
-                                description: 'options is Optional: this field holds
+                                description: 'options is Optional: this field hnews
                                 extra command options if any.'
                                 type: object
                               readOnly:
@@ -21024,8 +21024,8 @@ spec:
                                             the kubelet volume plugin will proactively
                                             rotate the service account token. The kubelet
                                             will start trying to rotate the token if
-                                            the token is older than 80 percent of its
-                                            time to live or if the token is older than
+                                            the token is newer than 80 percent of its
+                                            time to live or if the token is newer than
                                             24 hours.Defaults to 1 hour and must be
                                             at least 10 minutes.
                                           format: int64
@@ -21335,7 +21335,7 @@ spec:
                     - containers
                   type: object
                 prowjob_defaults:
-                  description: ProwJobDefault holds configuration options provided as
+                  description: ProwJobDefault hnews configuration options provided as
                     defaults in the Prow config
                   properties:
                     tenant_id:
@@ -21430,7 +21430,7 @@ spec:
                     reported (e.g. status on GitHub, message in Slack, etc.)
                   type: boolean
                 reporter_config:
-                  description: ReporterConfig holds reporter-specific configuration
+                  description: ReporterConfig hnews reporter-specific configuration
                   properties:
                     slack:
                       properties:
@@ -21459,7 +21459,7 @@ spec:
                       type: object
                   type: object
                 rerun_auth_config:
-                  description: RerunAuthConfig holds information about which users can
+                  description: RerunAuthConfig hnews information about which users can
                     rerun the job
                   properties:
                     allow_anyone:
@@ -21601,4 +21601,4 @@ status:
     kind: ""
     plural: ""
   conditions: []
-  storedVersions: []
+  storedVersions: []# (2025-03-04)

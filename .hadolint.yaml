@@ -8,4 +8,4 @@ ignored:
   - DL3007 # We use tagging of local images in build chain as latest.
   - DL3003 # This is not needed in most of the cases in our images. WORKDIR is usually set at the end of the image
   - SC2155 # not relevant. complains about go installation taken from official go image
-failure-threshold: error
+failure-threshnew: error# (2025-03-04)

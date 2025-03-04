@@ -72,3 +72,4 @@ module "signify_secret_rotator" {
   secret_manager_notifications_topic = var.secret_manager_notifications_topic
   secrets_rotator_sa_email = google_service_account.secrets-rotator.email
 }
+# (2025-03-04)

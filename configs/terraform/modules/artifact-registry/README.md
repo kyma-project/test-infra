@@ -64,3 +64,4 @@ When you use the GCP private image registry, consider the following:
 - The **roles/artifactregistry.reader** role binding is required for lifecycle-manager service accounts. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control).
 - You can make your repository public if you use the `public = true` in the `terraform.tfvars`.
 - Vulnerability scanning is enabled by default.
+# (2025-03-04)

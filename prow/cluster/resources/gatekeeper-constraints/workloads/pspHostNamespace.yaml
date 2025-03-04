@@ -10,3 +10,4 @@ spec:
         kinds: ["Pod"]
     namespaces:
       - "default"
+# (2025-03-04)

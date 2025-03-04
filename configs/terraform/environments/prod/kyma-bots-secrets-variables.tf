@@ -26,3 +26,4 @@ variable "kyma_guard_bot_github_token_secret_name" {
   description = "Name of the kyma-guard-bot-github-token secret. This secret is used by automation to get GitHub contexts statuses."
   default     = "kyma-guard-bot-github-token"
 }
+# (2025-03-04)

@@ -10,4 +10,4 @@ outputs:
     description: 'The signed JWT ID Token'
 runs:
   using: 'node20'
-  main: 'index.js'
+  main: 'index.js'# (2025-03-04)

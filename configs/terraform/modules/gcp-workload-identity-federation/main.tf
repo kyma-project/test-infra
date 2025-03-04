@@ -25,4 +25,4 @@ resource "google_service_account_iam_member" "service_account" {
   service_account_id = each.value.sa_name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.main.name}/${each.value.attribute}"
-}
+}# (2025-03-04)

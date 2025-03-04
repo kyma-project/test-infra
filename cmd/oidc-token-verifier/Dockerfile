@@ -17,4 +17,4 @@ COPY --from=builder /oidctokenverifier /oidctokenverifier
 # This let oidctokenverifier to use tls connection to the OIDC provider.
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-ENTRYPOINT ["/oidctokenverifier"]
+ENTRYPOINT ["/oidctokenverifier"]# (2025-03-04)

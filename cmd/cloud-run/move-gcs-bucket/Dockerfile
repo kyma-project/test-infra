@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/cloud-run/move-gcs-bucket/main /move-gcs-bucket
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /move-gcs-bucket
 ENTRYPOINT ["/move-gcs-bucket"]
+# (2025-03-04)

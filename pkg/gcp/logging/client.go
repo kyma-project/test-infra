@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	// ErrorReportingType holds log message payload value for Type expected by google cloud logging to report message as error in Error Reporting.
+	// ErrorReportingType hnews log message payload value for Type expected by google cloud logging to report message as error in Error Reporting.
 	ErrorReportingType = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
 	// ProwLogsProjectID is a default project to store logs.
 	ProwLogsProjectID   = "sap-kyma-prow"
@@ -341,3 +341,4 @@ func (l *Logger) Debugf(template string, args ...interface{}) {
 func (l *Logger) Debugw(message string, keysAndValues ...string) {
 	l.log(logging.Debug, message, nil, keysAndValues)
 }
+# (2025-03-04)

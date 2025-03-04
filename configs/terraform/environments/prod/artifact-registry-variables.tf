@@ -71,4 +71,4 @@ variable "docker_dev_repository" {
       "type" = "development"
     }
   }
-}
+}# (2025-03-04)

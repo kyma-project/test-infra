@@ -11,3 +11,4 @@ COPY --from=builder /serviceaccountkeyscleaner /serviceaccountkeyscleaner
 RUN apk add --no-cache ca-certificates && \
 	chmod +x /serviceaccountkeyscleaner
 ENTRYPOINT ["/serviceaccountkeyscleaner"]
+# (2025-03-04)

@@ -104,3 +104,4 @@ Here's an example of the [presubmit ProwJob](https://github.com/kyma-project/tes
 
 Here's an example of the [postubmit ProwJob](https://github.com/kyma-project/test-infra/blob/4540c0ba3622b4f1fed47a50dedc189fdfc324b1/prow/jobs/test-infra/secrets-rotator.yaml) for the secrets-rotator application:
 - The postsubmit ProwJob runs the `terraform apply` command and publishes the results on a GitHub PR.
+# (2025-03-04)

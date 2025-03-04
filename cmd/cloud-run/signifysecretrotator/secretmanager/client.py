@@ -64,3 +64,4 @@ class SecretManagerError(Exception):
 
     def __init__(self, secret_id: str, e: Exception) -> None:
         self.add_note(f"Failed to access secret {secret_id}, error: {e}")
+# (2025-03-04)

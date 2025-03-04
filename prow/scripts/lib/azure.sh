@@ -514,3 +514,4 @@ function az::get_cluster_resource_group {
 # This should allow easy checking for the related requirements without copying loads of code.
 # If more checks will be needed we should add another function there.
 az::verify_deps
+# (2025-03-04)

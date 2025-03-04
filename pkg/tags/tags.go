@@ -110,3 +110,4 @@ func NewTagger(logger Logger, tags []Tag, opts ...TagOption) (*Tagger, error) {
 	logger.Debugw("finished creating new tagger")
 	return &t, nil
 }
+# (2025-03-04)

@@ -23,3 +23,4 @@ To setup an automatic rotation for a Secret Manager secret, follow these steps:
 2. Add the `type: service-account` label to the secret.
 3. Set `secret-manager-notifications` as the secret Pub/Sub topic.
 4. Set up a rotation period for the secret.
+# (2025-03-04)

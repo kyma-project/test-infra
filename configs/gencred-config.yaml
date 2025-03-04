@@ -11,3 +11,4 @@ clusters:
     gsm:
       name: trusted-workload-kubeconfig
       project: sap-kyma-prow
+# (2025-03-04)

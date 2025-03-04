@@ -111,3 +111,4 @@ spec:
   type: NodePort
   selector:
     app: pushgateway-proxy
+# (2025-03-04)

@@ -104,4 +104,4 @@ jobs:
           --images-file=/github/workspace/external-images.yaml
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
-          --debug=${{ inputs.debug }}
+          --debug=${{ inputs.debug }}# (2025-03-04)

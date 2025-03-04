@@ -33,3 +33,4 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-kyma-backup-restore-bucket**                     | It defines the environment variable for Kyma's backups bucket.                                                                                                                            |
 | **preset-kyma-ondemands**                                 | It defines the environment variable for Kyma's on-demand artifacts bucket.                                                                                                                |
 | **preset-certificates-bucket**                            | It provides the environment variable with the name of the bucket for Prow Jobs Secrets in the `kyma-prow-workload` project.                                                                |
+# (2025-03-04)

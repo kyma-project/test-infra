@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/tools/usersmapchecker/main /usersmapchecker
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /usersmapchecker
 ENTRYPOINT ["/usersmapchecker"]
+# (2025-03-04)

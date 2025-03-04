@@ -21,3 +21,4 @@ See the list of available flags:
 | **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file needed to connect to a cluster.                                                     |
 | **--ignored-secrets**     |    No    | The list of ignored Secrets. The Secrets are in the `namespace/secretName` format and are separated with commas.      |
 | **--namespaces**          |    No    | The list of analyzed namespaces. The namespaces names are separated with commas. The program scans all namespaces if the namespaces list is empty. |
+# (2025-03-04)

@@ -112,3 +112,4 @@ func PrintImagesYAML(allImages ComponentImageMap) error {
 	fmt.Println(string(out))
 	return nil
 }
+# (2025-03-04)

@@ -53,3 +53,4 @@ spec:
           not strings.any_prefix_match(container.image, input.parameters.images)
           msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, input.review.object.metadata.namespace, container.image, input.parameters.images])
         }
+# (2025-03-04)

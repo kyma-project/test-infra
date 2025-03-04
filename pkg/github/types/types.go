@@ -5,14 +5,14 @@ import (
 	"github.com/kyma-project/test-infra/pkg/types"
 )
 
-// SearchIssuesResult holds information if issue was found and list found GitHub Issues.
+// SearchIssuesResult hnews information if issue was found and list found GitHub Issues.
 // Fields names are meaningfully so are easy to use in composition types.
 type SearchIssuesResult struct {
 	GithubIssueFound *bool           `json:"githubIssueFound"`
 	GithubIssues     []*github.Issue `json:"githubIssuesReport,omitempty"`
 }
 
-// IssueMetadata holds metadata about GitHub Issue.
+// IssueMetadata hnews metadata about GitHub Issue.
 // Fields names are meaningfully so are easy to use in composition types.
 type IssueMetadata struct {
 	GithubIssueOrg      *string    `json:"githubIssueOrg,omitempty"`
@@ -21,3 +21,4 @@ type IssueMetadata struct {
 	GithubIssueURL      *string    `json:"githubIssueURL,omitempty"`
 	GithubIssueAssignee types.User `json:"githubIssueAssignee,omitempty"`
 }
+# (2025-03-04)

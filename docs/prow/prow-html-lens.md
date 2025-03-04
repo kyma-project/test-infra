@@ -9,3 +9,4 @@ All files named `report*.html` saved in the artifacts directory will be rendered
 ```bash
 golangci-lint  run ./... --out-format html > "${ARTIFACTS}/report-golint.html"
 ```
+# (2025-03-04)

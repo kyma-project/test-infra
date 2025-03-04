@@ -99,3 +99,4 @@ See the list of flags available for the `promote` command:
 | **--dry-run**                   |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.                 |
 | **--sign**                      |    No    | The boolean value that sets `sign` value in the output YAML list. It defaults to `true`. |
 | **--excludes-list**             |    No    | Path to the list of excluded `values.yaml` files.                                        |
+# (2025-03-04)

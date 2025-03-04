@@ -14,3 +14,4 @@ spec:
     allowedHostPaths:
       - pathPrefix: "/lib/modules"
       - pathPrefix: "/sys/fs/cgroup"
+# (2025-03-04)

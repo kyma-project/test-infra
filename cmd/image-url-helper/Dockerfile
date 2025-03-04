@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/image-url-helper/main /image-url-helper
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /image-url-helper
 ENTRYPOINT ["/image-url-helper"]
+# (2025-03-04)

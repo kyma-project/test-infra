@@ -51,3 +51,4 @@ variable "public" {
   description = "Is Artifact registry public"
   default     = false
 }
+# (2025-03-04)

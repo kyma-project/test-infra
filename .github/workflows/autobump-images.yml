@@ -7,4 +7,4 @@ on:
 
 jobs:
   autobump:
-    uses: kyma-project/test-infra/.github/workflows/image-autobumper.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-autobumper.yml@main# (2025-03-04)

@@ -18,3 +18,4 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["/usersmapchecker"\],"container_name":"test",.*}$'
+# (2025-03-04)

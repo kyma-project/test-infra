@@ -121,4 +121,4 @@ provider "kubectl" {
     data.google_container_cluster.untrusted_workload_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
   load_config_file = false
-}
+}# (2025-03-04)

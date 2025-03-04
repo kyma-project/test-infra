@@ -11,3 +11,4 @@ Follow the rules listed in this document to provide high-quality documentation.
 - Documentation for specific tools and libraries must be maintained in the same directory as the tool or library.
 - If a tool has a more complex documentation structure, it can have its own `docs` directory under its root directory.
 - A `docs` directory under a repository root doesn't have to contain documentation related strictly to one tool only. For example, there can be documentation describing a system comprised of multiple tools which together deliver one service for users.
+# (2025-03-04)

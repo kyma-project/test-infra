@@ -132,3 +132,4 @@ variable "kyma-project-github-org" {
   default     = "kyma-project"
   description = "The GitHub organization where the Kyma project is hosted"
 }
+# (2025-03-04)

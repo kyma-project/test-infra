@@ -62,4 +62,4 @@ Otherwise, it exits with the status code of `1`, indicating that the token is in
 The tool was developed to be used in the oci-image-builder pipeline, where it authenticates and authorizes calls that trigger the pipeline.
 By verifying the tokens and validating its claims against allowed values, it prevents unauthorized or malicious image builds.
 This is done by ensuring that the token is issued by the trusted issuer and that the token is used in the context of the trusted GitHub
-workflow reference.
+workflow reference.# (2025-03-04)

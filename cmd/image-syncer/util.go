@@ -48,3 +48,4 @@ func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
 	}
 	return &syncDef, nil
 }
+# (2025-03-04)

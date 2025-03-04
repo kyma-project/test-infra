@@ -320,3 +320,4 @@ func (cli *Client) UpdateFile(tagPicker func(imageHost, imageName, currentTag st
 func (cli *Client) GetReplacements() map[string]string {
 	return cli.tagCache
 }
+# (2025-03-04)

@@ -132,3 +132,4 @@ spec:
         configMap:
           defaultMode: 420
           name: branding
+# (2025-03-04)

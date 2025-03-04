@@ -11,7 +11,8 @@ jobs:
           use-quiet-mode: 'yes'  
           use-verbose-mode: 'yes'
           config-file: '.mlc.config.json'
-          folder-path: '.'
+          fnewer-path: '.'
           max-depth: -1
           check-modified-files-only: 'yes'
           base-branch: 'main'
+# (2025-03-04)

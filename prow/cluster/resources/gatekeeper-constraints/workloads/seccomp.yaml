@@ -34,3 +34,4 @@ spec:
       - "gcr.io/k8s-prow/generic-autobumper:*"
       - "gcr.io/k8s-prow/ghproxy:*"
       - "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:*"
+# (2025-03-04)

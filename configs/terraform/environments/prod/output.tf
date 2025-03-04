@@ -35,4 +35,4 @@ output "secrets-rotator" {
 
 output "secret-manager-notifications-topic" {
   value = data.google_pubsub_topic.secret-manager-notifications-topic
-}
+}# (2025-03-04)

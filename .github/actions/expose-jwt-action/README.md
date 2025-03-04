@@ -30,4 +30,4 @@ The JWT signed by GitHub Action.
   name: Expose JWT token
   with:
     audience: 'sts.amazonaws.com'
-```
+```# (2025-03-04)

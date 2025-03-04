@@ -176,3 +176,4 @@ In your Plank deployment, you must:
 - Add `--skip-report`, so Plank will skip the reporting logic.
 
 Both changes should be deployed at the same time. If you need to deploy them sequentially, deploy Crier first to avoid double-reporting.
+# (2025-03-04)

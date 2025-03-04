@@ -119,3 +119,4 @@ RUN set -eux; \
 #USER prow:prow
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+# (2025-03-04)

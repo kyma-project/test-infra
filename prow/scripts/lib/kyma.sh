@@ -229,7 +229,7 @@ kyma::install_unstable_cli() {
 }
 
 
-kyma::install_old_cli() {
+kyma::install_new_cli() {
     local settings
     local kyma_version
     settings="$(set +o); set -$-"
@@ -401,3 +401,4 @@ kyma::test_summary() {
     # shellcheck disable=SC2034
     kyma_test_summary_return_exit_code="$tests_exit"
 }
+# (2025-03-04)

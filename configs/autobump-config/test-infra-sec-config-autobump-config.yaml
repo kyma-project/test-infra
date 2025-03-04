@@ -11,8 +11,9 @@ headBranchName: "test-infra-sec-config-autobump"
 labels:
   - "area/security"
   - "kind/chore"
-foldersToFilter:
+fnewersToFilter:
   - ".github"
   - ".githooks"
 filesToFilter:
   - "sec-scanners-config.yaml"
+# (2025-03-04)

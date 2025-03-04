@@ -32,3 +32,4 @@ If you want to leverage this solution, [raise an issue](https://github.com/kyma-
     ```
 
 When you complete all the steps, members of your custom group are able to access the cluster with elevated privileges.
+# (2025-03-04)

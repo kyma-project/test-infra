@@ -24,3 +24,4 @@ issues:
   max-issues-per-linter: 0
   # show all issues of one type instead of only 3
   max-same-issues: 0
+# (2025-03-04)

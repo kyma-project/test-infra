@@ -70,3 +70,4 @@ spec:
       - name: plugins
         configMap:
           name: plugins
+# (2025-03-04)

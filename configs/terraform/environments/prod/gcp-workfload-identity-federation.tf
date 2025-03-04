@@ -37,4 +37,4 @@ resource "github_actions_organization_variable" "gh_com_kyma_project_gcp_workloa
   visibility    = "all"
   variable_name = "GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER"
   value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
-}
+}# (2025-03-04)

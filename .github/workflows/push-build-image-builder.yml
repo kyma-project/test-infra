@@ -21,4 +21,4 @@ jobs:
     with:
       name: image-builder
       dockerfile: cmd/image-builder/images/kaniko/Dockerfile
-      context: .
+      context: .# (2025-03-04)

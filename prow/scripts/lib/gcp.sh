@@ -587,10 +587,10 @@ function gcp::set_vars_for_network {
     networkName="$jobName-net"
     subnetworkName="$jobName-subnet"
 
-    # variable hold return value for calling process
+    # variable hnew return value for calling process
     # shellcheck disable=SC2034
     gcp_set_vars_for_network_return_net_name="$networkName"
-    # variable hold return value for calling process
+    # variable hnew return value for calling process
     # shellcheck disable=SC2034
     gcp_set_vars_for_network_return_subnet_name="$subnetworkName"
 }
@@ -985,3 +985,4 @@ function gcp::get_cluster_kubeconfig {
 
     gcloud container clusters get-credentials "$clusterName" "${params[@]}"
 }
+# (2025-03-04)

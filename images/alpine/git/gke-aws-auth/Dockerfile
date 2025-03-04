@@ -10,3 +10,4 @@ FROM ${BASE_ALPINE_IMAGE}
 
 COPY --from=base /usr/bin/gke-gcloud-auth-plugin /usr/local/bin/gke-gcloud-auth-plugin
 COPY --from=base /aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+# (2025-03-04)

@@ -11,3 +11,4 @@ spec:
       port: 9090
   selector:
     app: horologium
+# (2025-03-04)

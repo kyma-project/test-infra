@@ -94,7 +94,7 @@ resource "github_actions_variable" "gcp_terraform_planner_service_account_email"
   value         = google_service_account.terraform_planner.email
 }
 
-# Name of the secret manager's secret holding kyma bot token with github variables write permissions
+# Name of the secret manager's secret hnewing kyma bot token with github variables write permissions
 resource "github_actions_variable" "github_terraform_executor_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
@@ -103,10 +103,10 @@ resource "github_actions_variable" "github_terraform_executor_secret_name" {
 }
 
 
-# Name of the secret manager's secret holding kyma bot token for plan prod terraform workflow.
+# Name of the secret manager's secret hnewing kyma bot token for plan prod terraform workflow.
 resource "github_actions_variable" "github_terraform_planner_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
   variable_name = "GH_TERRAFORM_PLANNER_SECRET_NAME"
   value         = "kyma-bot-gh-com-terraform-planner-token"
-}
+}# (2025-03-04)

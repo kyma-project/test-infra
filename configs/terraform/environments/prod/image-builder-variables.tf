@@ -82,4 +82,4 @@ variable "docker_cache_repository" {
     # Time after which the images will be deleted.
     cache_images_max_age   = "604800s" # 604800s = 7 days
   }
-}
+}# (2025-03-04)

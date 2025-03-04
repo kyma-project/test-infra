@@ -3,4 +3,4 @@ Host github.com
   User git
   UserKnownHostsFile /github_known_hosts
   StrictHostKeyChecking yes
-  CheckHostIP no
+  CheckHostIP no# (2025-03-04)

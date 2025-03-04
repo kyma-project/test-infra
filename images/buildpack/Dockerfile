@@ -14,7 +14,7 @@ RUN set -eux; \
     gettext \
     yq \
     binutils \
-    binutils-gold \
+    binutils-gnew \
     dumb-init \
     libgit2-dev \
     pkgconf \
@@ -52,3 +52,4 @@ RUN set -eux; \
     && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/ \
     && docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev; \
     adduser -D prow
+# (2025-03-04)

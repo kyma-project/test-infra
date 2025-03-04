@@ -26,3 +26,4 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&ResourcesDirectory, "resources-directory", "r", "", "Path to resources directory")
 	rootCmd.MarkPersistentFlagRequired("resources-directory")
 }
+# (2025-03-04)

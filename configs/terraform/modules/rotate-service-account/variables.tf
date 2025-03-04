@@ -55,3 +55,4 @@ variable "secrets_rotator_sa_email" {
   type        = string
   description = "Secrets rotator application service account email."
 }
+# (2025-03-04)

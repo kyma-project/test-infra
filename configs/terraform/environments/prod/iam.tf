@@ -26,3 +26,4 @@ resource "google_project_iam_member" "kyma_developer_admin_private_logging_viewe
   role = "roles/logging.privateLogViewer"
   member = "group:${var.kyma_developer_admin_email}"
 }
+# (2025-03-04)

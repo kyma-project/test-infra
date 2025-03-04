@@ -16,4 +16,4 @@ jobs:
     with:
       name: test-infra/slackmessagesender
       dockerfile: cmd/cloud-run/slack-message-sender/Dockerfile
-      context: .
+      context: .# (2025-03-04)

@@ -105,3 +105,4 @@ RUN set -eux; \
     mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 1777 "$GOPATH"
 
 COPY images/unified-agent/go/go-mod-wss-unified-agent.config /wss
+# (2025-03-04)

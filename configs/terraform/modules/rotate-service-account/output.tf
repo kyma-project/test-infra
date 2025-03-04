@@ -13,3 +13,4 @@ output "service_account_keys_rotator_cloud_run_service" {
 output "service_account_keys_rotator_subscription" {
   value = google_pubsub_subscription.service_account_keys_rotator
 }
+# (2025-03-04)

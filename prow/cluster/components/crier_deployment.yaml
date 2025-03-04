@@ -89,3 +89,4 @@ spec:
         secret:
           defaultMode: 420
           secretName: trusted-workload-kubeconfig
+# (2025-03-04)

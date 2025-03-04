@@ -57,3 +57,4 @@ periodics:
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
+# (2025-03-04)

@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/dashboard-token-proxy/main /dashboard-token-proxy
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /dashboard-token-proxy
 ENTRYPOINT ["/dashboard-token-proxy"]
+# (2025-03-04)

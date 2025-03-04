@@ -35,3 +35,4 @@ uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
 ## Reusable Workflow Inputs
 
 The Image Autobumper reusable workflow accepts inputs to parametrize the build process. See the accepted inputs description in the [`image-autobumper` reusable workflow](/.github/workflows/image-autobumper.yml) file.
+# (2025-03-04)

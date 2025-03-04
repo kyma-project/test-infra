@@ -32,4 +32,4 @@ variable "gh_com_kyma_project_wif_attribute_condition" {
   type        = string
   default = "attribute.repository_owner_id == \"39153523\""
   description = "Attribute condition for workload identity pool provider"
-}
+}# (2025-03-04)

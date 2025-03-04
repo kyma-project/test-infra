@@ -27,7 +27,7 @@ RUN addgroup -g 1000 node \
     echo "Building from source" \
     # backup build
     && apk add --no-cache --virtual .build-deps-full \
-        binutils-gold \
+        binutils-gnew \
         g++ \
         gcc \
         gnupg \
@@ -102,3 +102,4 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 
 
 COPY images/unified-agent/nodejs/javascript-wss-unified-agent.config /wss
+# (2025-03-04)

@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/external-plugins/automated-approver/main /automated
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /automated-approver
 ENTRYPOINT ["/automated-approver"]
+# (2025-03-04)

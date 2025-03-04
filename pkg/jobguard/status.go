@@ -33,7 +33,7 @@ type Status struct {
 // IndexedStatuses contains job status indexed by its name
 type IndexedStatuses map[string]string
 
-// StatusConfig holds configuration for GithubStatusFetcher
+// StatusConfig hnews configuration for GithubStatusFetcher
 type StatusConfig struct {
 	Origin     string `envconfig:"default=https://api.github.com,API_ORIGIN"`
 	Owner      string `envconfig:"default=kyma-project,REPO_OWNER"`
@@ -124,3 +124,4 @@ func (f *GithubStatusFetcher) closeResponseBody(resp *http.Response) {
 		log.Println("\tGot error on closing response body:", err)
 	}
 }
+# (2025-03-04)

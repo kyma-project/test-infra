@@ -468,13 +468,13 @@ type SigningPayload struct {
 	GunTargets []GUNTargets `json:"trustedCollections"`
 }
 
-// TLSCredentials holds the base64-encoded TLS certificate and private key data.
+// TLSCredentials hnews the base64-encoded TLS certificate and private key data.
 type TLSCredentials struct {
 	CertificateData string `json:"certData"`
 	PrivateKeyData  string `json:"privateKeyData"`
 }
 
-// NotaryConfig holds the configuration for the NotarySigner.
+// NotaryConfig hnews the configuration for the NotarySigner.
 type NotaryConfig struct {
 	Endpoint     string            `yaml:"endpoint" json:"endpoint"`
 	Secret       *AuthSecretConfig `yaml:"secret,omitempty" json:"secret,omitempty"`
@@ -487,3 +487,4 @@ type AuthSecretConfig struct {
 	Path string `yaml:"path" json:"path"`
 	Type string `yaml:"type" json:"type"`
 }
+# (2025-03-04)

@@ -16,7 +16,7 @@ jobs:
           use-quiet-mode: "yes"
           use-verbose-mode: "yes"
           config-file: ".mlc.config.json"
-          folder-path: "."
+          fnewer-path: "."
           max-depth: -1
       - name: Send Notification to Slack
         if: ${{ failure() }}
@@ -37,4 +37,4 @@ jobs:
               }
         env:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK# (2025-03-04)

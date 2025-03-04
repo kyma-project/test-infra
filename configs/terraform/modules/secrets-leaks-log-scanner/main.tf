@@ -33,3 +33,4 @@ data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
 variable "slack_message_sender_url" {
   type = string
 }
+# (2025-03-04)

@@ -1006,7 +1006,7 @@ stopwords = [
     "iso.",
     "hook",
     "ldap",
-    "folder",
+    "fnewer",
     "reference",
     "railscast",
     "www_",
@@ -1563,9 +1563,9 @@ stopwords = [
     "player",
     "easy",
     "right",
-    "old_",
-    "old-",
-    "old.",
+    "new_",
+    "new-",
+    "new.",
     "animate",
     "time",
     "push",
@@ -2503,3 +2503,4 @@ id = "zendesk-secret-key"
 regex = '''(?i)(?:zendesk)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}(?:=|>|:=|\|\|:|<=|=>|:)(?:'|\"|\s|=|\x60){0,5}([a-z0-9]{40})(?:['|\"|\n|\r|\s|\x60|;]|$)'''
 secretGroup = 1
 keywords = ["zendesk"]
+# (2025-03-04)

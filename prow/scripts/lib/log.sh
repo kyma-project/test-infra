@@ -82,4 +82,4 @@ function log::error {
      scriptname=${BASH_SOURCE[1]:-$1}
     >&2  echo -e "$(log::date) [ERROR] PID:$$ --- [$scriptname] $funcname:${BASH_LINENO[1]} $*"
     >&2 log::dump_trace
-}
+}# (2025-03-04)

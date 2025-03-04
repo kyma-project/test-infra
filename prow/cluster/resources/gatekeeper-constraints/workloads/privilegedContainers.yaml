@@ -22,3 +22,4 @@ spec:
       - "europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:*"
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:*"
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:*"
+# (2025-03-04)

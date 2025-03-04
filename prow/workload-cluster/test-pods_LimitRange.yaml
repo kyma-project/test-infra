@@ -12,4 +12,4 @@ spec:
       defaultRequest:
         cpu: 1500m
         memory: 2Gi
-      type: Container
+      type: Container# (2025-03-04)

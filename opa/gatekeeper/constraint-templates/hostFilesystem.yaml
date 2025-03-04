@@ -134,3 +134,4 @@ spec:
         input_containers[c] {
             c := input.review.object.spec.ephemeralContainers[_]
         }
+# (2025-03-04)

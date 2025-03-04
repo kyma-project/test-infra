@@ -15,3 +15,4 @@ RUN pip install --no-cache-dir  --upgrade -r requirements.txt && \
 	apk add --no-cache ca-certificates
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]
+# (2025-03-04)

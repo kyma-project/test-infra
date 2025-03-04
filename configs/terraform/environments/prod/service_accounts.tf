@@ -153,4 +153,4 @@ resource "google_service_account" "neighbors-conduit-cli-builder" {
   account_id   = "neighbors-conduit-cli-builder"
   display_name = "neighbors-conduit-cli-builder"
   description  = "Service account for retrieving secrets on the conduit-cli build pipeline."
-}
+}# (2025-03-04)

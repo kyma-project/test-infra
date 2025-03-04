@@ -146,4 +146,4 @@ the [infrastructure-as-code](https://github.com/kyma-project/test-infra/tree/mai
 
 - The image-syncer [resources](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer.tf).
 - The
-  image-syncer [variables](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer-variables.tf).
+  image-syncer [variables](https://github.com/kyma-project/test-infra/blob/main/configs/terraform/environments/prod/image-syncer-variables.tf).# (2025-03-04)

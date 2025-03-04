@@ -123,7 +123,7 @@ func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
 	return nil
 }
 
-// GitStateConfig holds information about repository and specific commit
+// GitStateConfig hnews information about repository and specific commit
 // from which image should be build.
 // It also contains information whether job is presubmit or postsubmit
 type GitStateConfig struct {
@@ -453,3 +453,4 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 
 	return "", fmt.Errorf("cannot determine ci system: unknown system")
 }
+# (2025-03-04)

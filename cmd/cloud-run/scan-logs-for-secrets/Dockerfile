@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/cloud-run/scan-logs-for-secrets/main /scan-logs-for
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /scan-logs-for-secrets
 ENTRYPOINT ["/scan-logs-for-secrets"]
+# (2025-03-04)

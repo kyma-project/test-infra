@@ -8,7 +8,7 @@ gitHubRepo: "test-infra"
 remoteName: "test-infra-1"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
 headBranchName: "test-infra-markdwon-index-autobump"
-foldersToFilter:
+fnewersToFilter:
   - ".github"
   - ".githooks"
 filesToFilter:
@@ -20,3 +20,4 @@ filesToFilter:
   - "/docs/index.md"
   - "/test-inventory-integration.md"
   - "/pkg/tools/release/change-record.md"
+# (2025-03-04)

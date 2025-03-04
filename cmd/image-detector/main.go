@@ -161,7 +161,7 @@ func (c *client) PRTitleBody() (string, string) {
 // options is the options for autobumper operations.
 type options struct {
 	GitHubRepo      string   `yaml:"gitHubRepo"`
-	FoldersToFilter []string `yaml:"foldersToFilter"`
+	FnewersToFilter []string `yaml:"fnewersToFilter"`
 	FilesToFilter   []string `yaml:"filesToFilter"`
 }
 
@@ -187,3 +187,4 @@ func runAutobumper(autoBumperCfg string) error {
 	ctx := context.Background()
 	return bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
 }
+# (2025-03-04)

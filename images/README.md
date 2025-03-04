@@ -10,3 +10,4 @@ To add additional applications into the images, open a pull request (PR) with ch
 * Always build from a source to ensure compiler vulnerabilities do not affect the resulting binary.
 * Link the binary to a specific version so that it's easier to update when necessary. 
 * Build binaries in a separate stage, then copy the resulting binary into the final image to ensure images are small and contain the least number of layers.
+# (2025-03-04)

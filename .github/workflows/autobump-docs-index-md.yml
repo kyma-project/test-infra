@@ -62,3 +62,4 @@ jobs:
             europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20250227-8109a085 \
             --config=${{ env.AUTOBUMP_CONFIG_PATH }} \
             --labels-override=kind/chore,area/documentation
+# (2025-03-04)

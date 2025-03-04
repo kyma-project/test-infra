@@ -25,4 +25,4 @@ variable "artifact_registry_collection" {
     public                 = optional(bool, false)
     immutable              = optional(bool, false)
   }))
-}
+}# (2025-03-04)

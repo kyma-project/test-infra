@@ -21,3 +21,4 @@ type K8sPSPPrivilegedContainer struct {
 		} `yaml:"parameters"`
 	} `yaml:"spec"`
 }
+# (2025-03-04)

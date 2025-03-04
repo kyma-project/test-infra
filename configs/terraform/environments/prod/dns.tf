@@ -5,3 +5,4 @@ resource "google_dns_managed_zone" "build_kyma" {
     state = "on"
   }
 }
+# (2025-03-04)

@@ -17,3 +17,4 @@ resource "kubectl_manifest" "automated_approver_rules" {
   for_each  = data.kubectl_file_documents.automated_approver_rules.manifests
   yaml_body = each.value
 }
+# (2025-03-04)

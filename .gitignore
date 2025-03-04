@@ -13,3 +13,4 @@ __debug_bin
 
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json
+# (2025-03-04)

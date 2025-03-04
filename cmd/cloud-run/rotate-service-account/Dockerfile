@@ -11,3 +11,4 @@ COPY --from=builder /rotateserviceaccount /rotateserviceaccount
 RUN apk add --no-cache ca-certificates && \
 	chmod +x /rotateserviceaccount
 ENTRYPOINT ["/rotateserviceaccount"]
+# (2025-03-04)

@@ -199,4 +199,4 @@ The file must be in the format of `key=value` pairs, separated by newlines.
 
 Image Builder uses the ADO `oci-image-builder` pipeline as a build backend.
 That means the images are built, signed and pushed to the Google Cloud Artifact registry in the ADO pipeline.
-Image Builder does not build images locally on GitHub runners.
+Image Builder does not build images locally on GitHub runners.# (2025-03-04)

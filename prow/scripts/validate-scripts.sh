@@ -37,3 +37,4 @@ find "./prow" -type f -name "*.sh" -exec "shellcheck" -x {} +
 log::info "No issues detected!"
 
 log::success "Validate scripts's all done"
+# (2025-03-04)

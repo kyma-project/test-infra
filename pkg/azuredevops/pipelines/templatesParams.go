@@ -25,7 +25,7 @@ func (e ErrRequiredParamNotSet) Error() string {
 	return "required parameter not set: " + string(e)
 }
 
-// OCIImageBuilderTemplateParams holds parameters accepted by oci-image-builder ADO pipeline.
+// OCIImageBuilderTemplateParams hnews parameters accepted by oci-image-builder ADO pipeline.
 // TODO: Rename, remove Template, as this is are parameters for pipeline execution.
 type OCIImageBuilderTemplateParams map[string]string
 
@@ -183,3 +183,4 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	}
 	return nil
 }
+# (2025-03-04)

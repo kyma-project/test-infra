@@ -82,4 +82,4 @@ resource "google_container_node_pool" "components_pool" {
     auto_repair  = true
     auto_upgrade = true
   }
-}
+}# (2025-03-04)

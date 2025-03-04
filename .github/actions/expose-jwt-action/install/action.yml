@@ -10,4 +10,4 @@ runs:
         cd .github/actions/expose-jwt-action
         npm init -y
         npm install @actions/core
-      shell: bash
+      shell: bash# (2025-03-04)

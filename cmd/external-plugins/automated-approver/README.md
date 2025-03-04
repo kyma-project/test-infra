@@ -39,3 +39,4 @@ Automated Approver runs in a Kubernetes cluster. A Pod and service specification
 The rules against which Automated Approver validates PRs are defined in a Kubernetes [ConfigMap manifest file](../../../configs/automated-approver-rules.yaml).
 
 Automated Approver Kubernetes resources are managed by Terraform. Installation and updates are applied by running the `terraform apply` command automatically with our CI/CD system.
+# (2025-03-04)

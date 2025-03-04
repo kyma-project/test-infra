@@ -64,3 +64,4 @@ periodics: # runs on schedule
             args:
               - "--config=configs/autobump-config/prow-cluster-autobump-config.yaml"
               - "--labels-override=kind/chore,area/prow"
+# (2025-03-04)

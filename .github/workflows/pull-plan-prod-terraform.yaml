@@ -109,3 +109,4 @@ jobs:
         id: hide-github-comment
         run: github-comment hide --org $GITHUB_REPOSITORY_OWNER --repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha1 ${{ github.event.pull_request.head.sha }}
         if: ${{ !cancelled() }}
+# (2025-03-04)

@@ -31,3 +31,4 @@ Usage of image-detector:
   --github-token-path
     path to github token for fetching inrepo config (default: "/etc/github/token")
 ```
+# (2025-03-04)

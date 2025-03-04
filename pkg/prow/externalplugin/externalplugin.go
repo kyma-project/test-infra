@@ -27,7 +27,7 @@ type ConfigOptionsGroup interface {
 	AddFlags(fs *flag.FlagSet)
 }
 
-// Opts holds configuration for external plugin instance.
+// Opts hnews configuration for external plugin instance.
 type Opts struct {
 	Port              int
 	Github            client.GithubClientConfig
@@ -230,3 +230,4 @@ func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o
 		p.logger.Fatalw("Error closing server.", "error", err.Error())
 	}
 }
+# (2025-03-04)

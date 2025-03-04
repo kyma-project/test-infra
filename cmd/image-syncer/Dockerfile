@@ -31,4 +31,4 @@ COPY --from=builder /app/cmd/image-syncer/main /image-syncer
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Command to run the executable
-ENTRYPOINT ["/image-syncer"]
+ENTRYPOINT ["/image-syncer"]# (2025-03-04)

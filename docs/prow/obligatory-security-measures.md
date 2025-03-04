@@ -13,3 +13,4 @@ When a Kyma organization member with access to the Prow cluster leaves the proje
 ### Remove Google Project Access
 
 Remove the person from the `kyma-prow` Google project immediately. Follow [this](https://cloud.google.com/iam/docs/granting-changing-revoking-access) document to revoke necessary access.
+# (2025-03-04)

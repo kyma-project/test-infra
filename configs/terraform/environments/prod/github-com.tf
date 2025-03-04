@@ -14,4 +14,4 @@ resource "github_actions_organization_variable" "gcp_kyma_project_project_id" {
 data "github_organization" "kyma-project" {
   provider = github.kyma_project
   name     = "kyma-project"
-}
+}# (2025-03-04)

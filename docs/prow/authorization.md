@@ -63,3 +63,4 @@ Actions on Prow can be triggered only by webhooks. To configure them you must cr
 - `oauth-token` - stores the access token used by the GitHub bot
 
 Follow the official [Prow documentation](https://docs.prow.k8s.io/docs/getting-started-deploy/#create-the-github-secrets) to learn how to create the Secrets.
+# (2025-03-04)

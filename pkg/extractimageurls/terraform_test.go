@@ -146,3 +146,4 @@ resource "google_cloud_run_service" "run_service" {
 		})
 	}
 }
+# (2025-03-04)

@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/cloud-run/search-github-issue/main /search-github-i
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /search-github-issue
 ENTRYPOINT ["/search-github-issue"]
+# (2025-03-04)

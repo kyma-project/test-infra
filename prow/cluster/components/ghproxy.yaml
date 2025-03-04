@@ -87,3 +87,4 @@ spec:
   selector:
     app: ghproxy
   type: ClusterIP
+# (2025-03-04)

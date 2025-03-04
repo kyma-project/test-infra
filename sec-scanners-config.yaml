@@ -20,3 +20,4 @@ checkmarx-one:
     preset: go-default
     exclude:
         - '**/*_test.go'
+# (2025-03-04)

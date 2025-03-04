@@ -19,3 +19,4 @@ RUN curl -LO https://github.com/whitesource/unified-agent-distribution/releases/
 ENV LANG C.UTF-8
 
 COPY images/unified-agent/start-wssagent.sh /
+# (2025-03-04)

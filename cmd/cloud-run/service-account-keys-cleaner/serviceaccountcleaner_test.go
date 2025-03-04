@@ -156,7 +156,7 @@ func (s *fakeSecretServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							continue
 						}
 					}
-					// secret versions are returned in reverse, from latest to oldest
+					// secret versions are returned in reverse, from latest to newest
 					version := &gcpsecretmanager.SecretVersion{Name: createSecretVersionName(projectName, secretName, versionName), CreateTime: currentVersion.Date, State: currentVersion.State}
 					versionsResponse.Versions = append([]*gcpsecretmanager.SecretVersion{version}, versionsResponse.Versions...)
 				}
@@ -423,3 +423,4 @@ func TestServiceAccountKeysCleaner(t *testing.T) {
 		})
 	}
 }
+# (2025-03-04)

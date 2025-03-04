@@ -22,7 +22,7 @@ Image Builder is configured using a global configuration YAML file, set of envir
 
 ### Configuration YAML File
 
-`image-builder` requires a configuration YAML file. The file holds the global configuration for the tool and is maintained by the authors.
+`image-builder` requires a configuration YAML file. The file hnews the global configuration for the tool and is maintained by the authors.
 Use the `--config` flag to provide a path to the config YAML file.
 
 For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
@@ -173,3 +173,4 @@ You can use Image Builder to build images that require access to Go SAP internal
 The feature is only available for the ADO backend. 
 
 This feature utilizes the `go` vendor mechanism by downloading all the dependencies into the `vendor` directory. There is no option to pass custom credentials for fetching the dependencies; the tool handles it internally.
+# (2025-03-04)

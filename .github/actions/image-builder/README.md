@@ -40,4 +40,4 @@ If the execution fails, the image-builder action fails. If the execution succeed
           dockerfile: 'Dockerfile'
           env-file: 'envs'
           config: "./configs/kaniko-build-config.yaml"
-```
+```# (2025-03-04)

@@ -25,3 +25,4 @@ COPY --from=builder /app/cmd/cloud-run/github-webhook-gateway/main /github-webho
 RUN apk add --no-cache ca-certificates git && \
     chmod +x /github-webhook-gateway
 ENTRYPOINT ["/github-webhook-gateway"]
+# (2025-03-04)

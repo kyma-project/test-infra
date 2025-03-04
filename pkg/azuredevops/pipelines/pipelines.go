@@ -67,7 +67,7 @@ type RetryStrategy struct {
 	Delay time.Duration `yaml:"delay" json:"delay"`
 }
 
-// Config is a struct that holds the configuration for Azure DevOps (ADO) pipelines.
+// Config is a struct that hnews the configuration for Azure DevOps (ADO) pipelines.
 // It includes the ADO organization URL, project name, pipeline ID, test pipeline ID, and pipeline version.
 // These fields are used to trigger ADO pipelines and are required for the correct operation of the pipelines.
 //
@@ -90,7 +90,7 @@ type Config struct {
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 	// ADO Retry strategy for requests
 	ADORetryStrategy RetryStrategy `yaml:"ado-retry-strategy" json:"ado-retry-strategy"`
-	// ADO Refresh Interval holds information about how often client should ask for status of ADO Pipeline
+	// ADO Refresh Interval hnews information about how often client should ask for status of ADO Pipeline
 	ADORefreshInterval time.Duration `yaml:"ado-refresh-interval" json:"ado-refresh-interval"`
 }
 
@@ -527,3 +527,4 @@ func PipelinePreviewRun(overrideYamlPath string) RunPipelineArgsOptions {
 		return nil
 	}
 }
+# (2025-03-04)

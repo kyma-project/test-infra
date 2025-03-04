@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-// Config holds configuration for Client.
+// Config hnews configuration for Client.
 // It can be passed to the client constructor with FromConfig client configuration option.
 type Config struct {
 	ListenPort int `envconfig:"LISTEN_PORT"`
@@ -139,3 +139,4 @@ func (cc *Client) RegisterEvent(eventType string, handler func(*Client, cloudeve
 	}
 	return nil
 }
+# (2025-03-04)

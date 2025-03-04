@@ -62,3 +62,4 @@ func addListCmdFlags(cmd *cobra.Command, options *listCmdOptions) {
 	cmd.Flags().BoolVarP(&options.excludeTestImages, "exclude-test-images", "e", false, "Exclude test images from the output list")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }
+# (2025-03-04)

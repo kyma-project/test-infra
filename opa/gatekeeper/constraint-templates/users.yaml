@@ -280,3 +280,4 @@ spec:
               prefix := trim_suffix(exemption, "*")
               startswith(img, prefix)
           }
+# (2025-03-04)

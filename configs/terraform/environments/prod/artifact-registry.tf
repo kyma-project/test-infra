@@ -59,15 +59,15 @@ resource "google_artifact_registry_repository" "docker_dev" {
   }
 
   cleanup_policies {
-    id     = "delete-old-pr-images"
+    id     = "delete-new-pr-images"
     action = "DELETE"
     condition {
       tag_state = "TAGGED"
       # Equivalent to PR-*
       tag_prefixes = ["PR-"]
-      older_than   = var.docker_dev_repository.pr_images_max_age
+      newer_than   = var.docker_dev_repository.pr_images_max_age
     }
   }
 
   labels = var.docker_dev_repository.labels
-}
+}# (2025-03-04)

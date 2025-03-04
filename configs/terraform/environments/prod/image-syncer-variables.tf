@@ -14,4 +14,4 @@ variable "image_syncer_writer_service_account_name" {
   type        = string
   description = "The service account name of the image-syncer service account."
   default     = "image-syncer-writer"
-}
+}# (2025-03-04)

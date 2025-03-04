@@ -44,4 +44,4 @@ variable "allowed_audiences" {
   type = list(string)
   description = "List of allowed audiences for the workload identity provider"
   default = []
-}
+}# (2025-03-04)

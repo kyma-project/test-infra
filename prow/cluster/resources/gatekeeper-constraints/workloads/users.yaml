@@ -11,3 +11,4 @@ spec:
     namespaces:
       - "default"
   # we're not using any users option in prowjobs
+# (2025-03-04)

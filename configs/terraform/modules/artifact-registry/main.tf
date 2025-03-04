@@ -41,4 +41,4 @@ resource "google_artifact_registry_repository_iam_member" "public_access" {
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.reader"
   member     = "allUsers"
-}
+}# (2025-03-04)

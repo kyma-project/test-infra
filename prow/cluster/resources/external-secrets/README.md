@@ -99,3 +99,4 @@ External Secrets Checker checks if all External Secrets synchronized successfull
 To install External Secrets Checker run the following command:
 
 `kubectl apply -f external_secrets_checker_prow.yaml`
+# (2025-03-04)

@@ -74,3 +74,4 @@ resource "google_monitoring_alert_policy" "secrets_leak_log_scanner" {
     app       = "secrets-leak-detector"
   }
 }
+# (2025-03-04)

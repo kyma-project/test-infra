@@ -48,4 +48,4 @@ resource "github_actions_organization_variable" "image_syncer_writer_service_acc
   visibility    = "all"
   variable_name = "IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL"
   value         = google_service_account.image_syncer_writer.email
-}
+}# (2025-03-04)
