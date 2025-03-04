@@ -1,4 +1,4 @@
-# Image Builder
+# Image Builder: Maintenance Guide
 
 Image Builder is a tool for building OCI-compliant images.
 It builds images using the Azure DevOps (ADO) pipeline backend.
@@ -7,18 +7,9 @@ In this mode, Image Builder supports running as part of a GitHub Actions workflo
 In the other mode, Image Builder runs as part of the `oci-image-builder` pipeline in the ADO backend.
 Image Builder is built and pushed as a container image to the Google Artifact Registry repository.
 
-Key features:
-
-* Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
-* Supports adding multiple tags to the image
-* Supports pushing images to Google Artifact Registries.
-* Supports running in a GitHub Actions workflow.
-* Supports building images using the ADO pipeline backend.
-
-
 ## Configuration
 
-Image Builder is configured using a global configuration YAML file, set of environment variables, and command line flags.
+Image Builder is configured using a global configuration YAML file, a set of environment variables, and command line flags.
 
 ### Configuration YAML File
 
@@ -41,6 +32,9 @@ cache:
 
 ### Environment Variables
 
+The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
+All variables and their values are loaded into the environment before the build starts.
+The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
 Environment variables are mainly used to provide runtime values and configuration set by the CI/CD system.
 They provide details about the context in which the tool is running.
 
@@ -80,7 +74,7 @@ Image Builder passes the tag definitions and values provided by the user as a ba
 Encoding the value allows for passing special characters in the tag values without the need to escape them.
 
 Image Builder is used as part of the `oci-image-builder` pipeline in the ADO backend, too.
-It's used to execute steps responsible for generating image tags and signing images using the signify service.
+It's used to execute steps responsible for generating image tags and signing images using the Signify service.
 
 Apart from building images using ADO, Image Builder also supports the preview mode. In the preview mode,
 Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
@@ -90,8 +84,8 @@ To specify a path to the YAML file with the pipeline definition, use the `--ado-
 
 ## Image Signing
 
-Image Builder supports signing images with the signify service.
-Image signing allows verification that the image comes from a trusted repository and has not been altered in the meantime.
+Image Builder supports signing images with the Signify service, ensuring that images come from trusted repositories and have not been altered.
+
 You can enable every supported signing service on repository and global levels.
 
 See the following example of sign services configuration in the `config.yaml` file:
@@ -129,7 +123,7 @@ in the **org/repo** key, Image Builder also uses this service to sign the image.
 If the job is running in CI (Prow), it picks up the current **org/repo** value from the default Prow variables. If binary
 is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration is not used.
 
-Currently, Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
+Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
 
 ### Sign-Only Mode
@@ -138,16 +132,16 @@ Image Builder supports sign-only mode. To enable it, use the `--sign-only` flag.
 It signs the images provided in the `--images-to-sign` flag.
 It supports signing multiple images at once. The flag can be used multiple times.
 
-## Named Tags
+## Named Tags <!-- same as README, why not link to it?-->
 
 Image Builder supports passing the name along with the tag, using both the `-tag` option and the config for the tag template.
 You can use `-tag name=value` to pass the name for the tag.
 
 If the name is not provided, it is evaluated from the value:
 
-- if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
-- if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
-  to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
+- If the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
+- If the value is go-template, it is converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal
+  to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`.
 
 ### Parse-Tags-Only Mode
 
@@ -160,12 +154,6 @@ The flag value is decoded and parsed as a list of named tags.
 The separated tags are expected to follow the same format as the `--tag` flag values.
 The flag is used to pass the tag values to the `oci-image-builder` pipeline in the ADO backend.
 The flag value is base64-encoded to avoid issues with special characters in the tag values and do not need to escape them.
-
-## Environment Variables File
-
-The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
-All variables and their values are loaded into the environment before the build starts.
-The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
 
 ## Access Golang SAP Internal Modules
 
