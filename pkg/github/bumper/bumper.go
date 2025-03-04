@@ -13,8 +13,8 @@ import (
 
 	"github.com/kyma-project/test-infra/cmd/image-autobumper/updater"
 	"github.com/sirupsen/logrus"
-	"k8s.io/test-infra/prow/config/secret"
-	"k8s.io/test-infra/prow/github"
+	"sigs.k8s.io/prow/pkg/config/secret"
+	"sigs.k8s.io/prow/pkg/github"
 )
 
 const (
