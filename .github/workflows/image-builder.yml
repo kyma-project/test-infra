@@ -82,7 +82,6 @@ jobs:
             echo "WARNING: Using image builder's image provided by user!"
             echo "IMAGE_BUILDER_IMAGE=${{ inputs.image-builder-image }}" >> $GITHUB_ENV
           fi
-        continue-on-error: true
 
       - name: Verify repository owner
         id: verify_repo_owner
