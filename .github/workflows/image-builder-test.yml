@@ -1,14 +1,14 @@
 name: pull-image-builder-test
 
 on:
-  # pull_request_target:
-  #   types: [ opened, edited, synchronize, reopened, ready_for_review ]
-  #   paths:
-  #     - "cmd/image-builder/*.go"
-  #     - "cmd/image-builder/images/kaniko/*"
-  #     - "pkg/**"
-  #     - "go.mod"
-  #     - "go.sum"
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/image-builder/*.go"
+      - "cmd/image-builder/images/kaniko/*"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   workflow_dispatch:
 
 permissions:
