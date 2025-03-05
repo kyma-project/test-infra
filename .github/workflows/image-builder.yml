@@ -136,3 +136,4 @@ jobs:
           env-file: ${{ inputs.env-file }}
           config: "./configs/image-builder-client-config.yaml"
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
+          image-builder-image: ${{ env.IMAGE_BUILDER_IMAGE }}
