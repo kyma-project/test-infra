@@ -1,0 +1,74 @@
+name: pull-image-builder-test
+
+on:
+  # pull_request_target:
+  #   types: [ opened, edited, synchronize, reopened, ready_for_review ]
+  #   paths:
+  #     - "cmd/image-builder/*.go"
+  #     - "cmd/image-builder/images/kaniko/*"
+  #     - "pkg/**"
+  #     - "go.mod"
+  #     - "go.sum"
+  workflow_dispatch:
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  build-test-image:
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-builder
+      dockerfile: cmd/image-builder/images/kaniko/Dockerfile
+      context: .
+
+  retrieve-secrets:
+    needs: build-test-image
+    runs-on: ubuntu-latest
+    outputs:
+      ado-pat: ${{ steps.secrets.outputs.ado-pat }}
+    steps:
+      - name: Verify repository owner
+        id: verify_repo_owner
+        if: ${{ github.repository_owner != 'kyma-project' }}
+        run: |
+          echo "Using image-builder workflow outside of kyma-project organisation is not supported."
+          exit 1
+
+      - name: Authenticate in GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+      
+      - name: Get ADO PAT from Secret Manager
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+          secrets: |-
+            ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
+
+  test-trigger-image-builder-from-client:
+    needs: [build-test-image, retrieve-secrets]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test-infra repository
+        uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+
+      - name: Get OIDC token
+        id: get_oidc
+        uses: ./.github/actions/expose-jwt-action
+        with:
+          audience: "image-builder"
+
+      - uses: docker://${{ needs.build-test-image.outputs.images[0] }}
+        id: build
+        env:
+          ADO_PAT: ${{ needs.retrieve-secrets.outputs.ado-pat }}
+        with:
+          args: --name=ginkgo-test-image/ginkgo --config=configs/image-builder-client-config.yaml --context=. --dockerfile=images/ginkgo/Dockerfile --env-file=envs --export-tags=true --tag=additional-tag=tag-value --tag=another-tag=another-value --tag=tag-without-key --build-in-ado=true
