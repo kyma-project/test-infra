@@ -74,14 +74,10 @@ jobs:
       result: ${{ steps.build.outputs.adoResult }}
     steps:
       - name: Set the image-builder image
-        run: | 
-          WORKFLOW_REF_REGEX=^kyma-project/test-infra/.github/workflows/image-builder-test.yml@refs/heads/main$/m
-
-          # Allow only the test workflow to use the image-builder image from the input
-          if [[ "${{ github.workflow_ref }}" =~ $WORKFLOW_REF_REGEX ]] && [[ -n "${{ inputs.image-builder-image }}" ]]; then
-            echo "WARNING: Using image builder's image provided by user!"
-            echo "IMAGE_BUILDER_IMAGE=${{ inputs.image-builder-image }}" >> $GITHUB_ENV
-          fi
+        if: ${{ inputs.image-builder-image != '' && github.workflow_ref == 'kyma-project/test-infra/.github/workflows/image-builder-test.yml@refs/heads/main' }}
+        run: |
+          echo "WARNING: Using image builder's image provided by user!"
+          echo "IMAGE_BUILDER_IMAGE=${{ inputs.image-builder-image }}" >> $GITHUB_ENV
 
       - name: Verify repository owner
         id: verify_repo_owner
