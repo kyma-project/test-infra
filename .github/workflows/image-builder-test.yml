@@ -1,4 +1,4 @@
-name: pull-image-builder-test
+name: image-builder-test
 
 on:
   pull_request_target:
