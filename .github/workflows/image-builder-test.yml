@@ -49,7 +49,7 @@ jobs:
         with:
           secrets: |-
             ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
-
+;
   test-trigger-image-builder-from-client:
     needs: [build-test-image, retrieve-secrets]
     uses: ./.github/workflows/image-builder.yml

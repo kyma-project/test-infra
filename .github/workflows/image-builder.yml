@@ -45,8 +45,11 @@ on:
         required: false
         type: boolean
         default: false
+      # image-builder-image is a way to provide custom docker image for the image-builder
+      # It's used by the test workflow to test the image-builder itself.
+      # It's not allwoed in normal flow as it's not secure to use custom images in the production flow.
       image-builder-image:
-        description: The image-builder image to use
+        description: The image-builder image to use. It's allowed only for test workflow created by the image-builder team.
         required: false
         type: string
         default: ""
