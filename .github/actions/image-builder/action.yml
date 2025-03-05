@@ -10,6 +10,9 @@ inputs:
   image-name:
     description: Name of the build image
     required: true
+  image-builder-image:
+    description: The image-builder image to use
+    required: true
   context:
     description: Build context to build container from
     required: false
@@ -46,10 +49,6 @@ inputs:
     description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
-  image-builder-image:
-    description: The image-builder image to use
-    required: false
-    default: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250227-8109a085"
 
 outputs:
   adoResult:

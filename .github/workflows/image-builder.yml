@@ -74,9 +74,14 @@ jobs:
       result: ${{ steps.build.outputs.adoResult }}
     steps:
       - name: Set the image-builder image
-        if: ${{ inputs.image-builder-image != '' && github.workflow_ref == 'kyma-project/test-infra/.github/workflows/image-builder-test.yml@refs/heads/main' }}
+        if: ${{ github.workflow_ref == 'kyma-project/test-infra/.github/workflows/image-builder-test.yml@refs/heads/main' }}
         run: |
-          echo "WARNING: Using image builder's image provided by user!"
+          if [[ -z "${{ inputs.image-builder-image }}" ]]; then
+            echo "ERROR: Missing image-builder image input!"
+            exit 1
+          fi
+
+          echo "WARNING: Using image builder's image provided by user! Image name: ${{ inputs.image-builder-image}}"
           echo "IMAGE_BUILDER_IMAGE=${{ inputs.image-builder-image }}" >> $GITHUB_ENV
 
       - name: Verify repository owner

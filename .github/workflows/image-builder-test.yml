@@ -52,23 +52,9 @@ jobs:
 
   test-trigger-image-builder-from-client:
     needs: [build-test-image, retrieve-secrets]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout test-infra repository
-        uses: actions/checkout@v4
-        with:
-          repository: kyma-project/test-infra
-          ref: main
-
-      - name: Get OIDC token
-        id: get_oidc
-        uses: ./.github/actions/expose-jwt-action
-        with:
-          audience: "image-builder"
-
-      - uses: docker://${{ needs.build-test-image.outputs.images[0] }}
-        id: build
-        env:
-          ADO_PAT: ${{ needs.retrieve-secrets.outputs.ado-pat }}
-        with:
-          args: --name=ginkgo-test-image/ginkgo --config=configs/image-builder-client-config.yaml --context=. --dockerfile=images/ginkgo/Dockerfile --env-file=envs --export-tags=true --tag=additional-tag=tag-value --tag=another-tag=another-value --tag=tag-without-key --build-in-ado=true
+    uses: ./.github/workflows/image-builder.yml
+    with:
+      name: image-builder
+      dockerfile: cmd/image-builder/images/kaniko/Dockerfile
+      context: .
+      image-builder-image: ${{ needs.build-test-image.outputs.images[0]}}
