@@ -1,10 +1,11 @@
 # Image Builder: Maintenance Guide
 
-Image Builder is a tool for building OCI-compliant images.
-It builds images using the Azure DevOps (ADO) pipeline backend.
+Image Builder is a tool for building OCI-compliant images using the Azure DevOps (ADO) pipeline backend.
+
 It can run in two modes. One is the default mode, where Image Builder acts as a client and triggers the ADO pipeline.
 In this mode, Image Builder supports running as part of a GitHub Actions workflow.
 In the other mode, Image Builder runs as part of the `oci-image-builder` pipeline in the ADO backend.
+
 Image Builder is built and pushed as a container image to the Google Artifact Registry repository.
 
 ## Configuration
@@ -18,7 +19,7 @@ Use the `--config` flag to provide a path to the config YAML file.
 
 For more information about available properties in the configuration file, refer to the [config.go](config.go) file.
 
-Here's an example file:
+See an example file:
 
 ```yaml
 registry: eu.gcr.io/kyma-project
@@ -56,12 +57,12 @@ Image Builder uses several environment variables, which can be grouped by their 
 - **GITHUB_REF**: Used to get the pull request number when the CI system is GitHub Actions.
 
 > [!NOTE]
- > The actual usage of these environment variables may vary depending on the specific configuration and usage of Image Builder.
+> The actual usage of these environment variables may vary depending on the specific configuration and usage of Image Builder.
 
 ### Command Line Flags
 
 Command line flags are the main way for developers to configure the tool and provide needed values for the build process.
-Check the list and description of the available flags in
+Check the list and descriptions of the available flags in
 the [main.go](https://github.com/kyma-project/test-infra/blob/df945b96654d60f82b9738cd98129191c5e753c8/cmd/image-builder/main.go#L668) file.
 
 ## Azure DevOps (ADO) Build Backend
@@ -78,8 +79,8 @@ It's used to execute steps responsible for generating image tags and signing ima
 
 Apart from building images using ADO, Image Builder also supports the preview mode. In the preview mode,
 Image Builder does not trigger the ADO pipeline but generates a YAML file with the pipeline definition.
-Using this mode allows for the validation of the pipeline definition syntax before triggering it. To use the preview mode, add
-the `--ado-preview-run=true` flag.
+Using this mode allows for the validation of the pipeline definition syntax before triggering it.
+To use the preview mode, add the `--ado-preview-run=true` flag.
 To specify a path to the YAML file with the pipeline definition, use the `--ado-preview-run-yaml-path` flag.
 
 ## Image Signing
@@ -120,8 +121,8 @@ sign-config:
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
 in the **org/repo** key, Image Builder also uses this service to sign the image.
-If the job is running in CI (Prow), it picks up the current **org/repo** value from the default Prow variables. If binary
-is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration is not used.
+If the job is running in CI (Prow), it picks up the current **org/repo** value from the default Prow variables.
+If binary is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration is not used.
 
 Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
