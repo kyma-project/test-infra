@@ -21,7 +21,7 @@ require (
 	github.com/google/go-github/v48 v48.2.0
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/onsi/ginkgo/v2 v2.22.2
+	github.com/onsi/ginkgo/v2 v2.23.0
 	github.com/onsi/gomega v1.36.2
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -203,7 +203,7 @@ require (
 	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.10.0 // indirect
-	golang.org/x/tools v0.29.0 // indirect
+	golang.org/x/tools v0.30.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
 	google.golang.org/genproto v0.0.0-20250122153221-138b5a5a4fd4 // indirect
