@@ -63,7 +63,7 @@ jobs:
            run: echo "Testing images ${{ needs.build-image.outputs.images }}"
 ```
 
-The example workflow consists of three jobs:
+The example workflow consists of the following three jobs:
 
 1. `compute-tag`: Computes the tag for the image. It uses the `get_tag` step output to pass the tag to the `build-image` job.
 2. `build-image`: Builds the image using the Image Builder reusable workflow.
@@ -106,7 +106,7 @@ The value of the `uses` key must be `kyma-project/test-infra/.github/workflows/i
 uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
 ```
 
-> [!IMPORTANT]
+> [!WARNING]
 > Using different references to the reusable workflow results in an error during the workflow execution.
 
 ### Reusable Workflow Inputs
@@ -128,19 +128,19 @@ The default tag is computed based on the template provided in the Image Builder 
 The default tag is always added to the image, even if the user provides custom tags.
 Image Builder supports two default tags:
 
-- **Pull Request Default Tag**: The default tag template for images built on pull requests is `pr-<PR_NUMBER>`, for example: `PR-123`.
-- **Push Default Tag**: The default tag template for images built on push, schedule, and manual triggers is `v<DATE>-<SHORT_SHA>`, for example: `v20210930-1234567`.
+* **Pull Request Default Tag**: The default tag template for images built on pull requests is `pr-<PR_NUMBER>`, for example: `PR-123`.
+* **Push Default Tag**: The default tag template for images built on push, schedule, and manual triggers is `v<DATE>-<SHORT_SHA>`, for example: `v20210930-1234567`.
 
 ### Named Tags
 
-For information on named tags, see the [Named Tags](image-builder.md#named-tags) section.
+For information on named tags, see [Named Tags](image-builder.md#named-tags).
 
 ## Supported Image Repositories
 
 Image Builder supports pushing images to the Google Cloud Artifact Registries.
 
-- Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
-- Images built on **push** events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
+* Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
+* Images built on **push** events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
 
 ### Image URI
 
@@ -164,25 +164,9 @@ Image signing allows verification that the image comes from a trusted repository
 > [!NOTE]
 > Image Builder only signs images built on the **push**, **schedule**, and **workflow_dispatch** events. Images built on the **pull_request_target** and **merge_group** event are not signed.
 
-### Updated Signing Process
+## Environment File
 
-The authentication to the Signify API has been updated from using `role id/secret id` to mTLS. This change introduces the following updates:
-
-- **mTLS Authentication**: Image Builder now uses a client certificate/private key pair for authentication with the Signify API. These credentials are valid for 7 days, after which they must be rotated.
-- **Automated Rotation**: The certificate rotation must occur every 7 days. The new certificate/private key pair must be generated using the previous pair before they expire.
-
-The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Signify/docs/how_to/manage_signatures/).
-
-> [!NOTE]
-> Images are only signed when built on **push**, **schedule**, and **workflow_dispatch** events. Pull request and merge queue images are not signed.<!--isn't it the same as in lines 169-170?-->
-
-### Signify API Changes
-
-The JSON structure for signing has changed. See the new structure and examples in the [Signify API Documentation](https://pages.github.tools.sap/Signify/docs/how_to/manage_signatures/).<!--Could we put it together with line 179? Plus there have been some changes in the original docu - the link's changed - is it still valid?-->
-
-## Environment File <!--The info is scarce here. Does it mean that the user only needs that much info, or could we skip it and keep only the more extended section on variables in the other doc?-->
-
-The environment file contains environment variables to be loaded in the build.
+The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
 The file must be in the format of `key=value` pairs, separated by newlines.
 
 ## Azure DevOps Backend (ADO)
