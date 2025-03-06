@@ -14,6 +14,10 @@ on:
       - ".github/workflows/image-builder.yml"
   workflow_dispatch: {}
 
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
 jobs:
   # Build the base Alpine image
   build-alpine:
