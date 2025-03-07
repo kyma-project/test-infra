@@ -33,51 +33,6 @@ type BuildReport struct {
 	RegistryURL string `json:"repository_path"`
 }
 
-// TODO(kacpermalachowski): Remove when new format is introduced
-type ImageSpec struct {
-	Name           string   `json:"image_name"`
-	Tags           []string `json:"tags"`
-	RepositoryPath string   `json:"repository_path"`
-}
-
-// TODO(kacpermalachowski): Remove when new format is introduced
-func (br *BuildReport) UnmarshalJSON(data []byte) error {
-	type Alias BuildReport
-	aux := &struct {
-		ImageSpec ImageSpec `json:"image_spec"`
-		*Alias
-	}{
-		Alias: (*Alias)(br),
-	}
-
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	if len(br.Images) == 0 {
-		images := []string{}
-		for _, tag := range aux.ImageSpec.Tags {
-			images = append(images, fmt.Sprintf("%s%s:%s", aux.ImageSpec.RepositoryPath, aux.ImageSpec.Name, tag))
-		}
-
-		br.Images = images
-	}
-
-	if br.Name == "" {
-		br.Name = aux.ImageSpec.Name
-	}
-
-	if br.RegistryURL == "" {
-		br.RegistryURL = aux.ImageSpec.RepositoryPath
-	}
-
-	if len(br.Tags) == 0 {
-		br.Tags = aux.ImageSpec.Tags
-	}
-
-	return nil
-}
-
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
 	// Strip all timestamps from log
 	log = timestampRegex.ReplaceAllString(log, "")
