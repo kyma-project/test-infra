@@ -1,4 +1,4 @@
-FROM golang:1.24.0-alpine3.21 as base
+FROM golang:1.24.1-alpine3.21 as base
 
 RUN set -eux; \
     apk upgrade --no-cache; \
