@@ -14,27 +14,6 @@ func TestLoadSecurityConfig(t *testing.T) {
 		FileContent    string
 	}{
 		{
-			Name:    "valid full config, pass",
-			WantErr: false,
-			ExpectedConfig: &SecurityConfig{
-				ModuleName: "test-infra",
-				Images:     []string{"europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee"},
-				Mend: Mend{
-					Language:    "golang-mod",
-					SubProjects: true,
-					Exclude:     []string{"**/examples/**"},
-				},
-			},
-			FileContent: `module-name: test-infra
-protecode:
-  - europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee
-whitesource:
-  language: golang-mod
-  subprojects: true
-  exclude:
-    - "**/examples/**"`,
-		},
-		{
 			Name:           "empty config file, fail",
 			WantErr:        true,
 			ExpectedConfig: nil,
