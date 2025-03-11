@@ -16,10 +16,22 @@ import (
 
 	consolelog "github.com/kyma-project/test-infra/pkg/logging"
 	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
+	githubql "github.com/shurcooL/githubv4"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"sigs.k8s.io/prow/pkg/github"
 )
+
+// GraphQL mutation for enabling auto-merge
+const enableAutoMergeMutation = `
+mutation EnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod!) {
+  enablePullRequestAutoMerge(input: { pullRequestId: $pullRequestId, mergeMethod: $mergeMethod }) {
+    pullRequest {
+      id
+    }
+  }
+}
+`
 
 type githubClient interface {
 	CreatePullRequestReviewComment(org, repo string, number int, rc github.ReviewComment) error
@@ -28,6 +40,7 @@ type githubClient interface {
 	GetCombinedStatus(org, repo, ref string) (*github.CombinedStatus, error)
 	AddLabel(org, repo string, number int, label string) error
 	CreateComment(org, repo string, number int, comment string) error
+	MutateWithGitHubAppsSupport(ctx context.Context, m interface{}, input githubql.Input, vars map[string]interface{}, org string) error
 }
 
 // HandlerBackend is a backend for the plugin.
@@ -41,6 +54,14 @@ type HandlerBackend struct {
 	Conditions                     map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
 	PrLocks                        map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
 	PrMutex                        sync.Mutex
+}
+
+type autoMergeResponse struct {
+	EnablePullRequestAutoMerge struct {
+		PullRequest struct {
+			ID string `json:"id"`
+		} `json:"pullRequest"`
+	} `json:"enablePullRequestAutoMerge"`
 }
 
 // WatchConfig watches for changes in the rules file and reads it again when a file change occurs.
@@ -306,6 +327,18 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 		if !conditionsMatched {
 			return
 		}
+
+		err = hb.enableAutoMerge(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
+		if err != nil {
+			logger.Errorf("failed enable auto merge for pull request %s/%s#%d sha: %s, got error: %s",
+				prOrg,
+				prRepo,
+				prNumber,
+				prHeadSha,
+				err)
+		}
+
+		// wait for statuses to finish and return if not all are success.
 		err = hb.checkPrStatuses(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
 		if err != nil {
 			// TODO: Non success pr statuses are not error conditions for automated approver. We should log it as info.
@@ -315,8 +348,10 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 				prRepo,
 				prNumber,
 				err)
+
 			return
 		}
+
 		// Check if context canceled to not review commit which is not a HEAD anymore.
 		select {
 		case <-ctx.Done():
@@ -357,6 +392,41 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 			prNumber,
 			prUser)
 	}
+}
+
+// TODO (dekiel): Tests missing for enableAutoMerge
+// enableAutoMerge enables auto merge for a pull request.
+// It sends a GraphQL mutation to GitHub to enable auto merge.
+func (hb *HandlerBackend) enableAutoMerge(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prHeadSha string, prNumber int) error {
+	defer logger.Sync()
+
+	// vars := map[string]interface{}{
+	// 	"pullRequestId": githubql.ID(fmt.Sprintf("%s", prNumber)),
+	// "pullRequestId": strconv.Itoa(prNumber),
+	// "mergeMethod":   "MERGE",
+	// }
+
+	mergeMethod := githubql.PullRequestMergeMethodMerge
+	input := githubql.EnablePullRequestAutoMergeInput{
+		PullRequestID: githubql.ID(fmt.Sprintf("%d", prNumber)),
+		MergeMethod:   &mergeMethod,
+	}
+
+	response := autoMergeResponse{}
+
+	err := hb.Ghc.MutateWithGitHubAppsSupport(ctx, enableAutoMergeMutation, input, nil, prOrg)
+	if err != nil {
+		logger.Errorf("failed enable auto merge for pull request %s/%s#%d sha: %s, got error: %s",
+			prOrg,
+			prRepo,
+			prNumber,
+			prHeadSha,
+			err)
+		return err
+	}
+
+	logger.Infow(fmt.Sprintf("Auto merge enabled for pull request %s/%s#%d.", prOrg, prRepo, prNumber), "response", response)
+	return nil
 }
 
 func (hb *HandlerBackend) handleReviewRequestedAction(ctx context.Context, cancel context.CancelFunc, logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
