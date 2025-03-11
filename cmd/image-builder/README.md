@@ -1,7 +1,7 @@
 # Image Builder
 
 Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
-It signs images with a Signify service and pushes them to Google Cloud Artifact Registry.
+It signs images with the Signify service and pushes them to Google Cloud Artifact Registry.
 
 Key features:
 * Automatically provides a default tag, which is computed based on a template provided in `config.yaml`
