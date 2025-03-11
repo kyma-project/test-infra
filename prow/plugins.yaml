@@ -1,34 +1,7 @@
 plugins:
-  kyma-project:
-    plugins:
-      - trigger
-      - assign
-      - wip
-      - lgtm
-      - hold
-      - label
-      - help
-      - size
-      - verify-owners
-      - owners-label
-      - override
-      - retitle
-      - lifecycle
-      - transfer-issue
-      - yuks
-      - dog
-      - cat
-      - shrug
-      - pony
-      - skip
   kyma-project/test-infra:
     plugins:
       - config-updater
-      - require-matching-label
-  kyma-project/k8s-prow:
-    plugins:
-      - approve
-      - blunderbuss
 
 external_plugins:
   kyma-project:
@@ -66,34 +39,5 @@ config_updater:
 triggers:
   - repos:
       - kyma-project
-    trusted_apps:
-      - dependabot
     only_org_members: true
     ignore_ok_to_test: true
-
-lgtm:
-  - repos:
-      - kyma-project
-    review_acts_as_lgtm: true
-
-label:
-  additional_labels:
-    - Epic
-
-size:
-  s:   10
-  m:   30
-  l:   100
-  xl:  500
-  xxl: 1000
-
-blunderbuss:
-  max_request_count: 2
-  use_status_availability: true
-  ignore_drafts: true
-
-approve:
-  - repos:
-      - kyma-project/k8s-prow
-    require_self_approval: false
-    ignore_review_state: false
