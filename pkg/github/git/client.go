@@ -3,10 +3,10 @@ package git
 import (
 	"fmt"
 
-	"k8s.io/test-infra/prow/config/secret"
-	"k8s.io/test-infra/prow/flagutil"
-	"k8s.io/test-infra/prow/git/v2"
-	"k8s.io/test-infra/prow/github"
+	// "sigs.k8s.io/prow/pkg/config/secret"
+	// "sigs.k8s.io/prow/pkg/flagutil"
+	"sigs.k8s.io/prow/pkg/git/v2"
+	// "sigs.k8s.io/prow/pkg/github"
 )
 
 type Client interface {
@@ -26,67 +26,6 @@ type client struct {
 	// ClonedRepos is a map with information about already cloned repositories.
 	// A map keys represent hold org/repo and values are a path to a repository root.
 	clonedRepos map[string]string
-}
-
-// ClientConfig holds configuration for Client.
-type ClientConfig struct {
-	flagutil.GitOptions
-	// tokenPath is a path to the file with GitHub user personal token.
-	tokenPath        string
-	githubUserClient github.UserClient
-}
-
-// ClientOption is a client constructor configuration option passing configuration to the client constructor.
-type ClientOption func(*ClientConfig) error
-
-// NewClient is a constructor function for wrapper of Client.
-// A constructed client can be configured by providing ClientOptions.
-func (o *ClientConfig) NewClient(options ...ClientOption) (Client, error) {
-
-	// Run provided ClientOption configuration options.
-	for _, opt := range options {
-		err := opt(o)
-		if err != nil {
-			return nil, fmt.Errorf("failed applying functional option: %w", err)
-		}
-	}
-
-	// Check mandatory option is provided.
-	if o.githubUserClient == nil {
-		return nil, fmt.Errorf("github client not provided")
-	}
-
-	tokenGenerator := secret.GetTokenGenerator(o.tokenPath)
-
-	gitFactory, err := o.GitClient(o.githubUserClient, tokenGenerator, secret.Censor, false)
-	if err != nil {
-		return nil, err
-	}
-	gitClient := &client{}
-	// Initialize map to enable writing to it in methods.
-	gitClient.clonedRepos = make(map[string]string)
-	gitClient.ClientFactory = gitFactory
-	return gitClient, err
-}
-
-// WithGithubClient is a client constructor configuration option passing GithubClient instance.
-func WithGithubClient(githubClient github.UserClient) ClientOption {
-	return func(conf *ClientConfig) error {
-		if conf.githubUserClient == nil {
-			conf.githubUserClient = githubClient
-			return nil
-		}
-		return fmt.Errorf("github client already defined")
-
-	}
-}
-
-// WithTokenPath is a client constructor configuration option passing git token file path.
-func WithTokenPath(tokenPath string) ClientOption {
-	return func(conf *ClientConfig) error {
-		conf.tokenPath = tokenPath
-		return nil
-	}
 }
 
 // GetGitRepoClient provide instance of git repository client. It will clone repository on first use.
