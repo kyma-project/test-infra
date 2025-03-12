@@ -2,11 +2,12 @@ package github
 
 import (
 	"fmt"
+
 	"github.com/kyma-project/test-infra/pkg/github/client/v2"
 	"github.com/kyma-project/test-infra/pkg/github/repoowners"
 
 	"github.com/kyma-project/test-infra/pkg/logging"
-	"k8s.io/test-infra/prow/git/v2"
+	"sigs.k8s.io/prow/pkg/git/v2"
 )
 
 // ClientsAgent group clients used to interact with GitHub.
