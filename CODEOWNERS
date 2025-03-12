@@ -7,26 +7,26 @@
 # These are the default owners for the whole content of the `kyma` repository.
 # The default owners are automatically added as reviewers when you open a pull request, unless different owners are specified in the file.
 
-# IMPORTANT: Each path must have @neighbors-dev-bot @kyma-project/prow added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
+# IMPORTANT: Each path must have @neighbors-dev-bot @kyma-project/neighbors added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
 
-* @kyma-project/prow @neighbors-dev-bot
+* @kyma-project/neighbors @neighbors-dev-bot
 
 # The following pattern has no owners assigned, effectively excluding it from requiring reviews by codeowners.
 /vpath/pjtester.yaml
 
-/docs @kyma-project/prow @mmitoraj @grego952 @NHingerl @IwonaLanger @nataliasitko @neighbors-dev-bot
-/prow @kyma-project/prow @neighbors-dev-bot
-/prow/cluster @kyma-project/prow @neighbors-dev-bot
-/prow/images @kyma-project/prow @neighbors-dev-bot
+/docs @kyma-project/neighbors @mmitoraj @grego952 @NHingerl @IwonaLanger @nataliasitko @neighbors-dev-bot
+/prow @kyma-project/neighbors @neighbors-dev-bot
+/prow/cluster @kyma-project/neighbors @neighbors-dev-bot
+/prow/images @kyma-project/neighbors @neighbors-dev-bot
 
-/prow/jobs @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
-/prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/prow
+/prow/jobs @kyma-project/neighbors @neighbors-dev-bot
+/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/neighbors
+/prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/neighbors
 
-/prow/scripts @kyma-project/prow @neighbors-dev-bot
+/prow/scripts @kyma-project/neighbors @neighbors-dev-bot
 
-/templates @kyma-project/prow @neighbors-dev-bot
-/templates/templates @kyma-project/prow @neighbors-dev-bot
+/templates @kyma-project/neighbors @neighbors-dev-bot
+/templates/templates @kyma-project/neighbors @neighbors-dev-bot
 
 templates/data/
 
@@ -36,5 +36,5 @@ templates/data/
 
 # File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
 # In such case a human approver from prow group must approve the pull request.
-/docs/index.md @kyma-project/prow @neighbors-dev-bot
+/docs/index.md @kyma-project/neighbors @neighbors-dev-bot
 /docs/security/imagemitigation.json @TorstenD-SAP
