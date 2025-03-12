@@ -11,30 +11,16 @@
 
 * @kyma-project/neighbors @neighbors-dev-bot
 
-# The following pattern has no owners assigned, effectively excluding it from requiring reviews by codeowners.
-/vpath/pjtester.yaml
-
-/docs @kyma-project/neighbors @mmitoraj @grego952 @NHingerl @IwonaLanger @nataliasitko @neighbors-dev-bot
+/docs @kyma-project/neighbors @kyma-project/technical-writers
 /prow @kyma-project/neighbors @neighbors-dev-bot
 /prow/cluster @kyma-project/neighbors @neighbors-dev-bot
 /prow/images @kyma-project/neighbors @neighbors-dev-bot
-
 /prow/jobs @kyma-project/neighbors @neighbors-dev-bot
-/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot @kyma-project/neighbors
-/prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot @kyma-project/neighbors
-
 /prow/scripts @kyma-project/neighbors @neighbors-dev-bot
 
-/templates @kyma-project/neighbors @neighbors-dev-bot
-/templates/templates @kyma-project/neighbors @neighbors-dev-bot
-
-templates/data/
-
 # All .md files
-*.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko @neighbors-dev-bot
-
+*.md @kyma-project/technical-writers
 
 # File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
 # In such case a human approver from prow group must approve the pull request.
 /docs/index.md @kyma-project/neighbors @neighbors-dev-bot
-/docs/security/imagemitigation.json @TorstenD-SAP
