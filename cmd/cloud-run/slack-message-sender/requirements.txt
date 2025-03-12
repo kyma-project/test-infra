@@ -2,7 +2,7 @@ slack_bolt==1.18.0
 slack_sdk==3.34.0
 flask>=2.3.2
 cloudevents==1.9.0
-gunicorn==22.0.0
+gunicorn==23.0.0
 pygithub==2.6.1
 pyyaml==6.0.1
 werkzeug>=3.0.6
