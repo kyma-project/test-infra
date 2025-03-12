@@ -1,4 +1,4 @@
-slack_bolt==1.18.0
+slack_bolt==1.22.0
 slack_sdk==3.34.0
 flask>=2.3.2
 cloudevents==1.11.0
