@@ -5,6 +5,10 @@ on:
     - cron: 45 * * * 1-5
   workflow_dispatch:
 
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
 jobs:
   autobump:
     uses: kyma-project/test-infra/.github/workflows/image-autobumper.yml@main
