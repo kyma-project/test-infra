@@ -5,6 +5,9 @@ on:
     - cron: 45 * * * 1-5
   workflow_dispatch:
 
+permissions:
+  id-token: write
+
 jobs:
   autobump:
     uses: kyma-project/test-infra/.github/workflows/image-autobumper.yml@main
