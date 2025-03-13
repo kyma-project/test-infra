@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
 
 jobs:
   autobump:
