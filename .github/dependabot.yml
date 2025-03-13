@@ -93,6 +93,18 @@ updates:
       prefix: "slack-msg-sender"
       include: "scope"
   - package-ecosystem: "docker"
+    directory: "/cmd/cloud-run/signifysecretrotator"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "signifysecretrotator"
+      include: "scope"
+  - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/rotate-service-account"
     labels:
       - "docker"
