@@ -2,7 +2,7 @@ module github.com/kyma-project/test-infra
 
 go 1.23.0
 
-toolchain go1.23.4
+toolchain go1.24.1
 
 require (
 	cloud.google.com/go/compute/metadata v0.6.0
@@ -34,7 +34,7 @@ require (
 	golang.org/x/exp v0.0.0-20250207012021-f9890c6ad9f3
 	golang.org/x/net v0.37.0
 	golang.org/x/oauth2 v0.28.0
-	google.golang.org/api v0.225.0
+	google.golang.org/api v0.226.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.30.1
