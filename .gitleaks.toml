@@ -2,6 +2,7 @@
 # Rules and allowlists are defined within this file.
 # Rules instruct gitleaks on what should be considered a secret.
 # Allowlists instruct gitleaks on what is allowed, i.e. not a secret.
+# cla test
 
 title = "gitleaks config"
 
