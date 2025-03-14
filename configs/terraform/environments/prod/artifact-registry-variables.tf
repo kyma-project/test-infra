@@ -1,4 +1,4 @@
-###################################
+###################################e
 # Artifact Registry related values
 ###################################
 variable "kyma_project_artifact_registry_collection" {
