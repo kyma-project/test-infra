@@ -1,17 +1,17 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250317-ec46c47b
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250313-dcfa154c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250312-53f59d9b
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250318-395d07ce
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250319-18800883
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250319-df372c46
 mend:
     language: golang-mod
     exclude:
