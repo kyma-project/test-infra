@@ -34,6 +34,12 @@ func (hb *HandlerBackend) PullRequestEventHandler(_ *externalplugin.Plugin, payl
 		hb.handleReviewRequestedAction(ctx, cancel, logger, prEvent)
 	case github.PullRequestActionSynchronize:
 		hb.handlePrSynchronizeAction(ctx, cancel, logger, prEvent)
+	case github.PullRequestActionOpened:
+		hb.handlePrOpenedAction(ctx, cancel, logger, prEvent)
+	case github.PullRequestActionLabeled:
+		hb.handlePrLabeledAction(ctx, cancel, logger, prEvent)
+	case github.PullRequestActionUnlabeled:
+		hb.handlePrUnlabeledAction(ctx, cancel, logger, prEvent)
 	}
 }
 

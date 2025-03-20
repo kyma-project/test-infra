@@ -22,9 +22,9 @@ mutation EnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMeth
 `
 
 type AutoMergeCondition struct {
-	RequiredLabels []string `yaml:"requiredLabels"`
-	MergeMethod    string   `yaml:"mergeMethod"`
-	MergeQueue     bool     `yaml:"mergeQueue"`
+	ExcludeLabels []string `yaml:"excludeLabels"`
+	MergeMethod   string   `yaml:"mergeMethod"`
+	MergeQueue    bool     `yaml:"mergeQueue"`
 }
 
 // String returns string representation of ApproveCondition.
@@ -42,43 +42,44 @@ type autoMergeResponse struct {
 }
 
 // checkRequiredLabels checks if PR has all required labels.
-func (condition *AutoMergeCondition) checkRequiredLabels(logger *zap.SugaredLogger, prLabels []github.Label) bool {
+func (condition *AutoMergeCondition) checkPrHasExcludeLabels(logger *zap.SugaredLogger, prLabels []github.Label) bool {
 	defer logger.Sync()
-	if condition.RequiredLabels == nil {
-		logger.Debug("No required labels defined")
-		// No required labels defined
-		return true
+	if condition.ExcludeLabels == nil {
+		logger.Debug("No exclude labels defined")
+		// No exclude labels found
+		return false
 	}
-	labelNames := make(map[string]interface{})
-	logger.Debugf("Checking if PR has all required labels: %v", condition.RequiredLabels)
+	logger.Debugf("Exclude labels defined: %v", condition.ExcludeLabels)
+	logger.Debug("Getting pull request labels names")
+	prLabelsNames := make(map[string]interface{})
 	for _, label := range prLabels {
-		labelNames[label.Name] = nil
+		prLabelsNames[label.Name] = nil
 	}
-	for _, requiredLabel := range condition.RequiredLabels {
-		if _, ok := labelNames[requiredLabel]; !ok {
-			logger.Debugf("PR is missing required label: %s", requiredLabel)
-			return false
+	logger.Debug("Checking if PR has exclude labels")
+	for _, excludeLabel := range condition.ExcludeLabels {
+		if _, ok := prLabelsNames[excludeLabel]; ok {
+			logger.Infof("PR has exclude label: %s", excludeLabel)
+			return true
 		}
 	}
-	logger.Debug("All required labels are present")
-	return true
+	logger.Debug("No exclude labels found")
+	return false
 }
 
 // checkPrApproveConditions checks if PR meets conditions for auto approving.
 // It validates all ApproveConditions for owner/repo/PR author entity.
-func (hb *HandlerBackend) checkPrAutoMergeConditions(logger *zap.SugaredLogger, conditions []AutoMergeCondition, prLabels []github.Label) bool {
+func (hb *HandlerBackend) checkPrAutoMergeConditionsMatch(logger *zap.SugaredLogger, conditions []AutoMergeCondition, prLabels []github.Label) bool {
 	defer logger.Sync()
 	for _, condition := range conditions {
 		logger.Debugw("Checking condition", "condition", condition)
-		labelsMatched := condition.checkRequiredLabels(logger, prLabels)
-		if !labelsMatched {
-			logger.Debug("Labels not matched")
-			continue
+		prExcluded := condition.checkPrHasExcludeLabels(logger, prLabels)
+		if prExcluded {
+			logger.Debug("PR does not meet auto merge conditions")
+			return false
 		}
-		return true
 	}
-	logger.Debug("No conditions matched")
-	return false
+	logger.Debug("PR meets auto merge conditions")
+	return true
 }
 
 // TODO (dekiel): Tests missing for enableAutoMerge
@@ -118,48 +119,20 @@ func (hb *HandlerBackend) enableAutoMerge(ctx context.Context, logger *zap.Sugar
 
 // reviewPullRequest approves a pull request if it meets conditions.
 // It searches conditions for owner/repo/PR author entity, validates them, waits for statuses to finish, validates their statuses, and approves PR.
-func (hb *HandlerBackend) autoMergePullRequest(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prUser, prHeadSha string, prNumber int, prLabels []github.Label) {
+func (hb *HandlerBackend) setPullRequestAutoMerge(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prUser, prHeadSha string, prNumber int, prLabels []github.Label) {
 	defer logger.Sync()
 	defer hb.unlockPR(logger, prOrg, prRepo, prHeadSha, prNumber)
-	logger.Debugf("Checking ...")
-	logger.Debugf("Checking if conditions for PR author %s exists: %t", prUser, hb.Conditions[prOrg][prRepo][prUser] != nil)
-	autoMerge, autoMergeOk := hb.MergeConditions[prOrg][prRepo][prUser]
+	logger.Debugf("Checking if auto merge conditions for PR %s/%s/%d exists", prOrg, prRepo, prNumber)
+	autoMerge, autoMergeOk := hb.MergeConditions[prOrg][prRepo]
 	if !autoMergeOk {
-		logger.Infof("Merge conditions for PR not found, skip automatic approval, pull request %s/%s#%d, author %s", prOrg, prRepo, prNumber, prUser)
+		logger.Infof("Merge conditions for PR %s/%s#%d not found", prOrg, prRepo, prNumber)
 		return
 	}
-	logger.Debugf("Checking if PR %d meets approval conditions: %v", prNumber, conditions)
 
+	logger.Debugf("Checking if PR %d meets approval conditions: %v", prNumber, hb.MergeConditions)
 	logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
-	autoMergeMatched := hb.checkPrAutoMergeConditions(logger, autoMerge, changes, prLabels)
+	autoMergeMatched := hb.checkPrAutoMergeConditionsMatch(logger, autoMerge, prLabels)
 	if !autoMergeMatched {
-		return
-	}
-	err = hb.enableAutoMerge(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
-	if err != nil {
-		logger.Errorf("failed enable auto merge for pull request %s/%s#%d sha: %s, got error: %s",
-			prOrg,
-			prRepo,
-			prNumber,
-			prHeadSha,
-			err)
-	}
-	conditionsMatched := hb.checkPrApproveConditions(logger, conditions, changes, prLabels)
-	if !conditionsMatched {
-		return
-	}
-
-	// wait for statuses to finish and return if not all are success.
-	err = hb.waitForPrSuccessStatuses(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
-	if err != nil {
-		// TODO: Non success pr statuses are not error conditions for automated approver. We should log it as info.
-		// 	Need to check if other type of errors
-		logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
-			prOrg,
-			prRepo,
-			prNumber,
-			err)
-
 		return
 	}
 
@@ -169,9 +142,14 @@ func (hb *HandlerBackend) autoMergePullRequest(ctx context.Context, logger *zap.
 		logger.Infof("Context canceled, skip approving pull request %s/%s#%d", prOrg, prRepo, prNumber)
 		return
 	default:
-		err = hb.createPRReview(prHeadSha, prOrg, prRepo, prNumber, logger)
+		err := hb.enableAutoMerge(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
 		if err != nil {
-			logger.Errorf("failed approve pull request %s/%s#%d, got error: %s",
+			logger.Errorf("failed enable auto merge for pull request %s/%s#%d sha: %s, got error: %s",
+				prOrg,
+				prRepo,
+				prNumber,
+				prHeadSha,
+				err)
 		}
 	}
 }

@@ -158,14 +158,14 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 		logger.Infof("Context canceled, skip approving pull request %s/%s#%d", prOrg, prRepo, prNumber)
 		return
 	default:
-		err = hb.createPRReview(prHeadSha, prOrg, prRepo, prNumber, logger)
+		err = hb.approvePullRequest(prHeadSha, prOrg, prRepo, prNumber, logger)
 		if err != nil {
-			logger.Errorf("failed approve pull request %s/%s#%d, got error: %s",
+			logger.Errorf("failed approve pull request %s/%s#%d, got error: %s", prOrg, prRepo, prNumber, err)
 		}
 	}
 }
 
-func (hb *HandlerBackend) createPRReview(prHeadSha string, prOrg string, prRepo string, prNumber int, logger *zap.SugaredLogger) error {
+func (hb *HandlerBackend) approvePullRequest(prHeadSha string, prOrg string, prRepo string, prNumber int, logger *zap.SugaredLogger) error {
 	review := github.DraftReview{
 		CommitSHA: prHeadSha,
 		Body:      "",

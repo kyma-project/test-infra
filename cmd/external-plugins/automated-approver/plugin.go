@@ -39,16 +39,25 @@ type githubClient interface {
 // It contains all the configuration and clients needed to handle events.
 type HandlerBackend struct {
 	Ghc                            githubClient
-	LogLevel                       zapcore.Level                                               // Log level is read in backend handlers to keep the same log level for all logs.
-	WaitForStatusesTimeout         int                                                         // in seconds
-	WaitForContextsCreationTimeout int                                                         // in seconds
-	RulesPath                      string                                                      // Path to yaml config file
-	AutoMergeRulesPath             string                                                      // Path to yaml config file with auto merge rules
-	Conditions                     map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
-	MergeConditions                map[string]map[string]map[string][]AutoMergeCondition       `yaml:"autoMergeConditions"`
-	PrLocks                        map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
+	LogLevel                       zapcore.Level                                                                       // Log level is read in backend handlers to keep the same log level for all logs.
+	WaitForStatusesTimeout         int                                                                                 // in seconds
+	WaitForContextsCreationTimeout int                                                                                 // in seconds
+	RulesPath                      string                                                                              // Path to yaml config file
+	AutoMergeRulesPath             string                                                                              // Path to yaml config file with auto merge rules
+	Conditions                     map[ownerString]map[repoString]map[userString][]ApproveCondition                    `yaml:"conditions"`
+	MergeConditions                map[ownerString]map[repoString][]AutoMergeCondition                                 `yaml:"autoMergeConditions"`
+	PrLocks                        map[ownerString]map[repoString]map[prNumberInt]map[headShaString]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
 	PrMutex                        sync.Mutex
 }
+
+// TODO (dekiel): Refactor data structure to hold PRs, locks and conditions to not use nested maps.
+//
+//	Remove aliases and use types directly.
+type ownerString = string
+type repoString = string
+type userString = string
+type prNumberInt = int
+type headShaString = string
 
 // WatchConfig watches for changes in the rules file and reads it again when a file change occurs.
 // TODO: Refactor function to reflect it's working with rules file not configuration file.
