@@ -15,14 +15,7 @@ excludedConfigPaths:
   - "sec-scanners-config.yaml"
 targetVersion: "latest"
 prefixes:
-  - name: "test-infra"
-    prefix: "eu.gcr.io/kyma-project/test-infra/"
-    refConfigFile: "templates/config.yaml"
-    stagingRefConfigFile: "templates/config.yaml"
-    repo: "https://github.com/kyma-project/test-infra"
-    summarise: true
-    consistentImages: false
-  - name: "testimages"
+  - name: "kyma-project/prod"
     prefix: "europe-docker.pkg.dev/kyma-project/prod/"
     refConfigFile: "templates/config.yaml"
     stagingRefConfigFile: "templates/config.yaml"
