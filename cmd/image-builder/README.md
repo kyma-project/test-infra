@@ -177,7 +177,7 @@ Image Builder does not build images locally on GitHub runners.
 
 ## Jenkins Integration
 
-Image Builder includes basic integration with a Jenkins.
+Image Builder includes basic integration with Jenkins.
 This integration allows the `image-builder` binary to gather inputs directly from the Jenkins pipeline runtime environment.
 
 - **Purpose**: This feature is specifically designed for integration with the SRE Jenkins pipelines and **does not provide a simplified or
