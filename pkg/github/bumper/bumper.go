@@ -179,12 +179,6 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		return fmt.Errorf("failed to construct GitHub client: %v", err)
 	}
 
-	githubClientAdapter := NewGitHubClientAdapter(gc)
-
-	if err := createForkIfNotExists(githubClientAdapter, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
-		return fmt.Errorf("failed to create or check fork: %w", err)
-	}
-
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
 		if err != nil {
@@ -235,6 +229,12 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	if !anyChange {
 		logrus.Info("Nothing changed from all functions, skip PR ...")
 		return nil
+	}
+
+	githubClientAdapter := NewGitHubClientAdapter(gc)
+
+	if err := createForkIfNotExists(githubClientAdapter, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
+		return fmt.Errorf("failed to create or check fork: %w", err)
 	}
 
 	if err := MinimalGitPush(fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
@@ -509,29 +509,28 @@ func (a *GitHubClientAdapter) CreateFork(owner, repo string) (string, error) {
 	return a.client.CreateFork(owner, repo)
 }
 
-type GitHubClient interface {
-	GetRepo(owner, name string) error
+type GitHubClientAdapterInterface interface {
+	GetRepo(owner, name string) (github.FullRepo, error)
 	CreateFork(owner, repo string) (string, error)
 }
 
-func createForkIfNotExists(gc *GitHubClientAdapter, user, org, repo string) error {
+func createForkIfNotExists(gc GitHubClientAdapterInterface, user, org, repo string) error {
 	_, err := gc.GetRepo(user, repo)
-	if err == nil {
-		logrus.Infof("Fork %s/%s already exists", user, repo)
+	if err != nil {
+		if !strings.Contains(err.Error(), "not found") {
+			return fmt.Errorf("unexpected error while checking for fork: %w", err)
+		}
+
+		logrus.Infof("Creating fork %s/%s from %s/%s...", user, repo, org, repo)
+
+		if _, createErr := gc.CreateFork(org, repo); createErr != nil {
+			return fmt.Errorf("failed to create fork: %w", createErr)
+		}
+
+		logrus.Infof("Fork %s/%s created successfully", user, repo)
 		return nil
 	}
 
-	if !strings.Contains(err.Error(), "Not Found") {
-		return fmt.Errorf("failed to check if fork exists: %w", err)
-	}
-
-	logrus.Infof("Creating fork %s/%s...", org, repo)
-
-	_, err = gc.CreateFork(org, repo)
-	if err != nil {
-		return fmt.Errorf("failed to create fork: %w", err)
-	}
-
-	logrus.Infof("Fork %s/%s created successfully", org, repo)
+	logrus.Infof("Fork %s/%s already exists", user, repo)
 	return nil
 }

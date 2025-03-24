@@ -1,25 +1,16 @@
-/*
-Copyright 2019 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package bumper
 
 import (
-	"os"
+	"errors"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
+	"sigs.k8s.io/prow/pkg/github"
+
+	mocks "github.com/kyma-project/test-infra/pkg/github/bumper/mocks"
 )
 
 func TestValidateOptions(t *testing.T) {
@@ -110,12 +101,6 @@ func TestValidateOptions(t *testing.T) {
 	}
 }
 
-func writeToFile(t *testing.T, path, content string) {
-	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
-		t.Errorf("write file %s dir with error '%v'", path, err)
-	}
-}
-
 func TestGetAssignment(t *testing.T) {
 	cases := []struct {
 		description          string
@@ -146,3 +131,72 @@ func TestGetAssignment(t *testing.T) {
 		})
 	}
 }
+
+var _ = Describe("CreateForkIfNotExists", func() {
+	var mockClient *mocks.MockGitHubClientAdapterInterface
+	logrus.SetLevel(logrus.ErrorLevel)
+
+	BeforeEach(func() {
+		mockClient = mocks.NewMockGitHubClientAdapterInterface(GinkgoT())
+	})
+
+	It("should create fork when not exists", func() {
+		mockClient.EXPECT().
+			GetRepo("user", "test-repo").
+			Return(github.FullRepo{}, errors.New("not found")).
+			Once()
+
+		mockClient.EXPECT().
+			CreateFork("kyma-project", "test-repo").
+			Return("https://github.com/user/test-repo", nil).
+			Once()
+
+		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
+
+		Expect(err).NotTo(HaveOccurred())
+		mockClient.AssertExpectations(GinkgoT())
+	})
+
+	It("should skip fork creation when exists", func() {
+		mockClient.EXPECT().
+			GetRepo("user", "test-repo").
+			Return(github.FullRepo{Repo: github.Repo{Name: "test-repo"}}, nil).
+			Once()
+
+		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
+
+		Expect(err).NotTo(HaveOccurred())
+		mockClient.AssertExpectations(GinkgoT())
+	})
+
+	It("should handle error during fork creation", func() {
+		mockClient.EXPECT().
+			GetRepo("user", "test-repo").
+			Return(github.FullRepo{}, errors.New("not found")).
+			Once()
+
+		mockClient.EXPECT().
+			CreateFork("kyma-project", "test-repo").
+			Return("", errors.New("fork creation failed")).
+			Once()
+
+		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("failed to create fork"))
+		mockClient.AssertExpectations(GinkgoT())
+	})
+
+	It("should handle non-404 error from GetRepo", func() {
+		mockClient.EXPECT().
+			GetRepo("user", "test-repo").
+			Return(github.FullRepo{}, errors.New("unexpected error")).
+			Once()
+
+		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("unexpected error while checking for fork"))
+		mockClient.AssertExpectations(GinkgoT())
+	})
+})
