@@ -179,6 +179,12 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		return fmt.Errorf("failed to construct GitHub client: %v", err)
 	}
 
+	githubClientAdapter := NewGitHubClientAdapter(gc)
+
+	if err := createForkIfNotExists(githubClientAdapter, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
+		return fmt.Errorf("failed to create or check fork: %w", err)
+	}
+
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
 		if err != nil {
@@ -484,5 +490,48 @@ func configureGit(name, email string) error {
 		return fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
 	}
 
+	return nil
+}
+
+type GitHubClientAdapter struct {
+	client github.Client
+}
+
+func NewGitHubClientAdapter(client github.Client) *GitHubClientAdapter {
+	return &GitHubClientAdapter{client: client}
+}
+
+func (a *GitHubClientAdapter) GetRepo(owner, name string) (github.FullRepo, error) {
+	return a.client.GetRepo(owner, name)
+}
+
+func (a *GitHubClientAdapter) CreateFork(owner, repo string) (string, error) {
+	return a.client.CreateFork(owner, repo)
+}
+
+type GitHubClient interface {
+	GetRepo(owner, name string) error
+	CreateFork(owner, repo string) (string, error)
+}
+
+func createForkIfNotExists(gc *GitHubClientAdapter, user, org, repo string) error {
+	_, err := gc.GetRepo(user, repo)
+	if err == nil {
+		logrus.Infof("Fork %s/%s already exists", user, repo)
+		return nil
+	}
+
+	if !strings.Contains(err.Error(), "Not Found") {
+		return fmt.Errorf("failed to check if fork exists: %w", err)
+	}
+
+	logrus.Infof("Creating fork %s/%s...", org, repo)
+
+	_, err = gc.CreateFork(org, repo)
+	if err != nil {
+		return fmt.Errorf("failed to create fork: %w", err)
+	}
+
+	logrus.Infof("Fork %s/%s created successfully", org, repo)
 	return nil
 }
