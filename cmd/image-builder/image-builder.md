@@ -177,6 +177,9 @@ This feature utilizes the `go` vendor mechanism by downloading all the dependenc
 
 ## Jenkins Integration
 
+> [!NOTE]
+> This Jenkins integration is intended exclusively for the SRE team. It should not be used by other teams or projects.
+
 The Image Builder binary supports integration with the SRE Jenkins instance.
 This integration allows the tool to collect input data directly from the Jenkins pipeline environment.
 
@@ -198,5 +201,3 @@ The Jenkins integration relies on a defined contract for sourcing input data wit
 | `CHANGE_BRANCH`   | Name of the pull request's base branch.                                                                                                                                                                                                                  | Required for pull requests                 |
 | `CHANGE_BASE_SHA` | Base branch commit SHA for the pull request.                                                                                                                                                                                                             | Required for pull requests                 |
 | `JENKINS_HOME`    | Indicates Jenkins runtime environment. Presence of this variable signals the tool to run in Jenkins mode (value not tested).                                                                                                                             | Always required for Jenkins pipeline usage |
-
-**Note**: This Jenkins integration is intended exclusively for the SRE team. It should not be used by other teams or projects.
