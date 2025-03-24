@@ -119,28 +119,29 @@ func (hb *HandlerBackend) enableAutoMerge(ctx context.Context, logger *zap.Sugar
 
 // reviewPullRequest approves a pull request if it meets conditions.
 // It searches conditions for owner/repo/PR author entity, validates them, waits for statuses to finish, validates their statuses, and approves PR.
-func (hb *HandlerBackend) setPullRequestAutoMerge(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prUser, prHeadSha string, prNumber int, prLabels []github.Label) {
+func (hb *HandlerBackend) setPullRequestAutoMerge(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prHeadSha string, prNumber int, prLabels []github.Label) error {
 	defer logger.Sync()
 	defer hb.unlockPR(logger, prOrg, prRepo, prHeadSha, prNumber)
 	logger.Debugf("Checking if auto merge conditions for PR %s/%s/%d exists", prOrg, prRepo, prNumber)
 	autoMerge, autoMergeOk := hb.MergeConditions[prOrg][prRepo]
 	if !autoMergeOk {
 		logger.Infof("Merge conditions for PR %s/%s#%d not found", prOrg, prRepo, prNumber)
-		return
+		return nil
 	}
 
 	logger.Debugf("Checking if PR %d meets approval conditions: %v", prNumber, hb.MergeConditions)
 	logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
 	autoMergeMatched := hb.checkPrAutoMergeConditionsMatch(logger, autoMerge, prLabels)
 	if !autoMergeMatched {
-		return
+		logger.Infof("PR %d does not meet auto merge conditions", prNumber)
+		return nil
 	}
 
 	// Check if context canceled to not review commit which is not a HEAD anymore.
 	select {
 	case <-ctx.Done():
 		logger.Infof("Context canceled, skip approving pull request %s/%s#%d", prOrg, prRepo, prNumber)
-		return
+		return nil
 	default:
 		err := hb.enableAutoMerge(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
 		if err != nil {
@@ -152,4 +153,6 @@ func (hb *HandlerBackend) setPullRequestAutoMerge(ctx context.Context, logger *z
 				err)
 		}
 	}
+
+	return nil
 }
