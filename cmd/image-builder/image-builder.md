@@ -127,15 +127,6 @@ If binary is running outside of CI, the `--repo` flag must be used. Otherwise, t
 Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
 the [`sign`](../../pkg/sign) package, and its code.
 
-### Updated Signing Process
-
-The authentication to the Signify API has been updated from using `role id/secret id` to mTLS. This change introduces the following updates:
-
-- **mTLS Authentication**: Image Builder now uses a client certificate/private key pair for authentication with the Signify API. These credentials are valid for 7 days, after which they must be rotated.
-- **Automated Rotation**: The certificate rotation must occur every 7 days. The new certificate/private key pair must be generated using the previous pair before they expire.
-
-The Signify API's structure has also been updated. For more information, see the official [Signify API Documentation](https://pages.github.tools.sap/Signify/docs/how_to/manage_signatures/).
-
 > [!NOTE]
 > Images are only signed when built on **push**, **schedule**, and **workflow_dispatch** events. Pull request and merge queue images are not signed.
 
