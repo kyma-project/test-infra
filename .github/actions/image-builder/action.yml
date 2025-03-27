@@ -82,7 +82,7 @@ runs:
       id: prepare-tags
       shell: bash
     
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250326-af27439f
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250327-c1773683
       id: build
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}
