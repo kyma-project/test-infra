@@ -105,7 +105,7 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
   cleanup_policy_dry_run = false
 
   cleanup_policies {
-    id = "cleanup-old-images"
+    id     = "cleanup-old-images"
     action = "DELETE"
 
     condition {
@@ -146,8 +146,8 @@ resource "google_artifact_registry_repository" "docker_cache" {
 }
 
 resource "google_service_account" "kyma_project_image_builder" {
-  provider = google.kyma_project
-  account_id = var.image_builder_kyma-project_identity.id
+  provider    = google.kyma_project
+  account_id  = var.image_builder_kyma-project_identity.id
   description = var.image_builder_kyma-project_identity.description
 }
 

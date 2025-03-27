@@ -7,7 +7,7 @@ variable "dev_modules_internal_repository" {
     immutable_tags         = bool
     mode                   = string
     cleanup_policy_dry_run = bool
-    labels = map(string)
+    labels                 = map(string)
   })
   default = {
     name                   = "dev-modules-internal"
