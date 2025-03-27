@@ -6,7 +6,7 @@ Key features:
 * Automatically detects the latest Docker image version  in a GitHub repository
 * Automatically detects places in the file where image URLs are defined
 * Automatically updates the image version in the repository based on the provided configuration
-* Automatically finds `.yaml` and `.yml` files in the repository
+* Automatically finds `.yaml`, `.yml`, `.tf`, `.tfvars` files in the repository
 * Supports any file format provided in `extraFiles` option.
 
 ## Quickstart Guide
