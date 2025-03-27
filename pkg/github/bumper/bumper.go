@@ -247,9 +247,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		return nil
 	}
 
-	githubClientAdapter := NewGitHubClientAdapter(gc)
-
-	if err := createForkIfNotExists(githubClientAdapter, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
+	if err := createForkIfNotExists(gc, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
 		return fmt.Errorf("failed to create or check fork: %w", err)
 	}
 
@@ -513,24 +511,12 @@ type GitHubClientAdapter struct {
 	client github.Client
 }
 
-func NewGitHubClientAdapter(client github.Client) *GitHubClientAdapter {
-	return &GitHubClientAdapter{client: client}
-}
-
-func (a *GitHubClientAdapter) GetRepo(owner, name string) (github.FullRepo, error) {
-	return a.client.GetRepo(owner, name)
-}
-
-func (a *GitHubClientAdapter) CreateFork(owner, repo string) (string, error) {
-	return a.client.CreateFork(owner, repo)
-}
-
-type GitHubClientAdapterInterface interface {
+type GitHubClientInterface interface {
 	GetRepo(owner, name string) (github.FullRepo, error)
 	CreateFork(owner, repo string) (string, error)
 }
 
-func createForkIfNotExists(gc GitHubClientAdapterInterface, user, org, repo string) error {
+func createForkIfNotExists(gc GitHubClientInterface, user, org, repo string) error {
 	_, err := gc.GetRepo(user, repo)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
