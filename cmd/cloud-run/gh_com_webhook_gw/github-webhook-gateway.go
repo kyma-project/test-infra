@@ -198,7 +198,7 @@ func issuesEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, e
 	}
 }
 
-func pullRequestEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.PullRequestEvent, payload []byte) {
+func pullRequestEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.PullRequestEvent, _ []byte) {
 	switch *event.Action {
 	case "labeled":
 		publishMessage(logger, w, event, "pr.labeled")
