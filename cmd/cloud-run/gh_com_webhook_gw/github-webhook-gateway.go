@@ -9,23 +9,18 @@ import (
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
-	toolsclient "github.com/kyma-project/test-infra/pkg/github/client"
 
 	"github.com/google/go-github/v48/github"
 )
 
 var (
-	componentName        string
-	applicationName      string
-	projectID            string
-	toolsGithubTokenPath string
-	githubToken          []byte
-	webhookTokenPath     string
-	webhookToken         []byte
-	pubsubTopic          string
-	listenPort           string
-	sapToolsClient       *toolsclient.SapToolsClient
-	pubsubClient         *pubsub.Client
+	componentName    string
+	applicationName  string
+	projectID        string
+	webhookTokenPath string
+	webhookToken     []byte
+	listenPort       string
+	pubsubClient     *pubsub.Client
 )
 
 func main() {
@@ -36,8 +31,6 @@ func main() {
 	applicationName = os.Getenv("APPLICATION_NAME") // github-webhook-gateway
 	projectID = os.Getenv("PROJECT_ID")
 	listenPort = os.Getenv("LISTEN_PORT")
-	pubsubTopic = os.Getenv("PUBSUB_TOPIC")
-	toolsGithubTokenPath = os.Getenv("TOOLS_GITHUB_TOKEN_PATH")
 	webhookTokenPath = os.Getenv("WEBHOOK_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
@@ -45,20 +38,9 @@ func main() {
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
 
-	githubToken, err = os.ReadFile(toolsGithubTokenPath)
-	if err != nil {
-		mainLogger.LogCritical("failed read github token from file, error: %s", err)
-	}
-
 	webhookToken, err = os.ReadFile(webhookTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read webhook token from file, error: %s", err)
-	}
-
-	// Create tools github client.
-	sapToolsClient, err = toolsclient.NewSapToolsClient(ctx, string(githubToken))
-	if err != nil {
-		mainLogger.LogCritical("Failed creating tools GitHub client: %s", err)
 	}
 
 	pubsubClient, err = pubsub.NewClient(ctx, projectID)
