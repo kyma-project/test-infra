@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"os"
 
@@ -11,7 +10,6 @@ import (
 	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/pkg/github/client"
-	"github.com/kyma-project/test-infra/pkg/types"
 
 	"github.com/google/go-github/v48/github"
 )
@@ -121,8 +119,8 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 
 	switch event := event.(type) {
 	// Supported github events
-	case *github.IssuesEvent:
-		issuesEventRouter(logger, w, event, payload)
+	case *github.IssueCommentEvent:
+		issueCommentEventRouter(logger, w, event, payload)
 	case *github.PullRequestEvent:
 		pullRequestEventRouter(logger, w, event, payload)
 	default:
@@ -131,67 +129,14 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func issueLabeledHandler(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event interface{}, payload []byte) {
-	var (
-		usersMap  []types.User
-		eventType string
-	)
-	ctx := context.Background()
-	sapToolsClient.WrapperClientMu.RLock()
-	usersMap, err := sapToolsClient.GetUsersMap(ctx)
-	sapToolsClient.WrapperClientMu.RUnlock()
-	if err != nil {
-		githubToken, err := os.ReadFile(toolsGithubTokenPath)
-		if err != nil {
-			logger.LogCritical("failed read github token from file, error: %s", err)
-		}
-		_, err = sapToolsClient.Reauthenticate(ctx, logger, githubToken)
-		if err != nil {
-			logger.LogCritical("failed reauthenticate github client, error %s", err)
-		}
-
-		// retry
-		sapToolsClient.WrapperClientMu.RLock()
-		usersMap, err = sapToolsClient.GetUsersMap(ctx)
-		sapToolsClient.WrapperClientMu.RUnlock()
-		if err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting user map, error: %s", err)
-			return
-		}
-	}
-	// CloudEvents sourceID.
-	logger.LogInfo("received event of type: %s", eventType)
-	issue := event.(*github.IssuesEvent).GetIssue()
-	sender := event.(*github.IssuesEvent).GetSender()
-
-	// add Slack user name, or empty string
-	var payloadInterface map[string]any
-	json.Unmarshal(payload, &payloadInterface)
-
-	if issue.Assignee != nil {
-		// assigneee can be null
-		assigneeSlackUsername := getSlackUsername(usersMap, *issue.Assignee.Login)
-		payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
-	} else {
-		payloadInterface["assigneeSlackUsername"] = ""
-	}
-
-	senderSlackUsername := getSlackUsername(usersMap, *sender.Login)
-	payloadInterface["senderSlackUsername"] = senderSlackUsername
-
-	// send message to a pubsub topic
-	_, err = pubsubClient.PublishMessage(ctx, payloadInterface, pubsubTopic)
-	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed sending, error: %s", err)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func issuesEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.IssuesEvent, payload []byte) {
+func issueCommentEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.IssueCommentEvent, _ []byte) {
 	switch *event.Action {
-	case "labeled":
-		issueLabeledHandler(logger, w, event, payload)
+	case "created":
+		publishMessage(logger, w, event, "issue_comment.created")
+	case "edited":
+		publishMessage(logger, w, event, "issue_comment.edited")
+	case "deleted":
+		publishMessage(logger, w, event, "issue_comment.deleted")
 	default:
 		logger.LogInfo("event %s not supported", *event.Action)
 		w.WriteHeader(http.StatusOK)
@@ -227,15 +172,4 @@ func publishMessage(logger *cloudfunctions.LogEntry, w http.ResponseWriter, even
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-}
-
-// getSlackusername loks through usersmap and returns GH username
-func getSlackUsername(usersMap []types.User, githubUsername string) string {
-	for _, user := range usersMap {
-		if githubUsername == user.SapToolsGithubUsername {
-			return user.ComEnterpriseSlackUsername
-		}
-	}
-
-	return ""
 }
