@@ -507,10 +507,6 @@ func configureGit(name, email string) error {
 	return nil
 }
 
-type GitHubClientAdapter struct {
-	client github.Client
-}
-
 type GitHubClientInterface interface {
 	GetRepo(owner, name string) (github.FullRepo, error)
 	CreateFork(owner, repo string) (string, error)
@@ -519,7 +515,8 @@ type GitHubClientInterface interface {
 func createForkIfNotExists(gc GitHubClientInterface, user, org, repo string) error {
 	_, err := gc.GetRepo(user, repo)
 	if err != nil {
-		if !strings.Contains(err.Error(), "not found") {
+
+		if github.IsNotFound(err) {
 			return fmt.Errorf("unexpected error while checking for fork: %w", err)
 		}
 

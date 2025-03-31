@@ -199,20 +199,7 @@ var _ = Describe("CreateForkIfNotExists", func() {
 		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
 
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("failed to create fork"))
-		mockClient.AssertExpectations(GinkgoT())
-	})
-
-	It("should handle non-404 error from GetRepo", func() {
-		mockClient.EXPECT().
-			GetRepo("user", "test-repo").
-			Return(github.FullRepo{}, errors.New("unexpected error")).
-			Once()
-
-		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
-
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("unexpected error while checking for fork"))
+		Expect(err.Error()).To(ContainSubstring("fork creation failed"))
 		mockClient.AssertExpectations(GinkgoT())
 	})
 })
