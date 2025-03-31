@@ -103,6 +103,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	// Supported github events
 	case *github.IssueCommentEvent:
 		issueCommentEventRouter(logger, w, event, payload)
+	case *github.PullRequestCommentEvent:
 	case *github.PullRequestEvent:
 		pullRequestEventRouter(logger, w, event, payload)
 	default:
