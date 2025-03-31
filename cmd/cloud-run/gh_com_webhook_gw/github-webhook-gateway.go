@@ -105,6 +105,12 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		issueCommentEventRouter(logger, w, event, payload)
 	case *github.PullRequestEvent:
 		pullRequestEventRouter(logger, w, event, payload)
+	case *github.PullRequestReviewCommentEvent:
+		pullRequestReviewCommentEventRouter(logger, w, event, payload)
+	case *github.PullRequestReviewEvent:
+		pullRequestReviewEventRouter(logger, w, event, payload)
+	case *github.StatusEvent:
+		statusEventRouter(logger, w, event, payload)
 	default:
 		logger.LogInfo("event %s not supported", github.WebHookType(r))
 		w.WriteHeader(http.StatusOK)
@@ -143,6 +149,41 @@ func pullRequestEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWrit
 		logger.LogInfo("event %s not supported", *event.Action)
 		w.WriteHeader(http.StatusOK)
 	}
+}
+
+func pullRequestReviewCommentEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.PullRequestReviewCommentEvent, _ []byte) {
+	switch *event.Action {
+	case "created":
+		publishMessage(logger, w, event, "pull_request_review_comment.created")
+	case "edited":
+		publishMessage(logger, w, event, "pull_request_review_comment.edited")
+	case "deleted":
+		publishMessage(logger, w, event, "pull_request_review_comment.deleted")
+	default:
+		logger.LogInfo("event %s not supported", *event.Action)
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func pullRequestReviewEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.PullRequestReviewEvent, _ []byte) {
+	switch *event.Action {
+	case "submitted":
+		publishMessage(logger, w, event, "pull_request_review.submitted")
+	case "edited":
+		publishMessage(logger, w, event, "pull_request_review.edited")
+	case "dismissed":
+		publishMessage(logger, w, event, "pull_request_review.dismissed")
+	default:
+		logger.LogInfo("event %s not supported", *event.Action)
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+// TODO(kacpermalachowski): Consider routing using `state` field.
+// See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#status
+func statusEventRouter(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event *github.StatusEvent, _ []byte) {
+	publishMessage(logger, w, event, "status")
+	w.WriteHeader(http.StatusOK)
 }
 
 func publishMessage(logger *cloudfunctions.LogEntry, w http.ResponseWriter, event interface{}, pubsubTopic string) {
