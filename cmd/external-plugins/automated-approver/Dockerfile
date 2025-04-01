@@ -10,7 +10,7 @@ WORKDIR /app
 # Copy the source to the Working Directory inside the container
 COPY . .
 
-RUN git rev-parse HEAD
+RUN git config --global --add safe.directory /app; git rev-parse HEAD
 
 #WORKDIR /app/cmd/external-plugins/automated-approver
 
