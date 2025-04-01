@@ -1,19 +1,21 @@
-FROM golang:1.23.4-alpine3.21 as builder
+FROM europe-docker.pkg.dev/kyma-project/dev/alpine-git:PR-12862 as builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+#COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
+#RUN go mod download
 
 # Copy the source to the Working Directory inside the container
 COPY . .
 
-WORKDIR /app/cmd/external-plugins/automated-approver
+RUN git rev-parse HEAD
+
+#WORKDIR /app/cmd/external-plugins/automated-approver
 
 # Build the Go app with static linking
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+#RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 FROM alpine:3.20.3
 
