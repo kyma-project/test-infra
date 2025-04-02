@@ -6,23 +6,23 @@ import {
 
 resource "google_project_iam_member" "kyma_developer_admin_editor" {
   provider = google.kyma_project
-  project = var.kyma_project_gcp_project_id
-  role = "roles/editor"
-  member = "group:${var.kyma_developer_admin_email}"
+  project  = var.kyma_project_gcp_project_id
+  role     = "roles/editor"
+  member   = "group:${var.kyma_developer_admin_email}"
 }
 
 # Add roles required to see audit logs in kyma-project GCP project.
 resource "google_project_iam_member" "kyma_developer_admin_logging_viewer" {
   provider = google.kyma_project
-  project = var.kyma_project_gcp_project_id
-  role = "roles/logging.viewer"
-  member = "group:${var.kyma_developer_admin_email}"
+  project  = var.kyma_project_gcp_project_id
+  role     = "roles/logging.viewer"
+  member   = "group:${var.kyma_developer_admin_email}"
 }
 
 # roles/logging.privateLogViewer is required to see Data Access audit logs
 resource "google_project_iam_member" "kyma_developer_admin_private_logging_viewer" {
   provider = google.kyma_project
-  project = var.kyma_project_gcp_project_id
-  role = "roles/logging.privateLogViewer"
-  member = "group:${var.kyma_developer_admin_email}"
+  project  = var.kyma_project_gcp_project_id
+  role     = "roles/logging.privateLogViewer"
+  member   = "group:${var.kyma_developer_admin_email}"
 }

@@ -30,12 +30,12 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
 variable "image_builder_kyma-project_identity" {
   description = "Configuration for identity of image-builder in main kyma-project GCP project. It's used to access artifact registries."
   type = object({
-    id = string
+    id          = string
     description = string
   })
 
   default = {
-    id = "azure-pipeline-image-builder"
+    id          = "azure-pipeline-image-builder"
     description = "OCI image builder running in kyma development service azure pipelines"
   }
 }
@@ -45,16 +45,16 @@ variable "dockerhub_mirror" {
   description = "Configuration for the Docker Hub mirror repository"
   type = object({
     repository_id = string
-    description = string
-    location = string
-    cleanup_age = string
+    description   = string
+    location      = string
+    cleanup_age   = string
   })
 
   default = {
     repository_id = "dockerhub-mirror"
-    description = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
-    location = "europe"
-    cleanup_age = "63072000s" # 63072000s = 730 days = 2 years
+    description   = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
+    location      = "europe"
+    cleanup_age   = "63072000s" # 63072000s = 730 days = 2 years
   }
 }
 
@@ -80,6 +80,6 @@ variable "docker_cache_repository" {
     # Google provider does not support the time units,
     # so we need to provide the time in seconds.
     # Time after which the images will be deleted.
-    cache_images_max_age   = "604800s" # 604800s = 7 days
+    cache_images_max_age = "604800s" # 604800s = 7 days
   }
 }
