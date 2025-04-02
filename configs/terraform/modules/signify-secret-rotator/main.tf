@@ -103,25 +103,31 @@ resource "google_pubsub_subscription" "signify_secret_rotator" {
   }
 }
 
-# Reference to existing notification channel
+# Reference to an existing notification channel
 data "google_monitoring_notification_channel" "kyma_tooling" {
   display_name = "Alerting channel for Kyma tooling components."
 }
 
-# Log-based alerting policy
+# Log-based alerting policy for signify-secret-rotator
 resource "google_monitoring_alert_policy" "signify_secret_rotator_error_alert" {
   display_name = "Error detected in signify-secret-rotator"
-  severity     = "ERROR"  # Supported as of recent provider versions
-  combiner     = "OR"
+  severity     = "ERROR" # Severity level of the alert
 
+  # Define the condition to match logs with errors
   conditions {
     display_name = "Error in signify-secret-rotator logs"
 
     condition_matched_log {
-      filter = "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"signify-secret-rotator\" AND severity>=ERROR"
+      # Filter to match logs from Cloud Run revisions with severity >= ERROR
+      filter = <<-EOT
+        resource.type="cloud_run_revision"
+        AND resource.labels.service_name="signify-secret-rotator"
+        AND severity>=ERROR
+      EOT
     }
   }
 
+  # Documentation included in the alert notification
   documentation {
     mime_type = "text/markdown"
     content   = <<-EOT
@@ -139,12 +145,14 @@ A new error has been detected in the Cloud Run service *signify-secret-rotator*.
     EOT
   }
 
+  # Alert strategy configuration
   alert_strategy {
     notification_rate_limit {
-      period = "259200s"  # 3 days in seconds
+      period = "259200s" # Minimum time between notifications (3 days)
     }
-    auto_close = "604800s"  # 7 days in seconds
+    auto_close = "604800s" # Automatically close incidents after 7 days of no matching logs
   }
 
+  # Use the existing notification channel for alerts
   notification_channels = [data.google_monitoring_notification_channel.kyma_tooling.id]
 }
