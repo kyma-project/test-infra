@@ -112,6 +112,7 @@ data "google_monitoring_notification_channel" "kyma_tooling" {
 resource "google_monitoring_alert_policy" "signify_secret_rotator_error_alert" {
   display_name = "Error detected in signify-secret-rotator"
   severity     = "ERROR" # Severity level of the alert
+  combiner     = "OR"    # Combine conditions with OR logic; here only one condition is defined but it is required
 
   # Define the condition to match logs with errors
   conditions {
