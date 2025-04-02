@@ -35,7 +35,7 @@ jobs:
         id: verify_merge_commit_sha
         run: |
           if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
-            echo "::error title=PR commit merge error ::Pull request does not have a merge commit sha. Skipping the workflow. Please create a new empty commit with use of the --allow-empty flag."
+            echo "::error title=PR commit merge error ::Pull request does not have a merge commit sha. Skipping the workflow. Please create a new empty commit with the --allow-empty flag."
             exit 1
           fi
         if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
