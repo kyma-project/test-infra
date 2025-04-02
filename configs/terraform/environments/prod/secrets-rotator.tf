@@ -62,13 +62,13 @@ module "signify_secret_rotator" {
   source = "../../modules/signify-secret-rotator"
 
   application_name = var.secrets_rotator_name
-  service_name = var.signify_secret_rotator_service_name
+  service_name     = var.signify_secret_rotator_service_name
 
-  region = var.gcp_region
-  signify_secret_rotator_account_id = var.signify_secret_rotator_account_id
+  region                                       = var.gcp_region
+  signify_secret_rotator_account_id            = var.signify_secret_rotator_account_id
   signify_secret_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
-  signify_secret_rotator_image = var.signify_secret_rotator_image
-  cloud_run_service_listen_port = var.secrets_rotator_cloud_run_listen_port
-  secret_manager_notifications_topic = var.secret_manager_notifications_topic
-  secrets_rotator_sa_email = google_service_account.secrets-rotator.email
+  signify_secret_rotator_image                 = var.signify_secret_rotator_image
+  cloud_run_service_listen_port                = var.secrets_rotator_cloud_run_listen_port
+  secret_manager_notifications_topic           = var.secret_manager_notifications_topic
+  secrets_rotator_sa_email                     = google_service_account.secrets-rotator.email
 }
