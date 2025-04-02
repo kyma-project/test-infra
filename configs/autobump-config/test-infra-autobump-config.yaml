@@ -5,7 +5,7 @@ gitEmail: "kyma.bot@sap.com"
 skipPullRequest: false
 gitHubOrg: "kyma-project"
 gitHubRepo: "test-infra"
-remoteName: "test-infra-1"
+remoteName: "test-infra"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
 headBranchName: "test-infra-autobump"
 includedConfigPaths:
