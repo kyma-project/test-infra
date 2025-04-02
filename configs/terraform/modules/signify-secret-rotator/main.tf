@@ -102,3 +102,49 @@ resource "google_pubsub_subscription" "signify_secret_rotator" {
     max_delivery_attempts = var.dead_letter_maximum_delivery_attempts
   }
 }
+
+# Reference to existing notification channel
+data "google_monitoring_notification_channel" "kyma_tooling" {
+  display_name = "Alerting channel for Kyma tooling components."
+}
+
+# Log-based alerting policy
+resource "google_monitoring_alert_policy" "signify_secret_rotator_error_alert" {
+  display_name = "Error detected in signify-secret-rotator"
+  severity     = "ERROR"  # Supported as of recent provider versions
+  combiner     = "OR"
+
+  conditions {
+    display_name = "Error in signify-secret-rotator logs"
+
+    condition_matched_log {
+      filter = "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"signify-secret-rotator\" AND severity>=ERROR"
+    }
+  }
+
+  documentation {
+    mime_type = "text/markdown"
+    content   = <<-EOT
+### Alert: Error detected in signify-secret-rotator
+
+#### Summary:
+A new error has been detected in the Cloud Run service *signify-secret-rotator*.
+
+#### Error details:
+- **Service Name:** $${resource.labels.service_name}
+- **Project ID:** $${resource.project}
+
+#### Quick Links:
+- [View Logs](https://console.cloud.google.com/logs/query;query=resource.labels.service_name="signify-secret-rotator")
+    EOT
+  }
+
+  alert_strategy {
+    notification_rate_limit {
+      period = "259200s"  # 3 days in seconds
+    }
+    auto_close = "604800s"  # 7 days in seconds
+  }
+
+  notification_channels = [data.google_monitoring_notification_channel.kyma_tooling.id]
+}
