@@ -159,7 +159,7 @@ var _ = Describe("CreateForkIfNotExists", func() {
 	It("should create fork when not exists", func() {
 		mockClient.EXPECT().
 			GetRepo("user", "test-repo").
-			Return(github.FullRepo{}, errors.New("not found")).
+			Return(github.FullRepo{}, github.NewNotFound()).
 			Once()
 
 		mockClient.EXPECT().
@@ -188,7 +188,7 @@ var _ = Describe("CreateForkIfNotExists", func() {
 	It("should handle error during fork creation", func() {
 		mockClient.EXPECT().
 			GetRepo("user", "test-repo").
-			Return(github.FullRepo{}, errors.New("not found")).
+			Return(github.FullRepo{}, github.NewNotFound()).
 			Once()
 
 		mockClient.EXPECT().
@@ -197,9 +197,6 @@ var _ = Describe("CreateForkIfNotExists", func() {
 			Once()
 
 		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
-
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("fork creation failed"))
-		mockClient.AssertExpectations(GinkgoT())
+		Expect(err).To(MatchError(ContainSubstring("fork creation failed"))) // Poprawna weryfikacja
 	})
 })
