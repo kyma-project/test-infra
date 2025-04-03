@@ -118,11 +118,11 @@ func FileHasIncorrectImage(resourcesDirectory, path string, skipComments bool, e
 // imageInExcludeList checks if the image value in the given line is on the excludes list
 func imageInExcludeList(resourcesDirectory, filename, line string, excludesList []Exclude) bool {
 	for _, exclude := range excludesList {
-		if strings.Replace(filename, resourcesDirectory+"/", "", -1) == exclude.Filename {
+		if strings.ReplaceAll(filename, resourcesDirectory+"/", "") == exclude.Filename {
 			for _, image := range exclude.Images {
 				// naive line parsing
-				parsedImage := strings.Replace(line, "image: ", "", -1)
-				parsedImage = strings.Replace(parsedImage, "\"", "", -1)
+				parsedImage := strings.ReplaceAll(line, "image: ", "")
+				parsedImage = strings.ReplaceAll(parsedImage, "\"", "")
 				parsedImage = strings.Trim(parsedImage, " ")
 				if strings.HasPrefix(parsedImage, image) {
 					return true
