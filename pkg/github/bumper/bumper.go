@@ -250,7 +250,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	if err := createForkIfNotExists(gc, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
 		return fmt.Errorf("failed to create or check fork: %w", err)
 	}
-
+	//TODO Try to reuse waitForRepo function from k8s https://github.com/kubernetes-sigs/prow/blob/main/pkg/github/client.go#L4119
 	if err := MinimalGitPush(fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
@@ -513,7 +513,7 @@ type GitHubClientInterface interface {
 }
 
 func createForkIfNotExists(gc GitHubClientInterface, user, org, repo string) error {
-	_, err := gc.GetRepo(user, repo)
+	_, err := gc.GetRepo(user, repo) //TODO: check if the repo is a fork https://github.com/kubernetes-sigs/prow/blob/main/pkg/github/client.go#L4096
 	if err != nil {
 
 		if github.IsNotFound(err) {

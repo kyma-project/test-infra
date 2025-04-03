@@ -197,6 +197,6 @@ var _ = Describe("CreateForkIfNotExists", func() {
 			Once()
 
 		err := createForkIfNotExists(mockClient, "user", "kyma-project", "test-repo")
-		Expect(err).To(MatchError(ContainSubstring("fork creation failed"))) // Poprawna weryfikacja
+		Expect(err).To(MatchError(ContainSubstring("fork creation failed")))
 	})
 })
