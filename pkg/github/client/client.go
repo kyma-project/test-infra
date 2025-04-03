@@ -47,6 +47,8 @@ type SapToolsClient struct {
 }
 
 // ClientInterface is an interface for GitHub client.
+//
+//nolint:revive
 type ClientInterface interface {
 	IsStatusOK(resp *github.Response) (bool, error)
 	GetAuthorLoginForBranch(ctx context.Context, branchName, owner, repo string) (*string, error)
