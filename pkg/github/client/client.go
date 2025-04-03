@@ -33,9 +33,28 @@ type GithubClientConfig struct {
 // tokenPathFlag is used as cli flag. When set it adds path to secret agent.
 type tokenPathFlag string
 
+// SapToolsClientInterface is an interface for Sap Tools client.
+type SapToolsClientInterface interface {
+	ClientInterface
+	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, accessToken []byte) (bool, error)
+	GetUsersMap(ctx context.Context) ([]types.User, error)
+	GetAliasesMap(ctx context.Context) ([]types.Alias, error)
+}
+
 // SapToolsClient wraps kyma implementation github Client and provides additional methods.
 type SapToolsClient struct {
 	*Client
+}
+
+// ClientInterface is an interface for GitHub client.
+type ClientInterface interface {
+	IsStatusOK(resp *github.Response) (bool, error)
+	GetAuthorLoginForBranch(ctx context.Context, branchName, owner, repo string) (*string, error)
+	GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo string) (*string, error)
+	MuLock()
+	MuUnlock()
+	MuRLock()
+	MuRUnlock()
 }
 
 // Client wraps google github Client and provides additional methods.
@@ -306,4 +325,24 @@ func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo stri
 	// Read commit author Login.
 	l := commit.GetAuthor().GetLogin()
 	return &l, nil
+}
+
+// MuLock wraps client mutex Lock method
+func (c *Client) MuLock() {
+	c.WrapperClientMu.Lock()
+}
+
+// MuUnlock wraps client mutex Unlock method
+func (c *Client) MuUnlock() {
+	c.WrapperClientMu.Unlock()
+}
+
+// MuRLock wraps client mutex RLock method
+func (c *Client) MuRLock() {
+	c.WrapperClientMu.RLock()
+}
+
+// MuRUnlock wraps client mutex RUnlock method
+func (c *Client) MuRUnlock() {
+	c.WrapperClientMu.RUnlock()
 }
