@@ -2,16 +2,10 @@ package client
 
 import (
 	"sync"
-	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-func TestSapToolsClient(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "SapToolsClient Suite")
-}
 
 var _ = Describe("SapToolsClient", func() {
 	var (
