@@ -28,7 +28,7 @@ resource "google_cloud_run_service" "cors_proxy" {
   template {
     spec {
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250403-0493249b"
+        image = "europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250404-04191748"
         env {
           name  = "COMPONENT_NAME"
           value = "cors-proxy"
