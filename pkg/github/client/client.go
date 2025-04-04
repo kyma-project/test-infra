@@ -33,30 +33,9 @@ type GithubClientConfig struct {
 // tokenPathFlag is used as cli flag. When set it adds path to secret agent.
 type tokenPathFlag string
 
-// SapToolsClientInterface is an interface for Sap Tools client.
-type SapToolsClientInterface interface {
-	ClientInterface
-	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, accessToken []byte) (bool, error)
-	GetUsersMap(ctx context.Context) ([]types.User, error)
-	GetAliasesMap(ctx context.Context) ([]types.Alias, error)
-}
-
 // SapToolsClient wraps kyma implementation github Client and provides additional methods.
 type SapToolsClient struct {
 	*Client
-}
-
-// ClientInterface is an interface for GitHub client.
-//
-//nolint:revive
-type ClientInterface interface {
-	IsStatusOK(resp *github.Response) (bool, error)
-	GetAuthorLoginForBranch(ctx context.Context, branchName, owner, repo string) (*string, error)
-	GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo string) (*string, error)
-	MuLock()
-	MuUnlock()
-	MuRLock()
-	MuRUnlock()
 }
 
 // Client wraps google github Client and provides additional methods.

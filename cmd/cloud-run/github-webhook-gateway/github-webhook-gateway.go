@@ -36,9 +36,16 @@ var (
 	webhookToken         []byte
 	pubsubTopic          string
 	listenPort           string
-	sapToolsClient       toolsclient.SapToolsClientInterface
+	sapToolsClient       GithubClientInterface
 	pubsubClient         *pubsub.Client
 )
+
+type GithubClientInterface interface {
+	MuRLock()
+	MuRUnlock()
+	GetUsersMap(ctx context.Context) ([]types.User, error)
+	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, githubToken []byte) (bool, error)
+}
 
 func main() {
 	var err error
