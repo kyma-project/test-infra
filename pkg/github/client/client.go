@@ -307,3 +307,23 @@ func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo stri
 	l := commit.GetAuthor().GetLogin()
 	return &l, nil
 }
+
+// MuLock wraps client mutex Lock method
+func (c *Client) MuLock() {
+	c.WrapperClientMu.Lock()
+}
+
+// MuUnlock wraps client mutex Unlock method
+func (c *Client) MuUnlock() {
+	c.WrapperClientMu.Unlock()
+}
+
+// MuRLock wraps client mutex RLock method
+func (c *Client) MuRLock() {
+	c.WrapperClientMu.RLock()
+}
+
+// MuRUnlock wraps client mutex RUnlock method
+func (c *Client) MuRUnlock() {
+	c.WrapperClientMu.RUnlock()
+}
