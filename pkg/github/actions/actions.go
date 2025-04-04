@@ -21,7 +21,7 @@ func SetOutput(key string, value string) error {
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(fmt.Sprintf("%s=%s\n", key, value))
+	_, err = fmt.Fprintf(f, "%s=%s\n", key, value)
 	if err != nil {
 		return fmt.Errorf("cannot write to output file: %s", err)
 	}

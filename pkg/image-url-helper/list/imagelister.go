@@ -1,10 +1,11 @@
 package list
 
 import (
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 
 	"gopkg.in/yaml.v3"
 )
@@ -38,8 +39,8 @@ func GetWalkFunc(resourcesDirectory string, images, testImages common.ComponentI
 			return err
 		}
 
-		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
-		component = strings.Replace(component, "/values.yaml", "", -1)
+		component := strings.ReplaceAll(path, resourcesDirectory+"/", "")
+		component = strings.ReplaceAll(component, "/values.yaml", "")
 
 		common.AppendImagesToMap(parsedFile, images, testImages, component)
 

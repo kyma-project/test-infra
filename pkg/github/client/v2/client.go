@@ -36,7 +36,7 @@ func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (Git
 			return nil, fmt.Errorf("failed applying functional option: %w", err)
 		}
 	}
-	client, err := o.GitHubOptions.GitHubClient(o.DryRun)
+	client, err := o.GitHubClient(o.DryRun)
 	if err != nil {
 		return nil, err
 	}
