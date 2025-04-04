@@ -517,17 +517,17 @@ func createForkIfNotExists(gc GitHubClientInterface, user, org, repo string) err
 	if err != nil {
 
 		if github.IsNotFound(err) {
-			return fmt.Errorf("unexpected error while checking for fork: %w", err)
+
+			logrus.Infof("Creating fork %s/%s from %s/%s...", user, repo, org, repo)
+
+			if _, createErr := gc.CreateFork(org, repo); createErr != nil {
+				return fmt.Errorf("fork creation failed: %w", createErr)
+			}
+
+			logrus.Infof("Fork %s/%s created successfully", user, repo)
+			return nil
 		}
-
-		logrus.Infof("Creating fork %s/%s from %s/%s...", user, repo, org, repo)
-
-		if _, createErr := gc.CreateFork(org, repo); createErr != nil {
-			return fmt.Errorf("failed to create fork: %w", createErr)
-		}
-
-		logrus.Infof("Fork %s/%s created successfully", user, repo)
-		return nil
+		return fmt.Errorf("unexpected error: %w", err)
 	}
 
 	logrus.Infof("Fork %s/%s already exists", user, repo)
