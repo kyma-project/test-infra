@@ -36,11 +36,11 @@ var (
 	webhookToken         []byte
 	pubsubTopic          string
 	listenPort           string
-	sapToolsClient       GithubClientInterface
+	sapToolsClient       GithubClient
 	pubsubClient         *pubsub.Client
 )
 
-type GithubClientInterface interface {
+type GithubClient interface {
 	MuRLock()
 	MuRUnlock()
 	GetUsersMap(ctx context.Context) ([]types.User, error)
