@@ -249,9 +249,10 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 			case "pending":
 				logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prNumber)
 				for _, prStatus := range prStatuses.Statuses {
-					if prStatus.State == "failure" {
+					switch prStatus.State {
+					case "failure":
 						return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
-					} else if prStatus.State == "pending" {
+					case "pending":
 						statusErr := fmt.Errorf("pull request status check %s is pending", prStatus.Context)
 						logger.Debug(statusErr.Error())
 						return statusErr
