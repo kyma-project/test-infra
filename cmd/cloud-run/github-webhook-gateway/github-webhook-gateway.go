@@ -5,13 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/pkg/github/client"
 	"github.com/kyma-project/test-infra/pkg/types"
-	"net/http"
-	"os"
 
 	"github.com/google/go-github/v48/github"
 )
@@ -35,9 +36,16 @@ var (
 	webhookToken         []byte
 	pubsubTopic          string
 	listenPort           string
-	sapToolsClient       *toolsclient.SapToolsClient
+	sapToolsClient       GithubClient
 	pubsubClient         *pubsub.Client
 )
+
+type GithubClient interface {
+	MuRLock()
+	MuRUnlock()
+	GetUsersMap(ctx context.Context) ([]types.User, error)
+	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, githubToken []byte) (bool, error)
+}
 
 func main() {
 	var err error
@@ -140,9 +148,9 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	if supported {
 		var usersMap []types.User
 		ctx := context.Background()
-		sapToolsClient.WrapperClientMu.RLock()
+		sapToolsClient.MuRLock()
 		usersMap, err = sapToolsClient.GetUsersMap(ctx)
-		sapToolsClient.WrapperClientMu.RUnlock()
+		sapToolsClient.MuRUnlock()
 		if err != nil {
 			githubToken, err := os.ReadFile(toolsGithubTokenPath)
 			if err != nil {
@@ -154,9 +162,9 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// retry
-			sapToolsClient.WrapperClientMu.RLock()
+			sapToolsClient.MuRLock()
 			usersMap, err = sapToolsClient.GetUsersMap(ctx)
-			sapToolsClient.WrapperClientMu.RUnlock()
+			sapToolsClient.MuRUnlock()
 			if err != nil {
 				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting user map, error: %s", err)
 				return
