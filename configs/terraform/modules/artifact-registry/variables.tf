@@ -12,14 +12,19 @@ variable "owner" {
   default     = "neighbors"
 }
 
+variable "repoAdmin_serviceaccounts" {
+  type = list(string)
+  description = "Service Accounts with reapoAdmin access"
+}
+
 variable "writer_serviceaccounts" {
   type        = list(string)
-  description = "Service Accounts with reapoAdmin access"
+  description = "Service Accounts with write access"
 }
 
 variable "reader_serviceaccounts" {
   type        = list(string)
-  description = "Service Accounts with read access (lifecycle-maneger)"
+  description = "Service Accounts with read access"
 }
 
 variable "type" {
@@ -30,14 +35,19 @@ variable "type" {
 
 variable "multi_region" {
   type        = bool
-  description = "Is Location type Multi-region"
+  description = "Is Artifact Registry location type Multi-region"
   default     = true
 }
 
 variable "primary_area" {
   type        = string
-  description = "Location type Multi-region"
+  description = "Location of primary area of the Artifact Registry for multi-region repositories"
   default     = "europe"
+
+  validation {
+    condition     = var.multi_region == false || (var.multi_region == true && var.primary_area != "")
+    error_message = "When multi_region is true, primary_area must be set."
+  }
 }
 
 variable "immutable_tags" {
@@ -50,4 +60,15 @@ variable "public" {
   type        = bool
   description = "Is Artifact registry public"
   default     = false
+}
+
+variable "location" {
+  type        = string
+  description = "Location of the Artifact Registry for non multi-region repositories"
+  default     = "europe"
+
+  validation {
+    condition     = var.multi_region == true || (var.multi_region == false && var.location != "")
+    error_message = "When multi_region is false, location must be set."
+  }
 }
