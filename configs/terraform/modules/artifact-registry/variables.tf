@@ -15,16 +15,19 @@ variable "owner" {
 variable "repoAdmin_serviceaccounts" {
   type = list(string)
   description = "Service Accounts with reapoAdmin access"
+  default = []
 }
 
 variable "writer_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with write access"
+  default = []
 }
 
 variable "reader_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with read access"
+  default = []
 }
 
 variable "type" {
