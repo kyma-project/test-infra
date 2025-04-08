@@ -45,7 +45,7 @@ variable "primary_area" {
   default     = "europe"
 
   validation {
-    condition     = var.multi_region == false || (var.multi_region == true && var.primary_area != "")
+    condition = var.primary_area != ""
     error_message = "When multi_region is true, primary_area must be set."
   }
 }
@@ -68,7 +68,7 @@ variable "location" {
   default     = "europe"
 
   validation {
-    condition     = var.multi_region == true || (var.multi_region == false && var.location != "")
+    condition = var.location != ""
     error_message = "When multi_region is false, location must be set."
   }
 }
