@@ -42,7 +42,8 @@ def rotate_signify_secret() -> Response:
 
         secret_rotate_msg: Dict[str, Any] = extract_message_data(pubsub_message)
 
-        validate_message(secret_rotate_msg)
+        if not validate_message(logger, secret_rotate_msg):
+            return prepare_error_response("Invalid message", logger)
 
         secret_id: str = secret_rotate_msg["name"]
         secret_data: Dict[str, Any] = sm_client.get_secret(secret_id)
@@ -95,13 +96,22 @@ def rotate_signify_secret() -> Response:
         return prepare_error_response(exc, logger)
 
 
-def validate_message(message: dict[str, Any]) -> None:
-    """Raises error when received message struct is invalid"""
+def validate_message(logger: logging.Logger, message: dict[str, Any]) -> bool:
+    """Returns false when received message struct is invalid
+    Logs the info why the message is invalid
+    """
 
     # Pub/Sub topic handle multiple secret rotator components
     # verify if we should handle that message
     if message.get("labels", {}).get("type") != secret_rotate_message_type:
-        raise TypeError("Invalid or unknown type value")
+        logger.info(
+            "Incorrect message type received. Expected %s, got %s. Ignoring message.",
+            message.get("labels", {}).get("type"),
+            secret_rotate_message_type,
+        )
+        return False
+
+    return True
 
 
 def prepare_new_secret(
