@@ -53,7 +53,7 @@ resource "google_artifact_registry_repository_iam_member" "service_account_reade
 }
 
 resource "google_artifact_registry_repository_iam_member" "public_access" {
-  count = var.public ? 1 : 0
+  count    = var.public ? 1 : 0
   project    = data.google_client_config.this.project
   location = local.location
   repository = google_artifact_registry_repository.artifact_registry.name

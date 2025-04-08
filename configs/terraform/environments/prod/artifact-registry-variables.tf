@@ -4,16 +4,16 @@
 variable "kyma_project_artifact_registry_collection" {
   description = "Artifact Registry related data set"
   type = map(object({
-    name                   = string
-    owner                  = string
-    type                   = string
+    name  = string
+    owner = string
+    type  = string
     repoAdmin_serviceaccounts = optional(list(string), [])
     writer_serviceaccounts = optional(list(string), [])
     reader_serviceaccounts = optional(list(string), [])
-    primary_area           = optional(string, "europe")
-    multi_region           = optional(bool, true)
-    public                 = optional(bool, false)
-    immutable              = optional(bool, false)
+    primary_area = optional(string, "europe")
+    multi_region = optional(bool, true)
+    public = optional(bool, false)
+    immutable = optional(bool, false)
   }))
 }
 
