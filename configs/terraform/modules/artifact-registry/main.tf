@@ -25,7 +25,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   }
 }
 
-resource "google_artifact_registry_repository_iam_member" "repoAdmin_service_account_access" {
+resource "google_artifact_registry_repository_iam_member" "service_account_repoAdmin_access" {
   for_each = toset(var.repoAdmin_serviceaccounts)
   project    = data.google_client_config.this.project
   location = local.location
@@ -34,7 +34,7 @@ resource "google_artifact_registry_repository_iam_member" "repoAdmin_service_acc
   member     = "serviceAccount:${each.value}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "writer_service_account_access" {
+resource "google_artifact_registry_repository_iam_member" "service_account_writer_access" {
   for_each = toset(var.writer_serviceaccounts)
   project    = data.google_client_config.this.project
   location   = local.location
@@ -43,7 +43,7 @@ resource "google_artifact_registry_repository_iam_member" "writer_service_accoun
   member     = "serviceAccount:${each.value}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "reader_service_account_access" {
+resource "google_artifact_registry_repository_iam_member" "service_account_reader_access" {
   for_each   = toset(var.reader_serviceaccounts)
   project    = data.google_client_config.this.project
   location = local.location
@@ -55,7 +55,7 @@ resource "google_artifact_registry_repository_iam_member" "reader_service_accoun
 resource "google_artifact_registry_repository_iam_member" "public_access" {
   count = var.public ? 1 : 0
   project    = data.google_client_config.this.project
-  location   = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
+  location = local.location
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.reader"
   member     = "allUsers"
