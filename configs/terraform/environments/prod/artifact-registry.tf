@@ -12,7 +12,7 @@ module "artifact_registry" {
   immutable_tags         = each.value.immutable
   multi_region           = each.value.multi_region
   owner                  = each.value.owner
-  writer_serviceaccounts = each.value.writer_serviceaccounts
+  repoAdmin_serviceaccounts = each.value.repoAdmin_serviceaccounts
   reader_serviceaccounts = each.value.reader_serviceaccounts
   public                 = each.value.public
 }
