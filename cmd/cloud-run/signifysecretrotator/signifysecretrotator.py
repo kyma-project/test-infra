@@ -43,8 +43,7 @@ def rotate_signify_secret() -> Response:
 
         secret_rotate_msg: Dict[str, Any] = extract_message_data(pubsub_message)
 
-        message_validator = MessageValidator(secret_rotate_message_type)
-        message_validator.validate(secret_rotate_msg)
+        MessageValidator(secret_rotate_message_type).validate(secret_rotate_msg)
 
         secret_id: str = secret_rotate_msg["name"]
         secret_data: Dict[str, Any] = sm_client.get_secret(secret_id)
