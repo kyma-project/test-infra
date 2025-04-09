@@ -1,11 +1,11 @@
 """Simple PubSub handler to rotate signify certificates"""
 
 import datetime
-import logging
+import http
 import os
 import base64
 import json
-import sys
+
 from typing import Any, Dict, List
 from flask import Flask, Response, request, make_response
 from cryptography import x509
@@ -16,6 +16,7 @@ from requests import HTTPError
 from secretmanager.client import SecretManagerClient, SecretManagerError
 from pylogger.logger import create_logger
 from signify.client import SignifyClient
+from messagevalidator import MessageValidator, MessageTypeError
 
 app = Flask(__name__)
 project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
@@ -42,8 +43,8 @@ def rotate_signify_secret() -> Response:
 
         secret_rotate_msg: Dict[str, Any] = extract_message_data(pubsub_message)
 
-        if not validate_message(logger, secret_rotate_msg):
-            return prepare_error_response("Invalid message", logger)
+        message_validator = MessageValidator(secret_rotate_message_type)
+        message_validator.validate(secret_rotate_msg)
 
         secret_id: str = secret_rotate_msg["name"]
         secret_data: Dict[str, Any] = sm_client.get_secret(secret_id)
@@ -91,27 +92,15 @@ def rotate_signify_secret() -> Response:
 
         logger.info("Certificate rotated successfully at %s", created_at)
 
-        return "Certificate rotated successfully"
+        return prepare_response("Certificate rotated successfully", 200)
     except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
-        return prepare_error_response(exc, logger)
-
-
-def validate_message(logger: logging.Logger, message: dict[str, Any]) -> bool:
-    """Returns false when received message struct is invalid
-    Logs the info why the message is invalid
-    """
-
-    # Pub/Sub topic handle multiple secret rotator components
-    # verify if we should handle that message
-    if message.get("labels", {}).get("type") != secret_rotate_message_type:
-        logger.info(
-            "Incorrect message type received. Expected %s, got %s. Ignoring message.",
-            message.get("labels", {}).get("type"),
-            secret_rotate_message_type,
-        )
-        return False
-
-    return True
+        return prepare_response(str(exc), 500)
+    except MessageTypeError as exc:
+        # We do not consider it as an error
+        # We cannot filter the message on the Pub/Sub level,
+        # so we consider handling it as a future of signify secret rotator service
+        logger.info("Received unsupported message type: %s", exc.received_type)
+        return prepare_response("Unsupported messagte type received", 200)
 
 
 def prepare_new_secret(
@@ -173,16 +162,20 @@ def get_pubsub_message() -> Dict[str, Any]:
         raise ValueError("No Pub/Sub message received")
 
     if not isinstance(envelope, dict) or "message" not in envelope:
-        raise ValueError("Invalid Pub/Sub message format")
+        raise TypeError("Invalid Pub/Sub message format")
 
     return envelope["message"]
 
 
-# TODO(kacpermalachowski): Move it to common package
-def prepare_error_response(err: str, logger: logging.Logger) -> Response:
+def prepare_response(message: str, status: int) -> Response:
     """Prepares an error response with logging."""
-    logger.error(err, exc_info=sys.exc_info())
     resp = make_response()
     resp.content_type = "application/json"
-    resp.status_code = 500
+    resp.status_code = status
+    resp.data = json.dumps(
+        {
+            "message": message,
+            "status": "success" if http.HTTPStatus(status).is_success else "error",
+        }
+    )
     return resp
