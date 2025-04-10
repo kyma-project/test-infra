@@ -18,8 +18,6 @@
 
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
-[JobGuard ](/cmd/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests (PRs) and waits for some of them to finish.
-
 [OIDC Token Verifier](/cmd/oidc-token-verifier/README.md) - The OIDC Token Verifier is a command-line tool designed to validate the OIDC token and its claim values. It is primarily used in the
 
 [External Secrets Checker](/cmd/tools/externalsecretschecker/README.md) - This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
