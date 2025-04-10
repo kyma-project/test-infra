@@ -157,18 +157,18 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 		fmt.Println("'--platform' parameter not supported in kaniko-mode. Use buildkit-enabled image")
 	}
 
-	if o.Config.Cache.Enabled {
+	if o.Cache.Enabled {
 		args = append(args, "--cache="+strconv.FormatBool(o.Cache.Enabled),
 			"--cache-copy-layers="+strconv.FormatBool(o.Cache.CacheCopyLayers),
 			"--cache-run-layers="+strconv.FormatBool(o.Cache.CacheRunLayers),
 			"--cache-repo="+o.Cache.CacheRepo)
 	}
 
-	if o.Config.LogFormat != "" {
-		args = append(args, "--log-format="+o.Config.LogFormat)
+	if o.LogFormat != "" {
+		args = append(args, "--log-format="+o.LogFormat)
 	}
 
-	if o.Config.Reproducible {
+	if o.Reproducible {
 		args = append(args, "--reproducible=true")
 	}
 
@@ -480,7 +480,7 @@ func buildLocally(o options) error {
 		}
 	}
 
-	repo := o.Config.Registry
+	repo := o.Registry
 	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {

@@ -48,15 +48,4 @@ RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go en
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
-FROM base AS tools
-
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main
-
-FROM base
-
-COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
-
-
-#USER prow:prow
-
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]

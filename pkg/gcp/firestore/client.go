@@ -3,6 +3,7 @@ package firestore
 import (
 	"context"
 	"fmt"
+
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 
 	"cloud.google.com/go/firestore"
@@ -28,13 +29,14 @@ func NewClient(ctx context.Context, projectID string) (*Client, error) {
 func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message pubsub.FailingTestMessage, firestoreCollectionName string) (*firestore.DocumentSnapshot, error) {
 	var iter *firestore.DocumentIterator
 	// For periodic prowjob get documents for open failing test instances with matching periodic prowjob name.
-	if *message.JobType == "periodic" {
+	switch *message.JobType {
+	case "periodic":
 		// TODO: rename collection to prowjobFailures
 		iter = c.Collection(firestoreCollectionName).Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Documents(ctx)
 		//	For postsubmit prowjob get documents for open failing test with matching baseSha. If baseSha is different it's represented by another failing prowjob instance.
-	} else if *message.JobType == "postsubmit" {
+	case "postsubmit":
 		iter = c.Collection(firestoreCollectionName).Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Where("baseSha", "==", message.Refs[0].BaseSHA).Documents(ctx)
-	} else {
+	default:
 		return nil, fmt.Errorf("got message for presubmit prowjob, storing failing prowjob instance details are not supported for this type of prowjob")
 	}
 	// Get all matched documents fetched from firestore db.
@@ -49,7 +51,7 @@ func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message p
 		// Get matched document.
 		failureInstance := failureInstances[0]
 		return failureInstance, nil
-	} 
+	}
 	return nil, fmt.Errorf("more than one failure instance exists")
 }
 
