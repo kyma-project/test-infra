@@ -6,6 +6,7 @@ variable "kyma_project_artifact_registry_collection" {
     name  = string
     owner = string
     type  = string
+    description = string
     repoAdmin_serviceaccounts = optional(list(string), [])
     writer_serviceaccounts = optional(list(string), [])
     reader_serviceaccounts = optional(list(string), [])
