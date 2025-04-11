@@ -1,9 +1,6 @@
-###################################
-# Artifact Registry related values
-###################################
-variable "registry_name" {
+variable "repository_name" {
   type        = string
-  description = "Artifact Registry name"
+  description = "Artifact Registry repository name"
 }
 
 variable "owner" {
@@ -69,9 +66,16 @@ variable "location" {
   type        = string
   description = "Location of the Artifact Registry for non multi-region repositories"
   default     = "europe"
+}
 
-  validation {
-    condition = var.location != ""
-    error_message = "When multi_region is false, location must be set."
-  }
+variable "description" {
+  type        = string
+  description = "Description of the Artifact Registry"
+  default     = "Artifact Registry for kyma-project"
+}
+
+variable "format" {
+  type        = string
+  description = "Format of the Artifact Registry"
+  default     = "DOCKER"
 }

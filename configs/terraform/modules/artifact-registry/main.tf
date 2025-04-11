@@ -10,10 +10,10 @@ locals {
 }
 
 resource "google_artifact_registry_repository" "artifact_registry" {
-  location = local.location
-  repository_id = lower(var.registry_name)
-  description   = "${lower(var.registry_name)} registry"
-  format        = "DOCKER"
+  location    = local.location
+  repository_id = lower(var.repository_name)
+  description = var.description
+  format      = var.format
 
   labels = {
     name = lower(var.registry_name)
