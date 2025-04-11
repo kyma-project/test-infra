@@ -8,6 +8,7 @@ module "artifact_registry" {
 
   for_each        = var.kyma_project_artifact_registry_collection
   repository_name = each.value.name
+  description = each.value.description
   type            = each.value.type
   immutable_tags  = each.value.immutable
   multi_region    = each.value.multi_region
