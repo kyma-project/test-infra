@@ -2,7 +2,6 @@
 # Artifact Registry related values
 ###################################
 variable "kyma_project_artifact_registry_collection" {
-  description = "Artifact Registry related data set"
   type = map(object({
     name  = string
     owner = string
