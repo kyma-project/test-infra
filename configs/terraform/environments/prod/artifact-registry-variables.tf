@@ -1,3 +1,4 @@
+# TODO (dekiel): remove after migration to modulectl is done
 variable "kyma_project_artifact_registry_collection" {
   type = map(object({
     name  = string
@@ -26,6 +27,7 @@ variable "kyma_project_artifact_registry_collection" {
 }
 
 
+# TODO (dekiel): move to the module modules/artifact-registry
 variable "prod_docker_repository" {
   type = object({
     name                   = string
@@ -51,6 +53,7 @@ variable "prod_docker_repository" {
   }
 }
 
+# TODO (dekiel): move to the module modules/artifact-registry
 variable "docker_dev_repository" {
   type = object({
     name                   = string

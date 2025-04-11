@@ -3,6 +3,7 @@ import {
   id = "projects/kyma-project/locations/europe/repositories/dev-modules-internal"
 }
 
+# TODO (dekiel): remove after migration to modulectl is done
 resource "google_artifact_registry_repository" "dev_modules_internal" {
   provider               = google.kyma_project
   location               = var.dev_modules_internal_repository.location
@@ -22,8 +23,8 @@ import {
   to = google_service_account.kyma_project_kyma_submission_pipeline
 }
 
-# The submission pipeline should have only one identity in our projects.
-# The service account in kyma-project should be removed.
+# TODO (dekiel): The submission pipeline should have only one identity in our projects.
+#   The service account in kyma-project should be removed.
 resource "google_service_account" "kyma_project_kyma_submission_pipeline" {
   provider     = google.kyma_project
   account_id   = "kyma-submission-pipeline"

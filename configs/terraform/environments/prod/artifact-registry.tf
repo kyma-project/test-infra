@@ -1,3 +1,4 @@
+# TODO (dekiel): remove after migration to modulectl is done
 module "artifact_registry" {
   source = "../../modules/artifact-registry"
 
@@ -20,6 +21,7 @@ module "artifact_registry" {
   cleanup_policies       = each.value.cleanup_policies
 }
 
+# TODO (dekiel): move to the module modules/artifact-registry
 resource "google_artifact_registry_repository" "prod_docker_repository" {
   provider               = google.kyma_project
   labels                 = var.prod_docker_repository.labels
@@ -41,6 +43,7 @@ resource "google_artifact_registry_repository" "prod_docker_repository" {
   }
 }
 
+# TODO (dekiel): move to the module modules/artifact-registry
 resource "google_artifact_registry_repository" "docker_dev" {
   provider               = google.kyma_project
   location               = var.docker_dev_repository.location
