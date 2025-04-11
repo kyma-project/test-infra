@@ -31,6 +31,11 @@ variable "type" {
   type        = string
   description = "Environment for the resources"
   default     = "development"
+
+  validation {
+    condition = contains(["development", "production"], var.type)
+    error_message = "Type must be either 'development' or 'production'."
+  }
 }
 
 variable "multi_region" {
@@ -43,11 +48,6 @@ variable "primary_area" {
   type        = string
   description = "Location of primary area of the Artifact Registry for multi-region repositories"
   default     = "europe"
-
-  validation {
-    condition = var.primary_area != ""
-    error_message = "When multi_region is true, primary_area must be set."
-  }
 }
 
 variable "immutable_tags" {
@@ -71,11 +71,41 @@ variable "location" {
 variable "description" {
   type        = string
   description = "Description of the Artifact Registry"
-  default     = "Artifact Registry for kyma-project"
+  default = ""
 }
 
 variable "format" {
   type        = string
   description = "Format of the Artifact Registry"
   default     = "DOCKER"
+}
+
+variable "mode" {
+  type        = string
+  description = "Mode of the Artifact Registry"
+  default     = "STANDARD_REPOSITORY"
+
+  validation {
+    condition = contains(["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY"], var.mode)
+    error_message = "Mode must be either 'STANDARD_REPOSITORY' or 'VIRTUAL_REPOSITORY'."
+  }
+}
+
+variable "cleanup_policy_dry_run" {
+  type        = bool
+  description = "Is cleanup policy dry run"
+  default     = false
+}
+
+variable "cleanup_policies" {
+  type = list(object({
+    id     = string
+    action = string
+    condition = optional(object({
+      tag_state = optional(string)
+      older_than = optional(string)
+      tag_prefixes = optional(list(string))
+    }))
+  }))
+  default = []
 }
