@@ -44,3 +44,29 @@ resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_
   role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${google_service_account.kyma_project_kyma_submission_pipeline.email}"
 }
+
+module "dev_kyma_modules" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_name = var.dev_kyma_modules_repository.name
+  description     = var.dev_kyma_modules_repository.description
+  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+}
+
+module "kyma_modules" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_name        = var.kyma_modules_repository.name
+  description            = var.kyma_modules_repository.description
+  type                   = var.kyma_modules_repository.type
+  reader_serviceaccounts = var.kyma_modules_repository.reader_serviceaccounts
+  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+}
