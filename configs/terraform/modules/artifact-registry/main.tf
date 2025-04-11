@@ -16,7 +16,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   format      = var.format
 
   labels = {
-    name = lower(var.registry_name)
+    name = lower(var.repository_name)
     owner = var.owner
     type  = var.type
   }
