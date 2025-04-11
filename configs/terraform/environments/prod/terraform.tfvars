@@ -3,6 +3,7 @@ kyma_project_artifact_registry_collection = {
     name = "modules-internal"
     owner = "neighbors"
     type = "production"
+    description = "modules-internal registry"
     reader_serviceaccounts = [
       "klm-controller-manager@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com",
       "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com",
