@@ -8,10 +8,10 @@ Always create a follow-up issue when it is identified and not resolved alongside
 2. **Team Discussion:**
 Discuss the follow-up issue with the team during the Sprint Review or Sprint Planning sessions to ensure everyone is aware and aligned.
 3. **Labeling and Closing Parent Issues:**
-   - **If the follow-up issue will not be added to the next Sprints:**
+   - **If the follow-up issue isn't added to the next Sprints:**
      - Add a `technical-debt` label to indicate that this issue is a deferred concern.
      - Close the parent issue to signify that its resolution is complete.
-     - **If the follow-up issue will be added to the next Sprints:**
+   - **If the follow-up issue is not added to the next Sprints:**
        - Do not add the `technical-debt` label, as it indicates a commitment to address the issue soon.
        - Do not close the parent issue, as it remains open until the follow-up is resolved.
 
