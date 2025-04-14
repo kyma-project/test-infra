@@ -20,7 +20,7 @@ jobs:
           max-depth: -1
       - name: Send Notification to Slack
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
         with:
             payload: |
               {
