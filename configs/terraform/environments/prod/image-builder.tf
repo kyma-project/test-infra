@@ -100,6 +100,17 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
     docker_repository {
       public_repository = "DOCKER_HUB"
     }
+
+    # Add authentication configuration
+    upstream_credentials {
+      username_password_credentials {
+        # Reference to the Docker Hub username
+        username = var.dockerhub_username
+
+        # Reference to the PAT in Secret Manager (latest version)
+        password_secret_version = "projects/${var.gcp_project_id}/secrets/${var.dockerhub_oat_secret_name}/versions/latest"
+      }
+    }
   }
 
   cleanup_policy_dry_run = false

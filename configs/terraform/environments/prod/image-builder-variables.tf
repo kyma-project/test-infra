@@ -10,6 +10,18 @@ variable "signify_prod_secret_name" {
   default     = "signify-prod-secret"
 }
 
+variable "dockerhub_oat_secret_name" {
+  type        = string
+  description = "Name of the Docker Hub OAT secret. This secret is used by image-builder's dockerhub_mirror to access Docker Hub."
+  default = "docker_sap_org_service_auth_token"
+}
+
+variable "dockerhub_username" {
+  type        = string
+  description = "Name of the Docker Hub username. This is used by image-builder's dockerhub_mirror to access Docker Hub."
+  default = "sapcom"
+}
+
 # GitHub resources
 
 variable "image_builder_reusable_workflow_ref" {
