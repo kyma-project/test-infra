@@ -16,7 +16,7 @@ from requests import HTTPError
 from secretmanager.client import SecretManagerClient, SecretManagerError
 from pylogger.logger import create_logger
 from signify.client import SignifyClient
-from messagevalidator import MessageValidator, MessageTypeError
+from messagevalidator import MessageValidator, SecretTypeError
 
 app = Flask(__name__)
 project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
@@ -94,7 +94,7 @@ def rotate_signify_secret() -> Response:
         return prepare_response("Certificate rotated successfully", 200)
     except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
         return prepare_response(str(exc), 500)
-    except MessageTypeError as exc:
+    except SecretTypeError as exc:
         # We do not consider it as an error
         # We cannot filter the message on the Pub/Sub level,
         # so we consider handling it as a future of signify secret rotator service

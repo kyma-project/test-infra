@@ -1,8 +1,8 @@
 """Package that contains the message validator for the Signify Secret Rotator."""
 
 
-class MessageTypeError(Exception):
-    """Custom exception for invalid message type."""
+class SecretTypeError(Exception):
+    """Custom exception for invalid secret type."""
 
     def __init__(self, message: str, received_type: str) -> None:
         super().__init__(message)
@@ -11,9 +11,12 @@ class MessageTypeError(Exception):
 
 
 # MessageValidator class verifies the message type and event type
+# it don't require few public methods, one is sufficient
+# Ignoring pylint error for too few public methods
 # pylint: disable=too-few-public-methods
 class MessageValidator:
-    """Class that validates the message received from Pub/Sub."""
+    """Class that validates the message received from Pub/Sub.
+    It checks if the secret type is valid based on the provided secret type."""
 
     def __init__(self, valid_secret_type: str):
         self.valid_secret_type = valid_secret_type
@@ -24,17 +27,18 @@ class MessageValidator:
         Raises an exception when message is invalid
         """
 
-        self._verify_message_type(message)
+        self._verify_secret_type(message)
 
-    def _verify_message_type(self, message: dict) -> None:
+    def _verify_secret_type(self, message: dict) -> None:
         """
-        Verifies if the message type is valid.
+        Verifies if the secret type is valid based on provied secret type.
+        Raises an exception when secret type is invalid.
+        Secret type is defined as a type label in the secret manager
         """
 
-        message_type = message.get("labels", {}).get("type")
-        if message_type != self.valid_secret_type:
-            raise MessageTypeError(
-                "Incorrect message type received. "
-                + f"Expected {self.valid_secret_type}, got {message_type}",
-                message_type,
+        secret_type = message.get("labels", {}).get("type")
+        if secret_type != self.valid_secret_type:
+            raise SecretTypeError(
+                f"Secret type {secret_type} is not valid. Expected {self.valid_secret_type}",
+                secret_type,
             )

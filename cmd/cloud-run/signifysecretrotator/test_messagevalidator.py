@@ -3,7 +3,7 @@
 import unittest
 from messagevalidator import (
     MessageValidator,
-    MessageTypeError,
+    SecretTypeError,
 )
 
 
@@ -16,7 +16,7 @@ class TestMessageValidator(unittest.TestCase):
         message = {"labels": {"type": "un"}}
         validator = MessageValidator("expected_type")
 
-        with self.assertRaises(MessageTypeError):
+        with self.assertRaises(SecretTypeError):
             validator.validate(message)
 
     def test_pass_valid_message_type_without_error(self):
@@ -27,5 +27,5 @@ class TestMessageValidator(unittest.TestCase):
 
         try:
             validator.validate(message)
-        except MessageTypeError:
+        except SecretTypeError:
             self.fail("MessageTypeError was raised unexpectedly!")
