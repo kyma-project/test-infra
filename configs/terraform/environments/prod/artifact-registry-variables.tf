@@ -1,6 +1,4 @@
-###################################
-# Artifact Registry related values
-###################################
+# TODO (dekiel): remove after migration to modulectl is done
 variable "kyma_project_artifact_registry_collection" {
   type = map(object({
     name  = string
@@ -14,9 +12,22 @@ variable "kyma_project_artifact_registry_collection" {
     multi_region = optional(bool, true)
     public = optional(bool, false)
     immutable = optional(bool, false)
+    cleanup_policy_dry_run = optional(bool, false)
+    cleanup_policies = optional(list(object({
+      id     = string
+      action = string
+      condition = optional(object({
+        tag_state = string
+        tag_prefixes = optional(list(string), [])
+        package_name_prefixes = optional(list(string), [])
+        older_than = optional(string, "")
+      }))
+    })))
   }))
 }
 
+
+# TODO (dekiel): move to the module modules/artifact-registry
 variable "prod_docker_repository" {
   type = object({
     name                   = string
@@ -42,6 +53,7 @@ variable "prod_docker_repository" {
   }
 }
 
+# TODO (dekiel): move to the module modules/artifact-registry
 variable "docker_dev_repository" {
   type = object({
     name                   = string
