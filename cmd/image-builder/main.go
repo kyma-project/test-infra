@@ -268,6 +268,13 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetUseGoInternalSAPModules()
 	}
 
+	if len(options.platforms) > 0 {
+		templateParameters.SetPlatforms(options.platforms.String())
+	} else {
+		// Set default platforms to linux/amd64,linux/arm64, if not set. There is no way to set during flag parsing.
+		templateParameters.SetPlatforms("linux/amd64,linux/arm64")
+	}
+
 	err := templateParameters.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("failed validating ADO template parameters, err: %w", err)
@@ -847,7 +854,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
 	flagSet.StringVar(&o.tagsBase64, "tag-base64", "", "String representation of all tags encoded by base64. String representation must be in format as output of kyma-project/test-infra/pkg/tags.Tags.String() method")
 	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build dockerfile. It can be used in the name=value format.")
-	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.Var(&o.platforms, "platform", "Platform of the image that is built (default: linux/amd64,linux/arm64)")
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
