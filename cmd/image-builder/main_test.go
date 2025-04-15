@@ -18,6 +18,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"go.uber.org/zap"
 
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -123,142 +124,187 @@ func Test_parseVariable(t *testing.T) {
 	}
 }
 
-func Test_validateOptions(t *testing.T) {
-	tc := []struct {
-		name      string
-		expectErr bool
-		opts      options
-	}{
-		{
-			name:      "parsed config",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-			},
+var _ = Describe("Image Builder", func() {
+	DescribeTable("Test validate options",
+		func(options options, expectedError bool) {
+			err := validateOptions(options)
+			if err != nil && !expectedError {
+				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if err == nil && expectedError {
+				Fail("didn't catch error, but wanted to")
+			}
 		},
-		{
-			name:      "context missing",
-			expectErr: true,
-			opts: options{
-				name:       "test-image",
-				dockerfile: "dockerfile",
+		Entry(
+			"parsed config",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "name missing",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				dockerfile: "dockerfile",
+			false,
+		),
+		Entry(
+			"context missing",
+			options{
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "dockerfile missing",
-			expectErr: true,
-			opts: options{
-				context: "directory/",
-				name:    "test-image",
+			true,
+		),
+		Entry(
+			"name missing",
+			options{
+				context:     "directory/",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "Empty configPath",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
+			true,
+		),
+		Entry(
+			"dockerfile missing",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "signOnly without imagesToSign",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"Empty configPath",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
+			},
+			true,
+		),
+		Entry(
+			"signOnly without imagesToSign",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     true,
 				imagesToSign: []string{},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "imagesToSign without signOnly",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"imagesToSign without signOnly",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     false,
 				imagesToSign: []string{"image1"},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "envFile with buildInADO",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				envFile:    "envfile",
-				buildInADO: true,
+			true,
+		),
+		Entry(
+			"envFile with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				envFile:     "envfile",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "variant with buildInADO",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				variant:    "variant",
-				buildInADO: true,
+			false,
+		),
+		Entry(
+			"variant with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			err := validateOptions(c.opts)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-		})
-	}
-}
+			true,
+		),
+		Entry(
+			"incorrect build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "incorrect-build-engine",
+			},
+			true,
+		),
+		Entry(
+			"correct build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "buildx",
+			},
+			false,
+		),
+	)
 
-func TestFlags(t *testing.T) {
-	testcases := []struct {
-		name         string
-		expectedOpts options
-		expectedErr  bool
-		args         []string
-	}{
-		{
-			name: "unknown flag, fail",
-			expectedOpts: options{
+	DescribeTable("Test Flags",
+		func(args []string, expectedOptions options, expectedError bool) {
+			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+			o := options{}
+			o.gatherOptions(fs)
+			err := fs.Parse(args)
+			if err != nil && !expectedError {
+				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if err == nil && expectedError {
+				Fail("didn't catch error, but wanted to")
+			}
+
+			if !reflect.DeepEqual(o, expectedOptions) {
+				Fail(fmt.Sprintf("%v != %v", o, expectedOptions))
+			}
+		},
+		Entry("unknown flag, fail",
+			[]string{
+				"--unknown-flag=asdasd",
+			},
+			options{
 				context:        ".",
 				configPath:     "/config/image-builder-config.yaml",
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			expectedErr: true,
-			args: []string{
-				"--unknown-flag=asdasd",
+			true,
+		),
+		Entry("parsed config, pass",
+			[]string{
+				"--config=config.yaml",
+				"--dockerfile=dockerfile",
+				"--repo=kyma-project/test-infra",
+				"--name=test-image",
+				"--tag=latest",
+				"--tag=cookie=cookie",
+				"--context=prow/build",
+				"--log-dir=prow/logs",
+				"--silent",
 			},
-		},
-		{
-			name:        "parsed config, pass",
-			expectedErr: false,
-			expectedOpts: options{
+			options{
 				name: "test-image",
 				tags: []tags.Tag{
 					{Name: "latest", Value: "latest"},
@@ -271,36 +317,31 @@ func TestFlags(t *testing.T) {
 				orgRepo:        "kyma-project/test-infra",
 				silent:         true,
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--config=config.yaml",
-				"--dockerfile=dockerfile",
-				"--repo=kyma-project/test-infra",
-				"--name=test-image",
-				"--tag=latest",
-				"--tag=cookie=cookie",
-				"--context=prow/build",
-				"--log-dir=prow/logs",
-				"--silent",
+			false,
+		),
+		Entry("export tag, pass",
+			[]string{
+				"--export-tags",
 			},
-		},
-		{
-			name: "export tag, pass",
-			expectedOpts: options{
+			options{
 				context:        ".",
 				configPath:     "/config/image-builder-config.yaml",
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
 				exportTags:     true,
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--export-tags",
+			false,
+		),
+		Entry("build args, pass",
+			[]string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
 			},
-		},
-		{
-			name: "build args, pass",
-			expectedOpts: options{
+			options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
 				dockerfile: "dockerfile",
@@ -310,27 +351,27 @@ func TestFlags(t *testing.T) {
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--build-arg=BIN=test",
-				"--build-arg=BIN2=test2",
+			false,
+		),
+		Entry("build engine, pass",
+			[]string{
+				"--build-engine=buildx",
 			},
-		},
-	}
-	for _, tc := range testcases {
-		t.Run(tc.name, func(t *testing.T) {
-			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-			o := options{}
-			o.gatherOptions(fs)
-			if err := fs.Parse(tc.args); err != nil && !tc.expectedErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if !reflect.DeepEqual(o, tc.expectedOpts) {
-				t.Errorf("%v != %v", o, tc.expectedOpts)
-			}
-		})
-	}
-}
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "buildx",
+			},
+			false,
+		),
+	)
+
+})
 
 func Test_getTags(t *testing.T) {
 	tc := []struct {
