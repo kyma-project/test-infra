@@ -16,7 +16,7 @@ from requests import HTTPError
 from secretmanager.client import SecretManagerClient, SecretManagerError
 from pylogger.logger import create_logger
 from signify.client import SignifyClient
-from messagevalidator import MessageValidator, SecretTypeError
+from messagevalidator import EventTypeError, MessageValidator, SecretTypeError
 
 app = Flask(__name__)
 project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
@@ -94,6 +94,14 @@ def rotate_signify_secret() -> Response:
         return prepare_response("Certificate rotated successfully", 200)
     except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
         return prepare_response(str(exc), 500)
+    except EventTypeError as exc:
+        # We consider it as an error
+        # We can filter the event type on the Pub/Sub level,
+        # so we shouldn't receive it in the first place
+        logger.error("Received unsupported event type: %s", exc.received_event_type)
+        return prepare_response(
+            f"Unsupported event type received {exc.received_event_type}", 400
+        )
     except SecretTypeError as exc:
         # We do not consider it as an error
         # We cannot filter the message on the Pub/Sub level,
@@ -135,8 +143,9 @@ def prepare_new_secret(
 
 def extract_message_data(pubsub_message: Any) -> Any:
     """Extracts secret rotation message from the Pub/Sub message."""
-    if pubsub_message.get("attributes", {}).get("eventType") != "SECRET_ROTATE":
-        raise ValueError("Unsupported event type")
+    event_type = pubsub_message.get("attributes", {}).get("eventType")
+    if event_type != "SECRET_ROTATE":
+        raise EventTypeError(f"Unsupported event type, got {event_type}", event_type)
 
     data = base64.b64decode(pubsub_message["data"])
     return json.loads(data)
@@ -161,7 +170,7 @@ def get_pubsub_message() -> Dict[str, Any]:
         raise ValueError("No Pub/Sub message received")
 
     if not isinstance(envelope, dict) or "message" not in envelope:
-        raise TypeError("Invalid Pub/Sub message format")
+        raise ValueError("Invalid Pub/Sub message format")
 
     return envelope["message"]
 

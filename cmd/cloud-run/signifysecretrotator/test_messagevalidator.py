@@ -29,3 +29,7 @@ class TestMessageValidator(unittest.TestCase):
             validator.validate(message)
         except SecretTypeError:
             self.fail("MessageTypeError was raised unexpectedly!")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -10,6 +10,15 @@ class SecretTypeError(Exception):
         self.received_type = received_type
 
 
+class EventTypeError(Exception):
+    """Custom exception for invalid event type."""
+
+    def __init__(self, message: str, received_event_type: str) -> None:
+        super().__init__(message)
+        self.message = message
+        self.received_event_type = received_event_type
+
+
 # MessageValidator class verifies the message type and event type
 # it don't require few public methods, one is sufficient
 # Ignoring pylint error for too few public methods
@@ -18,7 +27,7 @@ class MessageValidator:
     """Class that validates the message received from Pub/Sub.
     It checks if the secret type is valid based on the provided secret type."""
 
-    def __init__(self, valid_secret_type: str):
+    def __init__(self, valid_secret_type: str) -> None:
         self.valid_secret_type = valid_secret_type
 
     def validate(self, message: dict) -> None:
