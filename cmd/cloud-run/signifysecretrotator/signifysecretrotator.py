@@ -106,8 +106,8 @@ def rotate_signify_secret() -> Response:
         # We do not consider it as an error
         # We cannot filter the message on the Pub/Sub level,
         # so we consider handling it as a future of signify secret rotator service
-        logger.info("Received unsupported message type: %s", exc.received_type)
-        return prepare_response("Unsupported messagte type received", 200)
+        logger.info("Received unsupported secret type: %s", exc.received_type)
+        return prepare_response("Unsupported secret type received", 200)
 
 
 def prepare_new_secret(
