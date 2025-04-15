@@ -46,6 +46,10 @@ inputs:
     description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
+  build-engine:
+    description: The build engine to use for building the image. Either kaniko or buildx
+    required: false
+    default: "kaniko"
 
 outputs:
   adoResult:
@@ -85,4 +89,4 @@ runs:
     - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250407-bcb8c163
       id: build
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }} --build-engine ${{ inputs.build-engine }}

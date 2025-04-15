@@ -45,6 +45,11 @@ on:
         required: false
         type: boolean
         default: false
+      build-engine:
+        description: The build engine to use for building the image. Either kaniko or buildx
+        required: false
+        type: string
+        default: "kaniko"
     outputs:
       images:
         description: JSON list of images built by image-builder
@@ -120,3 +125,4 @@ jobs:
           env-file: ${{ inputs.env-file }}
           config: "./configs/image-builder-client-config.yaml"
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
+          build-engine: ${{ inputs.build-engine }}
