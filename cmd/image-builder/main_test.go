@@ -371,6 +371,92 @@ var _ = Describe("Image Builder", func() {
 		),
 	)
 
+	DescribeTable("Test prepareADOTemplateParameters",
+		func(expectedtOptions options, want pipelines.OCIImageBuilderTemplateParams, wantErr bool) {
+			got, err := prepareADOTemplateParameters(expectedtOptions)
+			if (err != nil) != wantErr {
+				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if err == nil && wantErr {
+				Fail("didn't catch error, but wanted to")
+			}
+
+			if !reflect.DeepEqual(got, want) {
+				Fail(fmt.Sprintf("%v != %v", got, want))
+			}
+		},
+		Entry("Tag with parentheses",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+			},
+			false,
+		),
+		Entry("On demand job type with base commit SHA and base commit ref",
+			options{
+				gitState: GitStateConfig{
+					JobType:       "workflow_dispatch",
+					BaseCommitSHA: "abc123",
+					BaseCommitRef: "main",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "workflow_dispatch",
+				"Name":        "",
+				"PullBaseSHA": "abc123",
+				"BaseRef":     "main",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+			},
+			false,
+		),
+		Entry("Buildx engine",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				buildEngine: "buildx",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"BuildEngine": "buildx",
+			},
+			false,
+		),
+	)
 })
 
 func Test_getTags(t *testing.T) {
@@ -838,74 +924,6 @@ func Test_getDefaultTag(t *testing.T) {
 			} else {
 				g.Expect(err).NotTo(HaveOccurred())
 				g.Expect(got).To(Equal(tt.want))
-			}
-		})
-	}
-}
-
-func Test_prepareADOTemplateParameters(t *testing.T) {
-	tests := []struct {
-		name    string
-		options options
-		want    pipelines.OCIImageBuilderTemplateParams
-		wantErr bool
-	}{
-		{
-			name: "Tag with parentheses",
-			options: options{
-				gitState: GitStateConfig{
-					JobType: "postsubmit",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "postsubmit",
-				"Name":        "",
-				"PullBaseSHA": "",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-		{
-			name: "On demand job type with base commit SHA and base commit ref",
-			options: options{
-				gitState: GitStateConfig{
-					JobType:       "workflow_dispatch",
-					BaseCommitSHA: "abc123",
-					BaseCommitRef: "main",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "workflow_dispatch",
-				"Name":        "",
-				"PullBaseSHA": "abc123",
-				"BaseRef":     "main",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := prepareADOTemplateParameters(tt.options)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -271,6 +271,15 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetUseGoInternalSAPModules()
 	}
 
+	switch options.buildEngine {
+	case "kaniko":
+		templateParameters.SetKanikoBuildEngine()
+	case "buildx":
+		templateParameters.SetBuildxBuildEngine()
+	default:
+		return nil, fmt.Errorf("unknown build engine received, ensure provided value is either 'kaniko' or 'buildx'")
+	}
+
 	err := templateParameters.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("failed validating ADO template parameters, err: %w", err)
