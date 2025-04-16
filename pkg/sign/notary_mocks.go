@@ -8,8 +8,10 @@ import (
 
 // MockImageRepository implements ImageRepositoryInterface
 type MockImageRepository struct {
-	MockParseReference func(image string) (ReferenceInterface, error)
-	MockGetImage       func(ref ReferenceInterface) (ImageInterface, error)
+	MockParseReference  func(image string) (ReferenceInterface, error)
+	MockGetImage        func(ref ReferenceInterface) (ImageInterface, error)
+	MockIsManifestList  func(ref ReferenceInterface) (bool, error)
+	MockGetManifestList func(ref ReferenceInterface) (ManifestListInterface, error)
 }
 
 func (mir *MockImageRepository) ParseReference(image string) (ReferenceInterface, error) {
@@ -24,6 +26,47 @@ func (mir *MockImageRepository) GetImage(ref ReferenceInterface) (ImageInterface
 		return mir.MockGetImage(ref)
 	}
 	return nil, fmt.Errorf("MockGetImage not implemented")
+}
+
+func (mir *MockImageRepository) IsManifestList(ref ReferenceInterface) (bool, error) {
+	if mir.MockIsManifestList != nil {
+		return mir.MockIsManifestList(ref)
+	}
+	return false, fmt.Errorf("MockIsManifestList not implemented")
+}
+
+func (mir *MockImageRepository) GetManifestList(ref ReferenceInterface) (ManifestListInterface, error) {
+	if mir.MockGetManifestList != nil {
+		return mir.MockGetManifestList(ref)
+	}
+	return nil, fmt.Errorf("MockGetManifestList not implemented")
+}
+
+type MockManifestList struct {
+	MockGetManifests func() ([]ImageInterface, error)
+	MockGetDigest    func() (string, error)
+	MockGetSize      func() (int64, error)
+}
+
+func (mml *MockManifestList) GetManifests() ([]ImageInterface, error) {
+	if mml.MockGetManifests != nil {
+		return mml.MockGetManifests()
+	}
+	return nil, fmt.Errorf("MockGetManifests not implemented")
+}
+
+func (mml *MockManifestList) GetDigest() (string, error) {
+	if mml.MockGetDigest != nil {
+		return mml.MockGetDigest()
+	}
+	return "", fmt.Errorf("MockGetDigest not implemented")
+}
+
+func (mml *MockManifestList) GetSize() (int64, error) {
+	if mml.MockGetSize != nil {
+		return mml.MockGetSize()
+	}
+	return 0, fmt.Errorf("MockGetSize not implemented")
 }
 
 // MockPayloadBuilder implements PayloadBuilderInterface
