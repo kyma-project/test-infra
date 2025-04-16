@@ -1,7 +1,6 @@
 module github.com/kyma-project/test-infra
 
 go 1.23.0
-
 toolchain go1.24.1
 
 require (
@@ -15,7 +14,7 @@ require (
 	github.com/cloudevents/sdk-go/v2 v2.16.0
 	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/go-jose/go-jose/v4 v4.0.5
+	github.com/go-jose/go-jose/v4 v4.1.0
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/google/go-containerregistry v0.20.3
 	github.com/google/go-github/v48 v48.2.0
