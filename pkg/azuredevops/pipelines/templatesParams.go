@@ -150,6 +150,15 @@ func (p OCIImageBuilderTemplateParams) SetUseGoInternalSAPModules() {
 	p["UseGoInternalSAPModules"] = "true"
 }
 
+// SetPlatform sets Platform parameter.
+// This parameter is used to set the platform for the image build.
+// It is used to specify the target architecture and OS for the image.
+// For example, "linux/amd64" or "linux/arm64".
+// Multiple platforms can be specified as a comma-separated list.
+func (p OCIImageBuilderTemplateParams) SetPlatforms(platforms string) {
+	p["Platforms"] = platforms
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {

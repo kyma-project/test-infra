@@ -97,6 +97,11 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["UseGoInternalSAPModules"]).To(Equal("true"))
 	})
 
+	It("sets the correct Platform", func() {
+		params.SetPlatforms("linux/amd64")
+		Expect(params["Platforms"]).To(Equal("linux/amd64"))
+	})
+
 	// TODO: Improve assertions with more specific matchers and values.
 	It("validates the params correctly", func() {
 		// Set all required parameters
