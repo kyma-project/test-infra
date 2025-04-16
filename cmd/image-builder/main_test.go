@@ -316,6 +316,20 @@ func TestFlags(t *testing.T) {
 				"--build-arg=BIN2=test2",
 			},
 		},
+		{
+			name: "custom platforms, pass",
+			expectedOpts: options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				platforms:      []string{"linux/amd64"},
+			},
+			args: []string{
+				"--platform=linux/amd64",
+			},
+		},
 	}
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -829,6 +843,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"RepoName":    "",
 				"RepoOwner":   "",
 				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Platforms":   "linux/amd64,linux/arm64",
 			},
 		},
 		{
@@ -854,6 +869,7 @@ func Test_prepareADOTemplateParameters(t *testing.T) {
 				"RepoName":    "",
 				"RepoOwner":   "",
 				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Platforms":   "linux/amd64,linux/arm64",
 			},
 		},
 	}
