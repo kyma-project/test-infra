@@ -108,8 +108,8 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 	})
 
 	It("sets the correct Platform", func() {
-		params.SetPlatform("linux/amd64")
-		Expect(params["Platform"]).To(Equal("linux/amd64"))
+		params.SetPlatforms("linux/amd64")
+		Expect(params["Platforms"]).To(Equal("linux/amd64"))
 	})
 
 	// TODO: Improve assertions with more specific matchers and values.

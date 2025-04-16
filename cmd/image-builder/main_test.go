@@ -129,7 +129,7 @@ var _ = Describe("Image Builder", func() {
 		func(options options, expectedError bool) {
 			err := validateOptions(options)
 			if !expectedError {
-				Expect(err).NotTo(HaveOccured(),fmt.Sprintf("caught error, but didn't want to: %v", err))
+				Expect(err).NotTo(HaveOccured(), fmt.Sprintf("caught error, but didn't want to: %v", err))
 			}
 			if expectedError {
 				Expect(err).To(HaveOccured(), "didn't catch error, but wanted to")
@@ -453,6 +453,20 @@ var _ = Describe("Image Builder", func() {
 				"RepoName":    "",
 				"RepoOwner":   "",
 				"BuildEngine": "buildx",
+			},
+			false,
+		),
+		Entry("custom platforms, pass",
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				platforms:      []string{"linux/amd64"},
+			},
+			[]string{
+				"--platform=linux/amd64",
 			},
 			false,
 		),
