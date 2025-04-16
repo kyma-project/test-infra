@@ -267,16 +267,14 @@ var _ = Describe("Image Builder", func() {
 			o := options{}
 			o.gatherOptions(fs)
 			err := fs.Parse(args)
-			if err != nil && !expectedError {
-				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			if !expectedError {
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
 			}
-			if err == nil && expectedError {
-				Fail("didn't catch error, but wanted to")
+			if expectedError {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
 			}
 
-			if !reflect.DeepEqual(o, expectedOptions) {
-				Fail(fmt.Sprintf("%v != %v", o, expectedOptions))
-			}
+			Expect(o).To(Equal(expectedOptions), "options mismatch")
 		},
 		Entry("unknown flag, fail",
 			[]string{
@@ -369,21 +367,34 @@ var _ = Describe("Image Builder", func() {
 			},
 			false,
 		),
+		Entry("custom platforms, pass",
+			[]string{
+				"--platform=linux/amd64",
+			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
+				platforms:      []string{"linux/amd64"},
+			},
+			false,
+		),
 	)
 
 	DescribeTable("Test prepareADOTemplateParameters",
 		func(expectedtOptions options, want pipelines.OCIImageBuilderTemplateParams, wantErr bool) {
 			got, err := prepareADOTemplateParameters(expectedtOptions)
-			if (err != nil) != wantErr {
-				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			if !wantErr {
+				Expect(err).NotTo(HaveOccurred(), "caught error, but didn't want to")
 			}
-			if err == nil && wantErr {
-				Fail("didn't catch error, but wanted to")
+			if wantErr {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
 			}
 
-			if !reflect.DeepEqual(got, want) {
-				Fail(fmt.Sprintf("%v != %v", got, want))
-			}
+			Expect(got).To(Equal(want), "template parameters mismatch")
 		},
 		Entry("Tag with parentheses",
 			options{
@@ -406,6 +417,7 @@ var _ = Describe("Image Builder", func() {
 				"RepoOwner":   "",
 				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
 				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
 		),
@@ -433,6 +445,7 @@ var _ = Describe("Image Builder", func() {
 				"RepoOwner":   "",
 				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
 				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
 		),
@@ -453,20 +466,7 @@ var _ = Describe("Image Builder", func() {
 				"RepoName":    "",
 				"RepoOwner":   "",
 				"BuildEngine": "buildx",
-			},
-			false,
-		),
-		Entry("custom platforms, pass",
-			options{
-				context:        ".",
-				configPath:     "/config/image-builder-config.yaml",
-				dockerfile:     "dockerfile",
-				logDir:         "/logs/artifacts",
-				tagsOutputFile: "/generated-tags.json",
-				platforms:      []string{"linux/amd64"},
-			},
-			[]string{
-				"--platform=linux/amd64",
+				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
 		),
