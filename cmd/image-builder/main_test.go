@@ -128,11 +128,11 @@ var _ = Describe("Image Builder", func() {
 	DescribeTable("Test validate options",
 		func(options options, expectedError bool) {
 			err := validateOptions(options)
-			if err != nil && !expectedError {
-				Fail(fmt.Sprintf("caught error, but didn't want to: %v", err))
+			if !expectedError {
+				Expect(err).NotTo(HaveOccured(),fmt.Sprintf("caught error, but didn't want to: %v", err))
 			}
-			if err == nil && expectedError {
-				Fail("didn't catch error, but wanted to")
+			if expectedError {
+				Expect(err).To(HaveOccured(), "didn't catch error, but wanted to")
 			}
 		},
 		Entry(
