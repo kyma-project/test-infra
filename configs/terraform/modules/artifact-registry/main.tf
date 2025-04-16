@@ -26,6 +26,31 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     immutable_tags = var.immutable_tags
   }
 
+  dynamic "remote_repository_config" {
+    for_each = var.remote_repository_config != null ? [var.remote_repository_config] : []
+    content {
+      description = remote_repository_config.value.description
+      dynamic "docker_repository" {
+        for_each = remote_repository_config.value.docker_repository != null ? [remote_repository_config.value.docker_repository] : []
+        content {
+          public_repository = docker_repository.value.public_repository
+        }
+      }
+      dynamic "upstream_credentials" {
+        for_each = remote_repository_config.value.upstream_credentials != null ? [remote_repository_config.value.upstream_credentials] : []
+        content {
+          dynamic "username_password_credentials" {
+            for_each = upstream_credentials.value.username_password_credentials != null ? [upstream_credentials.value.username_password_credentials] : []
+            content {
+              username = username_password_credentials.value.username
+              password_secret_version = username_password_credentials.value.password_secret_version
+            }
+          }
+        }
+      }
+    }
+  }
+
   dynamic "cleanup_policies" {
     for_each = coalesce(var.cleanup_policies, [])
     iterator = policy

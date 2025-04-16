@@ -88,12 +88,19 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
 
-resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  repository_id = var.dockerhub_mirror.repository_id
-  description   = var.dockerhub_mirror.description
-  format        = "DOCKER"
-  location      = var.dockerhub_mirror.location
-  mode          = "REMOTE_REPOSITORY"
+module "dockerhub_mirror" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_name        = var.dockerhub_mirror.repository_id
+  description            = var.dockerhub_mirror.description
+  location               = var.dockerhub_mirror.location
+  format                 = "DOCKER"
+  mode                   = "REMOTE_REPOSITORY"
+  cleanup_policy_dry_run = false
 
   remote_repository_config {
     description = "Mirror of Docker Hub"
@@ -113,47 +120,50 @@ resource "google_artifact_registry_repository" "dockerhub_mirror" {
     }
   }
 
-  cleanup_policy_dry_run = false
-
-  cleanup_policies {
+  # Cleanup policies
+  cleanup_policies = [{
     id     = "cleanup-old-images"
     action = "DELETE"
-
-    condition {
+    condition = {
       older_than = var.dockerhub_mirror.cleanup_age
       tag_state  = "ANY"
     }
-  }
+  }]
 }
 
-resource "google_artifact_registry_repository" "docker_cache" {
-  provider               = google.kyma_project
-  location               = var.docker_cache_repository.location
-  repository_id          = var.docker_cache_repository.name
+module "docker_cache" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_name        = var.docker_cache_repository.name
   description            = var.docker_cache_repository.description
+  location               = var.docker_cache_repository.location
   format                 = var.docker_cache_repository.format
+  mode                   = "STANDARD_REPOSITORY"
+  immutable_tags         = var.docker_cache_repository.immutable_tags
   cleanup_policy_dry_run = var.docker_cache_repository.cleanup_policy_dry_run
 
-  docker_config {
-    immutable_tags = var.docker_cache_repository.immutable_tags
-  }
-
-  cleanup_policies {
-    id     = "delete-untagged"
-    action = "DELETE"
-    condition {
-      tag_state = "UNTAGGED"
+  # Cleanup policies
+  cleanup_policies = [
+    {
+      id     = "delete-untagged"
+      action = "DELETE"
+      condition = {
+        tag_state = "UNTAGGED"
+      }
+    },
+    {
+      id     = "delete-old-cache"
+      action = "DELETE"
+      condition = {
+        tag_state  = "ANY"
+        older_than = var.docker_cache_repository.cache_images_max_age
+      }
     }
-  }
-
-  cleanup_policies {
-    id     = "delete-old-cache"
-    action = "DELETE"
-    condition {
-      tag_state  = "ANY"
-      older_than = var.docker_cache_repository.cache_images_max_age
-    }
-  }
+  ]
 }
 
 resource "google_service_account" "kyma_project_image_builder" {
@@ -165,8 +175,8 @@ resource "google_service_account" "kyma_project_image_builder" {
 resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
   provider   = google.kyma_project
   project    = var.kyma_project_gcp_project_id
-  location   = google_artifact_registry_repository.dockerhub_mirror.location
-  repository = google_artifact_registry_repository.dockerhub_mirror.repository_id
+  location   = module.dockerhub_mirror.location
+  repository = module.dockerhub_mirror.repository_id
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.kyma_project_image_builder.email}"
 }
