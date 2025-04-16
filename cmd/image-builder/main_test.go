@@ -129,10 +129,10 @@ var _ = Describe("Image Builder", func() {
 		func(options options, expectedError bool) {
 			err := validateOptions(options)
 			if !expectedError {
-				Expect(err).NotTo(HaveOccured(), fmt.Sprintf("caught error, but didn't want to: %v", err))
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
 			}
 			if expectedError {
-				Expect(err).To(HaveOccured(), "didn't catch error, but wanted to")
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
 			}
 		},
 		Entry(
