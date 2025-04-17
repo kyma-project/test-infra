@@ -14,6 +14,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   repository_id = lower(var.repository_name)
   description            = var.description
   format                 = var.format
+  mode                   = var.mode
   cleanup_policy_dry_run = var.cleanup_policy_dry_run
 
   labels = {

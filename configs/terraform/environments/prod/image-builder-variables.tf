@@ -97,19 +97,3 @@ variable "docker_cache_repository" {
     cache_images_max_age = "604800s" # 604800s = 7 days
   }
 }
-
-variable "remote_repository_config" {
-  type = object({
-    description = optional(string)
-    docker_repository = optional(object({
-      public_repository = string
-    }))
-    upstream_credentials = optional(object({
-      username_password_credentials = optional(object({
-        username                = string
-        password_secret_version = string
-      }))
-    }))
-  })
-  default = null
-}
