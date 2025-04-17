@@ -25,7 +25,6 @@ variable "dockerhub_credentials" {
 data "google_secret_manager_secret_version" "dockerhub_oat_secret" {
   project = var.gcp_project_id
   secret  = var.dockerhub_credentials.oat_secret_name
-  version = "latest"
 }
 
 # GitHub resources
