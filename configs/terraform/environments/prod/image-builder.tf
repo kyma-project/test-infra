@@ -88,6 +88,7 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
 
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
 module "dockerhub_mirror" {
   source = "../../modules/artifact-registry"
 
@@ -109,11 +110,8 @@ module "dockerhub_mirror" {
     }
     upstream_credentials = {
       username_password_credentials = {
-        # Reference to the Docker Hub username
-        username                  = var.dockerhub_username
-
-        # Reference to the PAT in Secret Manager (latest version)
-        password_secret_version   = "projects/${var.gcp_project_id}/secrets/${var.dockerhub_oat_secret_name}/versions/latest"
+        username                = var.dockerhub_credentials.username
+        password_secret_version = data.google_secret_manager_secret_version.dockerhub_oat_secret.name
       }
     }
   }
@@ -129,6 +127,7 @@ module "dockerhub_mirror" {
   }]
 }
 
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
 module "docker_cache" {
   source = "../../modules/artifact-registry"
 

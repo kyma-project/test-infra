@@ -123,5 +123,10 @@ variable "remote_repository_config" {
       }))
     }))
   })
-  default = null
+  default = {
+    description = "Mirror of Docker Hub"
+    docker_repository = {
+      public_repository = "DOCKER_HUB"
+    }
+  }
 }
