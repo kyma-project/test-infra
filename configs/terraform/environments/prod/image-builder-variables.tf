@@ -61,7 +61,7 @@ variable "dockerhub_mirror" {
     location      = string
     cleanup_age   = string
     mode          = string
-    mode                   = "REMOTE_REPOSITORY"
+    mode          = string
   })
 
   default = {
@@ -69,6 +69,7 @@ variable "dockerhub_mirror" {
     description   = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
     location      = "europe"
     cleanup_age   = "63072000s" # 63072000s = 730 days = 2 years
+    mode          = "REMOTE_REPOSITORY"
   }
 }
 
