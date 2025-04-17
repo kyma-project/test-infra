@@ -42,8 +42,8 @@ resource "google_artifact_registry_repository" "artifact_registry" {
           dynamic "username_password_credentials" {
             for_each = upstream_credentials.value.username_password_credentials != null ? [upstream_credentials.value.username_password_credentials] : []
             content {
-              username = username_password_credentials.value.username
-              password_secret_version = username_password_credentials.value.password_secret_version
+              username                 = username_password_credentials.value.username
+              password_secret_version  = username_password_credentials.value.password_secret_version
             }
           }
         }
