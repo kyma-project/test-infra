@@ -61,7 +61,6 @@ variable "dockerhub_mirror" {
     location      = string
     cleanup_age   = string
     mode          = string
-    mode          = string
   })
 
   default = {
