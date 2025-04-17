@@ -86,8 +86,8 @@ variable "mode" {
   default     = "STANDARD_REPOSITORY"
 
   validation {
-    condition = contains(["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY"], var.mode)
-    error_message = "Mode must be either 'STANDARD_REPOSITORY' or 'VIRTUAL_REPOSITORY'."
+    condition = contains(["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY", "REMOTE_REPOSITORY"], var.mode)
+    error_message = "Mode must be either 'STANDARD_REPOSITORY', 'VIRTUAL_REPOSITORY', or 'REMOTE_REPOSITORY'."
   }
 }
 
