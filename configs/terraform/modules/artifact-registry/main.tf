@@ -28,6 +28,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
 
   dynamic "remote_repository_config" {
     for_each = var.remote_repository_config != null ? [var.remote_repository_config] : []
+    for_each = var.mode == "REMOTE_REPOSITORY" && var.remote_repository_config != null ? [var.remote_repository_config] : []
     content {
       description = remote_repository_config.value.description
       dynamic "docker_repository" {
