@@ -99,7 +99,7 @@ module "dockerhub_mirror" {
   description            = var.dockerhub_mirror.description
   location               = var.dockerhub_mirror.location
   format                 = "DOCKER"
-  mode                   = "REMOTE_REPOSITORY"
+  mode                   = var.dockerhub_mirror.mode
   cleanup_policy_dry_run = false
 
   remote_repository_config = {
@@ -140,7 +140,7 @@ module "docker_cache" {
   description            = var.docker_cache_repository.description
   location               = var.docker_cache_repository.location
   format                 = var.docker_cache_repository.format
-  mode                   = "STANDARD_REPOSITORY"
+  mode                   = var.docker_cache_repository.mode
   immutable_tags         = var.docker_cache_repository.immutable_tags
   cleanup_policy_dry_run = var.docker_cache_repository.cleanup_policy_dry_run
 

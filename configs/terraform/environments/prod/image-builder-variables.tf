@@ -60,6 +60,8 @@ variable "dockerhub_mirror" {
     description   = string
     location      = string
     cleanup_age   = string
+    mode          = string
+    mode                   = "REMOTE_REPOSITORY"
   })
 
   default = {
