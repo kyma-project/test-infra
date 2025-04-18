@@ -24,6 +24,18 @@ type ImageRepositoryInterface interface {
 	ParseReference(image string) (ReferenceInterface, error)
 	// GetImage retrieves an image given its reference.
 	GetImage(ref ReferenceInterface) (ImageInterface, error)
+	// IsManifestList checks if the reference is a manifest list.
+	IsManifestList(ref ReferenceInterface) (bool, error)
+	// GetManifestList retrieves the manifest list for the given reference.
+	GetManifestList(ref ReferenceInterface) (ManifestListInterface, error)
+}
+
+// ManifestListInterface defines methods for working with manifest lists.
+type ManifestListInterface interface {
+	// GetDigest retrieves the digest of the manifest list.
+	GetDigest() (string, error)
+	// GetSize retrieves the size of the manifest list.
+	GetSize() (int64, error)
 }
 
 // ReferenceInterface abstracts the functionality of name.Reference.
@@ -81,6 +93,44 @@ func (is *ImageService) GetImage(ref ReferenceInterface) (ImageInterface, error)
 	return &ImageWrapper{img: img}, nil
 }
 
+// IsManifestList checks if the reference points to a manifest list.
+func (is *ImageService) IsManifestList(ref ReferenceInterface) (bool, error) {
+	rw, ok := ref.(*ReferenceWrapper)
+	if !ok {
+		return false, fmt.Errorf("unexpected reference type")
+	}
+
+	desc, err := remote.Get(rw.Ref)
+	if err != nil {
+		return false, fmt.Errorf("failed to fetch descriptor: %w", err)
+	}
+
+	return desc.MediaType.IsIndex(), nil
+}
+
+// GetManifestList retrieves the manifest list for the given reference.
+func (is *ImageService) GetManifestList(ref ReferenceInterface) (ManifestListInterface, error) {
+	rw, ok := ref.(*ReferenceWrapper)
+	if !ok {
+		return nil, fmt.Errorf("unexpected reference type")
+	}
+
+	isManifestList, err := is.IsManifestList(ref)
+	if err != nil {
+		return nil, err
+	}
+	if !isManifestList {
+		return nil, fmt.Errorf("reference does not point to a manifest list")
+	}
+
+	idx, err := remote.Index(rw.Ref)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch manifest list: %w", err)
+	}
+
+	return &ManifestListWrapper{idx: idx}, nil
+}
+
 // ReferenceWrapper wraps a name.Reference to implement the ReferenceInterface.
 type ReferenceWrapper struct {
 	Ref name.Reference
@@ -123,6 +173,11 @@ type ImageWrapper struct {
 	img v1.Image
 }
 
+// ManifestListWrapper wraps a v1.ImageIndex to implement the ManifestListInterface.
+type ManifestListWrapper struct {
+	idx v1.ImageIndex
+}
+
 // GetDigest returns the digest of the image manifest.
 func (iw *ImageWrapper) GetDigest() (string, error) {
 	digest, err := iw.img.Digest()
@@ -144,6 +199,24 @@ func (iw *ImageWrapper) Manifest() (ManifestInterface, error) {
 		return nil, err
 	}
 	return &ManifestWrapper{manifest: manifest}, nil
+}
+
+// GetDigest retrieves the digest of the manifest list.
+func (mlw *ManifestListWrapper) GetDigest() (string, error) {
+	digest, err := mlw.idx.Digest()
+	if err != nil {
+		return "", fmt.Errorf("failed to get digest: %w", err)
+	}
+	return digest.Hex, nil
+}
+
+// GetSize retrieves the size of the manifest list.
+func (mlw *ManifestListWrapper) GetSize() (int64, error) {
+	rawManifest, err := mlw.idx.RawManifest()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get raw manifest: %w", err)
+	}
+	return int64(len(rawManifest)), nil
 }
 
 // ManifestWrapper wraps a v1.Manifest to implement the ManifestInterface.
@@ -189,29 +262,51 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 			return SigningPayload{}, fmt.Errorf("failed to get tag from reference: %w", err)
 		}
 
-		// Fetch the image.
-		img, err := pb.ImageService.GetImage(ref)
+		isManifestList, err := pb.ImageService.IsManifestList(ref)
 		if err != nil {
-			return SigningPayload{}, fmt.Errorf("failed to fetch image: %w", err)
+			return SigningPayload{}, fmt.Errorf("failed to check if reference is a manifest list: %w", err)
 		}
 
-		// Retrieve the image manifest digest.
-		imageDigest, err := img.GetDigest()
-		if err != nil {
-			return SigningPayload{}, fmt.Errorf("failed to get image digest: %w", err)
-		}
+		var digest string
+		var size int64
 
-		// Retrieve the image size.
-		imageSize, err := img.GetSize()
-		if err != nil {
-			return SigningPayload{}, fmt.Errorf("failed to get image size: %w", err)
+		if isManifestList {
+			manifestList, err := pb.ImageService.GetManifestList(ref)
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to fetch manifest list: %w", err)
+			}
+
+			digest, err = manifestList.GetDigest()
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to get manifest list digest: %w", err)
+			}
+
+			size, err = manifestList.GetSize()
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to get manifest list size: %w", err)
+			}
+		} else {
+			img, err := pb.ImageService.GetImage(ref)
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to fetch image: %w", err)
+			}
+
+			digest, err = img.GetDigest()
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to get image digest: %w", err)
+			}
+
+			size, err = img.GetSize()
+			if err != nil {
+				return SigningPayload{}, fmt.Errorf("failed to get image size: %w", err)
+			}
 		}
 
 		// Build the target information.
 		target := Target{
 			Name:     tag,
-			ByteSize: imageSize,
-			Digest:   imageDigest,
+			ByteSize: size,
+			Digest:   digest,
 		}
 
 		// Build the GUN (Global Unique Name) targets.
@@ -219,11 +314,14 @@ func (pb *PayloadBuilder) BuildPayload(images []string) (SigningPayload, error) 
 			GUN:     base,
 			Targets: []Target{target},
 		}
+
 		gunTargets = append(gunTargets, gunTarget)
 	}
+
 	payload := SigningPayload{
 		GunTargets: gunTargets,
 	}
+
 	return payload, nil
 }
 

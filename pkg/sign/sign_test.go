@@ -106,3 +106,49 @@ func TestNotaryConfig_NewSigner(t *testing.T) {
 		t.Errorf("expected a valid signer, but got nil")
 	}
 }
+
+func TestPayloadBuilder_BuildPayload_ManifestList(t *testing.T) {
+	mockRef := &MockReference{
+		MockGetRepositoryName: func() string { return "docker.io/library/multiarch" },
+		MockGetTag:            func() (string, error) { return "latest", nil },
+	}
+
+	mockManifestList := &MockManifestList{
+		MockGetDigest: func() (string, error) { return "manifest-list-digest", nil },
+		MockGetSize:   func() (int64, error) { return 4096, nil },
+	}
+
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (ReferenceInterface, error) {
+			return mockRef, nil
+		},
+		MockIsManifestList: func(ref ReferenceInterface) (bool, error) {
+			return true, nil
+		},
+		MockGetManifestList: func(ref ReferenceInterface) (ManifestListInterface, error) {
+			return mockManifestList, nil
+		},
+	}
+
+	payloadBuilder := PayloadBuilder{
+		ImageService: mockImageRepository,
+	}
+
+	payload, err := payloadBuilder.BuildPayload([]string{"docker.io/library/multiarch:latest"})
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if len(payload.GunTargets) != 1 {
+		t.Errorf("Expected 1 GUN target, got %d", len(payload.GunTargets))
+	}
+
+	target := payload.GunTargets[0].Targets[0]
+	if target.Digest != "manifest-list-digest" {
+		t.Errorf("Expected digest 'manifest-list-digest', got '%s'", target.Digest)
+	}
+
+	if target.ByteSize != 4096 {
+		t.Errorf("Expected size 4096, got %d", target.ByteSize)
+	}
+}
