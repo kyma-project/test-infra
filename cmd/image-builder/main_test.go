@@ -18,6 +18,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"go.uber.org/zap"
 
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -123,142 +124,185 @@ func Test_parseVariable(t *testing.T) {
 	}
 }
 
-func Test_validateOptions(t *testing.T) {
-	tc := []struct {
-		name      string
-		expectErr bool
-		opts      options
-	}{
-		{
-			name:      "parsed config",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-			},
+var _ = Describe("Image Builder", func() {
+	DescribeTable("Test validate options",
+		func(options options, expectedError bool) {
+			err := validateOptions(options)
+			if !expectedError {
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if expectedError {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
 		},
-		{
-			name:      "context missing",
-			expectErr: true,
-			opts: options{
-				name:       "test-image",
-				dockerfile: "dockerfile",
+		Entry(
+			"parsed config",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "name missing",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				dockerfile: "dockerfile",
+			false,
+		),
+		Entry(
+			"context missing",
+			options{
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "dockerfile missing",
-			expectErr: true,
-			opts: options{
-				context: "directory/",
-				name:    "test-image",
+			true,
+		),
+		Entry(
+			"name missing",
+			options{
+				context:     "directory/",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "Empty configPath",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
+			true,
+		),
+		Entry(
+			"dockerfile missing",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "signOnly without imagesToSign",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"Empty configPath",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
+			},
+			true,
+		),
+		Entry(
+			"signOnly without imagesToSign",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     true,
 				imagesToSign: []string{},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "imagesToSign without signOnly",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"imagesToSign without signOnly",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     false,
 				imagesToSign: []string{"image1"},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "envFile with buildInADO",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				envFile:    "envfile",
-				buildInADO: true,
+			true,
+		),
+		Entry(
+			"envFile with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				envFile:     "envfile",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "variant with buildInADO",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				variant:    "variant",
-				buildInADO: true,
+			false,
+		),
+		Entry(
+			"variant with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			err := validateOptions(c.opts)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-		})
-	}
-}
+			true,
+		),
+		Entry(
+			"incorrect build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "incorrect-build-engine",
+			},
+			true,
+		),
+		Entry(
+			"correct build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "buildx",
+			},
+			false,
+		),
+	)
 
-func TestFlags(t *testing.T) {
-	testcases := []struct {
-		name         string
-		expectedOpts options
-		expectedErr  bool
-		args         []string
-	}{
-		{
-			name: "unknown flag, fail",
-			expectedOpts: options{
+	DescribeTable("Test Flags",
+		func(args []string, expectedOptions options, expectedError bool) {
+			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+			o := options{}
+			o.gatherOptions(fs)
+			err := fs.Parse(args)
+			if !expectedError {
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if expectedError {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
+
+			Expect(o).To(Equal(expectedOptions), "options mismatch")
+		},
+		Entry("unknown flag, fail",
+			[]string{
+				"--unknown-flag=asdasd",
+			},
+			options{
 				context:        ".",
 				configPath:     "/config/image-builder-config.yaml",
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			expectedErr: true,
-			args: []string{
-				"--unknown-flag=asdasd",
+			true,
+		),
+		Entry("parsed config, pass",
+			[]string{
+				"--config=config.yaml",
+				"--dockerfile=dockerfile",
+				"--repo=kyma-project/test-infra",
+				"--name=test-image",
+				"--tag=latest",
+				"--tag=cookie=cookie",
+				"--context=prow/build",
+				"--log-dir=prow/logs",
+				"--silent",
 			},
-		},
-		{
-			name:        "parsed config, pass",
-			expectedErr: false,
-			expectedOpts: options{
+			options{
 				name: "test-image",
 				tags: []tags.Tag{
 					{Name: "latest", Value: "latest"},
@@ -271,36 +315,31 @@ func TestFlags(t *testing.T) {
 				orgRepo:        "kyma-project/test-infra",
 				silent:         true,
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--config=config.yaml",
-				"--dockerfile=dockerfile",
-				"--repo=kyma-project/test-infra",
-				"--name=test-image",
-				"--tag=latest",
-				"--tag=cookie=cookie",
-				"--context=prow/build",
-				"--log-dir=prow/logs",
-				"--silent",
+			false,
+		),
+		Entry("export tag, pass",
+			[]string{
+				"--export-tags",
 			},
-		},
-		{
-			name: "export tag, pass",
-			expectedOpts: options{
+			options{
 				context:        ".",
 				configPath:     "/config/image-builder-config.yaml",
 				dockerfile:     "dockerfile",
 				logDir:         "/logs/artifacts",
 				exportTags:     true,
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--export-tags",
+			false,
+		),
+		Entry("build args, pass",
+			[]string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
 			},
-		},
-		{
-			name: "build args, pass",
-			expectedOpts: options{
+			options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
 				dockerfile: "dockerfile",
@@ -310,27 +349,129 @@ func TestFlags(t *testing.T) {
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
 				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--build-arg=BIN=test",
-				"--build-arg=BIN2=test2",
+			false,
+		),
+		Entry("build engine, pass",
+			[]string{
+				"--build-engine=buildx",
 			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "buildx",
+			},
+			false,
+		),
+		Entry("custom platforms, pass",
+			[]string{
+				"--platform=linux/amd64",
+			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
+				platforms:      []string{"linux/amd64"},
+			},
+			false,
+		),
+	)
+
+	DescribeTable("Test prepareADOTemplateParameters",
+		func(expectedtOptions options, want pipelines.OCIImageBuilderTemplateParams, wantErr bool) {
+			got, err := prepareADOTemplateParameters(expectedtOptions)
+			if !wantErr {
+				Expect(err).NotTo(HaveOccurred(), "caught error, but didn't want to")
+			}
+			if wantErr {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
+
+			Expect(got).To(Equal(want), "template parameters mismatch")
 		},
-	}
-	for _, tc := range testcases {
-		t.Run(tc.name, func(t *testing.T) {
-			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-			o := options{}
-			o.gatherOptions(fs)
-			if err := fs.Parse(tc.args); err != nil && !tc.expectedErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if !reflect.DeepEqual(o, tc.expectedOpts) {
-				t.Errorf("%v != %v", o, tc.expectedOpts)
-			}
-		})
-	}
-}
+		Entry("Tag with parentheses",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+		Entry("On demand job type with base commit SHA and base commit ref",
+			options{
+				gitState: GitStateConfig{
+					JobType:       "workflow_dispatch",
+					BaseCommitSHA: "abc123",
+					BaseCommitRef: "main",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "workflow_dispatch",
+				"Name":        "",
+				"PullBaseSHA": "abc123",
+				"BaseRef":     "main",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+		Entry("Buildx engine",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				buildEngine: "buildx",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"BuildEngine": "buildx",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+	)
+})
 
 func Test_getTags(t *testing.T) {
 	tc := []struct {
@@ -797,74 +938,6 @@ func Test_getDefaultTag(t *testing.T) {
 			} else {
 				g.Expect(err).NotTo(HaveOccurred())
 				g.Expect(got).To(Equal(tt.want))
-			}
-		})
-	}
-}
-
-func Test_prepareADOTemplateParameters(t *testing.T) {
-	tests := []struct {
-		name    string
-		options options
-		want    pipelines.OCIImageBuilderTemplateParams
-		wantErr bool
-	}{
-		{
-			name: "Tag with parentheses",
-			options: options{
-				gitState: GitStateConfig{
-					JobType: "postsubmit",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "postsubmit",
-				"Name":        "",
-				"PullBaseSHA": "",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-		{
-			name: "On demand job type with base commit SHA and base commit ref",
-			options: options{
-				gitState: GitStateConfig{
-					JobType:       "workflow_dispatch",
-					BaseCommitSHA: "abc123",
-					BaseCommitRef: "main",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "workflow_dispatch",
-				"Name":        "",
-				"PullBaseSHA": "abc123",
-				"BaseRef":     "main",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := prepareADOTemplateParameters(tt.options)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
