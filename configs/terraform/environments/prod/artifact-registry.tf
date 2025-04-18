@@ -41,6 +41,10 @@ resource "google_artifact_registry_repository" "prod_docker_repository" {
       tag_state = "UNTAGGED"
     }
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # TODO (dekiel): move to the module modules/artifact-registry

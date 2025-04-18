@@ -10,6 +10,24 @@ variable "signify_prod_secret_name" {
   default     = "signify-prod-secret"
 }
 
+variable "dockerhub_credentials" {
+  type = object({
+    oat_secret_name = string
+    username        = string
+  })
+
+  default = {
+    oat_secret_name = "docker_sap_org_service_auth_token"
+    username        = "sapcom"
+  }
+}
+
+data "google_secret_manager_secret_version" "dockerhub_oat_secret" {
+  project = var.gcp_project_id
+  secret  = var.dockerhub_credentials.oat_secret_name
+  version = "latest"
+}
+
 # GitHub resources
 
 variable "image_builder_reusable_workflow_ref" {
@@ -48,6 +66,7 @@ variable "dockerhub_mirror" {
     description   = string
     location      = string
     cleanup_age   = string
+    mode          = string
   })
 
   default = {
@@ -55,6 +74,7 @@ variable "dockerhub_mirror" {
     description   = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
     location      = "europe"
     cleanup_age   = "63072000s" # 63072000s = 730 days = 2 years
+    mode          = "REMOTE_REPOSITORY"
   }
 }
 
