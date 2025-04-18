@@ -43,16 +43,8 @@ func (mir *MockImageRepository) GetManifestList(ref ReferenceInterface) (Manifes
 }
 
 type MockManifestList struct {
-	MockGetManifests func() ([]ImageInterface, error)
-	MockGetDigest    func() (string, error)
-	MockGetSize      func() (int64, error)
-}
-
-func (mml *MockManifestList) GetManifests() ([]ImageInterface, error) {
-	if mml.MockGetManifests != nil {
-		return mml.MockGetManifests()
-	}
-	return nil, fmt.Errorf("MockGetManifests not implemented")
+	MockGetDigest func() (string, error)
+	MockGetSize   func() (int64, error)
 }
 
 func (mml *MockManifestList) GetDigest() (string, error) {

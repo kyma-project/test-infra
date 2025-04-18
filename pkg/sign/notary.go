@@ -32,8 +32,6 @@ type ImageRepositoryInterface interface {
 
 // ManifestListInterface defines methods for working with manifest lists.
 type ManifestListInterface interface {
-	// GetManifests retrieves the list of images in the manifest list.
-	GetManifests() ([]ImageInterface, error)
 	// GetDigest retrieves the digest of the manifest list.
 	GetDigest() (string, error)
 	// GetSize retrieves the size of the manifest list.
@@ -202,25 +200,6 @@ func (iw *ImageWrapper) Manifest() (ManifestInterface, error) {
 		return nil, err
 	}
 	return &ManifestWrapper{manifest: manifest}, nil
-}
-
-// GetManifests retrieves the list of images in the manifest list.
-func (mlw *ManifestListWrapper) GetManifests() ([]ImageInterface, error) {
-	idxManifest, err := mlw.idx.IndexManifest()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get index manifest: %w", err)
-	}
-
-	var images []ImageInterface
-	for _, manifest := range idxManifest.Manifests {
-		img, err := mlw.idx.Image(manifest.Digest)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get image for manifest: %w", err)
-		}
-		images = append(images, &ImageWrapper{img: img})
-	}
-
-	return images, nil
 }
 
 // GetDigest retrieves the digest of the manifest list.
