@@ -97,6 +97,16 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["UseGoInternalSAPModules"]).To(Equal("true"))
 	})
 
+	It("sets the correctly BuildEngine to kaniko", func() {
+		params.SetKanikoBuildEngine()
+		Expect(params["BuildEngine"]).To(Equal("kaniko"))
+	})
+
+	It("sets the correctly BuildEngine to buildx", func() {
+		params.SetBuildxBuildEngine()
+		Expect(params["BuildEngine"]).To(Equal("buildx"))
+	})
+
 	It("sets the correct Platform", func() {
 		params.SetPlatforms("linux/amd64")
 		Expect(params["Platforms"]).To(Equal("linux/amd64"))
@@ -113,6 +123,7 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		params.SetImageName("my-image")
 		params.SetDockerfilePath("/path/to/dockerfile")
 		params.SetBuildContext("/path/to/context")
+		params.SetKanikoBuildEngine()
 
 		err := params.Validate()
 		Expect(err).To(BeNil())
