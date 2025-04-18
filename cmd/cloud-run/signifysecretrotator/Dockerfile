@@ -25,6 +25,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Install runtime dependencies
 RUN apk update && \
-    apk add --no-cache ca-certificates
+    apk add --no-cache ca-certificates && \
+    apk del sqlite3
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]
