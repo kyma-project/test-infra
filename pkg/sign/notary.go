@@ -105,8 +105,7 @@ func (is *ImageService) IsManifestList(ref ReferenceInterface) (bool, error) {
 		return false, fmt.Errorf("failed to fetch descriptor: %w", err)
 	}
 
-	return desc.MediaType == "application/vnd.docker.distribution.manifest.list.v2+json" ||
-		desc.MediaType == "application/vnd.oci.image.index.v1+json", nil
+	return desc.MediaType.IsIndex(), nil
 }
 
 // GetManifestList retrieves the manifest list for the given reference.
