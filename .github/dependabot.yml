@@ -68,6 +68,7 @@ updates:
     commit-message:
       prefix: "ginkgo"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/move-gcs-bucket"
     labels:
@@ -80,6 +81,7 @@ updates:
     commit-message:
       prefix: "move-gcs-bucket"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/slack-message-sender"
     labels:
@@ -92,6 +94,7 @@ updates:
     commit-message:
       prefix: "slack-msg-sender"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/signifysecretrotator"
     labels:
@@ -104,6 +107,7 @@ updates:
     commit-message:
       prefix: "signifysecretrotator"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/rotate-service-account"
     labels:
@@ -116,6 +120,7 @@ updates:
     commit-message:
       prefix: "docker-rotate-sa"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/service-account-keys-cleaner"
     labels:
@@ -128,6 +133,7 @@ updates:
     commit-message:
       prefix: "docker-glean-sa"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/image-detector"
     labels:
@@ -140,6 +146,7 @@ updates:
     commit-message:
       prefix: "image-detector"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/cmd/image-builder/images/kaniko"
     labels:
@@ -152,6 +159,7 @@ updates:
     commit-message:
       prefix: "image-builder"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/unified-agent/nodejs"
     labels:
@@ -164,6 +172,7 @@ updates:
     commit-message:
       prefix: "unified-agent-nodejs"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/unified-agent/go"
     labels:
@@ -176,6 +185,7 @@ updates:
     commit-message:
       prefix: "unified-agent-go"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/unified-agent"
     labels:
@@ -188,6 +198,7 @@ updates:
     commit-message:
       prefix: "unified-agent"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/e2e-gcloud"
     labels:
@@ -200,6 +211,7 @@ updates:
     commit-message:
       prefix: "e2e-gcloud"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/alpine/git/gke-aws-auth"
     labels:
@@ -212,6 +224,7 @@ updates:
     commit-message:
       prefix: "alpine-git-gke-aws-auth"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/alpine/git"
     labels:
@@ -224,6 +237,7 @@ updates:
     commit-message:
       prefix: "alpine-git"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/alpine"
     labels:
@@ -236,6 +250,7 @@ updates:
     commit-message:
       prefix: "alpine"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/buildpack/go"
     labels:
@@ -248,6 +263,7 @@ updates:
     commit-message:
       prefix: "buildpack-go"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/images/buildpack"
     labels:
@@ -260,6 +276,7 @@ updates:
     commit-message:
       prefix: "buildpack"
       include: "scope"
+    versioning-strategy: "increase"
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:
