@@ -24,7 +24,7 @@ COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Install runtime dependencies
-RUN apk add --no-cache ca-certificates && \
-    apk del sqlite
+RUN apk update && \
+    apk add --no-cache ca-certificates
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]
