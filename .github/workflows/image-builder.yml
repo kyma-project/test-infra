@@ -77,7 +77,7 @@ jobs:
       result: ${{ steps.build.outputs.adoResult }}
     steps:
       - name: Verify caller workflow_ref
-        run: | 
+        run: |
           echo "Caller workflow_ref: ${{ github.workflow_ref }}"
         continue-on-error: true
 
@@ -87,7 +87,7 @@ jobs:
         run: |
           echo "Using image-builder workflow outside of kyma-project organisation is not supported."
           exit 1
-      
+
       - name: Checkout test-infra repository
         uses: actions/checkout@v4
         with:
@@ -96,27 +96,27 @@ jobs:
 
       - name: Install Node.js and needed dependencies
         uses: ./.github/actions/expose-jwt-action/install
-      
+
       - name: Get OIDC token
         id: get_oidc
         uses: ./.github/actions/expose-jwt-action
         with:
           audience: "image-builder"
-      
+
       - name: Authenticate in GCP
-        id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+        id: "auth"
+        uses: "google-github-actions/auth@v2"
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-      
+
       - name: Get ADO PAT from Secret Manager
-        id: 'secrets'
-        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        id: "secrets"
+        uses: "google-github-actions/get-secretmanager-secrets@v2"
         with:
           secrets: |-
             ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
-      
+
       - name: Build image
         id: build
         uses: ./.github/actions/image-builder
@@ -134,3 +134,13 @@ jobs:
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
           build-engine: ${{ inputs.build-engine }}
           platforms: ${{ inputs.platforms }}
+
+      - name: Print built images
+        run: |
+          images=$(echo '${{ steps.build.outputs.images }}' | jq -r '.[]')
+          if [[ -n "$images" ]]; then
+            echo "### 🏗️ Images built! 🏗️" >> $GITHUB_STEP_SUMMARY
+            for image in $images; do
+              echo " - $image" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
