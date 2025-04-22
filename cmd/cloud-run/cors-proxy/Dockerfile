@@ -1,4 +1,4 @@
-FROM golang:1.24.2-alpine3.21 as builder
+FROM golang:1.24.2-alpine3.21 AS builder
 
 WORKDIR /app
 
@@ -15,13 +15,15 @@ WORKDIR /app/cmd/cloud-run/cors-proxy
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
-FROM alpine:3.20.3
+RUN apk add --no-cache ca-certificates
+
+FROM scratch
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/cloud-run/cors-proxy
 
 # Copy the built Go app from the builder stage
 COPY --from=builder /app/cmd/cloud-run/cors-proxy/main /cors-proxy
+# Copy certificates from the builder stage
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-RUN apk add --no-cache ca-certificates git && \
-    chmod +x /cors-proxy
 ENTRYPOINT ["/cors-proxy"]
