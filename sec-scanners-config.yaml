@@ -1,16 +1,16 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250418-aa69f03e
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250422-907a0ddf
     - europe-docker.pkg.dev/kyma-project/prod/create-github-issue:v20250418-aa69f03e
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250418-aa69f03e
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250418-aa69f03e
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250422-1a7b8255
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250422-1a7b8255
     - europe-docker.pkg.dev/kyma-project/prod/move-gcs-bucket:v20250418-aa69f03e
     - europe-docker.pkg.dev/kyma-project/prod/scan-logs-for-secrets:v20250418-aa69f03e
     - europe-docker.pkg.dev/kyma-project/prod/search-github-issue:v20250418-aa69f03e
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250418-aa69f03e
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250418-aa69f03e
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250418-2e043a49
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250422-907a0ddf
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250422-907a0ddf
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250422-e7b3876b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250415-5ae9b84a
 mend:
     language: golang-mod
