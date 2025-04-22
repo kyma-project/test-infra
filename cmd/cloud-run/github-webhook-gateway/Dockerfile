@@ -14,14 +14,14 @@ WORKDIR /app/cmd/cloud-run/github-webhook-gateway
 
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN apk add --no-cache ca-certificates
 
-FROM alpine:3.20.3
+FROM scratch
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/cloud-run/github-webhook-gateway
 
 # Copy the built Go app from the builder stage
 COPY --from=builder /app/cmd/cloud-run/github-webhook-gateway/main /github-webhook-gateway
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-RUN apk add --no-cache ca-certificates git && \
-    chmod +x /github-webhook-gateway
 ENTRYPOINT ["/github-webhook-gateway"]
