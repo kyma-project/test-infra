@@ -29,20 +29,24 @@ var _ = Describe("Report", func() {
 2025-01-31T08:32:23.7363009Z     "images_list": [
 2025-01-31T08:32:23.7363276Z         "europe-docker.pkg.dev/kyma-project/dev/github-tools-sap/conduit-cli:PR-477"
 2025-01-31T08:32:23.7363276Z     ],
-2025-01-31T08:32:23.7363276Z     "digest": "sha256:215151561"
+2025-01-31T08:32:23.7363276Z     "digest": "sha256:215151561",
+2025-01-31T08:32:23.7363276Z     "architecture": [
+2025-01-31T08:32:23.7363276Z         "linux/amd64"
+2025-01-31T08:32:23.7363276Z     ]
 2025-01-31T08:32:23.7363276Z }
 2025-01-31T08:32:23.7363903Z ---END OF IMAGE BUILD REPORT---
 2025-01-31T08:32:23.7416532Z 
 2025-01-31T08:32:23.7530550Z ##[section]Finishing: prepare_image_build_report`
 		expectedReport := &BuildReport{
-			Status:      "Succeeded",
-			IsPushed:    true,
-			IsSigned:    false,
-			Images:      []string{"europe-docker.pkg.dev/kyma-project/dev/github-tools-sap/conduit-cli:PR-477"},
-			Digest:      "sha256:215151561",
-			Name:        "github-tools-sap/conduit-cli",
-			Tags:        []string{"PR-477"},
-			RegistryURL: "europe-docker.pkg.dev/kyma-project/dev/",
+			Status:       "Succeeded",
+			IsPushed:     true,
+			IsSigned:     false,
+			Images:       []string{"europe-docker.pkg.dev/kyma-project/dev/github-tools-sap/conduit-cli:PR-477"},
+			Digest:       "sha256:215151561",
+			Name:         "github-tools-sap/conduit-cli",
+			Tags:         []string{"PR-477"},
+			RegistryURL:  "europe-docker.pkg.dev/kyma-project/dev/",
+			Architecture: []string{"linux/amd64"},
 		}
 
 		It("parses the image build report", func() {
