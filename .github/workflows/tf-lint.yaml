@@ -1,0 +1,30 @@
+name: tf-lint
+
+on:
+  pull_request: 
+    branches: 
+      - main
+    paths:
+      - '.github/workflows/tf-lint.yaml'
+      - '**/*.tf'
+      - '**/*.tfvars'
+      - '.tflint.hcl'
+
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --recursive
+        

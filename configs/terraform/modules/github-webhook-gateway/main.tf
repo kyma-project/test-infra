@@ -17,11 +17,6 @@ variable "pubsub_topic_name" {
   default = "issue-labeled"
 }
 
-# Used to retrieve project_number later
-data "google_project" "project" {
-  provider = google
-}
-
 data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
   secret_id = "trusted_default_kyma-bot-github-sap-token"
 }
