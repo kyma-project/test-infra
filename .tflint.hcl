@@ -1,8 +1,9 @@
-config {
-  format = "compact"
+tflint {
+  required_version = ">= 0.50"
+}
 
-  call_module_type = "local"
-  force = false
+config {
+  call_module_type = "all"
   disabled_by_default = false
 }
 

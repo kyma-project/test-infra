@@ -26,5 +26,5 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
-        run: tflint --recursive
+        run: tflint --recursive --config "$(pwd)/.tflint.hcl" --format compact
         
