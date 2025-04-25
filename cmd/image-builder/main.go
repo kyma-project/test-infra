@@ -70,6 +70,9 @@ type options struct {
 	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
 	// reported as an output variable in Azure DevOps
 	adoStateOutput bool
+	// buildEngine indicates which build engine should be used for building the image
+	// either kaniko or buildx
+	buildEngine string
 }
 
 type Logger interface {
@@ -266,6 +269,22 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	if options.useGoInternalSAPModules {
 		templateParameters.SetUseGoInternalSAPModules()
+	}
+
+	switch options.buildEngine {
+	case "kaniko":
+		templateParameters.SetKanikoBuildEngine()
+	case "buildx":
+		templateParameters.SetBuildxBuildEngine()
+	default:
+		return nil, fmt.Errorf("unknown build engine received, ensure provided value is either 'kaniko' or 'buildx'")
+	}
+
+	if len(options.platforms) > 0 {
+		templateParameters.SetPlatforms(options.platforms.String())
+	} else {
+		// Set default platforms to linux/amd64,linux/arm64, if not set. There is no way to set during flag parsing.
+		templateParameters.SetPlatforms("linux/amd64,linux/arm64")
 	}
 
 	err := templateParameters.Validate()
@@ -759,6 +778,10 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is provided, but adoPreviewRun flag is not set to true"))
 	}
 
+	if o.buildEngine != "kaniko" && o.buildEngine != "buildx" {
+		errs = append(errs, fmt.Errorf("build-engine flag  has invalid value, please provide either 'kaniko' or 'buildx'"))
+	}
+
 	return errutil.NewAggregate(errs)
 }
 
@@ -847,7 +870,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
 	flagSet.StringVar(&o.tagsBase64, "tag-base64", "", "String representation of all tags encoded by base64. String representation must be in format as output of kyma-project/test-infra/pkg/tags.Tags.String() method")
 	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build dockerfile. It can be used in the name=value format.")
-	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.Var(&o.platforms, "platform", "Platform of the image that is built (default: linux/amd64,linux/arm64)")
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
@@ -861,6 +884,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
+	flagSet.StringVar(&o.buildEngine, "build-engine", "kaniko", "Build engine to use. Supported values: kaniko, buildx")
 
 	return flagSet
 }

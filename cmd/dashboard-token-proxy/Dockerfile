@@ -1,4 +1,4 @@
-FROM golang:1.23.4-alpine3.21 as builder
+FROM golang:1.24.2-alpine3.21 AS builder
 
 WORKDIR /app
 
@@ -14,14 +14,15 @@ WORKDIR /app/cmd/dashboard-token-proxy
 
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN apk add --no-cache ca-certificates
 
-FROM alpine:3.20.3
+FROM scratch
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/dashboard-token-proxy
 
 # Copy the built Go app from the builder stage
 COPY --from=builder /app/cmd/dashboard-token-proxy/main /dashboard-token-proxy
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-RUN apk add --no-cache ca-certificates git && \
-    chmod +x /dashboard-token-proxy
+
 ENTRYPOINT ["/dashboard-token-proxy"]
