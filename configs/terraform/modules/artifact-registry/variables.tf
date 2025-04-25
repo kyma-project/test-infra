@@ -10,21 +10,21 @@ variable "owner" {
 }
 
 variable "repoAdmin_serviceaccounts" {
-  type = list(string)
+  type        = list(string)
   description = "Service Accounts with reapoAdmin access"
-  default = []
+  default     = []
 }
 
 variable "writer_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with write access"
-  default = []
+  default     = []
 }
 
 variable "reader_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with read access"
-  default = []
+  default     = []
 }
 
 variable "type" {
@@ -33,7 +33,7 @@ variable "type" {
   default     = "development"
 
   validation {
-    condition = contains(["development", "production"], var.type)
+    condition     = contains(["development", "production"], var.type)
     error_message = "Type must be either 'development' or 'production'."
   }
 }
@@ -71,24 +71,13 @@ variable "location" {
 variable "description" {
   type        = string
   description = "Description of the Artifact Registry"
-  default = ""
+  default     = ""
 }
 
 variable "format" {
   type        = string
   description = "Format of the Artifact Registry"
   default     = "DOCKER"
-}
-
-variable "mode" {
-  type        = string
-  description = "Mode of the Artifact Registry"
-  default     = "STANDARD_REPOSITORY"
-
-  validation {
-    condition = contains(["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY"], var.mode)
-    error_message = "Mode must be either 'STANDARD_REPOSITORY' or 'VIRTUAL_REPOSITORY'."
-  }
 }
 
 variable "cleanup_policy_dry_run" {
@@ -102,8 +91,8 @@ variable "cleanup_policies" {
     id     = string
     action = string
     condition = optional(object({
-      tag_state = optional(string)
-      older_than = optional(string)
+      tag_state    = optional(string)
+      older_than   = optional(string)
       tag_prefixes = optional(list(string))
     }))
   }))
