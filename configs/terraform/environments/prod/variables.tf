@@ -80,22 +80,6 @@ variable "external_secrets_k8s_sa_trusted_cluster" {
     EOT
 }
 
-variable "external_secrets_k8s_sa_untrusted_cluster" {
-  type = object({
-    name      = string
-    namespace = string
-  })
-  default = {
-    name      = "secret-manager-untrusted"
-    namespace = "external-secrets"
-  }
-  description = <<-EOT
-    Details of external secrets service account. This is service account used as identity for external secrets controller.
-    name: Name of the external secret controller service account.
-    namespace: Namespace of the external secret controller service account.
-    EOT
-}
-
 variable "prow_cluster_ip_range" {
   type        = string
   default     = "10.8.0.0/14"

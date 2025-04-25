@@ -105,9 +105,10 @@ resource "kubernetes_network_policy" "prow_allow_http_events" {
 
   spec {
     pod_selector {
-      match_labels = {
-        "app" = "deck",
-        "app" = "hook"
+      match_expressions {
+        key = "app"
+        operator = "In"
+        values = ["hook", "deck"]
       }
     }
 
@@ -132,9 +133,10 @@ resource "kubernetes_network_policy" "hook_to_plugins" {
 
   spec {
     pod_selector {
-      match_labels = {
-        "app" = "automated-approver",
-        "app" = "cla-assistant",
+      match_expressions {
+        key = "app"
+        operator = "In"
+        values = ["automated-approver", "cla-assistant"]
       }
     }
 
