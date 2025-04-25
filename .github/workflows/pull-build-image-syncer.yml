@@ -1,13 +1,6 @@
 name: pull-build-image-syncer
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-syncer/*.go"
-      - "cmd/image-syncer/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token

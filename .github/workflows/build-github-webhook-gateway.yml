@@ -1,13 +1,6 @@
 name: build-github-webhook-gateway
 on:
-  pull_request_target:
-    types: [ opened, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/cloud-run/github-webhook-gateway/*.go"
-      - "cmd/cloud-run/github-webhook-gateway/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
   push:
     branches:
       - main

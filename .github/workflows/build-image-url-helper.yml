@@ -1,13 +1,6 @@
 name: build-image-url-helper
 on:
-  pull_request_target:
-    types: [ opened, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-url-helper/*.go"
-      - "cmd/image-url-helper/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
   push:
     branches:
       - main

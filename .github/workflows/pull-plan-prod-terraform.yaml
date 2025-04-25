@@ -3,15 +3,8 @@ run-name: pull-plan-prod-terraform
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 on: # runs on main
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    branches:
-      - main
-    paths:
-      - "**.tf"
-      - "**.tfvars"
-      - "**.yaml"
-      - "**.yml"
+  workflow_call:
+
 jobs:
   pull-plan-prod-terraform:
     permissions:

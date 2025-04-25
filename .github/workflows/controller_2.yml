@@ -1,0 +1,33 @@
+name: controller
+on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+  merge_group:
+    types: [ checks_requested ]
+
+jobs:
+  run-workflows:
+    runs-on: [ ubuntu-latest ]
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
+        uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+  pull-plan-prod-terraform:
+    uses: ./.github/workflows/pull-plan-prod-terraform.yml
+    needs: run-workflows
+    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-plan-prod-terraform-paths') }}
+  pull-unit-test-go:
+    uses: ./.github/workflows/pull-unit-test-go.yml
+    needs: run-workflows
+    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-unit-test-go-paths') }}
+  pull-validate-dockerfiles:
+    uses: ./.github/workflows/pull-validate-dockerfiles.yml
+    needs: run-workflows
+    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-validate-dockerfiles-paths') }}
