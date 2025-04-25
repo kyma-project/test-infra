@@ -45,12 +45,6 @@ variable "service_account_keys_rotator_dead_letter_topic_uri" {
   description = "URI of the topic to which the service account keys rotator publishes dead letter messages."
 }
 
-variable "create_secret_manager_notifications_topic" {
-  type        = bool
-  description = "Whether to create the topic to which the service account keys rotator subscribes to."
-  default     = false
-}
-
 variable "secrets_rotator_sa_email" {
   type        = string
   description = "Secrets rotator application service account email."
