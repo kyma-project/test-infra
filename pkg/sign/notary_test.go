@@ -114,12 +114,6 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 		},
 		MockGetImage: func(ref name.Reference) (ImageInterface, error) {
 			return &MockImage{
-				MockManifest: func() (ManifestInterface, error) {
-					return &MockManifest{
-						MockGetConfigSize:   func() int64 { return 1024 },
-						MockGetConfigDigest: func() string { return "sha256:dummy-digest" },
-					}, nil
-				},
 				MockGetDigest: func() (string, error) { return "dummy-digest", nil },
 				MockGetSize:   func() (int64, error) { return 1024, nil },
 			}, nil
@@ -132,16 +126,6 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 	img, err := imageService.GetImage(ref)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
-	}
-	manifest, err := img.Manifest()
-	if err != nil {
-		t.Errorf("Expected no error getting manifest, got %v", err)
-	}
-	if manifest.GetConfigSize() != 1024 {
-		t.Errorf("Expected config size to be 1024, got %d", manifest.GetConfigSize())
-	}
-	if manifest.GetConfigDigest() != "sha256:dummy-digest" {
-		t.Errorf("Expected config digest to be 'sha256:dummy-digest', got '%s'", manifest.GetConfigDigest())
 	}
 
 	// Additional checks for new methods
@@ -200,12 +184,6 @@ func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
 			},
 			MockGetImage: func(ref name.Reference) (ImageInterface, error) {
 				return &MockImage{
-					MockManifest: func() (ManifestInterface, error) {
-						return &MockManifest{
-							MockGetConfigSize:   func() int64 { return 1024 },
-							MockGetConfigDigest: func() string { return "sha256:dummy-config-digest" },
-						}, nil
-					},
 					MockGetDigest: func() (string, error) { return "dummy-manifest-digest", nil },
 					MockGetSize:   func() (int64, error) { return 2048, nil },
 				}, nil

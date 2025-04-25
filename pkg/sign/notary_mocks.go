@@ -109,7 +109,6 @@ func (m *MockHTTPClient) SetTLSConfig(tlsConfig *tls.Config) error {
 
 // MockImage implements ImageInterface
 type MockImage struct {
-	MockManifest  func() (ManifestInterface, error)
 	MockGetDigest func() (string, error)
 	MockGetSize   func() (int64, error)
 }
@@ -126,13 +125,6 @@ func (mi *MockImage) GetSize() (int64, error) {
 		return mi.MockGetSize()
 	}
 	return 0, fmt.Errorf("MockGetDigest not implemented")
-}
-
-func (mi *MockImage) Manifest() (ManifestInterface, error) {
-	if mi.MockManifest != nil {
-		return mi.MockManifest()
-	}
-	return nil, fmt.Errorf("MockManifest not implemented")
 }
 
 // MockManifest implements ManifestInterface

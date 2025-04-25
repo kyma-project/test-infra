@@ -40,8 +40,6 @@ type ManifestListInterface interface {
 
 // ImageInterface abstracts the functionality of v1.Image.
 type ImageInterface interface {
-	// Manifest retrieves the manifest of the image.
-	Manifest() (ManifestInterface, error)
 	// GetDigest returns the digest of the image manifest.
 	GetDigest() (string, error)
 	// GetSize returns the size of the image.
@@ -125,15 +123,6 @@ func (iw *ImageWrapper) GetDigest() (string, error) {
 // GetSize returns the size of the image.
 func (iw *ImageWrapper) GetSize() (int64, error) {
 	return iw.img.Size()
-}
-
-// Manifest retrieves the manifest of the image.
-func (iw *ImageWrapper) Manifest() (ManifestInterface, error) {
-	manifest, err := iw.img.Manifest()
-	if err != nil {
-		return nil, err
-	}
-	return &ManifestWrapper{manifest: manifest}, nil
 }
 
 // GetDigest retrieves the digest of the manifest list.
