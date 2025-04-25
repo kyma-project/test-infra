@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.6.1"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -7,12 +9,3 @@ terraform {
   }
 }
 
-variable "gcp_project_id" {
-  type    = string
-  default = "sap-kyma-prow"
-}
-
-# Used to retrieve project_number later
-data "google_project" "project" {
-  provider = google
-}
