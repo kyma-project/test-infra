@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/name"
 	"gopkg.in/yaml.v3"
 )
 
@@ -108,9 +109,9 @@ func TestNotaryConfig_NewSigner(t *testing.T) {
 }
 
 func TestPayloadBuilder_BuildPayload_ManifestList(t *testing.T) {
-	mockRef := &MockReference{
-		MockGetRepositoryName: func() string { return "docker.io/library/multiarch" },
-		MockGetTag:            func() (string, error) { return "latest", nil },
+	ref, err := name.ParseReference("docker.io/library/multiarch:latest")
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	mockManifestList := &MockManifestList{
@@ -119,13 +120,13 @@ func TestPayloadBuilder_BuildPayload_ManifestList(t *testing.T) {
 	}
 
 	mockImageRepository := &MockImageRepository{
-		MockParseReference: func(image string) (ReferenceInterface, error) {
-			return mockRef, nil
+		MockParseReference: func(image string) (name.Reference, error) {
+			return ref, nil
 		},
-		MockIsManifestList: func(ref ReferenceInterface) (bool, error) {
+		MockIsManifestList: func(name.Reference) (bool, error) {
 			return true, nil
 		},
-		MockGetManifestList: func(ref ReferenceInterface) (ManifestListInterface, error) {
+		MockGetManifestList: func(name.Reference) (ManifestListInterface, error) {
 			return mockManifestList, nil
 		},
 	}
@@ -139,8 +140,9 @@ func TestPayloadBuilder_BuildPayload_ManifestList(t *testing.T) {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	if len(payload.GunTargets) != 1 {
-		t.Errorf("Expected 1 GUN target, got %d", len(payload.GunTargets))
+	expectedGUN := "index.docker.io/library/multiarch"
+	if payload.GunTargets[0].GUN != expectedGUN {
+		t.Errorf("Expected GUN '%s', got '%s'", expectedGUN, payload.GunTargets[0].GUN)
 	}
 
 	target := payload.GunTargets[0].Targets[0]

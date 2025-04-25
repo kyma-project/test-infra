@@ -4,38 +4,40 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+
+	"github.com/google/go-containerregistry/pkg/name"
 )
 
 // MockImageRepository implements ImageRepositoryInterface
 type MockImageRepository struct {
-	MockParseReference  func(image string) (ReferenceInterface, error)
-	MockGetImage        func(ref ReferenceInterface) (ImageInterface, error)
-	MockIsManifestList  func(ref ReferenceInterface) (bool, error)
-	MockGetManifestList func(ref ReferenceInterface) (ManifestListInterface, error)
+	MockParseReference  func(image string) (name.Reference, error)
+	MockGetImage        func(ref name.Reference) (ImageInterface, error)
+	MockIsManifestList  func(ref name.Reference) (bool, error)
+	MockGetManifestList func(ref name.Reference) (ManifestListInterface, error)
 }
 
-func (mir *MockImageRepository) ParseReference(image string) (ReferenceInterface, error) {
+func (mir *MockImageRepository) ParseReference(image string) (name.Reference, error) {
 	if mir.MockParseReference != nil {
 		return mir.MockParseReference(image)
 	}
 	return nil, fmt.Errorf("MockParseReference not implemented")
 }
 
-func (mir *MockImageRepository) GetImage(ref ReferenceInterface) (ImageInterface, error) {
+func (mir *MockImageRepository) GetImage(ref name.Reference) (ImageInterface, error) {
 	if mir.MockGetImage != nil {
 		return mir.MockGetImage(ref)
 	}
 	return nil, fmt.Errorf("MockGetImage not implemented")
 }
 
-func (mir *MockImageRepository) IsManifestList(ref ReferenceInterface) (bool, error) {
+func (mir *MockImageRepository) IsManifestList(ref name.Reference) (bool, error) {
 	if mir.MockIsManifestList != nil {
 		return mir.MockIsManifestList(ref)
 	}
 	return false, fmt.Errorf("MockIsManifestList not implemented")
 }
 
-func (mir *MockImageRepository) GetManifestList(ref ReferenceInterface) (ManifestListInterface, error) {
+func (mir *MockImageRepository) GetManifestList(ref name.Reference) (ManifestListInterface, error) {
 	if mir.MockGetManifestList != nil {
 		return mir.MockGetManifestList(ref)
 	}
@@ -103,42 +105,6 @@ func (m *MockHTTPClient) SetTLSConfig(tlsConfig *tls.Config) error {
 		return m.MockSetTLSConfig(tlsConfig)
 	}
 	return fmt.Errorf("MockSetTLSConfig not implemented")
-}
-
-// MockReference implements ReferenceInterface
-type MockReference struct {
-	MockName              func() string
-	MockString            func() string
-	MockGetRepositoryName func() string
-	MockGetTag            func() (string, error)
-}
-
-func (mr *MockReference) Name() string {
-	if mr.MockName != nil {
-		return mr.MockName()
-	}
-	return ""
-}
-
-func (mr *MockReference) String() string {
-	if mr.MockString != nil {
-		return mr.MockString()
-	}
-	return ""
-}
-
-func (mr *MockReference) GetRepositoryName() string {
-	if mr.MockGetRepositoryName != nil {
-		return mr.MockGetRepositoryName()
-	}
-	return ""
-}
-
-func (mr *MockReference) GetTag() (string, error) {
-	if mr.MockGetTag != nil {
-		return mr.MockGetTag()
-	}
-	return "", fmt.Errorf("MockGetTag not implemented")
 }
 
 // MockImage implements ImageInterface
