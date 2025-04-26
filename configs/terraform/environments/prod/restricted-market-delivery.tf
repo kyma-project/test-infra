@@ -20,6 +20,7 @@ resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" 
 variable "sre-restricted-markets-artifactregistry-reader" {
   type = object({
     registry-reader-sa     = string
+    sa-description         = string
     sre-registry-reader-sa = string
   })
   default = {
