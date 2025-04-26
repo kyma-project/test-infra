@@ -1,7 +1,7 @@
 resource "google_service_account" "restricted-markets-artifactregistry-reader" {
   account_id   = var.sre-restricted-markets-artifactregistry-reader.registry-reader-sa
   display_name = var.sre-restricted-markets-artifactregistry-reader.registry-reader-sa
-  description  = ""
+  description  = var.sre-restricted-markets-artifactregistry-reader.sa-description
 }
 
 resource "google_service_account_iam_member" "restricted_markets_artifactregistry_reader_impersonation" {
@@ -23,7 +23,8 @@ variable "sre-restricted-markets-artifactregistry-reader" {
     sre-registry-reader-sa = string
   })
   default = {
-    registry-reader-sa     = "restricted-markets-registry-reader"
+    registry-reader-sa     = "restricted-markets-reg-reader"
+    sa-description         = "Service account for restricted markets delivery with artifact registry reader access"
     sre-registry-reader-sa = "gcr-writer@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com"
   }
 }
