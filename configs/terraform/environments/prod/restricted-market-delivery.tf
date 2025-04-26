@@ -23,7 +23,7 @@ variable "sre-restricted-markets-artifactregistry-reader" {
     sre-registry-reader-sa = string
   })
   default = {
-    registry-reader-sa     = "restricted-markets-artifactregistry-reader"
+    registry-reader-sa     = "restricted-markets-registry-reader"
     sre-registry-reader-sa = "gcr-writer@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com"
   }
 }
