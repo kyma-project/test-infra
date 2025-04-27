@@ -11,8 +11,8 @@ resource "google_service_account_iam_member" "restricted_markets_artifactregistr
 }
 
 resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" {
-  provider   = google.kyma_project
   repository = module.kyma_modules.artifact_registry_collection.name
+  location   = module.kyma_modules.artifact_registry_collection.location
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
 }
