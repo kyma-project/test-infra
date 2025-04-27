@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.6.1"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -15,11 +17,6 @@ variable "gcp_project_id" {
 variable "pubsub_topic_name" {
   type    = string
   default = "issue-labeled"
-}
-
-# Used to retrieve project_number later
-data "google_project" "project" {
-  provider = google
 }
 
 data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {

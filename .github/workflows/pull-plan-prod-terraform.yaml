@@ -54,31 +54,9 @@ jobs:
           secrets: |-
              gh-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
 
-      # Build tofu CLI from source until setup-opentofu action will become stable
-
-      - name: Download the tofu source
-        uses: actions/checkout@v4
-        with:
-          repository: opentofu/opentofu
-          path: opentofu
-          ref: 89ca50f3fe8c5327ec9943e9590bdb7b023fd4eb # v1.6.1
-        
-      - name: Install tofu tooling
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: opentofu/go.mod
-          cache-dependency-path: opentofu/go.sum
-
-
-      - name: Prepare the tofu command
-        working-directory: opentofu
-        run: |
-          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/ ./cmd/tofu
-          echo $(pwd)/bin >> $GITHUB_PATH
-
-      # - name: Setup Terraform
-      #   id: setup_terraform
-      #   uses: opentofu/setup-opentofu@b06654f7ba51088e987c0a454d042360df3ebe86
+      - name: Setup Terraform
+        id: setup_terraform
+        uses: opentofu/setup-opentofu@v1
 
       - name: Setup GitHub comments
         id: setup-github-comment

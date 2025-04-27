@@ -45,27 +45,21 @@ variable "signify_secret_rotator_dead_letter_topic_uri" {
   description = "URI of the topic to which the signify secret rotator publishes dead letter messages."
 }
 
-variable "create_secret_manager_notifications_topic" {
-  type        = bool
-  description = "Whether to create the topic to which the signify secret rotator subscribes to."
-  default     = false
-}
-
 variable "secrets_rotator_sa_email" {
   type        = string
   description = "Secrets rotator application service account email."
 }
 
 variable "acknowledge_deadline" {
-  type = number
+  type        = number
   description = "This value in seconds is the maximum time after a subscriber receives a message before the subscriber should acknowledge the message. For push delivery, this value is also used to set the request timeout for the call to the push endpoint."
-  default = 20
+  default     = 20
 }
 
 variable "time_to_live" {
-  type = string
+  type        = string
   description = "After that time the inactive pubsub subscription expires."
-  default = "31556952s" // 1 year
+  default     = "31556952s" // 1 year
 }
 
 variable "retry_policy" {
@@ -81,7 +75,7 @@ variable "retry_policy" {
 }
 
 variable "dead_letter_maximum_delivery_attempts" {
-  type = number
+  type        = number
   description = "Maximum attempts of delivering the dead letter"
-  default = 15
+  default     = 15
 }
