@@ -31,8 +31,8 @@ type BuildReport struct {
 	Tags []string `json:"tags"`
 	// RegistryURL is the URL of the registry where the image was pushed
 	RegistryURL string `json:"repository_path"`
-	// Architecture is the architecture of the image
-	Architecture []string `json:"architecture"`
+	// Architectures is the architecture of the image
+	Architectures []string `json:"architectures"`
 }
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
