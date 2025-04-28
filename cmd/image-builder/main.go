@@ -416,18 +416,27 @@ func buildInADO(o options) error {
 	if o.ciSystem == GithubActions {
 		fmt.Println("Setting GitHub outputs.")
 
-		o.logger.Debugw("Extracted built images from ADO logs", "images", buildReport.Images)
+		o.logger.Debugw("Extracted built images from ADO logs", "images", buildReport.Images, "architectures", buildReport.Architectures)
 
-		data, err := json.Marshal(buildReport.Images)
+		imagesJSON, err := json.Marshal(buildReport.Images)
 		if err != nil {
 			return fmt.Errorf("cannot marshal list of images: %w", err)
 		}
 
-		o.logger.Debugw("Set GitHub outputs", "images", string(data), "adoResult", string(*pipelineRunResult))
+		architecturesJSON, err := json.Marshal(buildReport.Architectures)
+		if err != nil {
+			return fmt.Errorf("cannot marshal list of architectures: %w", err)
+		}
 
-		err = actions.SetOutput("images", string(data))
+		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architetcures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
+
+		err = actions.SetOutput("images", string(imagesJSON))
 		if err != nil {
 			return fmt.Errorf("cannot set images GitHub output: %w", err)
+		}
+
+		if err := actions.SetOutput("architectures", string(architecturesJSON)); err != nil {
+			return fmt.Errorf("cannot set architectures GitHub output: %w", err)
 		}
 
 		err = actions.SetOutput("adoResult", string(*pipelineRunResult))
