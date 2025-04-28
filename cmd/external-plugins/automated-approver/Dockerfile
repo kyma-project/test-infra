@@ -20,6 +20,6 @@ WORKDIR /app/cmd/external-plugins/automated-approver
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /automated-approver .
 
 RUN apk add --no-cache ca-certificates git && \
-    chmod +x /automated-approver \
+    chmod +x /automated-approver
 
 ENTRYPOINT ["/automated-approver"]
