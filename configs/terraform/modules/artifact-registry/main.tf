@@ -23,6 +23,10 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     type  = var.type
   }
 
+  lifecycle {
+    prevent_destroy = false
+  }
+
   docker_config {
     immutable_tags = var.immutable_tags
   }
