@@ -8,7 +8,7 @@ WORKDIR /app
 #RUN go mod download
 #
 # Copy the source to the Working Directory inside the container
-#COPY . .
+COPY . .
 #
 RUN git config --global --add safe.directory /app; git rev-parse HEAD
 #
