@@ -4,7 +4,7 @@ This document outlines the standard Terraform configuration and provides guideli
 
 ## Infrastructure as Code
 
-The `repository uses `[Terraform](https://www.terraform.io/) for managing infrastructure as code (IaC). Terraform provides a predictable,
+The `repository uses `[Terraform](https://www.terraform.io/) to manage infrastructure as code (IaC). Terraform provides a predictable,
 safe, and efficient approach to creating, modifying, and managing infrastructure. IaC simplifies:
 
 - Reproducibility of infrastructure through a single source of truth.
@@ -51,7 +51,7 @@ terraform
 ### Modules
 
 Modules group and encapsulate resources specific to applications or use cases.
-These grouped resources compose an application components and all needed realated resources like service account, permissions, or messaging
+These grouped resources compose application components and all needed related resources like service account, permissions, or messaging
 system.
 Modules must be preferred over raw resource definitions in the environment configuration files.
 
@@ -71,8 +71,8 @@ Modules:
 ### Environments
 
 The `environments` directory contains configurations for distinct environments (e.g., production).
-Each environment configuration is located in separate directory.
-Configurations within directory representing an environment, like `environments/prod` can call modules from any locations, even external
+Each environment configuration is located in a separate directory.
+Configurations within a directory representing an environment, like `environments/prod`, can call modules from any location, even external
 sources.
 
 **Example Environment Directory Structure**
