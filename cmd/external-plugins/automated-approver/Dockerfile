@@ -1,5 +1,9 @@
 FROM europe-docker.pkg.dev/kyma-project/dev/alpine-git:PR-12862 as builder
-#
+
+ARG BUILD_COMMIT_SHA="unknown"
+
+RUN echo "Building commit SHA: ${BUILD_COMMIT_SHA}"
+
 WORKDIR /app
 #
 #COPY go.mod go.sum ./
@@ -10,7 +14,7 @@ WORKDIR /app
 # Copy the source to the Working Directory inside the container
 COPY . .
 #
-RUN git config --global --add safe.directory /app; git rev-parse HEAD
+RUN git config --global --add safe.directory /app; echo "commit from rev-parse:"; git rev-parse HEAD
 #
 #WORKDIR /app/cmd/external-plugins/automated-approver
 #
