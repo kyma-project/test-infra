@@ -21,16 +21,18 @@ type BuildReport struct {
 	IsPushed bool `json:"pushed"`
 	// IsSigned indicates whether the image was signed
 	IsSigned bool `json:"signed"`
+	// Name is the name of the image
+	Name string `json:"image_name"`
 	// Images is a list of all built images
 	Images []string `json:"images_list"`
 	// Digest is the digest of the image
 	Digest string `json:"digest"`
-	// Name is the name of the image
-	Name string `json:"image_name"`
 	// Tags is a list of tags for the image
 	Tags []string `json:"tags"`
 	// RegistryURL is the URL of the registry where the image was pushed
 	RegistryURL string `json:"repository_path"`
+	// Architectures is the architecture of the image
+	Architectures []string `json:"architectures"`
 }
 
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
