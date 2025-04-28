@@ -95,8 +95,8 @@ sources.
 
 IaC configuration is tested and applied via the CI/CD pipeline:
 
-- Pull request pipeline runs executes `terraform plan`, verifying changes, and publishing results on GitHub PR.
-- Push pipeline runs executes `terraform apply`, applying changes, and posting results on GitHub PR.
+- Pull request pipeline runs `terraform plan`, verifying changes, and publishing results on GitHub PR.
+- Push pipeline runs `terraform apply`, applying changes, and posting results on GitHub PR.
 
 Both jobs utilize a shared remote state (GCP backend), ensuring consistent, locked states for safe concurrent execution.
 
