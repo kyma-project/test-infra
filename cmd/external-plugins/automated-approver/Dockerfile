@@ -1,6 +1,6 @@
 FROM europe-docker.pkg.dev/kyma-project/dev/alpine-git:PR-12862 as builder
 #
-#WORKDIR /app
+WORKDIR /app
 #
 #COPY go.mod go.sum ./
 #
