@@ -21,7 +21,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20250326-3231dda1"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20250428-71bb61c2"
             securityContext:
               privileged: false
               seccompProfile:
@@ -29,38 +29,3 @@ postsubmits: # runs on main
               allowPrivilegeEscalation: false
             command:
               - "prow/cluster/deploy.sh"
-  
-periodics: # runs on schedule
-    - name: ci-prow-autobump
-      annotations:
-        description: "Autobump prow components image versions"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "ci-prow-autobump"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      cron: "30 * * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-neighbors-alerts
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240805-37a08f946"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "generic-autobumper"
-            args:
-              - "--config=configs/autobump-config/prow-cluster-autobump-config.yaml"
-              - "--labels-override=kind/chore,area/prow"

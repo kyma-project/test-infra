@@ -1,4 +1,4 @@
-FROM golang:1.24.1-alpine3.21 as base
+FROM golang:1.24.2-alpine3.21 as base
 
 RUN set -eux; \
     apk upgrade --no-cache; \
@@ -47,16 +47,5 @@ ARG HELM_VERSION=v3.15.0
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
-
-FROM base AS tools
-
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main
-
-FROM base
-
-COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
-
-
-#USER prow:prow
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]

@@ -5,6 +5,7 @@ on:
     paths:
       - 'cmd/image-autobumper/Dockerfile'
       - 'cmd/image-autobumper/**'
+      - 'pkg/github/bumper/**'
       - "go.mod"
       - "go.sum"
 

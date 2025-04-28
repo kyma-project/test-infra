@@ -101,7 +101,7 @@ func (c *Client) publishPubSubMessage(ctx context.Context, message interface{}, 
 	if err != nil {
 		return nil, fmt.Errorf("failed marshaling message to json, error: %w", err)
 	}
-	topic := c.Client.Topic(topicName)
+	topic := c.Topic(topicName)
 	result := topic.Publish(ctx, &pubsub.Message{
 		// Set json marshaled message as a data payload of pubsub message.
 		Data:       bmessage,

@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
 
 	"gopkg.in/yaml.v3"
 )
@@ -117,7 +118,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 }
 
 func isFileExcluded(ResourcesDirectoryClean, path string, excludes ExcludesMap) bool {
-	searchedFilename := strings.Replace(path, ResourcesDirectoryClean+"/", "", -1)
+	searchedFilename := strings.ReplaceAll(path, ResourcesDirectoryClean+"/", "")
 	if _, ok := excludes[searchedFilename]; ok {
 		return true
 	}

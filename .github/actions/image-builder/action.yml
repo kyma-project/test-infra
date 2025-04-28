@@ -46,6 +46,16 @@ inputs:
     description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
+  build-engine:
+    description: The build engine to use for building the image. Either kaniko or buildx
+    required: false
+    default: "kaniko"
+  platforms:
+    description: The platforms to build the image for, one per line. If not set, the default platforms (linux/arm64,linux/amd64) will be used.
+    required: false
+    default: |
+      linux/arm64
+      linux/amd64
 
 outputs:
   adoResult:
@@ -81,8 +91,20 @@ runs:
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
       shell: bash
+
+    - run: |
+        readarray -t lines <<<"${{ inputs.platforms }}"
+        result=""
+        for entry in "${lines[@]}"; do
+          if [[ -n "$entry" ]]; then
+            result+=" --platform=\"$entry\""
+          fi
+        done
+        echo "platforms=$result" >> $GITHUB_OUTPUT
+      id: prepare-platforms
+      shell: bash
     
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250331-3bb46d85
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250428-f511ec14
       id: build
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --build-in-ado=true --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }} --build-engine ${{ inputs.build-engine }}

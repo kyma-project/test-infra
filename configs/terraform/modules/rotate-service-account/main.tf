@@ -112,3 +112,58 @@ resource "google_pubsub_subscription" "service_account_keys_rotator" {
     max_delivery_attempts = 15
   }
 }
+
+# Reference to an existing notification channel
+data "google_monitoring_notification_channel" "kyma_tooling" {
+  display_name = "Alerting channel for Kyma tooling components."
+}
+
+# Log-based alerting policy for service-account-keys-rotator
+resource "google_monitoring_alert_policy" "service_account_keys_rotator_error_alert" {
+  display_name = "Error detected in service-account-keys-rotator"
+  severity     = "ERROR" # Severity level of the alert
+  combiner     = "OR"    # Combine conditions with OR logic; here only one condition is defined but it is required
+
+  # Define the condition to match logs with errors
+  conditions {
+    display_name = "Error in service-account-keys-rotator logs"
+
+    condition_matched_log {
+      # Filter to match logs from Cloud Run revisions with severity >= ERROR
+      filter = <<-EOT
+        resource.type="cloud_run_revision"
+        AND resource.labels.service_name="service-account-keys-rotator"
+        AND severity>=ERROR
+      EOT
+    }
+  }
+
+  # Documentation included in the alert notification
+  documentation {
+    mime_type = "text/markdown"
+    content   = <<-EOT
+### Alert: Error detected in service-account-keys-rotator
+
+#### Summary:
+A new error has been detected in the Cloud Run service *service-account-keys-rotator*.
+
+#### Error details:
+- **Service Name:** $${resource.labels.service_name}
+- **Project ID:** $${resource.project}
+
+#### Quick Links:
+- [View Logs](https://console.cloud.google.com/logs/query;query=resource.labels.service_name="service-account-keys-rotator")
+    EOT
+  }
+
+  # Alert strategy configuration
+  alert_strategy {
+    notification_rate_limit {
+      period = "259200s" # Minimum time between notifications (3 days)
+    }
+    auto_close = "604800s" # Automatically close incidents after 7 days of no matching logs
+  }
+
+  # Use the existing notification channel for alerts
+  notification_channels = [data.google_monitoring_notification_channel.kyma_tooling.id]
+}

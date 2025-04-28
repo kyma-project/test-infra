@@ -1,3 +1,19 @@
+/*
+Copyright 2019 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package bumper
 
 import (
@@ -229,6 +245,10 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	if !anyChange {
 		logrus.Info("Nothing changed from all functions, skip PR ...")
 		return nil
+	}
+
+	if err := createForkIfNotExists(gc, o.GitHubLogin, o.GitHubOrg, o.GitHubRepo); err != nil {
+		return fmt.Errorf("failed to create or check fork: %w", err)
 	}
 
 	if err := MinimalGitPush(fmt.Sprintf("https://%s:%s@%s/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), githubHost, o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
@@ -484,5 +504,32 @@ func configureGit(name, email string) error {
 		return fmt.Errorf("running command %s %s: %w", gitCmd, configArgs, configErr)
 	}
 
+	return nil
+}
+
+type GitHubClientInterface interface {
+	GetRepo(owner, name string) (github.FullRepo, error)
+	CreateFork(owner, repo string) (string, error)
+}
+
+func createForkIfNotExists(gc GitHubClientInterface, user, org, repo string) error {
+	_, err := gc.GetRepo(user, repo)
+	if err != nil {
+
+		if github.IsNotFound(err) {
+
+			logrus.Infof("Creating fork %s/%s from %s/%s...", user, repo, org, repo)
+
+			if _, createErr := gc.CreateFork(org, repo); createErr != nil {
+				return fmt.Errorf("fork creation failed: %w", createErr)
+			}
+
+			logrus.Infof("Fork %s/%s created successfully", user, repo)
+			return nil
+		}
+		return fmt.Errorf("unexpected error: %w", err)
+	}
+
+	logrus.Infof("Fork %s/%s already exists", user, repo)
 	return nil
 }
