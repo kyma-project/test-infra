@@ -88,84 +88,50 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
 
-module "image_builder_artifact_registry" {
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
+module "dockerhub_mirror" {
   source = "../../modules/artifact-registry"
 
   providers = {
     google = google.kyma_project
   }
 
+  repository_name          = var.dockerhub_mirror.name
+  description              = var.dockerhub_mirror.description
+  repoAdmin_serviceaccounts = [google_service_account.kyma-oci-image-builder.email]
+  location                 = var.dockerhub_mirror.location
+  format                   = var.dockerhub_mirror.format
+  immutable_tags           = var.dockerhub_mirror.immutable_tags
+  mode                     = var.dockerhub_mirror.mode
+  cleanup_policy_dry_run   = var.dockerhub_mirror.cleanup_policy_dry_run
 
-  for_each               = var.kyma_project_image_builder_collection
-  repository_name        = each.value.name
-  description            = each.value.description
-  cleanup_policy_dry_run = each.value.cleanup_policy_dry_run
-  remote_repository_config = try(each.value.remote_repository_config, null)
-  cleanup_policies       = each.value.cleanup_policies
-}
-
-# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
-resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  provider = google.kyma_project
-  location = var.dockerhub_mirror.location
-  repository_id = var.dockerhub_mirror.repository_id
-  description   = var.dockerhub_mirror.description
-  format        = var.dockerhub_mirror.format
-  cleanup_policy_dry_run = var.dockerhub_mirror.cleanup_policy_dry_run
-  mode                   = var.dockerhub_mirror.mode
-  lifecycle {
-      prevent_destroy = false
-  }
-
-  remote_repository_config {
-    description = var.dockerhub_mirror.description
-    docker_repository {
-      public_repository = var.dockerhub_mirror.public_repository
-    }
-    upstream_credentials {
-      username_password_credentials {
-        username                = var.dockerhub_credentials.username
-        password_secret_version = data.google_secret_manager_secret_version.dockerhub_oat_secret.version
-      }
-    }
-  }
-
-  # Cleanup policies
-  cleanup_policies {
-    id     = "cleanup-old-images"
-    action = "DELETE"
-    condition {
-      older_than = var.dockerhub_mirror.cleanup_age
-      tag_state  = "ANY"
-    }
+  remote_repository_config = {
+    description = var.dockerhub_mirror.remote_repository_config.description
+    docker_public_repository = var.dockerhub_mirror.remote_repository_config.docker_repository.public_repository
+    upstream_username = var.dockerhub_credentials != null ? var.dockerhub_credentials.username : null
+    upstream_password_secret_version = var.dockerhub_credentials != null ? data.google_secret_manager_secret_version.dockerhub_oat_secret.name : null
   }
 }
 
-# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
-resource "google_artifact_registry_repository" "docker_cache" {
-  repository_id          = var.docker_cache_repository.name
-  description            = var.docker_cache_repository.description
-  location               = var.docker_cache_repository.location
-  format                 = var.docker_cache_repository.format
-  mode                   = var.docker_cache_repository.mode
-  cleanup_policy_dry_run = var.docker_cache_repository.cleanup_policy_dry_run
 
-  # Cleanup policies
-  cleanup_policies {
-      id     = "delete-untagged"
-      action = "DELETE"
-      condition {
-        tag_state = "UNTAGGED"
-      }
+
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
+module "docker_cache" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
   }
-  cleanup_policies {
-      id     = "delete-old-cache"
-      action = "DELETE"
-      condition {
-        tag_state  = "ANY"
-        older_than = var.docker_cache_repository.cache_images_max_age
-      }
-  }
+
+  repository_name          = var.docker_cache_repository.name
+  description              = var.docker_cache_repository.description
+  repoAdmin_serviceaccounts = [google_service_account.kyma-oci-image-builder.email]
+  location                 = var.docker_cache_repository.location
+  format                   = var.docker_cache_repository.format
+  immutable_tags           = var.docker_cache_repository.immutable_tags
+  mode                     = var.docker_cache_repository.mode
+  cleanup_policy_dry_run   = var.docker_cache_repository.cleanup_policy_dry_run
+  cleanup_policies         = var.docker_cache_repository.cleanup_policies
 }
 
 resource "google_service_account" "kyma_project_image_builder" {

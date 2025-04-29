@@ -21,16 +21,3 @@ service_account_keys_cleaner_scheduler_cron_schedule = "0 0 * * 1-5"
 
 signify_secret_rotator_service_name = "signify-secret-rotator"
 signify_secret_rotator_image        = "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250422-e7b3876b" #gitleaks:allow
-
-kyma_project_image_builder_collection = {
-  dockerhub-mirror = {
-    name     = "dockerhub-mirror"
-    owner = "neighbors"
-    description = "Docker Hub mirror"
-  },
-  docker-cache = {
-    name  = "image-builder cache"
-    owner = "neighbors"
-    description = "image-builder cache"
-  }
-}
