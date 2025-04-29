@@ -68,7 +68,6 @@ variable "docker_cache_repository" {
     immutable_tags         = bool
     mode                   = string
     cleanup_policy_dry_run = bool
-    cache_images_max_age   = string
     labels                 = map(string)
     cleanup_policies       = optional(list(object({
       id        = string
@@ -87,10 +86,6 @@ variable "docker_cache_repository" {
     immutable_tags         = false
     mode                   = "STANDARD_REPOSITORY"
     cleanup_policy_dry_run = false
-    # Google provider does not support the time units,
-    # so we need to provide the time in seconds.
-    # Time after which the images will be deleted.
-    cache_images_max_age = "604800s" # 604800s = 7 days
     labels = {
       "type"  = "development"
       "name"  = "docker-cache"
@@ -102,6 +97,14 @@ variable "docker_cache_repository" {
       condition = {
         tag_state  = "ANY"
         older_than = "604800s"
+      }
+    }]
+    cleanup_policies = [{
+      id        = "delete-untagged"
+      action    = "DELETE"
+      condition = {
+        tag_state  = "UNTAGGED"
+        older_than = "3600s"
       }
     }]
   }
