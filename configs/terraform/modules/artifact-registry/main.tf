@@ -9,6 +9,11 @@ locals {
   )
 }
 
+variable "repository_prevent_destroy" {
+  type    = bool
+  default = true
+}
+
 resource "google_artifact_registry_repository" "artifact_registry" {
   location               = local.location
   repository_id = lower(var.repository_name)
@@ -24,7 +29,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   }
 
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = var.repository_prevent_destroy
   }
 
   docker_config {
