@@ -64,6 +64,9 @@ outputs:
   images:
     description: JSON array of the images built in ADO
     value: ${{ steps.build.outputs.images }}
+  architectures:
+    description: JSON array of the image architectures built in ADO (eg. linux/arm64)
+    value: ${{ steps.build.outputs.architectures }}
 
 runs:
   using: "composite"
