@@ -100,21 +100,21 @@ variable "docker_cache_repository" {
       "owner" = "neighbors"
     }
     cleanup_policies = [{
-      id        = "delete-old-cache"
-      action    = "DELETE"
-      condition = {
-        tag_state  = "ANY"
-        older_than = "604800s"
-      }
-    }]
-    cleanup_policies = [{
-      id        = "delete-untagged"
-      action    = "DELETE"
-      condition = {
-        tag_state  = "UNTAGGED"
-        older_than = "3600s"
-      }
-    }]
+        id        = "delete-old-cache"
+        action    = "DELETE"
+        condition = {
+          tag_state  = "ANY"
+          older_than = "604800s"
+        }
+      },
+      {
+        id        = "delete-untagged"
+        action    = "DELETE"
+        condition = {
+          tag_state  = "UNTAGGED"
+          older_than = "3600s"
+        }
+      }]
   }
 }
 
