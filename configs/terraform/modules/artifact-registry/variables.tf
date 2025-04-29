@@ -113,9 +113,11 @@ variable "cleanup_policies" {
 variable "remote_repository_config" {
   type = object({
     description = string
-    docker_public_repository = string
+    docker_repository = object({
+      public_repository = string
+    })
     upstream_username = optional(string)
-    upstream_password_secret_version = optional(string)
+    upstream_password_secret = optional(string)
   })
   default = null
 }

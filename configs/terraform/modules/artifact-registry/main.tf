@@ -36,21 +36,23 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     content {
       description = remote_repository_config.value.description
 
-      docker_public_repository = remote_repository_config.value.docker_public_repository
-
+      docker_repository {
+        public_repository = remote_repository_config.value.docker_repository.public_repository
+      }
 
       dynamic "upstream_credentials" {
         for_each = (try(remote_repository_config.value.upstream_username, null) != null &&
-        try(remote_repository_config.value.upstream_password_secret_version, null) != null) ? [1] : []
+        try(remote_repository_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
             username                = remote_repository_config.value.upstream_username
-            password_secret_version = remote_repository_config.value.upstream_password_secret_version
+            password_secret_version = remote_repository_config.value.upstream_password_secret
           }
         }
       }
     }
   }
+
 
   dynamic "cleanup_policies" {
     for_each = coalesce(var.cleanup_policies, [])
