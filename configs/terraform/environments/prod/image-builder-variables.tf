@@ -119,9 +119,7 @@ variable "dockerhub_mirror" {
     labels                 = map(string)
     remote_repository_config = optional(object({
       description = string
-      docker_repository = object({
-        public_repository = string
-      })
+      docker_public_repository = string
     }))
     cleanup_policies       = optional(list(object({
       id        = string
@@ -147,9 +145,7 @@ variable "dockerhub_mirror" {
     }
     remote_repository_config = {
       description = "Remote repository mirroring Docker Hub"
-      docker_repository = {
-        public_repository = "DOCKER_HUB"
-      }
+      docker_public_repository = "DOCKER_HUB"
     }
     cleanup_policies = [{
       id        = "delete-old-cache"

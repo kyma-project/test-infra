@@ -36,9 +36,8 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     content {
       description = remote_repository_config.value.description
 
-      docker_repository {
-        public_repository = remote_repository_config.value.docker_public_repository
-      }
+      docker_public_repository = remote_repository_config.value.docker_public_repository
+
 
       dynamic "upstream_credentials" {
         for_each = (try(remote_repository_config.value.upstream_username, null) != null &&
