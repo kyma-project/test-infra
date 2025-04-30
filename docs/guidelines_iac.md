@@ -21,7 +21,7 @@ and streamlined testing.
 Terraform configurations must reside within the `terraform` directory, structured and named per application or use case. Grouping by
 resource type is not permitted.
 
-For better readbility and maintenance in config definitions must always be preffered over cli parameters or environment variables.
+For better readability and maintenance, the in config definitions must always be preferred over cli parameters or environment variables.
 
 Example structure:
 
