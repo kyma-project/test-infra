@@ -35,6 +35,7 @@ type BuildReport struct {
 	Architectures []string `json:"architectures"`
 }
 
+// BuildReportStatus is the status of the build
 func NewBuildReportFromLogs(log string) (*BuildReport, error) {
 	// Strip all timestamps from log
 	log = timestampRegex.ReplaceAllString(log, "")
