@@ -30,8 +30,11 @@ resource "google_artifact_registry_repository" "prod_docker_repository" {
   description            = var.prod_docker_repository.description
   format                 = var.prod_docker_repository.format
   cleanup_policy_dry_run = var.prod_docker_repository.cleanup_policy_dry_run
-  lifecycle {
-    prevent_destroy = var.repository_prevent_destroy
+  dynamic "lifecycle" {
+    for_each = var.repository_prevent_destroy ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
   docker_config {
     immutable_tags = var.prod_docker_repository.immutable_tags
@@ -55,8 +58,11 @@ resource "google_artifact_registry_repository" "docker_dev" {
   description            = var.docker_dev_repository.description
   format                 = var.docker_dev_repository.format
   cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
-  lifecycle {
-    prevent_destroy = var.repository_prevent_destroy
+  dynamic lifecycle {
+    for_each = var.repository_prevent_destroy ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
   docker_config {
     immutable_tags = var.docker_dev_repository.immutable_tags

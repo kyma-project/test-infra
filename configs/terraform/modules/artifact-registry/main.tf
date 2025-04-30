@@ -28,8 +28,11 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     type  = var.type
   }
 
-  lifecycle {
-    prevent_destroy = var.repository_prevent_destroy
+  dynamic "lifecycle" {
+    for_each = var.repository_prevent_destroy ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
 
   docker_config {
