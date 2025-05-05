@@ -30,3 +30,6 @@ jobs:
       name: usersmapchecker
       dockerfile: cmd/tools/usersmapchecker/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

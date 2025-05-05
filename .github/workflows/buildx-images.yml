@@ -26,6 +26,9 @@ jobs:
       name: alpine
       dockerfile: images/alpine/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
       
   unpack-alpine:
     runs-on: ubuntu-latest
@@ -49,6 +52,9 @@ jobs:
       dockerfile: images/alpine/git/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
   build-alpine-git-gke-aws-auth:
@@ -59,6 +65,9 @@ jobs:
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build the base buildpack image
   build-buildpack:
@@ -67,6 +76,9 @@ jobs:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   unpack-buildpack:
     runs-on: ubuntu-latest
@@ -90,6 +102,9 @@ jobs:
       dockerfile: images/buildpack/go/Dockerfile
       context: .
       build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build unified-agent base image
   build-unified-agent:
@@ -98,6 +113,9 @@ jobs:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   unpack-unified-agent:
     runs-on: ubuntu-latest
@@ -121,6 +139,9 @@ jobs:
       dockerfile: images/unified-agent/go/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build unified-agent/nodejs image that depends on build-unified-agent
   build-unified-agent-nodejs:
@@ -131,6 +152,9 @@ jobs:
       dockerfile: images/unified-agent/nodejs/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build unified-agent/python image that depends on build-unified-agent
   build-unified-agent-python:
@@ -141,6 +165,9 @@ jobs:
       dockerfile: images/unified-agent/python/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
 
   # Build e2e-gcloud image
   build-e2e-gcloud:
@@ -149,3 +176,6 @@ jobs:
       name: e2e-gcloud
       dockerfile: images/e2e-gcloud/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

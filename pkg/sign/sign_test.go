@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/name"
 	"gopkg.in/yaml.v3"
 )
 
@@ -104,5 +105,52 @@ func TestNotaryConfig_NewSigner(t *testing.T) {
 
 	if signer == nil {
 		t.Errorf("expected a valid signer, but got nil")
+	}
+}
+
+func TestPayloadBuilder_BuildPayload_ManifestList(t *testing.T) {
+	ref, err := name.ParseReference("docker.io/library/multiarch:latest")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	mockManifestList := &MockManifestList{
+		MockGetDigest: func() (string, error) { return "manifest-list-digest", nil },
+		MockGetSize:   func() (int64, error) { return 4096, nil },
+	}
+
+	mockImageRepository := &MockImageRepository{
+		MockParseReference: func(image string) (name.Reference, error) {
+			return ref, nil
+		},
+		MockIsManifestList: func(name.Reference) (bool, error) {
+			return true, nil
+		},
+		MockGetManifestList: func(name.Reference) (ManifestListInterface, error) {
+			return mockManifestList, nil
+		},
+	}
+
+	payloadBuilder := PayloadBuilder{
+		ImageService: mockImageRepository,
+	}
+
+	payload, err := payloadBuilder.BuildPayload([]string{"docker.io/library/multiarch:latest"})
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	expectedGUN := "index.docker.io/library/multiarch"
+	if payload.GunTargets[0].GUN != expectedGUN {
+		t.Errorf("Expected GUN '%s', got '%s'", expectedGUN, payload.GunTargets[0].GUN)
+	}
+
+	target := payload.GunTargets[0].Targets[0]
+	if target.Digest != "manifest-list-digest" {
+		t.Errorf("Expected digest 'manifest-list-digest', got '%s'", target.Digest)
+	}
+
+	if target.ByteSize != 4096 {
+		t.Errorf("Expected size 4096, got %d", target.ByteSize)
 	}
 }
