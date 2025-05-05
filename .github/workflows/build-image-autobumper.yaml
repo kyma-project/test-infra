@@ -30,5 +30,6 @@ jobs:
       name: image-autobumper
       dockerfile: cmd/image-autobumper/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64

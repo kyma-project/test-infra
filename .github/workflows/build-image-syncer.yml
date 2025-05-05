@@ -29,5 +29,6 @@ jobs:
       name: image-syncer
       dockerfile: cmd/image-syncer/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64

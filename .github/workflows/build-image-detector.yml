@@ -29,5 +29,6 @@ jobs:
       name: image-detector
       dockerfile: cmd/image-detector/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64

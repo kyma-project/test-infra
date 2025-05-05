@@ -30,5 +30,6 @@ jobs:
       name: image-url-helper
       dockerfile: cmd/image-url-helper/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64

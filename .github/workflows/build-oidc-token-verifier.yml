@@ -28,5 +28,6 @@ jobs:
       name: test-infra/oidc-token-verifier
       dockerfile: cmd/oidc-token-verifier/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64

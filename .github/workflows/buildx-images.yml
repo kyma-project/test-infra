@@ -26,6 +26,7 @@ jobs:
       name: alpine
       dockerfile: images/alpine/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64
       
@@ -51,6 +52,7 @@ jobs:
       dockerfile: images/alpine/git/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -63,6 +65,7 @@ jobs:
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
       context: .
       build-args: BASE_ALPINE_IMAGE=${{ needs.unpack-alpine.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -73,6 +76,7 @@ jobs:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -98,6 +102,7 @@ jobs:
       dockerfile: images/buildpack/go/Dockerfile
       context: .
       build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -108,6 +113,7 @@ jobs:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -133,6 +139,7 @@ jobs:
       dockerfile: images/unified-agent/go/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -145,6 +152,7 @@ jobs:
       dockerfile: images/unified-agent/nodejs/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -157,6 +165,7 @@ jobs:
       dockerfile: images/unified-agent/python/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -167,5 +176,6 @@ jobs:
       name: e2e-gcloud
       dockerfile: images/e2e-gcloud/Dockerfile
       context: .
+      build-engine: buildx
       platforms: |
         linux/amd64
