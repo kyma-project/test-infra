@@ -21,8 +21,6 @@ and streamlined testing.
 Terraform configurations must reside within the `terraform` directory, structured and named per application or use case. Grouping by
 resource type is not permitted.
 
-For better readability and maintenance, the in config definitions must always be preferred over cli parameters or environment variables.
-
 Example structure:
 
 ```bash
@@ -46,6 +44,42 @@ terraform
         ├── output.tf
         ├── provider.tf
         └── variables.tf
+```
+
+For better readability and maintenance, the in config definitions must always be preferred over cli parameters or environment variables.
+
+When creating multiple instances of any resource—whether directly or via a module—each instance must be defined explicitly in the Terraform
+configuration.
+Avoid using `for_each`, `count`, or passing lists of values to generate multiple resources.
+This improves readability, simplifies change tracking, and reduces complexity in infrastructure code.
+
+**Example**
+
+Instead of:
+
+```hcl
+resource "google_project_iam_member" "example" {
+  for_each = toset(["user:a@example.com", "user:b@example.com"])
+  project = var.project_id
+  role    = "roles/viewer"
+  member  = each.value
+}
+```
+
+Use:
+
+```hcl
+resource "google_project_iam_member" "user_a" {
+  project = var.project_id
+  role    = "roles/viewer"
+  member  = "user:a@example.com"
+}
+
+resource "google_project_iam_member" "user_b" {
+  project = var.project_id
+  role    = "roles/viewer"
+  member  = "user:b@example.com"
+}
 ```
 
 ### Modules
