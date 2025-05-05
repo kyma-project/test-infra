@@ -164,6 +164,12 @@ Image signing allows verification that the image comes from a trusted repository
 > [!NOTE]
 > Image Builder only signs images built on the **push**, **schedule**, and **workflow_dispatch** events. Images built on the **pull_request_target** and **merge_group** event are not signed.
 
+Image Builder implements signing based on the image architecture type:
+
+- **Multi-Architecture Images**: For multi-arch images (supporting multiple platforms like linux/amd64, linux/arm64), Image Builder signs the entire manifest-list.json.
+
+- **Single-Architecture Images**: For single-arch images, Image Builder signs the image digest directly.
+
 ## Environment File
 
 The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
