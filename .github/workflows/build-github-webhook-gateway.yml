@@ -30,3 +30,5 @@ jobs:
       name: github-webhook-gateway
       dockerfile: cmd/cloud-run/github-webhook-gateway/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

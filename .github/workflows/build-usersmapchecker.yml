@@ -30,3 +30,5 @@ jobs:
       name: usersmapchecker
       dockerfile: cmd/tools/usersmapchecker/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

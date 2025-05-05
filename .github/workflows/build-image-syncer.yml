@@ -1,5 +1,13 @@
-name: push-build-image-syncer
+name: build-image-syncer
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/image-syncer/*.go"
+      - "cmd/image-syncer/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main
@@ -21,3 +29,5 @@ jobs:
       name: image-syncer
       dockerfile: cmd/image-syncer/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

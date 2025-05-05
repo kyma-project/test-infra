@@ -30,3 +30,5 @@ jobs:
       name: automated-approver
       dockerfile: cmd/external-plugins/automated-approver/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

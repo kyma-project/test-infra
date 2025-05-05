@@ -1,5 +1,13 @@
-name: push-build-image-autobumper
+name: build-image-autobumper
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - 'cmd/image-autobumper/Dockerfile'
+      - 'cmd/image-autobumper/**'
+      - 'pkg/github/bumper/**'
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main
@@ -22,3 +30,5 @@ jobs:
       name: image-autobumper
       dockerfile: cmd/image-autobumper/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

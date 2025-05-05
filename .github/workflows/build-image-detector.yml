@@ -1,5 +1,13 @@
-name: push-build-image-detector
+name: build-image-detector
 on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/image-detector/*.go"
+      - "cmd/image-detector/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
   push:
     branches:
       - main
@@ -21,3 +29,5 @@ jobs:
       name: image-detector
       dockerfile: cmd/image-detector/Dockerfile
       context: .
+      platforms: |
+        linux/amd64

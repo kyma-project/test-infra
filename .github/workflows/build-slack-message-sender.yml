@@ -1,8 +1,13 @@
-name: pull-build-slack-message-sender.yml
+name: build-slack-message-sender.yml
 #  description: "Build slack-message-sender image for sending labeling notification to kyma teams.
 on:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/cloud-run/slack-message-sender/**"
+  push:
+    branches:
+      - main
     paths:
       - "cmd/cloud-run/slack-message-sender/**"
 
@@ -17,3 +22,5 @@ jobs:
       name: test-infra/slackmessagesender
       dockerfile: cmd/cloud-run/slack-message-sender/Dockerfile
       context: .
+      platforms: |
+        linux/amd64
