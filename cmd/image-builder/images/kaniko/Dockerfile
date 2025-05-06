@@ -7,11 +7,11 @@ RUN go mod download
 
 #COPY . .
 RUN --mount=target=. \
-    cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
+    cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /image-builder -a -ldflags '-extldflags "-static"' .
 
 
 FROM scratch
 
-COPY --from=builder /app/image-builder /image-builder
+COPY --from=builder /image-builder /image-builder
 
 ENTRYPOINT ["/image-builder"]
