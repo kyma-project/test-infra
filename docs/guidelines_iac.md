@@ -46,14 +46,13 @@ terraform
         └── variables.tf
 ```
 
-For better readability and maintenance, the in config definitions must always be preferred over cli parameters or environment variables.
+For better readability and maintenance, the in config definitions must always be preferred over CLI parameters or environment variables.
 
-When creating multiple instances of any resource—whether directly or via a module—each instance must be defined explicitly in the Terraform
+When creating multiple instances of any resource, whether directly or using a module, each instance must be defined explicitly in the Terraform
 configuration.
-Avoid using `for_each`, `count`, or passing lists of values to generate multiple resources.
-This improves readability, simplifies change tracking, and reduces complexity in infrastructure code.
+To improve readability, simplify change tracking, and reduce complexity in infrastructure code, avoid using `for_each`, `count`, or passing lists of values to generate multiple resources.
 
-**Example**
+See the following example.
 
 Instead of:
 
