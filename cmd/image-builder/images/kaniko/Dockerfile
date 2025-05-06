@@ -1,11 +1,15 @@
-FROM europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20241003-9d1845c9 AS builder
+FROM 1.24.2-alpine3.21 AS builder
 
-WORKDIR /
-COPY . /app/
+WORKDIR /app
+
+COPY go.mod go.sum .
+RUN go mod download
+
+COPY . .
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
 
-FROM gcr.io/kaniko-project/executor:v1.23.2
+FROM scratch
 
 COPY --from=builder /app/image-builder /image-builder
 
