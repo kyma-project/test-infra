@@ -85,8 +85,3 @@ variable "docker_dev_repository" {
     }
   }
 }
-
-variable "repository_prevent_destroy" {
-  type    = bool
-  default = true
-}
