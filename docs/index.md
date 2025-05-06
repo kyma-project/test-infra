@@ -26,9 +26,9 @@
 
 [Documentation Guidelines](/docs/documentation_guidelines.md) - Follow the rules listed in this document to provide high-quality documentation.
 
-[Add a Custom Secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add and use a custom secret in the Prow pipeline.
+[IaC Configuration Guideline](/docs/guidelines_iac.md) - This document outlines the standard Terraform configuration and provides guidelines.
 
-[Standard Terraform Configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in the `test-infra` repository. 
+[Add a Custom Secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add and use a custom secret in the Prow pipeline.
 
 [Guidelines for Managing Follow-Up Issues](/docs/how-to/how-to-manage-follow-up-issues.md) - This document provides clear guidelines on how to effectively handle follow-up issues identified during events such as Technical Sprint Reviews.
 
