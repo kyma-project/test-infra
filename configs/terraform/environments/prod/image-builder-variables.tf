@@ -67,57 +67,6 @@ variable "image_builder_kyma-project_identity" {
   }
 }
 
-variable "docker_cache_repository" {
-  type = object({
-    name                   = string
-    description            = string
-    location               = string
-    format                 = string
-    immutable_tags         = bool
-    mode                   = string
-    cleanup_policy_dry_run = bool
-    labels                 = map(string)
-    cleanup_policies       = optional(list(object({
-      id        = string
-      action    = string
-      condition = object({
-        tag_state    = optional(string)
-        older_than   = string
-      })
-    })), [])
-  })
-  default = {
-    name                   = "cache"
-    description            = "Cache repo for kyma-project"
-    location               = "europe"
-    format                 = "DOCKER"
-    immutable_tags         = false
-    mode                   = "STANDARD_REPOSITORY"
-    cleanup_policy_dry_run = false
-    labels = {
-      "type"  = "development"
-      "name"  = "docker-cache"
-      "owner" = "neighbors"
-    }
-    cleanup_policies = [{
-        id        = "delete-old-cache"
-        action    = "DELETE"
-        condition = {
-          tag_state  = "ANY"
-          older_than = "604800s"
-        }
-      },
-      {
-        id        = "delete-untagged"
-        action    = "DELETE"
-        condition = {
-          tag_state  = "UNTAGGED"
-          older_than = "3600s"
-        }
-      }]
-  }
-}
-
 variable "dockerhub_mirror" {
   type = object({
     name                   = string
@@ -166,5 +115,56 @@ variable "dockerhub_mirror" {
         older_than = "604800s"
       }
     }]
+  }
+}
+
+variable "docker_cache_repository" {
+  type = object({
+    name                   = string
+    description            = string
+    location               = string
+    format                 = string
+    immutable_tags         = bool
+    mode                   = string
+    cleanup_policy_dry_run = bool
+    labels                 = map(string)
+    cleanup_policies       = optional(list(object({
+      id        = string
+      action    = string
+      condition = object({
+        tag_state    = optional(string)
+        older_than   = string
+      })
+    })), [])
+  })
+  default = {
+    name                   = "cache"
+    description            = "Cache repo for kyma-project"
+    location               = "europe"
+    format                 = "DOCKER"
+    immutable_tags         = false
+    mode                   = "STANDARD_REPOSITORY"
+    cleanup_policy_dry_run = false
+    labels = {
+      "type"  = "development"
+      "name"  = "docker-cache"
+      "owner" = "neighbors"
+    }
+    cleanup_policies = [{
+        id        = "delete-old-cache"
+        action    = "DELETE"
+        condition = {
+          tag_state  = "ANY"
+          older_than = "604800s"
+        }
+      },
+      {
+        id        = "delete-untagged"
+        action    = "DELETE"
+        condition = {
+          tag_state  = "UNTAGGED"
+          older_than = "3600s"
+        }
+      }]
   }
 }
