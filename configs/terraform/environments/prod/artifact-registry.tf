@@ -7,18 +7,18 @@ module "artifact_registry" {
   }
 
 
-  for_each               = var.kyma_project_artifact_registry_collection
-  repository_name        = each.value.name
-  description            = each.value.description
-  type                   = each.value.type
-  immutable_tags         = each.value.immutable
-  multi_region           = each.value.multi_region
-  owner                  = each.value.owner
+  for_each                  = var.kyma_project_artifact_registry_collection
+  repository_name           = each.value.name
+  description               = each.value.description
+  type                      = each.value.type
+  immutable_tags            = each.value.immutable
+  multi_region              = each.value.multi_region
+  owner                     = each.value.owner
   repoAdmin_serviceaccounts = each.value.repoAdmin_serviceaccounts
-  reader_serviceaccounts = each.value.reader_serviceaccounts
-  public                 = each.value.public
-  cleanup_policy_dry_run = each.value.cleanup_policy_dry_run
-  cleanup_policies       = each.value.cleanup_policies
+  reader_serviceaccounts    = each.value.reader_serviceaccounts
+  public                    = each.value.public
+  cleanup_policy_dry_run    = each.value.cleanup_policy_dry_run
+  cleanup_policies          = each.value.cleanup_policies
 }
 
 # TODO (dekiel): move to the module modules/artifact-registry
@@ -56,7 +56,7 @@ resource "google_artifact_registry_repository" "docker_dev" {
   format                 = var.docker_dev_repository.format
   cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
   lifecycle {
-      prevent_destroy = true
+    prevent_destroy = true
   }
   docker_config {
     immutable_tags = var.docker_dev_repository.immutable_tags

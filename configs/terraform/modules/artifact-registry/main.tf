@@ -4,7 +4,7 @@ data "google_client_config" "this" {}
 locals {
   location = var.multi_region ? (
     var.primary_area != "" ? var.primary_area : error("multi_region is true, but primary_area is not set.")
-  ) : (
+    ) : (
     var.location != "" ? var.location : error("multi_region is false, but location is not set.")
   )
 }

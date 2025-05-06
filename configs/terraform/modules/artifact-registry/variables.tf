@@ -10,21 +10,21 @@ variable "owner" {
 }
 
 variable "repoAdmin_serviceaccounts" {
-  type = list(string)
+  type        = list(string)
   description = "Service Accounts with reapoAdmin access"
-  default = []
+  default     = []
 }
 
 variable "writer_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with write access"
-  default = []
+  default     = []
 }
 
 variable "reader_serviceaccounts" {
   type        = list(string)
   description = "Service Accounts with read access"
-  default = []
+  default     = []
 }
 
 variable "type" {
@@ -33,7 +33,7 @@ variable "type" {
   default     = "development"
 
   validation {
-    condition = contains(["development", "production"], var.type)
+    condition     = contains(["development", "production"], var.type)
     error_message = "Type must be either 'development' or 'production'."
   }
 }
@@ -71,7 +71,7 @@ variable "location" {
 variable "description" {
   type        = string
   description = "Description of the Artifact Registry"
-  default = ""
+  default     = ""
 }
 
 variable "format" {
@@ -102,8 +102,8 @@ variable "cleanup_policies" {
     id     = string
     action = string
     condition = optional(object({
-      tag_state = optional(string)
-      older_than = optional(string)
+      tag_state    = optional(string)
+      older_than   = optional(string)
       tag_prefixes = optional(list(string))
     }))
   }))
@@ -116,7 +116,7 @@ variable "remote_repository_config" {
     docker_repository = object({
       public_repository = string
     })
-    upstream_username = optional(string)
+    upstream_username        = optional(string)
     upstream_password_secret = optional(string)
   })
   default = null
