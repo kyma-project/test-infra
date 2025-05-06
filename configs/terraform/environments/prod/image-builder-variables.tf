@@ -71,6 +71,7 @@ variable "dockerhub_mirror" {
   type = object({
     name                   = string
     description            = string
+    repository_prevent_destroy = string
     location               = string
     format                 = string
     immutable_tags         = bool
@@ -93,6 +94,7 @@ variable "dockerhub_mirror" {
   default = {
     name                   = "dockerhub-mirror"
     description            = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
+    repository_prevent_destroy = false
     location               = "europe"
     format                 = "DOCKER"
     immutable_tags         = false
@@ -122,6 +124,7 @@ variable "docker_cache_repository" {
   type = object({
     name                   = string
     description            = string
+    repository_prevent_destroy = string
     location               = string
     format                 = string
     immutable_tags         = bool
@@ -140,6 +143,7 @@ variable "docker_cache_repository" {
   default = {
     name                   = "cache"
     description            = "Cache repo for kyma-project"
+    repository_prevent_destroy = false
     location               = "europe"
     format                 = "DOCKER"
     immutable_tags         = false

@@ -96,7 +96,7 @@ module "dockerhub_mirror" {
     google = google.kyma_project
   }
 
-  repository_prevent_destroy = false
+  repository_prevent_destroy = var.dockerhub_mirror.repository_prevent_destroy
   repository_name          = var.dockerhub_mirror.name
   description              = var.dockerhub_mirror.description
   repoAdmin_serviceaccounts = [google_service_account.kyma-oci-image-builder.email]
@@ -126,7 +126,7 @@ module "docker_cache" {
     google = google.kyma_project
   }
 
-  repository_prevent_destroy = false
+  repository_prevent_destroy = var.docker_cache_repository.repository_prevent_destroy
   repository_name          = var.docker_cache_repository.name
   description              = var.docker_cache_repository.description
   repoAdmin_serviceaccounts = [google_service_account.kyma-oci-image-builder.email]
