@@ -22,7 +22,7 @@ module "artifact_registry" {
 }
 
 moved {
-  from = google_artifact_registry_repository.prod_docker_registry
+  from = google_artifact_registry_repository.prod_docker_repository
   to   = module.prod_docker_registry.google_artifact_registry_repository.artifact_registry
 }
 
