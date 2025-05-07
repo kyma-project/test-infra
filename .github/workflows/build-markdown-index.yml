@@ -30,3 +30,6 @@ jobs:
       name: markdown-index
       dockerfile: cmd/markdown-index/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

@@ -30,3 +30,6 @@ jobs:
       name: cors-proxy
       dockerfile: cmd/cloud-run/cors-proxy/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

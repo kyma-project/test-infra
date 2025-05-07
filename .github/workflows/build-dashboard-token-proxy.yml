@@ -30,3 +30,6 @@ jobs:
       name: dashboard-token-proxy
       dockerfile: cmd/dashboard-token-proxy/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
