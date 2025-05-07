@@ -44,37 +44,24 @@ module "prod_docker_repository" {
 
 }
 
-# TODO (dekiel): move to the module modules/artifact-registry
-resource "google_artifact_registry_repository" "docker_dev" {
-  provider               = google.kyma_project
-  location               = var.docker_dev_repository.location
-  repository_id          = var.docker_dev_repository.name
+moved {
+  from = google_artifact_registry_repository.docker_dev
+  to   = module.docker_dev.google_artifact_registry_repository.artifact_registry
+}
+
+module "docker_dev" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_name        = var.docker_dev_repository.name
   description            = var.docker_dev_repository.description
+  location               = var.docker_dev_repository.location
+  immutable_tags         = var.docker_dev_repository.immutable_tags
   format                 = var.docker_dev_repository.format
+  cleanup_policies       = var.docker_dev_repository.cleanup_policies
   cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
 
-  docker_config {
-    immutable_tags = var.docker_dev_repository.immutable_tags
-  }
-
-  cleanup_policies {
-    id     = "delete-untagged"
-    action = "DELETE"
-    condition {
-      tag_state = "UNTAGGED"
-    }
-  }
-
-  cleanup_policies {
-    id     = "delete-old-pr-images"
-    action = "DELETE"
-    condition {
-      tag_state = "TAGGED"
-      # Equivalent to PR-*
-      tag_prefixes = ["PR-"]
-      older_than   = var.docker_dev_repository.pr_images_max_age
-    }
-  }
-
-  labels = var.docker_dev_repository.labels
 }
