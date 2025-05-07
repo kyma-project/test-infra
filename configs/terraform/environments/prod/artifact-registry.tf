@@ -22,7 +22,7 @@ module "artifact_registry" {
 }
 
 moved {
-  from = google_artifact_registry_repository.prod_docker_repository
+  from = google_artifact_registry_repository.prod_docker_registry
   to   = module.prod_docker_registry.google_artifact_registry_repository.artifact_registry
 }
 
@@ -33,14 +33,14 @@ module "prod_docker_registry" {
     google = google.kyma_project
   }
 
-  repository_name        = var.prod_docker_repository.name
-  description            = var.prod_docker_repository.description
-  location               = var.prod_docker_repository.location
-  immutable_tags         = var.prod_docker_repository.immutable_tags
-  format                 = var.prod_docker_repository.format
-  cleanup_policies       = var.prod_docker_repository.cleanup_policies
-  cleanup_policy_dry_run = var.prod_docker_repository.cleanup_policy_dry_run
-  type                   = var.prod_docker_repository.type
+  repository_name        = var.prod_docker_registry.name
+  description            = var.prod_docker_registry.description
+  location               = var.prod_docker_registry.location
+  immutable_tags         = var.prod_docker_registry.immutable_tags
+  format                 = var.prod_docker_registry.format
+  cleanup_policies       = var.prod_docker_registry.cleanup_policies
+  cleanup_policy_dry_run = var.prod_docker_registry.cleanup_policy_dry_run
+  type                   = var.prod_docker_registry.type
 
 }
 
@@ -56,11 +56,11 @@ module "docker_dev_registry" {
     google = google.kyma_project
   }
 
-  repository_name        = var.docker_dev_repository.name
-  description            = var.docker_dev_repository.description
-  location               = var.docker_dev_repository.location
-  immutable_tags         = var.docker_dev_repository.immutable_tags
-  format                 = var.docker_dev_repository.format
-  cleanup_policies       = var.docker_dev_repository.cleanup_policies
-  cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
+  repository_name        = var.docker_dev_registry.name
+  description            = var.docker_dev_registry.description
+  location               = var.docker_dev_registry.location
+  immutable_tags         = var.docker_dev_registry.immutable_tags
+  format                 = var.docker_dev_registry.format
+  cleanup_policies       = var.docker_dev_registry.cleanup_policies
+  cleanup_policy_dry_run = var.docker_dev_registry.cleanup_policy_dry_run
 }
