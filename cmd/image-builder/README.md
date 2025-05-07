@@ -169,14 +169,14 @@ Image signing allows verification that the image comes from a trusted repository
 Image Builder implements signing based on the image architecture type:
 
 - **Multi-Architecture Images**: For multi-arch images (supporting multiple platforms like linux/amd64, linux/arm64), Image Builder:
-    1. Detects the manifest list using OCI registry APIs
-    2. Retrieves the manifest list digest and size
+    1. Detects the image index using OCI registry APIs
+    2. Retrieves the image index digest and size
     3. Signs the entire manifest-list.json rather than individual architecture-specific manifests
     4. Stores signatures according to Notary v2 specifications
 
 - **Single-Architecture Images**: For single-arch images, Image Builder:
-    1. Retrieves the image digest directly
-    2. Signs the image digest
+    1. Retrieves the image manifest digest directly
+    2. Signs the image manifest digest
     3. Associates the signature with the specific image version
 
 ### Technical Implementation
