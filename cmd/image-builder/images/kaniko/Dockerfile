@@ -5,9 +5,8 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download -x
 
-COPY . .
-#RUN --mount=target=. \
-RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /image-builder -a -ldflags '-extldflags "-static"' .
+#COPY . .
+RUN --mount=target=. cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /image-builder -a -ldflags '-extldflags "-static"' .
 
 
 FROM scratch
