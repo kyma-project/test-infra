@@ -183,11 +183,11 @@ Image Builder implements signing based on the image architecture type:
 
 The signing process uses the Notary v2 specification for artifact signing. When a multi-architecture image is detected, the system:
 
-1. Verifies if the image reference points to a manifest list using `IsManifestList()`
-2. For manifest lists, obtains the manifest list digest and size rather than the digest of individual architecture manifests
-3. Creates a signing payload with the proper reference to the manifest list
+1. Verifies if the image reference points to a image index using `IsManifestList()`
+2. For image index, obtains the image index digest and size rather than the digest of individual architecture image manifest
+3. Creates a signing payload with the proper reference to the image index
 4. Transmits the signing request to the Signify service with appropriate TLS credentials
-5. The signature can then be used to verify the entire manifest list, ensuring all architecture variants remain unmodified
+5. The signature can then be used to verify the entire image index, ensuring all architecture variants remain unmodified
 
 ## Environment File
 
