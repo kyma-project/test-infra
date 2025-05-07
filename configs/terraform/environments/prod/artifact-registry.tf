@@ -23,7 +23,7 @@ module "artifact_registry" {
 
 moved {
   from = google_artifact_registry_repository.prod_docker_repository
-  to   = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
+  to   = module.prod_docker_registry.google_artifact_registry_repository.artifact_registry
 }
 
 module "prod_docker_registry" {
@@ -46,7 +46,7 @@ module "prod_docker_registry" {
 
 moved {
   from = google_artifact_registry_repository.docker_dev
-  to   = module.docker_dev.google_artifact_registry_repository.artifact_registry
+  to   = module.docker_dev_registry.google_artifact_registry_repository.artifact_registry
 }
 
 module "docker_dev_registry" {
