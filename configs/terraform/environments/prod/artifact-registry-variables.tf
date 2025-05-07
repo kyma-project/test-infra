@@ -27,7 +27,7 @@ variable "kyma_project_artifact_registry_collection" {
 }
 
 
-variable "prod_docker_registry" {
+variable "prod_docker_repository" {
   type = object({
     name                   = string
     description            = string
@@ -69,7 +69,7 @@ variable "prod_docker_registry" {
   }
 }
 
-variable "docker_dev_registry" {
+variable "dev_docker_repository" {
   type = object({
     name                   = string
     description            = string

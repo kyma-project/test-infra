@@ -11,8 +11,8 @@ resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_us
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_writer" {
   provider   = google.kyma_project
-  location   = module.prod_docker_registry.artifact_registry.location
-  repository = module.prod_docker_registry.artifact_registry.name
+  location   = module.prod_docker_repository.artifact_registry.location
+  repository = module.prod_docker_repository.artifact_registry.name
   role       = "roles/artifactregistry.createOnPushWriter"
   member     = "serviceAccount:${google_service_account.image_syncer_writer.email}"
 }
@@ -30,8 +30,8 @@ resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_us
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_reader" {
   provider   = google.kyma_project
-  location   = module.prod_docker_registry.artifact_registry.location
-  repository = module.prod_docker_registry.artifact_registry.name
+  location   = module.prod_docker_repository.artifact_registry.location
+  repository = module.prod_docker_repository.artifact_registry.name
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.image_syncer_reader.email}"
 }
