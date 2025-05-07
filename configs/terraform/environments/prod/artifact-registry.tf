@@ -26,7 +26,7 @@ moved {
   to   = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
 }
 
-module "prod_docker_repository" {
+module "prod_docker_registry" {
   source = "../../modules/artifact-registry"
 
   providers = {
@@ -49,7 +49,7 @@ moved {
   to   = module.docker_dev.google_artifact_registry_repository.artifact_registry
 }
 
-module "docker_dev" {
+module "docker_dev_registry" {
   source = "../../modules/artifact-registry"
 
   providers = {
