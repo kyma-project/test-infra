@@ -138,6 +138,8 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
 
 # Use a local to simplify referencing the active repository
 locals {
+  # This is workaround, as OpenTofu does not support yet the conditional expressions in the resource block
+  # https://github.com/opentofu/opentofu/issues/1329
   repository = var.repository_prevent_destroy ? google_artifact_registry_repository.protected_repository[0] : google_artifact_registry_repository.unprotected_repository[0]
 }
 
