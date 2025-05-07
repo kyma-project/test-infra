@@ -1,4 +1,4 @@
-FROM golang:1.24.2-alpine3.21 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24.2-alpine3.21 AS builder
 
 WORKDIR /app
 
@@ -6,7 +6,8 @@ COPY go.mod go.sum ./
 RUN go mod download -x
 
 #COPY . .
-RUN --mount=target=. cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /image-builder -a -ldflags '-extldflags "-static"' .
+ARG TARGETOS TARGETARCH
+RUN --mount=target=. cd /app/cmd/image-builder && CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -buildvcs=false -o /image-builder -a -ldflags '-extldflags "-static"' .
 
 
 FROM scratch
