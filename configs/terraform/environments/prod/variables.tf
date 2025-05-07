@@ -16,12 +16,6 @@ variable "gcp_project_id" {
   description = "Google Cloud project to create resources."
 }
 
-variable "gatekeeper_manifest_path" {
-  type        = string
-  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
-  description = "Path to the Gatekeeper yaml manifest file. This file will be applied to the k8s cluster to install gatekeeper."
-}
-
 variable "prow_k8s_cluster" {
   type = object({
     name     = string
