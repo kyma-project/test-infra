@@ -63,5 +63,4 @@ module "docker_dev_registry" {
   format                 = var.docker_dev_repository.format
   cleanup_policies       = var.docker_dev_repository.cleanup_policies
   cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
-  mode                   = var.docker_dev_repository.mode
 }
