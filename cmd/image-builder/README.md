@@ -164,30 +164,20 @@ Image signing allows verification that the image comes from a trusted repository
 > [!NOTE]
 > Image Builder only signs images built on the **push**, **schedule**, and **workflow_dispatch** events. Images built on the **pull_request_target** and **merge_group** event are not signed.
 
-### Architecture-Specific Signing Process
+### OCI-Compliant Image Signing Process
 
-Image Builder implements signing based on the image architecture type:
+Image Builder implements signing based on the image type:
 
-- **Multi-Architecture Images**: For multi-arch images (supporting multiple platforms like linux/amd64, linux/arm64), Image Builder:
+- **OCI Image Index Images**: For images (supporting multiple platforms like linux/amd64, linux/arm64), Image Builder:
     1. Detects the image index using OCI registry APIs
     2. Retrieves the image index digest and size
-    3. Signs the entire manifest-list.json rather than individual architecture-specific manifests
+    3. Signs the entire manifest-list.json
     4. Stores signatures according to Notary v2 specifications
 
-- **Single-Architecture Images**: For single-arch images, Image Builder:
+- **OCI Image Manifest Images**: For images built for one specific architecture, Image Builder:
     1. Retrieves the image manifest digest directly
     2. Signs the image manifest digest
     3. Associates the signature with the specific image version
-
-### Technical Implementation
-
-The signing process uses the Notary v2 specification for artifact signing. When a multi-architecture image is detected, the system:
-
-1. Verifies if the image reference points to a image index using `IsManifestList()`
-2. For image index, obtains the image index digest and size rather than the digest of individual architecture image manifest
-3. Creates a signing payload with the proper reference to the image index
-4. Transmits the signing request to the Signify service with appropriate TLS credentials
-5. The signature can then be used to verify the entire image index, ensuring all architecture variants remain unmodified
 
 ## Environment File
 
