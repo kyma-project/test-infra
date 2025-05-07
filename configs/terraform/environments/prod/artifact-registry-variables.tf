@@ -34,6 +34,7 @@ variable "prod_docker_repository" {
     location               = string
     format                 = string
     immutable_tags         = bool
+    mode                   = string
     type                   = string
     cleanup_policy_dry_run = bool
     cleanup_policies = optional(list(object({
@@ -53,6 +54,7 @@ variable "prod_docker_repository" {
     location               = "europe"
     format                 = "DOCKER"
     immutable_tags         = false
+    mode                   = "STANDARD_REPOSITORY"
     type                   = "production"
     cleanup_policy_dry_run = false
     cleanup_policies = [
