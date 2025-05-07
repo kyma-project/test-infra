@@ -16,7 +16,7 @@ Contents:
 
 ## Overview
 
-Image-syncer is used to copy container images between two registries. Sync the whole index if possible. Otherwise, sync a single image.
+Image-syncer is used to copy container images between two registries. Sync the whole image index if possible. Otherwise, sync a single image manifest.
 It copies images **only when they are not present** in the target repository.
 The tool guarantees that **tags are immutable** in the target repository.
 That means that if the image tag is already present in the target registry, it is not overwritten by the new image.
