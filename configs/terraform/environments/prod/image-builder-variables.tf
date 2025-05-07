@@ -15,18 +15,9 @@ variable "dockerhub_credentials" {
     oat_secret_name = string
     username        = string
   })
-
   default = {
     oat_secret_name = "docker_sap_org_service_auth_token"
     username        = "sapcom"
-  }
-
-  validation {
-    condition = alltrue([
-      var.dockerhub_credentials == null || try(var.dockerhub_credentials.username, null) != null,
-      var.dockerhub_credentials == null || try(var.dockerhub_credentials.oat_secret_name, null) != null
-    ])
-    error_message = "dockerhub_credentials requires both username and oat_secret_name when set"
   }
 }
 
