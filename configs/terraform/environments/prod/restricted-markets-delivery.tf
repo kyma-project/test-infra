@@ -11,6 +11,7 @@ resource "google_service_account_iam_member" "restricted_markets_artifactregistr
 }
 
 resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" {
+  project    = module.kyma_modules.artifact_registry_collection.project
   repository = module.kyma_modules.artifact_registry_collection.name
   location   = module.kyma_modules.artifact_registry_collection.location
   role       = "roles/artifactregistry.reader"
@@ -18,6 +19,7 @@ resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" 
 }
 
 resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_reader" {
+  project    = google_artifact_registry_repository.dev_modules_internal.project
   repository = google_artifact_registry_repository.dev_modules_internal.name
   location   = google_artifact_registry_repository.dev_modules_internal.location
   role       = "roles/artifactregistry.reader"
