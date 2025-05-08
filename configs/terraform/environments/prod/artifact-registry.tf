@@ -43,23 +43,6 @@ module "prod_docker_repository" {
   repository_prevent_destroy = var.dev_docker_repository.repository_prevent_destroy
 }
 
-# TODO (dekiel): move to the module modules/artifact-registry
-resource "google_artifact_registry_repository" "docker_dev" {
-  provider               = google.kyma_project
-  location               = var.docker_dev_repository.location
-  repository_id          = var.docker_dev_repository.name
-  description            = var.docker_dev_repository.description
-  format                 = var.docker_dev_repository.format
-  cleanup_policy_dry_run = var.docker_dev_repository.cleanup_policy_dry_run
-  lifecycle {
-    prevent_destroy = true
-  }
-  docker_config {
-    immutable_tags = var.docker_dev_repository.immutable_tags
-    type           = var.prod_docker_repository.type
-  }
-
-}
 moved {
   from = google_artifact_registry_repository.docker_dev
   to   = module.dev_docker_repository.google_artifact_registry_repository.artifact_registry
