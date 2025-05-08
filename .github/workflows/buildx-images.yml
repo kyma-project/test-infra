@@ -1,11 +1,7 @@
 name: buildx-images
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "images/**"
-      - ".github/workflows/image-builder.yml"
+  workflow_call:
   push:
     branches:
       - main

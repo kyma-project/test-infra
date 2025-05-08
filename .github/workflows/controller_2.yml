@@ -1,0 +1,31 @@
+name: controller
+on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened, ready_for_review ]
+  merge_group:
+    types: [ checks_requested ]
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+  plan-prod-terraform:
+    uses: ./.github/workflows/plan-prod-terraform.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'plan-prod-terraform-paths') }}
+  unit-test-go:
+    uses: ./.github/workflows/unit-test-go.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'unit-test-go-paths') }}
+  pull-validate-dockerfiles:
+    uses: ./.github/workflows/pull-validate-dockerfiles.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-paths') }}

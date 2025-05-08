@@ -1,13 +1,6 @@
 name: build-image-detector
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-detector/*.go"
-      - "cmd/image-detector/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
   push:
     branches:
       - main
