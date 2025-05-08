@@ -164,6 +164,21 @@ Image signing allows verification that the image comes from a trusted repository
 > [!NOTE]
 > Image Builder only signs images built on the **push**, **schedule**, and **workflow_dispatch** events. Images built on the **pull_request_target** and **merge_group** event are not signed.
 
+### OCI-Compliant Image Signing Process
+
+Image Builder implements signing based on the following image types:
+
+- **OCI Image Index Images**: For images (supporting multiple platforms like linux/amd64, linux/arm64), Image Builder performs the following actions:
+    1. Detects the image index using OCI registry APIs
+    2. Retrieves the image index digest and size
+    3. Signs the entire `manifest-list.json`
+    4. Stores signatures according to Notary v2 specifications
+
+- **OCI Image Manifest Images**: For images built for one specific architecture, Image Builder performs the following actions:
+    1. Retrieves the image manifest digest directly
+    2. Signs the image manifest digest
+    3. Associates the signature with the specific image version
+
 ## Environment File
 
 The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
