@@ -1,6 +1,7 @@
-name: push-build-oidc-token-verifier.yml
+name: build-oidc-token-verifier.yml
 # description: "Build test-infra/cmd/oidc-token-verifier image for image-builder application."
 on:
+  workflow_call:
   push:
     branches:
       - main
@@ -21,3 +22,6 @@ jobs:
       name: test-infra/oidc-token-verifier
       dockerfile: cmd/oidc-token-verifier/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

@@ -138,9 +138,13 @@ jobs:
       - name: Print built images
         run: |
           images=$(echo '${{ steps.build.outputs.images }}' | jq -r '.[]')
+          architectures=$(echo '${{ steps.build.outputs.architectures }}' | jq -r '. | join(",")')
+
           if [[ -n "$images" ]]; then
-            echo "### 🏗️ Images built! 🏗️" >> $GITHUB_STEP_SUMMARY
-            for image in $images; do
-              echo " - $image" >> $GITHUB_STEP_SUMMARY
-            done
+              echo "### 🏗️ Images built! 🏗️" >> $GITHUB_STEP_SUMMARY
+              echo "| Image | Architecture |" >> $GITHUB_STEP_SUMMARY
+              echo "|-------|--------------|" >> $GITHUB_STEP_SUMMARY
+              for image in $images; do
+                  echo "| $image | $architectures |" >> $GITHUB_STEP_SUMMARY
+              done
           fi

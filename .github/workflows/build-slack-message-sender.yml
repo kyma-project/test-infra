@@ -1,7 +1,12 @@
-name: pull-build-slack-message-sender.yml
+name: build-slack-message-sender.yml
 #  description: "Build slack-message-sender image for sending labeling notification to kyma teams.
 on:
   workflow_call:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/cloud-run/slack-message-sender/**"
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -14,3 +19,6 @@ jobs:
       name: test-infra/slackmessagesender
       dockerfile: cmd/cloud-run/slack-message-sender/Dockerfile
       context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64

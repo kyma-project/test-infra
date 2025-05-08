@@ -1,6 +1,15 @@
-name: pull-build-image-syncer
+name: build-image-syncer
 on:
   workflow_call:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/image-syncer/*.go"
+      - "cmd/image-syncer/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -13,9 +22,6 @@ jobs:
       name: image-syncer
       dockerfile: cmd/image-syncer/Dockerfile
       context: .
-  print-image:
-    runs-on: ubuntu-latest
-    needs: build-image
-    steps:
-      - name: Print image
-        run: echo "Image built ${{ needs.build-image.outputs.images }}"
+      build-engine: buildx
+      platforms: |
+        linux/amd64
