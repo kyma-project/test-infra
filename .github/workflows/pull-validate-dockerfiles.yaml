@@ -21,8 +21,8 @@ jobs:
         with:
           ref: "${{ github.event.pull_request.merge_commit_sha }}"
         if: ${{ github.event_name == 'pull_request_target' }}
-      - name: Checkout target branch
-        id: checkout_target_branch
+      - name: Checkout merge_group branch
+        id: checkout_merge_group_branch
         uses: actions/checkout@v4
         if: ${{ github.event_name == 'merge_group' }}
       - name: Lint Dockerfiles

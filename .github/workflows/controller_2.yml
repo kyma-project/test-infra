@@ -6,14 +6,12 @@ on:
     types: [ checks_requested ]
 
 jobs:
-  run-workflows:
+  detect-changed-files:
     runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.pathFilters.outputs.changes }}
     steps:
-      - name: Checkout PR merge commit
-        id: checkout_pr_merge_commit
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: pathFilters
         with:
@@ -21,13 +19,13 @@ jobs:
 
   plan-prod-terraform:
     uses: ./.github/workflows/plan-prod-terraform.yml
-    needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'plan-prod-terraform-paths') }}
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'plan-prod-terraform-paths') }}
   unit-test-go:
     uses: ./.github/workflows/unit-test-go.yml
-    needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'unit-test-go-paths') }}
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'unit-test-go-paths') }}
   pull-validate-dockerfiles:
     uses: ./.github/workflows/pull-validate-dockerfiles.yml
-    needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-validate-dockerfiles-paths') }}
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-paths') }}
