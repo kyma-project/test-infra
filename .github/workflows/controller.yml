@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-workflows:
-    runs-on: [ ubuntu-latest ]
+    runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.pathFilters.outputs.changes }}
     steps:
@@ -51,43 +51,43 @@ jobs:
     uses: ./.github/workflows/buildx-images.yml
     needs: run-workflows
     if: ${{ contains(needs.run-workflows.outputs.files, 'buildx-images-paths') }}
-  pull-build-image-autobumper:
-    uses: ./.github/workflows/pull-build-image-autobumper.yml
+  build-image-autobumper:
+    uses: ./.github/workflows/build-image-autobumper.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-image-autobumper-paths') }}
-  pull-build-image-builder:
-    uses: ./.github/workflows/pull-build-image-builder.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-image-autobumper-paths') }}
+  build-image-builder:
+    uses: ./.github/workflows/build-image-builder.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-image-builder-paths') }}
-  pull-build-image-detector:
-    uses: ./.github/workflows/pull-build-image-detector.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-image-builder-paths') }}
+  build-image-detector:
+    uses: ./.github/workflows/build-image-detector.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-image-detector-paths') }}
-  pull-build-image-syncer:
-    uses: ./.github/workflows/pull-build-image-syncer.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-image-detector-paths') }}
+  build-image-syncer:
+    uses: ./.github/workflows/build-image-syncer.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-image-syncer-paths') }}
-  pull-build-oidc-token-verifier:
-    uses: ./.github/workflows/pull-build-oidc-token-verifier.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-image-syncer-paths') }}
+  build-oidc-token-verifier:
+    uses: ./.github/workflows/build-oidc-token-verifier.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-oidc-token-verifier-paths') }}
-  pull-build-rotate-service-account-keys:
-    uses: ./.github/workflows/pull-build-rotate-service-account-keys.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-oidc-token-verifier-paths') }}
+  build-rotate-service-account-keys:
+    uses: ./.github/workflows/build-rotate-service-account-keys.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-rotate-service-account-keys-paths') }}
-  pull-build-service-account-keys-cleaner:
-    uses: ./.github/workflows/pull-build-service-account-keys-cleaner.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-rotate-service-account-keys-paths') }}
+  build-service-account-keys-cleaner:
+    uses: ./.github/workflows/build-service-account-keys-cleaner.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-service-account-keys-cleaner-paths') }}
-  pull-build-signify-secret-rotator:
-    uses: ./.github/workflows/pull-build-signify-secret-rotator.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-service-account-keys-cleaner-paths') }}
+  build-signify-secret-rotator:
+    uses: ./.github/workflows/build-signify-secret-rotator.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-signify-secret-rotator-paths') }}
-  pull-build-slack-message-sender:
-    uses: ./.github/workflows/pull-build-slack-message-sender.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-signify-secret-rotator-paths') }}
+  build-slack-message-sender:
+    uses: ./.github/workflows/build-slack-message-sender.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-build-slack-message-sender-paths') }}
-  pull-image-builder-test:
-    uses: ./.github/workflows/pull-image-builder-test.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'build-slack-message-sender-paths') }}
+  image-builder-test:
+    uses: ./.github/workflows/image-builder-test.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-image-builder-test-paths') }}
+    if: ${{ contains(needs.run-workflows.outputs.files, 'image-builder-test-paths') }}

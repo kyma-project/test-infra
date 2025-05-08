@@ -43,63 +43,63 @@ build-usersmapchecker-paths:
 buildx-images-paths:
   - "images/**"
   - ".github/workflows/image-builder.yml"
-pull-build-image-autobumper-paths:
+build-image-autobumper-paths:
   - 'cmd/image-autobumper/Dockerfile'
   - 'cmd/image-autobumper/**'
   - 'pkg/github/bumper/**'
   - "go.mod"
   - "go.sum"
-pull-build-image-builder-paths:
+build-image-builder-paths:
   - "cmd/image-builder/*.go"
   - "cmd/image-builder/images/kaniko/*"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-image-detector-paths:
+build-image-detector-paths:
   - "cmd/image-detector/*.go"
   - "cmd/image-detector/Dockerfile"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-image-syncer-paths:
+build-image-syncer-paths:
   - "cmd/image-syncer/*.go"
   - "cmd/image-syncer/Dockerfile"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-oidc-token-verifier-paths:
+build-oidc-token-verifier-paths:
   - "cmd/oidc-token-verifier/**"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-rotate-service-account-keys-paths:
+build-rotate-service-account-keys-paths:
   - "cmd/cloud-run/rotate-service-account/Dockerfile"
   - "cmd/cloud-run/rotate-service-account/*.go"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-service-account-keys-cleaner-paths:
+build-service-account-keys-cleaner-paths:
   - "cmd/cloud-run/service-account-keys-cleaner/Dockerfile"
   - "cmd/cloud-run/service-account-keys-cleaner/*.go"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
-pull-build-signify-secret-rotator-paths:
+build-signify-secret-rotator-paths:
   - "cmd/cloud-run/signifysecretrotator/**"
   - ".github/workflows/pull-build-signify-secret-rotator.yml"
-pull-build-slack-message-sender-paths:
+build-slack-message-sender-paths:
   - "cmd/cloud-run/slack-message-sender/**"
 pull-image-builder-test-paths:
   - ".github/workflows/pull-image-builder-test.yml"
   - ".github/workflows/image-builder.yml"
   - ".github/actions/expose-jwt-action/**"
   - ".github/actions/image-builder/**"
-pull-plan-prod-terraform-paths:
+plan-prod-terraform-paths:
   - "**.tf"
   - "**.tfvars"
   - "**.yaml"
   - "**.yml"
-pull-unit-test-go-paths:
+unit-test-go-paths:
   - '.github/workflows/pull-unit-test-go.yaml'
   - '**/*.go'
 pull-validate-dockerfiles-paths:

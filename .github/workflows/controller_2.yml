@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-workflows:
-    runs-on: [ ubuntu-latest ]
+    runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.pathFilters.outputs.changes }}
     steps:
@@ -19,14 +19,14 @@ jobs:
         with:
           filters: .github/controller-filters.yaml
 
-  pull-plan-prod-terraform:
-    uses: ./.github/workflows/pull-plan-prod-terraform.yml
+  plan-prod-terraform:
+    uses: ./.github/workflows/plan-prod-terraform.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-plan-prod-terraform-paths') }}
-  pull-unit-test-go:
-    uses: ./.github/workflows/pull-unit-test-go.yml
+    if: ${{ contains(needs.run-workflows.outputs.files, 'plan-prod-terraform-paths') }}
+  unit-test-go:
+    uses: ./.github/workflows/unit-test-go.yml
     needs: run-workflows
-    if: ${{ contains(needs.run-workflows.outputs.files, 'pull-unit-test-go-paths') }}
+    if: ${{ contains(needs.run-workflows.outputs.files, 'unit-test-go-paths') }}
   pull-validate-dockerfiles:
     uses: ./.github/workflows/pull-validate-dockerfiles.yml
     needs: run-workflows
