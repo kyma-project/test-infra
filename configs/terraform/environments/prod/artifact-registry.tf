@@ -21,30 +21,26 @@ module "artifact_registry" {
   cleanup_policies          = each.value.cleanup_policies
 }
 
-# TODO (dekiel): move to the module modules/artifact-registry
-resource "google_artifact_registry_repository" "prod_docker_repository" {
-  provider               = google.kyma_project
-  labels                 = var.prod_docker_repository.labels
-  location               = var.prod_docker_repository.location
-  repository_id          = var.prod_docker_repository.name
-  description            = var.prod_docker_repository.description
-  format                 = var.prod_docker_repository.format
-  cleanup_policy_dry_run = var.prod_docker_repository.cleanup_policy_dry_run
-  lifecycle {
-    prevent_destroy = true
-  }
-  docker_config {
-    immutable_tags = var.prod_docker_repository.immutable_tags
+moved {
+  from = google_artifact_registry_repository.prod_docker_repository
+  to   = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
+}
+
+module "prod_docker_repository" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
   }
 
-  cleanup_policies {
-    id     = "delete-untagged"
-    action = "DELETE"
-    condition {
-      tag_state = "UNTAGGED"
-    }
-  }
-
+  repository_name            = var.prod_docker_repository.name
+  description                = var.prod_docker_repository.description
+  location                   = var.prod_docker_repository.location
+  immutable_tags             = var.prod_docker_repository.immutable_tags
+  format                     = var.prod_docker_repository.format
+  cleanup_policies           = var.prod_docker_repository.cleanup_policies
+  cleanup_policy_dry_run     = var.prod_docker_repository.cleanup_policy_dry_run
+  repository_prevent_destroy = var.dev_docker_repository.repository_prevent_destroy
 }
 
 # TODO (dekiel): move to the module modules/artifact-registry
@@ -60,26 +56,29 @@ resource "google_artifact_registry_repository" "docker_dev" {
   }
   docker_config {
     immutable_tags = var.docker_dev_repository.immutable_tags
+    type           = var.prod_docker_repository.type
   }
 
-  cleanup_policies {
-    id     = "delete-untagged"
-    action = "DELETE"
-    condition {
-      tag_state = "UNTAGGED"
-    }
+}
+moved {
+  from = google_artifact_registry_repository.docker_dev
+  to   = module.dev_docker_repository.google_artifact_registry_repository.artifact_registry
+}
+
+module "dev_docker_repository" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
   }
 
-  cleanup_policies {
-    id     = "delete-old-pr-images"
-    action = "DELETE"
-    condition {
-      tag_state = "TAGGED"
-      # Equivalent to PR-*
-      tag_prefixes = ["PR-"]
-      older_than   = var.docker_dev_repository.pr_images_max_age
-    }
-  }
-
-  labels = var.docker_dev_repository.labels
+  repository_name            = var.dev_docker_repository.name
+  description                = var.dev_docker_repository.description
+  location                   = var.dev_docker_repository.location
+  immutable_tags             = var.dev_docker_repository.immutable_tags
+  format                     = var.dev_docker_repository.format
+  cleanup_policies           = var.dev_docker_repository.cleanup_policies
+  cleanup_policy_dry_run     = var.dev_docker_repository.cleanup_policy_dry_run
+  type                       = var.dev_docker_repository.type
+  repository_prevent_destroy = var.dev_docker_repository.repository_prevent_destroy
 }

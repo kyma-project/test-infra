@@ -1,13 +1,3 @@
-output "trusted_workload_gatekeeper" {
-  value     = module.trusted_workload_gatekeeper
-  sensitive = true
-}
-
-output "untrusted_workload_gatekeeper" {
-  value     = module.untrusted_workload_gatekeeper
-  sensitive = true
-}
-
 output "terraform_executor_gcp_service_account" {
   value = google_service_account.terraform_executor
 }
