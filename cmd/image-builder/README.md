@@ -124,7 +124,7 @@ See the provided outputs description in the [image-builder reusable workflow](/.
 The Image Builder reusable workflow provides a summary of the build process.
 The summary includes the following information:
 
-* The full name with tag of the image built.
+* The full name with the tag of the image built.
 * The Architecture of the image built.
 
 ![job_summary.png](documentation_assets/job_summary.png)
