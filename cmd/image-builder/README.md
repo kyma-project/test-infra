@@ -119,6 +119,16 @@ See the accepted inputs description in the [image-builder reusable workflow](/.g
 The Image Builder reusable workflow provides outputs to pass the results of the build process.
 See the provided outputs description in the [image-builder reusable workflow](/.github/workflows/image-builder.yml) file.
 
+### Reusable Workflow Summary
+
+The Image Builder reusable workflow provides a summary of the build process.
+The summary includes the following information:
+
+* The full name with tag of the image built.
+* The Architecture of the image built.
+
+![job_summary.png](documentation_assets/job_summary.png)
+
 ## Tags
 
 ### Default Tags
@@ -134,6 +144,12 @@ Image Builder supports two default tags:
 ### Named Tags
 
 For information on named tags, see [Named Tags](image-builder.md#named-tags).
+
+## Build Args
+
+By default, Image Builder passes the following build arguments to the Docker build process:
+
+- **BUILD_COMMIT_SHA**: The commit SHA that the image is built from.
 
 ## Supported Image Repositories
 
