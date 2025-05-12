@@ -2,16 +2,15 @@ data "google_client_config" "this" {}
 
 # Get correct location based on multi_region flag.
 locals {
+  remote_repository_config = one(var.remote_repository_config)
+  # This is workaround, as OpenTofu does not support yet the conditional expressions in the resource block
+  # https://github.com/opentofu/opentofu/issues/1329
+  repository = var.repository_prevent_destroy ? google_artifact_registry_repository.protected_repository[0] : google_artifact_registry_repository.unprotected_repository[0]
   location = var.multi_region ? (
     var.primary_area != "" ? var.primary_area : error("multi_region is true, but primary_area is not set.")
     ) : (
     var.location != "" ? var.location : error("multi_region is false, but location is not set.")
   )
-}
-
-variable "repository_prevent_destroy" {
-  type    = bool
-  default = true
 }
 
 # Resource with prevent_destroy lifecycle
@@ -103,7 +102,7 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
       description = remote_repository_config.value.description
 
       docker_repository {
-        public_repository = remote_repository_config.value.docker_repository.public_repository
+        public_repository = remote_repository_config.value.docker_public_repository
       }
 
       dynamic "upstream_credentials" {
@@ -134,13 +133,6 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
       }
     }
   }
-}
-
-# Use a local to simplify referencing the active repository
-locals {
-  # This is workaround, as OpenTofu does not support yet the conditional expressions in the resource block
-  # https://github.com/opentofu/opentofu/issues/1329
-  repository = var.repository_prevent_destroy ? google_artifact_registry_repository.protected_repository[0] : google_artifact_registry_repository.unprotected_repository[0]
 }
 
 # Updated IAM resources to reference the local.repository
