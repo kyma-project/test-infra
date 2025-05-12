@@ -40,7 +40,7 @@ module "prod_docker_repository" {
   format                     = var.prod_docker_repository.format
   cleanup_policies           = var.prod_docker_repository.cleanup_policies
   cleanup_policy_dry_run     = var.prod_docker_repository.cleanup_policy_dry_run
-  repository_prevent_destroy = var.dev_docker_repository.repository_prevent_destroy
+  repository_prevent_destroy = var.prod_docker_repository.repository_prevent_destroy
 }
 
 moved {
