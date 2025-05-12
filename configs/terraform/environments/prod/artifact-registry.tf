@@ -22,8 +22,8 @@ module "artifact_registry" {
 }
 
 moved {
-  from = google_artifact_registry_repository.prod_docker_repository
-  to   = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
+  from = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
+  to   = module.prod_docker_repository.google_artifact_registry_repository.protected_repository[0]
 }
 
 module "prod_docker_repository" {
