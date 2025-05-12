@@ -39,7 +39,7 @@ resource "google_artifact_registry_repository" "protected_repository" {
 
   dynamic "remote_repository_config" {
     for_each = local.remote_repository_config != null ? [local.remote_repository_config] : []
-    iterator = "remote_config"
+    iterator = remote_config
     content {
       description = remote_config.value.description
 
