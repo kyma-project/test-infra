@@ -39,20 +39,21 @@ resource "google_artifact_registry_repository" "protected_repository" {
 
   dynamic "remote_repository_config" {
     for_each = local.remote_repository_config != null ? [local.remote_repository_config] : []
+    iterator = "remote_config"
     content {
-      description = each.value.description
+      description = remote_config.value.description
 
       docker_repository {
-        public_repository = each.value.docker_public_repository
+        public_repository = remote_config.value.docker_public_repository
       }
 
       dynamic "upstream_credentials" {
-        for_each = (try(each.value.upstream_username, null) != null &&
-        try(each.value.upstream_password_secret, null) != null) ? [1] : []
+        for_each = (try(remote_config.value.upstream_username, null) != null &&
+        try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username             = each.value.upstream_username
-            password_secret_version = each.value.upstream_password_secret
+            username = remote_config.value.upstream_username
+            password_secret_version = remote_config.value.upstream_password_secret
           }
         }
       }
@@ -98,20 +99,21 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
 
   dynamic "remote_repository_config" {
     for_each = local.remote_repository_config != null ? [local.remote_repository_config] : []
+    iterator = "remote_config"
     content {
-      description = each.value.description
+      description = remote_config.value.description
 
       docker_repository {
-        public_repository = each.value.docker_public_repository
+        public_repository = remote_config.value.docker_public_repository
       }
 
       dynamic "upstream_credentials" {
-        for_each = (try(each.value.upstream_username, null) != null &&
-        try(each.value.upstream_password_secret, null) != null) ? [1] : []
+        for_each = (try(remote_config.value.upstream_username, null) != null &&
+        try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username             = each.value.upstream_username
-            password_secret_version = each.value.upstream_password_secret
+            username = remote_config.value.upstream_username
+            password_secret_version = remote_config.value.upstream_password_secret
           }
         }
       }
