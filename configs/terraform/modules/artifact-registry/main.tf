@@ -38,7 +38,7 @@ resource "google_artifact_registry_repository" "protected_repository" {
   }
 
   dynamic "remote_repository_config" {
-    for_each = var.remote_repository_config != null ? [var.remote_repository_config] : []
+    for_each = local.remote_repository_config != null ? [local.remote_repository_config] : []
     content {
       description = local.remote_repository_config.description
 
@@ -97,7 +97,7 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
   }
 
   dynamic "remote_repository_config" {
-    for_each = var.remote_repository_config != null ? [var.remote_repository_config] : []
+    for_each = local.remote_repository_config != null ? [local.remote_repository_config] : []
     content {
       description = remote_repository_config.value.description
 
