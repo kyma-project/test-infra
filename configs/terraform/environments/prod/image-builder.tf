@@ -114,8 +114,6 @@ module "dockerhub_mirror" {
   }
 }
 
-
-
 # This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
 module "docker_cache" {
   source = "../../modules/artifact-registry"

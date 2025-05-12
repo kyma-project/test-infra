@@ -40,19 +40,19 @@ resource "google_artifact_registry_repository" "protected_repository" {
   dynamic "remote_repository_config" {
     for_each = var.remote_repository_config != null ? [var.remote_repository_config] : []
     content {
-      description = remote_repository_config.value.description
+      description = local.remote_repository_config.description
 
       docker_repository {
-        public_repository = remote_repository_config.value.docker_repository.public_repository
+        public_repository = local.remote_repository_config.docker_public_repository
       }
 
       dynamic "upstream_credentials" {
-        for_each = (try(remote_repository_config.value.upstream_username, null) != null &&
-        try(remote_repository_config.value.upstream_password_secret, null) != null) ? [1] : []
+        for_each = (try(local.remote_repository_config.upstream_username, null) != null &&
+        try(local.remote_repository_config.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username                = remote_repository_config.value.upstream_username
-            password_secret_version = remote_repository_config.value.upstream_password_secret
+            username = local.remote_repository_config.upstream_username
+            password_secret_version = local.remote_repository_config.upstream_password_secret
           }
         }
       }
