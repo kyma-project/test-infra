@@ -108,8 +108,8 @@ module "dockerhub_mirror" {
 
   remote_repository_config = {
     description = var.dockerhub_mirror.remote_repository_config.description
-    docker_repository = var.dockerhub_mirror.remote_repository_config.docker_public_repository
-    upstream_username        = var.dockerhub_credentials != null ? var.dockerhub_credentials.username : null
+    docker_public_repository = var.dockerhub_mirror.remote_repository_config.docker_public_repository
+    upstream_username = var.dockerhub_credentials != null ? var.dockerhub_credentials.username : null
     upstream_password_secret = data.google_secret_manager_secret_version.dockerhub_oat_secret[0].secret
   }
 }
