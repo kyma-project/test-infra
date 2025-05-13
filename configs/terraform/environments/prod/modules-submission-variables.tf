@@ -30,21 +30,24 @@ variable "dev_modules_internal_repository" {
 
 variable "dev_kyma_modules_repository" {
   type = object({
-    name        = string
-    description = string
+    name                       = string
+    description                = string
+    repository_prevent_destroy = string
   })
   default = {
-    name        = "dev-kyma-modules"
-    description = "Development Kyma modules"
+    name                       = "dev-kyma-modules"
+    description                = "Development Kyma modules"
+    repository_prevent_destroy = false
   }
 }
 
 variable "kyma_modules_repository" {
   type = object({
-    name        = string
-    description = string
-    type        = string
-    reader_serviceaccounts = list(string)
+    name                       = string
+    description                = string
+    type                       = string
+    reader_serviceaccounts     = list(string)
+    repository_prevent_destroy = string
   })
   default = {
     name        = "kyma-modules"
@@ -55,5 +58,6 @@ variable "kyma_modules_repository" {
       "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com",
       "klm-controller-manager@sap-ti-dx-kyma-mps-prod.iam.gserviceaccount.com"
     ]
+    repository_prevent_destroy = true
   }
 }

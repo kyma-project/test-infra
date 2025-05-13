@@ -52,10 +52,10 @@ module "dev_kyma_modules" {
   providers = {
     google = google.kyma_project
   }
-
-  repository_name = var.dev_kyma_modules_repository.name
-  description     = var.dev_kyma_modules_repository.description
-  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+  repository_prevent_destroy = var.dev_kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.dev_kyma_modules_repository.name
+  description                = var.dev_kyma_modules_repository.description
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }
 
 moved {
@@ -70,9 +70,10 @@ module "kyma_modules" {
     google = google.kyma_project
   }
 
-  repository_name        = var.kyma_modules_repository.name
-  description            = var.kyma_modules_repository.description
-  type                   = var.kyma_modules_repository.type
-  reader_serviceaccounts = var.kyma_modules_repository.reader_serviceaccounts
-  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+  repository_prevent_destroy = var.kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.kyma_modules_repository.name
+  description                = var.kyma_modules_repository.description
+  type                       = var.kyma_modules_repository.type
+  reader_serviceaccounts     = var.kyma_modules_repository.reader_serviceaccounts
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }
