@@ -58,6 +58,11 @@ module "dev_kyma_modules" {
   repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }
 
+moved {
+  from = module.kyma_modules.google_artifact_registry_repository.artifact_registry
+  to   = module.kyma_modules.google_artifact_registry_repository.protected_repository[0]
+}
+
 module "kyma_modules" {
   source = "../../modules/artifact-registry"
 
