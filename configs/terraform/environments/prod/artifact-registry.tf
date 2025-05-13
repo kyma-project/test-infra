@@ -1,3 +1,8 @@
+moved {
+  from = module.artifact_registry["modules-internal"].google_artifact_registry_repository.artifact_registry
+  to   = module.artifact_registry["modules-internal"].google_artifact_registry_repository.protected_repository[0]
+}
+
 # TODO (dekiel): remove after migration to modulectl is done
 module "artifact_registry" {
   source = "../../modules/artifact-registry"
