@@ -122,5 +122,5 @@ variable "remote_repository_config" {
 
 variable "repository_prevent_destroy" {
   type    = bool
-  default = false
+  default = true
 }
