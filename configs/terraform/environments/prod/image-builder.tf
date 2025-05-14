@@ -76,6 +76,13 @@ resource "google_secret_manager_secret_iam_member" "image_builder_reusable_workf
   member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
 }
 
+resource "google_secret_manager_secret_iam_member" "artifact_registry_access" {
+  project   = var.gcp_project_id
+  secret_id = var.dockerhub_credentials.oat_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.kyma_project_image_builder.email}"
+}
+
 # GitHub resources
 
 # Define GitHub Actions secrets for the image-builder reusable workflow.
