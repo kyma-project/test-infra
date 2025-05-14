@@ -1,0 +1,46 @@
+name: unit-test-python
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/unit-test-python.yml'
+      - '**/*.py'
+      - '**/requirements.txt'
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          apps=$(find . -name "requirements.txt" -exec dirname {} \; | sort -u)
+          matrix=$(echo $apps | jq -R 'split(" ") | {include: .}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+        env:
+          PATH: $PATH:/usr/local/bin # Ensure jq is available
+
+  unittest:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - name: Install dependencies and run tests
+        run: |
+          cd ${{ matrix.include }}
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          pytest
+          deactivate
