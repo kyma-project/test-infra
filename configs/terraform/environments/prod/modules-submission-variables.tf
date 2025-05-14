@@ -32,7 +32,7 @@ variable "dev_kyma_modules_repository" {
   type = object({
     name                       = string
     description                = string
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
   })
   default = {
     name                       = "dev-kyma-modules"
@@ -47,7 +47,7 @@ variable "kyma_modules_repository" {
     description                = string
     type                       = string
     reader_serviceaccounts     = list(string)
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
   })
   default = {
     name        = "kyma-modules"

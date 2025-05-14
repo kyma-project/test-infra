@@ -31,7 +31,7 @@ variable "prod_docker_repository" {
   type = object({
     name                   = string
     description            = string
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
     location               = string
     format                 = string
     immutable_tags         = bool
@@ -75,7 +75,7 @@ variable "dev_docker_repository" {
   type = object({
     name                   = string
     description            = string
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
     location               = string
     format                 = string
     immutable_tags         = bool

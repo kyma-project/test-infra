@@ -62,7 +62,7 @@ variable "dockerhub_mirror" {
   type = object({
     name                       = string
     description                = string
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
     location                   = string
     format                     = string
     immutable_tags             = bool
@@ -115,7 +115,7 @@ variable "docker_cache_repository" {
   type = object({
     name                       = string
     description                = string
-    repository_prevent_destroy = string
+    repository_prevent_destroy = bool
     location                   = string
     format                     = string
     immutable_tags             = bool
