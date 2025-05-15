@@ -102,7 +102,6 @@ module "dockerhub_mirror" {
   repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
   location                   = var.dockerhub_mirror.location
   format                     = var.dockerhub_mirror.format
-  immutable_tags             = var.dockerhub_mirror.immutable_tags
   mode                       = var.dockerhub_mirror.mode
   cleanup_policy_dry_run     = var.dockerhub_mirror.cleanup_policy_dry_run
 
