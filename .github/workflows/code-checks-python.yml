@@ -104,5 +104,5 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           source venv/bin/activate
-          pylint --ignore-paths=venv --recursive=y .
+          pylint --rcfile=${{ github.workspace }}/.pylintrc --ignore-paths=venv --recursive=y .
         working-directory: ${{ matrix.app }}
