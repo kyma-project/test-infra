@@ -1,11 +1,11 @@
-name: unit-test-python
+name: code-checks-python
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - '.github/workflows/unit-test-python.yml'
+      - '.github/workflows/code-checks-python.yml'
       - '**/*.py'
       - '**/requirements.txt'
 
@@ -50,11 +50,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v4
-      - name: Install dependencies and run tests
+
+      - name: Install dependencies
         run: |
-          cd ${{ matrix.app}}
           python -m venv venv
           source venv/bin/activate
          
@@ -62,6 +63,42 @@ jobs:
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           fi
-
+        working-directory: ${{ matrix.app }}
+      
+      - name: Run unit tests
+        run: |
+          source venv/bin/activate
           python3 -m unittest discover
-          deactivate
+        working-directory: ${{ matrix.app }}
+  
+  lint:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+
+          # Install dependencies if requirements.txt exists
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+          pip install pylint
+        working-directory: ${{ matrix.app }}
+
+      - name: Analysing the code with pylint
+        run: |
+          source venv/bin/activate
+          pylint ./**/*.py
+        working-directory: ${{ matrix.app }}
