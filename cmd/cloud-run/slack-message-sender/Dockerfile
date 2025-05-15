@@ -1,14 +1,32 @@
-FROM python:3.13.3-alpine3.21
+# Stage 1: Build with dependencies inside venv
+FROM cgr.dev/chainguard/python:latest-dev as builder
 
-# Allow statements and log messages to immediately appear in the Knative logs
-ENV PYTHONUNBUFFERED True
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY ./cmd/cloud-run/slack-message-sender/slack-message-sender.py .
+# Create a virtual environment
+RUN python -m venv /app/venv
+
+# Activate venv and install dependencies
+ENV PATH="/app/venv/bin:$PATH"
+
 COPY ./cmd/cloud-run/slack-message-sender/requirements.txt .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt && \
-	apk add --no-cache ca-certificates
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Production image
+FROM cgr.dev/chainguard/python:latest
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1
+
+# Copy app source code
+COPY ./cmd/cloud-run/slack-message-sender/slack-message-sender.py .
+
+# Copy the virtual environment from the builder stage
+COPY --from=builder /app/venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "slack-message-sender:app"]
