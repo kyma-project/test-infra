@@ -65,7 +65,6 @@ variable "dockerhub_mirror" {
     repository_prevent_destroy = bool
     location                   = string
     format                     = string
-    immutable_tags             = bool
     mode                       = string
     cleanup_policy_dry_run     = bool
     labels                     = map(string)
@@ -88,7 +87,6 @@ variable "dockerhub_mirror" {
     repository_prevent_destroy = false
     location                   = "europe"
     format                     = "DOCKER"
-    immutable_tags             = false
     mode                       = "REMOTE_REPOSITORY"
     cleanup_policy_dry_run     = true
     labels = {
