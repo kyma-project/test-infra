@@ -20,11 +20,27 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         run: |
-          apps=$(find . -name "requirements.txt" -exec dirname {} \; | sort -u)
-          matrix=$(echo $apps | jq -R 'split(" ") | {include: .}')
+          # Find all directories containing .py files
+          py_dirs=$(find . -type f -name "*.py" -exec dirname {} \; | sort -u)
+
+          root_dirs=""
+          for dir in $py_dirs; do
+            parent=$(dirname "$dir")
+
+            # If parent does not contain any .py files, consider as root dir
+            if ! find "$parent" -maxdepth 1 -type f -name "*.py" | grep -q .; then
+              root_dirs="$root_dirs $dir"
+            fi
+
+          done
+
+          # Remove leading/trailing whitespace
+          root_dirs=$(echo $root_dirs | xargs)
+          echo "Found applications directories: $root_dirs"
+
+          matrix="$(echo $root_dirs | jq -Rsc '. | split(" ") | {app: .}')"
+          echo "Genrated matrix: $matrix"
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
-        env:
-          PATH: $PATH:/usr/local/bin # Ensure jq is available
 
   unittest:
     needs: generate-matrix
@@ -38,9 +54,14 @@ jobs:
         uses: actions/setup-python@v4
       - name: Install dependencies and run tests
         run: |
-          cd ${{ matrix.include }}
+          cd ${{ matrix.app}}
           python -m venv venv
           source venv/bin/activate
-          pip install -r requirements.txt
-          pytest
+         
+          # Install dependencies if requirements.txt exists
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+          python3 -m unittest discover
           deactivate
