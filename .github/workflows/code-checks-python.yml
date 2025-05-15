@@ -20,28 +20,30 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         run: |
-          # Find all directories containing .py files
+          echo "Searching applications directories..."
           py_dirs=$(find . -type f -name "*.py" -exec dirname {} \; | sort -u)
 
+          echo "Found Python files in directories:"
+          echo "$py_dirs"
+
+          echo "Searching root directories..."
           root_dirs=""
           for dir in $py_dirs; do
             parent=$(dirname "$dir")
-
+            
             # If parent does not contain any .py files, consider as root dir
             if ! find "$parent" -maxdepth 1 -type f -name "*.py" | grep -q .; then
-              # Remove leading './' if present
-              clean_dir="${dir#./}"
-              root_dirs="$root_dirs $clean_dir"
+              root_dirs="$root_dirs ${dir#./}"
             fi
-
           done
 
-          # Remove leading/trailing whitespace
-          root_dirs=$(echo $root_dirs | xargs)
           echo "Found applications directories: $root_dirs"
+          echo "Generating matrix..."
 
-          matrix="$(echo $root_dirs | jq -Rsc '. | split(" ") | {app: .}')"
-          echo "Genrated matrix: $matrix"
+          matrix=$(echo -n $root_dirs | jq -Rsc '. | split(" ") | {app: .}')
+
+          echo "Generated matrix: $matrix"
+          echo "Setting matrix output..."
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   unittest:
