@@ -50,6 +50,8 @@ jobs:
     needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Checkout code
@@ -79,6 +81,8 @@ jobs:
     needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Checkout code

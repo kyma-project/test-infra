@@ -1,3 +1,5 @@
+"""Unit tests for the Slack Message Sender."""
+
 import unittest
 
 
