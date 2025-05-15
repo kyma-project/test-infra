@@ -17,10 +17,8 @@ limitations under the License.
 package imagebumper
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"regexp"
@@ -157,15 +155,6 @@ func (cli *Client) getManifest(imageHost, imageName string) (manifest, error) {
 		return nil, fmt.Errorf("couldn't fetch tag list: %w", err)
 	}
 	defer resp.Body.Close()
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("couldn't read response body: %w", err)
-	}
-
-	fmt.Println(string(bodyBytes))
-
-	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
 	var result struct {
 		Manifest manifest `json:"manifest"`
