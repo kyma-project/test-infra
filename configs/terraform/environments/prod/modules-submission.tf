@@ -52,10 +52,15 @@ module "dev_kyma_modules" {
   providers = {
     google = google.kyma_project
   }
+  repository_prevent_destroy = var.dev_kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.dev_kyma_modules_repository.name
+  description                = var.dev_kyma_modules_repository.description
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+}
 
-  repository_name = var.dev_kyma_modules_repository.name
-  description     = var.dev_kyma_modules_repository.description
-  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+moved {
+  from = module.kyma_modules.google_artifact_registry_repository.artifact_registry
+  to   = module.kyma_modules.google_artifact_registry_repository.protected_repository[0]
 }
 
 module "kyma_modules" {
@@ -65,9 +70,10 @@ module "kyma_modules" {
     google = google.kyma_project
   }
 
-  repository_name        = var.kyma_modules_repository.name
-  description            = var.kyma_modules_repository.description
-  type                   = var.kyma_modules_repository.type
-  reader_serviceaccounts = var.kyma_modules_repository.reader_serviceaccounts
-  repoAdmin_serviceaccounts = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+  repository_prevent_destroy = var.kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.kyma_modules_repository.name
+  description                = var.kyma_modules_repository.description
+  type                       = var.kyma_modules_repository.type
+  reader_serviceaccounts     = var.kyma_modules_repository.reader_serviceaccounts
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }
