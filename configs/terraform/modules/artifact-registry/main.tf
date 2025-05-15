@@ -33,8 +33,11 @@ resource "google_artifact_registry_repository" "protected_repository" {
     prevent_destroy = true
   }
 
-  docker_config {
-    immutable_tags = var.immutable_tags
+  dynamic "docker_config" {
+    for_each = var.mode != "REMOTE_REPOSITORY" ? [1] : []
+    content {
+      immutable_tags = var.immutable_tags
+    }
   }
 
   dynamic "remote_repository_config" {
@@ -93,8 +96,11 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
     type  = var.type
   }
 
-  docker_config {
-    immutable_tags = var.immutable_tags
+  dynamic "docker_config" {
+    for_each = var.mode != "REMOTE_REPOSITORY" ? [1] : []
+    content {
+      immutable_tags = var.immutable_tags
+    }
   }
 
   dynamic "remote_repository_config" {
