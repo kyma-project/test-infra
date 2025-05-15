@@ -80,6 +80,17 @@ variable "format" {
   default     = "DOCKER"
 }
 
+variable "mode" {
+  type        = string
+  description = "Mode of the Artifact Registry"
+  default     = "STANDARD_REPOSITORY"
+
+  validation {
+    condition     = contains(["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY", "REMOTE_REPOSITORY"], var.mode)
+    error_message = "Mode must be either 'STANDARD_REPOSITORY', 'VIRTUAL_REPOSITORY', or 'REMOTE_REPOSITORY'."
+  }
+}
+
 variable "cleanup_policy_dry_run" {
   type        = bool
   description = "Is cleanup policy dry run"
@@ -97,4 +108,19 @@ variable "cleanup_policies" {
     }))
   }))
   default = []
+}
+
+variable "remote_repository_config" {
+  type = object({
+    description = string
+    docker_public_repository = string
+    upstream_username        = optional(string)
+    upstream_password_secret = optional(string)
+  })
+  default = null
+}
+
+variable "repository_prevent_destroy" {
+  type    = bool
+  default = true
 }
