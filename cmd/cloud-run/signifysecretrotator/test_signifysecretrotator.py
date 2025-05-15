@@ -139,7 +139,7 @@ class TestSignifySecretRotator(unittest.TestCase):
             response = rotate_signify_secret()
 
         # Check that the response is an error.
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
 
     def test_rotate_signify_secret_unsupported_incorrect_secret_type(self):
         """Test the rotation of a Signify secret with an incorrect secret type."""
@@ -195,4 +195,4 @@ class TestSignifySecretRotator(unittest.TestCase):
             response = rotate_signify_secret()
 
         # Check that the response is an error.
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)

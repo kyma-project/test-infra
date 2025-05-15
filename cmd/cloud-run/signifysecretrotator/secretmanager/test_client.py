@@ -5,9 +5,7 @@ import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 from google.cloud import secretmanager
 
-# pylint: disable=import-error
-# False positive see: https://github.com/pylint-dev/pylint/issues/3984
-from client import SecretManagerClient
+from secretmanager.client import SecretManagerClient
 
 
 class TestSecretManagerClient(unittest.TestCase):
@@ -46,7 +44,7 @@ class TestSecretManagerClient(unittest.TestCase):
         # Assert
         self.assertEqual(secret, {"key": "value"})
         self.mock_access_secret_version.assert_called_once_with(
-            secret_name="projects/test-project/secrets/test-secret/versions/latest"
+            name="projects/test-project/secrets/test-secret/versions/latest"
         )
 
     def test_get_secret_plain_string(self) -> None:
@@ -64,7 +62,7 @@ class TestSecretManagerClient(unittest.TestCase):
         # Assert
         self.assertEqual(secret, "some-secret-value")
         self.mock_access_secret_version.assert_called_once_with(
-            secret_name="projects/test-project/secrets/test-secret/versions/latest"
+            name="projects/test-project/secrets/test-secret/versions/latest"
         )
 
     def test_add_secret_version(self) -> None:
