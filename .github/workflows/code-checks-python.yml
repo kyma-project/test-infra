@@ -30,7 +30,7 @@ jobs:
           root_dirs=""
           for dir in $py_dirs; do
             parent=$(dirname "$dir")
-            
+
             # If parent does not contain any .py files, consider as root dir
             if ! find "$parent" -maxdepth 1 -type f -name "*.py" | grep -q .; then
               root_dirs="$root_dirs ${dir#./}"
@@ -104,5 +104,5 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           source venv/bin/activate
-          pylint ./**/*.py
+          pylint --ignore-paths=venv --recursive=y .
         working-directory: ${{ matrix.app }}
