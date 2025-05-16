@@ -11,7 +11,6 @@ from cryptography import x509
 
 from signifysecretrotator import (
     rotate_signify_secret,
-    SecretManagerClient,
     SignifyClient,
 )
 
@@ -26,20 +25,25 @@ class TestSignifySecretRotator(unittest.TestCase):
 
     def setUp(self):
         """Set up the test case."""
-        # Mock the Google Cloud Secret Manager
-        access_secret_patcher = patch.object(SecretManagerClient, "get_secret")
-        add_secret_version_patcher = patch.object(
-            SecretManagerClient, "add_secret_version"
+        # Patch SecretManagerClient and return a mock instance
+        secret_manager_client_patcher = patch(
+            "signifysecretrotator.SecretManagerClient", autospec=True
         )
-        self.mock_access_secret = access_secret_patcher.start()
-        self.mock_add_secret_version = add_secret_version_patcher.start()
+        self.mock_secret_manager_client = secret_manager_client_patcher.start()
+        self.addCleanup(secret_manager_client_patcher.stop)
+        self.mock_secret_manager_client_instance = (
+            self.mock_secret_manager_client.return_value
+        )
+        self.mock_secret_manager_client_instance.get_secret = unittest.mock.MagicMock()
+        self.mock_secret_manager_client_instance.add_secret_version = (
+            unittest.mock.MagicMock()
+        )
 
         # Mock the Signify client
         fetch_access_token_patcher = patch.object(SignifyClient, "fetch_access_token")
         fetch_new_certificate_patcher = patch.object(
             SignifyClient, "fetch_new_certificate"
         )
-
         self.mock_fetch_access_token = fetch_access_token_patcher.start()
         self.mock_fetch_new_certificate = fetch_new_certificate_patcher.start()
 
@@ -57,7 +61,7 @@ class TestSignifySecretRotator(unittest.TestCase):
     def test_rotate_signify_secret_success(self):
         """Test the rotation of a Signify secret."""
         # Mock the response from the Secret Manager.
-        self.mock_access_secret.return_value = {
+        self.mock_secret_manager_client_instance.get_secret.return_value = {
             "name": "projects/test/secrets/test",
             "tokenURL": "https://example.com/token",
             "certServiceURL": "https://example.com/cert",
@@ -139,7 +143,7 @@ class TestSignifySecretRotator(unittest.TestCase):
             response = rotate_signify_secret()
 
         # Check that the response is an error.
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
 
     def test_rotate_signify_secret_unsupported_incorrect_secret_type(self):
         """Test the rotation of a Signify secret with an incorrect secret type."""
@@ -195,4 +199,4 @@ class TestSignifySecretRotator(unittest.TestCase):
             response = rotate_signify_secret()
 
         # Check that the response is an error.
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)

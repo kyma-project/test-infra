@@ -1,0 +1,112 @@
+name: code-checks-python
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/code-checks-python.yml'
+      - '**/*.py'
+      - '**/requirements.txt'
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          echo "Searching applications directories..."
+          py_dirs=$(find . -type f -name "*.py" -exec dirname {} \; | sort -u)
+
+          echo "Found Python files in directories:"
+          echo "$py_dirs"
+
+          echo "Searching root directories..."
+          root_dirs=""
+          for dir in $py_dirs; do
+            parent=$(dirname "$dir")
+
+            # If parent does not contain any .py files, consider as root dir
+            if ! find "$parent" -maxdepth 1 -type f -name "*.py" | grep -q .; then
+              root_dirs="$root_dirs ${dir#./}"
+            fi
+          done
+
+          echo "Found applications directories: $root_dirs"
+          echo "Generating matrix..."
+
+          matrix=$(echo -n $root_dirs | jq -Rsc '. | split(" ") | {app: .}')
+
+          echo "Generated matrix: $matrix"
+          echo "Setting matrix output..."
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  unittest:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+         
+          # Install dependencies if requirements.txt exists
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+        working-directory: ${{ matrix.app }}
+      
+      - name: Run unit tests
+        run: |
+          source venv/bin/activate
+          python3 -m unittest discover
+        working-directory: ${{ matrix.app }}
+  
+  lint:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+
+          # Install dependencies if requirements.txt exists
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+          pip install pylint
+        working-directory: ${{ matrix.app }}
+
+      - name: Analysing the code with pylint
+        run: |
+          source venv/bin/activate
+          pylint --rcfile=${{ github.workspace }}/.pylintrc --ignore-paths=venv --recursive=y .
+        working-directory: ${{ matrix.app }}
