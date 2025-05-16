@@ -1,13 +1,6 @@
 name: build-markdown-index
 on:
-  pull_request_target:
-    types: [ opened, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/markdown-index/*.go"
-      - "cmd/markdown-index/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
   push:
     branches:
       - main

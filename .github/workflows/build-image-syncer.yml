@@ -1,13 +1,6 @@
 name: build-image-syncer
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-syncer/*.go"
-      - "cmd/image-syncer/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  workflow_call:
   push:
     branches:
       - main

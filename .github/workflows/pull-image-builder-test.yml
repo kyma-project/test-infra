@@ -1,14 +1,7 @@
 name: pull-image-builder-test
 
 on:
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    paths:
-      - ".github/workflows/pull-image-builder-test.yml"
-      - ".github/workflows/image-builder.yml"
-      - ".github/actions/expose-jwt-action/**"
-      - ".github/actions/image-builder/**"
-  merge_group:
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
