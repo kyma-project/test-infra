@@ -31,6 +31,7 @@ variable "prod_docker_repository" {
   type = object({
     name                   = string
     description            = string
+    repository_prevent_destroy = bool
     location               = string
     format                 = string
     immutable_tags         = bool
@@ -51,6 +52,7 @@ variable "prod_docker_repository" {
   default = {
     name                   = "prod"
     description            = "Production images for kyma-project"
+    repository_prevent_destroy = true
     location               = "europe"
     format                 = "DOCKER"
     immutable_tags         = false
@@ -73,6 +75,7 @@ variable "dev_docker_repository" {
   type = object({
     name                   = string
     description            = string
+    repository_prevent_destroy = bool
     location               = string
     format                 = string
     immutable_tags         = bool
@@ -94,6 +97,7 @@ variable "dev_docker_repository" {
     name                   = "dev"
     description            = "Development images for kyma-project"
     location               = "europe"
+    repository_prevent_destroy = true
     format                 = "DOCKER"
     immutable_tags         = false
     mode                   = "STANDARD_REPOSITORY"
