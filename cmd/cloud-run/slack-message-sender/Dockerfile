@@ -29,4 +29,5 @@ COPY ./cmd/cloud-run/slack-message-sender/slack-message-sender.py .
 COPY --from=builder /app/venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
+ENTRYPOINT ["/app/venv/bin/python"]
 CMD ["/app/venv/bin/gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "slack-message-sender:app"]
