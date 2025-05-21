@@ -99,10 +99,9 @@ module "dockerhub_mirror" {
   repository_prevent_destroy = var.dockerhub_mirror.repository_prevent_destroy
   repository_name            = var.dockerhub_mirror.name
   description                = var.dockerhub_mirror.description
-  repoAdmin_serviceaccounts  = [google_service_account.kyma-oci-image-builder.email]
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
   location                   = var.dockerhub_mirror.location
   format                     = var.dockerhub_mirror.format
-  immutable_tags             = var.dockerhub_mirror.immutable_tags
   mode                       = var.dockerhub_mirror.mode
   cleanup_policy_dry_run     = var.dockerhub_mirror.cleanup_policy_dry_run
 
@@ -125,7 +124,7 @@ module "docker_cache" {
   repository_prevent_destroy = var.docker_cache_repository.repository_prevent_destroy
   repository_name            = var.docker_cache_repository.name
   description                = var.docker_cache_repository.description
-  repoAdmin_serviceaccounts  = [google_service_account.kyma-oci-image-builder.email]
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
   location                   = var.docker_cache_repository.location
   format                     = var.docker_cache_repository.format
   immutable_tags             = var.docker_cache_repository.immutable_tags
