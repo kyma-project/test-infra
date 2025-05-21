@@ -12,19 +12,17 @@ variable "signify_prod_secret_name" {
 
 variable "dockerhub_credentials" {
   type = object({
-    oat_secret_name = string
-    username        = string
+    secret_name = string
   })
   default = {
-    oat_secret_name = "docker_sap_org_service_auth_token"
-    username        = "sapcom"
+    secret_name = "docker_sap_org_service_auth_token"
   }
 }
 
-data "google_secret_manager_secret_version" "dockerhub_oat_secret" {
+data "google_secret_manager_secret_version" "dockerhub_creds" {
   count   = var.dockerhub_credentials != null ? 1 : 0
   project = var.gcp_project_id
-  secret  = var.dockerhub_credentials.oat_secret_name
+  secret  = var.dockerhub_credentials.secret_name
   version = "latest"
 }
 

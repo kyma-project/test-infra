@@ -106,9 +106,9 @@ module "dockerhub_mirror" {
   cleanup_policy_dry_run     = var.dockerhub_mirror.cleanup_policy_dry_run
 
   remote_repository_config = {
-    description = var.dockerhub_mirror.remote_repository_config.description
+    description              = var.dockerhub_mirror.remote_repository_config.description
     docker_public_repository = var.dockerhub_mirror.remote_repository_config.docker_public_repository
-    upstream_username = var.dockerhub_credentials != null ? var.dockerhub_credentials.username : null
+    upstream_username = var.dockerhub_credentials != null ? local.dockerhub_data.username : null
     upstream_password_secret = data.google_secret_manager_secret_version.dockerhub_oat_secret[0].name
   }
 }
@@ -137,4 +137,10 @@ resource "google_service_account" "kyma_project_image_builder" {
   provider    = google.kyma_project
   account_id  = var.image_builder_kyma-project_identity.id
   description = var.image_builder_kyma-project_identity.description
+}
+
+locals {
+  dockerhub_data = try(
+    jsondecode(data.google_secret_manager_secret_version.dockerhub_creds[0].secret_data),{}
+  )
 }
