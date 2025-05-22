@@ -70,7 +70,9 @@ jobs:
           source venv/bin/activate
           
           pip install -r requirements.txt
-        if: exists('requirements.txt')
+        # Run only if requirements.txt exists
+        # See: https://stackoverflow.com/a/77081661
+        if: ${{ hashFiles('requirements.txt') != '' }} 
         working-directory: ${{ matrix.app }}
       
       - name: Run unit tests
@@ -93,18 +95,21 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
-      - name: Install dependencies
+      - name: Install tools
         run: |
           python -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-
-          # Install dependencies if requirements.txt exists
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-
           pip install pylint
+        working-directory: ${{ matrix.app }}
+
+      - name: Install dependencies
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
+        # Run only if requirements.txt exists
+        # See: https://stackoverflow.com/a/77081661
+        if: ${{ hashFiles('requirements.txt') != '' }}
         working-directory: ${{ matrix.app }}
 
       - name: Analysing the code with pylint
