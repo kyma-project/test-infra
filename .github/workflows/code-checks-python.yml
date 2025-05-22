@@ -63,10 +63,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
+      - name: Set up python venv
+        run: |
+          python -m venv venv
+        working-directory: ${{ matrix.app }}
+
       # Install dependencies if requirements.txt exists
       - name: Install dependencies
         run: |
-          python -m venv venv
           source venv/bin/activate
 
           pip install -r requirements.txt
@@ -77,6 +81,8 @@ jobs:
       
       - name: Run unit tests
         run: |
+          source venv/bin/activate
+
           python -m unittest discover
         working-directory: ${{ matrix.app }}
   
@@ -94,18 +100,23 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
+      - name: Set up venv
+        run: |
+          python -m venv venv
+        working-directory: ${{ matrix.app }}
 
       - name: Install tools
         run: |
-          python -m venv venv
           source venv/bin/activate
-
+          
           python -m pip install --upgrade pip
           pip install pylint
         working-directory: ${{ matrix.app }}
 
       - name: Install dependencies
         run: |
+          source venv/bin/activate
+          
           pip install -r requirements.txt
         # Run only if requirements.txt exists
         # See: https://stackoverflow.com/a/77081661
@@ -114,5 +125,7 @@ jobs:
 
       - name: Analysing the code with pylint
         run: |
+          source venv/bin/activate
+          
           pylint --rcfile=${{ github.workspace }}/.pylintrc --ignore-paths=venv --recursive=y .
         working-directory: ${{ matrix.app }}
