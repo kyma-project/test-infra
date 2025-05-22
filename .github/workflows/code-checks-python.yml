@@ -40,6 +40,9 @@ jobs:
           echo "Found applications directories: $root_dirs"
           echo "Generating matrix..."
 
+          # Converts the space-separated list of root directories into a JSON object suitable for a GitHub Actions matrix.
+          # This uses jq to split the directory string into an array under the "app" key, 
+          # resulting in: {"app": ["dir1", "dir2", ...]}
           matrix=$(echo -n $root_dirs | jq -Rsc '. | split(" ") | {app: .}')
 
           echo "Generated matrix: $matrix"
@@ -60,15 +63,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
+      # Install dependencies if requirements.txt exists
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-         
-          # Install dependencies if requirements.txt exists
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
+          
+          pip install -r requirements.txt
+        if: exists('requirements.txt')
         working-directory: ${{ matrix.app }}
       
       - name: Run unit tests
