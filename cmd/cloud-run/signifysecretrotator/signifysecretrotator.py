@@ -47,7 +47,6 @@ def rotate_signify_secret() -> Response:
 
         secret_id: str = secret_rotate_msg["name"]
         secret_data: Dict[str, Any] = sm_client.get_secret(secret_id)
-
         signify_client = SignifyClient(
             token_url=secret_data["tokenURL"],
             certificate_service_url=secret_data["certServiceURL"],
@@ -93,6 +92,7 @@ def rotate_signify_secret() -> Response:
 
         return prepare_response("Certificate rotated successfully", 200)
     except (HTTPError, ValueError, TypeError, SecretManagerError) as exc:
+        logger.error("Error while rotating secret %r", exc)
         return prepare_response(str(exc), 500)
     except EventTypeError as exc:
         # We consider it as an error

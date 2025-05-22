@@ -1,5 +1,5 @@
 # Stage 1: Build with dependencies inside venv
-FROM cgr.dev/chainguard/python:latest-dev as builder
+FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV PYTHONUNBUFFERED=1
 
@@ -11,7 +11,7 @@ RUN python -m venv /app/venv
 # Activate venv and install dependencies
 ENV PATH="/app/venv/bin:$PATH"
 
-COPY ./cmd/cloud-run/slack-message-sender/requirements.txt .
+COPY ./cmd/cloud-run/slackmessagesender/requirements.txt .
 
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 

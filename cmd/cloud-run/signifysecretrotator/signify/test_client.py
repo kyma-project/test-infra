@@ -6,16 +6,11 @@ from unittest.mock import patch, MagicMock
 
 import requests
 
-# pylint: disable=import-error
-# False positive see: https://github.com/pylint-dev/pylint/issues/3984
-from client import SignifyClient
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat
-
-# pylint: disable=import-error
-# False positive see: https://github.com/pylint-dev/pylint/issues/3984
-import test_fixtures
+from signify import test_fixtures
+from signify.client import SignifyClient
 
 
 class TestSignifyClient(unittest.TestCase):
@@ -130,7 +125,7 @@ class TestSignifyClient(unittest.TestCase):
         mock_response.json.return_value = {}
         mock_post.return_value = mock_response
 
-        with self.assertRaises(KeyError):
+        with self.assertRaises(requests.HTTPError):
             self.client.fetch_new_certificate(
                 self.certificate, self.private_key, self.access_token
             )
