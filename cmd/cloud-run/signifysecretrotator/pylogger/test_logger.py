@@ -9,9 +9,7 @@ from unittest.mock import Mock
 
 from flask import Request
 
-# pylint: disable=import-error
-# False positive see: https://github.com/pylint-dev/pylint/issues/3984
-from logger import GoogleCloudFormatter, create_logger
+from pylogger.logger import GoogleCloudFormatter, create_logger
 
 
 class TestGoogleCloudFormatter(unittest.TestCase):
