@@ -11,15 +11,18 @@ resource "google_service_account_iam_member" "restricted_markets_artifactregistr
 }
 
 resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" {
-  repository = module.kyma_modules.artifact_registry_collection.name
-  location   = module.kyma_modules.artifact_registry_collection.location
+  project    = module.kyma_modules.artifact_registry.project
+  repository = module.kyma_modules.artifact_registry.name
+  location   = module.kyma_modules.artifact_registry.location
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_reader" {
-  repository = google_artifact_registry_repository.dev_modules_internal.name
-  location   = google_artifact_registry_repository.dev_modules_internal.location
+# TODO (dekiel): remove after migration to modulectl is done
+resource "google_artifact_registry_repository_iam_member" "modules_internal_reader" {
+  project    = module.artifact_registry["modules-internal"].artifact_registry.project
+  repository = module.artifact_registry["modules-internal"].artifact_registry.name
+  location   = module.artifact_registry["modules-internal"].artifact_registry.location
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
 }

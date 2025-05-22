@@ -1,5 +1,5 @@
 # Stage 1: Build with dependencies inside venv
-FROM cgr.dev/chainguard/python:latest-dev as builder
+FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV PYTHONUNBUFFERED=1
 
@@ -11,7 +11,7 @@ RUN python -m venv /app/venv
 # Activate venv and install dependencies
 ENV PATH="/app/venv/bin:$PATH"
 
-COPY ./cmd/cloud-run/signifysecretrotator/requirements.txt .
+COPY ./cmd/cloud-run/slackmessagesender/requirements.txt .
 
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
@@ -23,11 +23,11 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1
 
 # Copy app source code
-COPY ./cmd/cloud-run/signifysecretrotator .
+COPY ./cmd/cloud-run/slack-message-sender/slack-message-sender.py .
 
 # Copy the virtual environment from the builder stage
 COPY --from=builder /app/venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
 ENTRYPOINT ["/app/venv/bin/python"]
-CMD ["/app/venv/bin/gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]
+CMD ["/app/venv/bin/gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "slack-message-sender:app"]
