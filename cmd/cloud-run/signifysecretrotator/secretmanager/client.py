@@ -12,7 +12,13 @@ class SecretManagerClient:
     Provides more efficient way to retrieve and set secrets in kyma-project secret manager
     """
 
-    def __init__(self, client=secretmanager.SecretManagerServiceClient()) -> None:
+    def __init__(self, client=None) -> None:
+
+        # If no client is provided, create a new one
+        # This cannot be done as a default argument, because it would create a new client for every instance
+        if client is None:
+            client = secretmanager.SecretManagerServiceClient()
+
         self.client: secretmanager.SecretManagerServiceClient = client
 
     def get_secret(
