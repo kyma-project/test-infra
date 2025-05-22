@@ -77,8 +77,8 @@ func NewClient(httpClient *http.Client) *Client {
 }
 
 type manifest map[string]struct {
-	TimeCreatedMs string   `json:"timeCreatedMs"`
-	Tags          []string `json:"tag"`
+	TimeUploadedMs string   `json:"timeUploadedMs"`
+	Tags           []string `json:"tag"`
 }
 
 // DeconstructCommit separates a git describe commit into its parts.
@@ -246,9 +246,9 @@ func pickBestTag(currentTagParts []string, manifest manifest) (string, error) {
 			continue
 		}
 
-		timeCreated, err := strconv.ParseInt(entry.TimeCreatedMs, 10, 64)
+		timeCreated, err := strconv.ParseInt(entry.TimeUploadedMs, 10, 64)
 		if err != nil {
-			return "", fmt.Errorf("couldn't parse timestamp %q: %w", entry.TimeCreatedMs, err)
+			return "", fmt.Errorf("couldn't parse timestamp %q: %w", entry.TimeUploadedMs, err)
 		}
 
 		if isLatest || timeCreated > latestTime {
