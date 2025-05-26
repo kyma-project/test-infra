@@ -1,0 +1,111 @@
+# This file is used to filter the events that trigger the workflow controllers.
+# Workflows controller are used to manage the execution of jobs in a GitHub Actions workflow.
+# It introduction is required to use the merge queue feature in GitHub Actions.
+# Naming convention of filters: <job_name>-filter
+build-automated-approver-filter:
+  - "cmd/external-plugins/automated-approver/*.go"
+  - "cmd/external-plugins/automated-approver/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-cors-proxy-filter:
+  - "cmd/cloud-run/cors-proxy/*.go"
+  - "cmd/cloud-run/cors-proxy/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-dashboard-token-proxy-filter:
+  - "cmd/dashboard-token-proxy/*.go"
+  - "cmd/dashboard-token-proxy/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-github-webhook-gateway-filter:
+  - "cmd/cloud-run/github-webhook-gateway/*.go"
+  - "cmd/cloud-run/github-webhook-gateway/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-image-autobumper-filter:
+  - "cmd/image-autobumper/Dockerfile"
+  - "cmd/image-autobumper/**"
+  - "pkg/github/bumper/**"
+  - "go.mod"
+  - "go.sum"
+
+build-image-builder-filter:
+  - "cmd/image-builder/*.go"
+  - "cmd/image-builder/images/kaniko/*"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-image-detector-filter:
+  - "cmd/image-detector/*.go"
+  - "cmd/image-detector/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-image-syncer-filter:
+  - "cmd/image-syncer/*.go"
+  - "cmd/image-syncer/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-image-url-helper-filter:
+  - "cmd/image-url-helper/*.go"
+  - "cmd/image-url-helper/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-markdown-index-filter:
+  - "cmd/markdown-index/*.go"
+  - "cmd/markdown-index/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-oidc-token-verifier-filter:
+  - "cmd/oidc-token-verifier/**"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-rotate-service-account-keys-filter:
+  - "cmd/cloud-run/rotate-service-account/*.go"
+  - "cmd/cloud-run/rotate-service-account/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-service-account-keys-cleaner-filter:
+  - "cmd/cloud-run/service-account-keys-cleaner/*.go"
+  - "cmd/cloud-run/service-account-keys-cleaner/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+build-signify-secret-rotator-filter:
+  - "cmd/cloud-run/signifysecretrotator/**"
+
+build-slack-message-sender-filter:
+  - "cmd/cloud-run/slackmessagesender/**"
+
+build-usersmapchecker-filter:
+  - "cmd/cloud-run/rotate-service-account/*.go"
+  - "cmd/cloud-run/rotate-service-account/Dockerfile"
+  - "pkg/**"
+  - "go.mod"
+  - "go.sum"
+
+buildx-images-filter:
+  - "images/**"
+  - ".github/workflows/image-builder.yml"
+

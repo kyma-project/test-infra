@@ -1,21 +1,8 @@
 name: build-oidc-token-verifier.yml
 # description: "Build test-infra/cmd/oidc-token-verifier image for image-builder application."
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/oidc-token-verifier/**"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/oidc-token-verifier/**"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token

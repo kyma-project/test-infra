@@ -1,23 +1,8 @@
 name: build-image-builder.yml
 # description: "Build image-builder image for image-builder application."
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-builder/*.go"
-      - "cmd/image-builder/images/kaniko/*"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/image-builder/*.go"
-      - "cmd/image-builder/images/kaniko/*"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
