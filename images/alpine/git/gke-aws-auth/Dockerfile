@@ -4,7 +4,7 @@
 # See: https://github.com/rcjsuen/dockerfile-language-server/issues/153
 # See: https://docs.docker.com/reference/dockerfile/#understand-how-arg-and-from-interact
 ARG BASE_ALPINE_IMAGE
-FROM google/cloud-sdk:521.0.0 AS base
+FROM google/cloud-sdk:523.0.1 AS base
 
 ARG AWS_IAM_AUTHENTICATOR_VERSION="0.6.11"
 RUN curl -fsSL \
