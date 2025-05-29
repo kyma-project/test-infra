@@ -1,0 +1,75 @@
+name: workflow-controller-build-1
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+  build-automated-approver:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-automated-approver-filter') }}
+    uses: ./.github/workflows/build-automated-approver.yml
+
+  build-cors-proxy:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-cors-proxy-filter') }}
+    uses: ./.github/workflows/build-cors-proxy.yml
+
+  build-dashboard-token-proxy:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
+    uses: ./.github/workflows/build-dashboard-token-proxy.yml
+
+  build-github-webhook-gateway:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
+    uses: ./.github/workflows/build-github-webhook-gateway.yml
+
+  build-image-autobumper:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-autobumper-filter') }}
+    uses: ./.github/workflows/build-image-autobumper.yaml
+
+  build-image-builder:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
+    uses: ./.github/workflows/build-image-builder.yml
+
+  build-image-detector:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-detector-filter') }}
+    uses: ./.github/workflows/build-image-detector.yml
+
+  build-image-syncer:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-syncer-filter') }}
+    uses: ./.github/workflows/build-image-syncer.yml
+
+  build-image-url-helper:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
+    uses: ./.github/workflows/build-image-url-helper.yml
+
+  build-markdown-index:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
+    uses: ./.github/workflows/build-markdown-index.yml
+
+  build-oidc-token-verifier:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-oidc-token-verifier-filter') }}
+    uses: ./.github/workflows/build-oidc-token-verifier.yml
+  

@@ -1,13 +1,8 @@
 name: code-checks-python
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/code-checks-python.yml'
-      - '**/*.py'
-      - '**/requirements.txt'
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 jobs:
   generate-matrix:
@@ -15,8 +10,25 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout code
+      - name: Verify merge commit sha
+        id: verify_merge_commit_sha
+        run: |
+          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
+            echo "::error title=PR Commit Merge Error::The pull request does not have a merge commit SHA. Skipping the workflow. Please create a new empty commit using the --allow-empty flag and try again."
+            exit 1
+          fi
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout branch
+        id: checkout_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name != 'pull_request_target' }}
+
       - name: Generate matrix
         id: set-matrix
         run: |
@@ -57,8 +69,24 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
-      - name: Checkout code
+      - name: Verify merge commit sha
+        id: verify_merge_commit_sha
+        run: |
+          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
+            echo "::error title=PR Commit Merge Error::The pull request does not have a merge commit SHA. Skipping the workflow. Please create a new empty commit using the --allow-empty flag and try again."
+            exit 1
+          fi
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout branch
+        id: checkout_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name != 'pull_request_target' }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -94,8 +122,24 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
-      - name: Checkout code
+      - name: Verify merge commit sha
+        id: verify_merge_commit_sha
+        run: |
+          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
+            echo "::error title=PR Commit Merge Error::The pull request does not have a merge commit SHA. Skipping the workflow. Please create a new empty commit using the --allow-empty flag and try again."
+            exit 1
+          fi
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout PR merge commit
+        id: checkout_pr_merge_commit
         uses: actions/checkout@v4
+        with:
+          ref: "${{ github.event.pull_request.merge_commit_sha }}"
+        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Checkout branch
+        id: checkout_branch
+        uses: actions/checkout@v4
+        if: ${{ github.event_name != 'pull_request_target' }}
 
       - name: Set up Python
         uses: actions/setup-python@v5

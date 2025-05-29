@@ -1,0 +1,50 @@
+name: workflow-controller-build-2
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+  build-rotate-service-account-keys:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-rotate-service-account-keys-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/build-rotate-service-account-keys.yml
+  
+  build-service-account-keys-cleaner-filter:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-service-account-keys-cleaner-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/build-service-account-keys-cleaner.yml
+
+  build-signify-secret-rotator:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-signify-secret-rotator-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/build-signify-secret-rotator.yml
+
+  build-slack-message-sender:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-slack-message-sender-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/build-slack-message-sender.yml
+
+  build-usersmapchecker:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-usersmapchecker-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/build-usersmapchecker.yml
+
+  # !WARNING: This workflow counts as 10 separate jobs!
+  buildx-images:
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'buildx-images-filter') }}
+    needs: detect-changed-files
+    uses: ./.github/workflows/buildx-images.yml
