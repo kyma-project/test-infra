@@ -6,6 +6,9 @@ on:
   push:
   merge_group: 
 
+permissions:
+  contents: read
+
 jobs:
   detect-changed-files:
     runs-on: ubuntu-latest
