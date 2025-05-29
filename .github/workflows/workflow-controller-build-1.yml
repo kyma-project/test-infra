@@ -67,9 +67,4 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
     uses: ./.github/workflows/build-markdown-index.yml
-
-  build-oidc-token-verifier:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-oidc-token-verifier-filter') }}
-    uses: ./.github/workflows/build-oidc-token-verifier.yml
   

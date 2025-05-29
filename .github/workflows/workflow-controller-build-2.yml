@@ -6,6 +6,11 @@ on:
   push:
   merge_group: 
 
+   
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
 jobs:
   detect-changed-files:
     runs-on: ubuntu-latest
@@ -42,6 +47,11 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-usersmapchecker-filter') }}
     needs: detect-changed-files
     uses: ./.github/workflows/build-usersmapchecker.yml
+
+  build-oidc-token-verifier:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-oidc-token-verifier-filter') }}
+    uses: ./.github/workflows/build-oidc-token-verifier.yml
 
   # !WARNING: This workflow counts as 10 separate jobs!
   buildx-images:
