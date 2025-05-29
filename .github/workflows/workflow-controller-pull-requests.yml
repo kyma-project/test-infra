@@ -30,11 +30,19 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
 
   image-builder-test:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
     uses: ./.github/workflows/pull-image-builder-test.yml
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-image-builder-test-filter') }}
 
   pull-plan-prod-terraform:
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
+      issues: "write" # needed for tfcmt to post comments
+      pull-requests: "write" # needed for tfcmt to post comments
     uses: ./.github/workflows/pull-plan-prod-terraform.yaml
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
@@ -50,11 +58,17 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
 
   pull-validate-kaniko-build-config:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
     uses: ./.github/workflows/pull-validate-kaniko-build-config.yml
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
 
   pull-validate-service-accounts:
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
     uses: ./.github/workflows/pull-validate-service-accounts.yaml
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-service-accounts-filter') }}
