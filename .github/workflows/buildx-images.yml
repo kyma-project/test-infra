@@ -1,8 +1,18 @@
 name: buildx-images
 
 on:
-  # This workflow is triggered by the workflow controller.
-  workflow_call:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "images/**"
+      - ".github/workflows/image-builder.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "images/**"
+      - ".github/workflows/image-builder.yml"
+  workflow_dispatch: {}
 
 permissions:
   id-token: write # This is required for requesting the JWT token

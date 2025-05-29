@@ -12,25 +12,7 @@ jobs:
   shellcheck:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify merge commit sha
-        id: verify_merge_commit_sha
-        run: |
-          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
-            echo "::error title=PR Commit Merge Error::The pull request does not have a merge commit SHA. Skipping the workflow. Please create a new empty commit using the --allow-empty flag and try again."
-            exit 1
-          fi
-        if: ${{ github.event_name == 'pull_request_target' }}
-      - name: Checkout PR merge commit
-        id: checkout_pr_merge_commit
-        uses: actions/checkout@v4
-        with:
-          ref: "${{ github.event.pull_request.merge_commit_sha }}"
-        if: ${{ github.event_name == 'pull_request_target' }}
-      - name: Checkout branch
-        id: checkout_branch
-        uses: actions/checkout@v4
-        if: ${{ github.event_name != 'pull_request_target' }}
-
+      - uses: actions/checkout@v4
       - name: Install shellcheck
         # Shellcheck should be preinstalled on linux runners
         # see: https://github.com/koalaman/shellcheck?tab=readme-ov-file#in-your-build-or-test-suites

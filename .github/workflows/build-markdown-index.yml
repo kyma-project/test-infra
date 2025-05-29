@@ -1,7 +1,23 @@
 name: build-markdown-index
 on:
-  # This workflow is triggered by the workflow controller.
-  workflow_call:
+  pull_request_target:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - "cmd/markdown-index/*.go"
+      - "cmd/markdown-index/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/markdown-index/*.go"
+      - "cmd/markdown-index/Dockerfile"
+      - "pkg/**"
+      - "go.mod"
+      - "go.sum"
+  workflow_dispatch: {}
 
 permissions:
   id-token: write # This is required for requesting the JWT token

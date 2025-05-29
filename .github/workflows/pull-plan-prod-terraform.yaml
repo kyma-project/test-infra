@@ -2,10 +2,16 @@ name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-on:
-  # This workflow is triggered by workflow controller.
-  workflow_call:
-    
+on: # runs on main
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "**.tf"
+      - "**.tfvars"
+      - "**.yaml"
+      - "**.yml"
 jobs:
   pull-plan-prod-terraform:
     permissions:
