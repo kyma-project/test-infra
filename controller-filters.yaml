@@ -109,3 +109,51 @@ buildx-images-filter:
   - "images/**"
   - ".github/workflows/image-builder.yml"
 
+pull-go-lint-filter:
+  - ".github/workflows/pull-go-lint.yaml"
+  - "**/*.go"
+  - ".golangci.yaml"
+
+pull-gitleaks-filter:
+  - "**/*"
+
+pull-image-builder-test-filter:
+  - ".github/workflows/pull-image-builder-test.yml"
+  - ".github/workflows/image-builder.yml"
+  - ".github/actions/expose-jwt-action/**"
+  - ".github/actions/image-builder/**"
+
+pull-plan-prod-terraform-filter:
+  - "**.tf"
+  - "**.tfvars"
+  - "**.yaml"
+  - "**.yml"
+
+pull-unit-test-go-filter:
+  - ".github/workflows/pull-unit-test-go.yaml"
+  - "**/*.go"
+
+pull-validate-dockerfiles-filter:
+  - ".github/workflows/pull-validate-dockerfiles.yaml"
+  - "**/Dockerfile"
+
+pull-validate-kaniko-build-config-filter:
+  - "configs/image-builder-client-config.yaml"
+  - ".github/workflows/pull-validate-kaniko-build-config.yaml"
+
+pull-validate-service-accounts-filter:
+  - "**.tf"
+  - "**.tfvars"
+  - "**.yaml"
+  - "**.yml"
+
+tf-lint-filter:
+  - ".github/workflows/tf-lint.yaml"
+  - "**/*.tf"
+  - "**/*.tfvars"
+  - ".tflint.hcl"
+
+code-checks-python-filter:
+  - ".github/workflows/code-checks-python.yml"
+  - "**/*.py"
+  - "**/requirements.txt"

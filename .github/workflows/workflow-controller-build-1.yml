@@ -1,4 +1,4 @@
-name: workflow-controller-build
+name: workflow-controller-build-1
 
 on:
   pull_request_target: 

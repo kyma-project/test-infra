@@ -1,0 +1,70 @@
+# This workflow controller contains the jobs that runs only on pull requests and merge groups.
+name: workflow-controller-pull-requests
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+
+  pull-go-lint:
+    uses: ./.github/workflows/pull-go-lint.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
+
+  pull-gitleaks:
+    uses: ./.github/workflows/pull-gitleaks.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
+
+  image-builder-test:
+    uses: ./.github/workflows/pull-image-builder-test.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-image-builder-test-filter') }}
+
+  pull-plan-prod-terraform:
+    uses: ./.github/workflows/pull-plan-prod-terraform.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
+
+  pull-unit-test-go:
+    uses: ./.github/workflows/pull-unit-test-go.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
+
+  pull-validate-dockerfiles:
+    uses: ./.github/workflows/pull-validate-dockerfiles.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
+
+  pull-validate-kaniko-build-config:
+    uses: ./.github/workflows/pull-validate-kaniko-build-config.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
+
+  pull-validate-service-accounts:
+    uses: ./.github/workflows/pull-validate-service-accounts.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-service-accounts-filter') }}
+
+  tf-lint:
+    uses: ./.github/workflows/tf-lint.yaml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'tf-lint-filter') }}
+
+  code-checks-python:
+    uses: ./.github/workflows/code-checks-python.yml
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}

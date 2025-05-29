@@ -1,13 +1,8 @@
 name: code-checks-python
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/code-checks-python.yml'
-      - '**/*.py'
-      - '**/requirements.txt'
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 jobs:
   generate-matrix:
