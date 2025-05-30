@@ -5,10 +5,10 @@ The image-builder action triggers the image-builder service. It receives authent
 Optionally, you can set other inputs to control which image with which context should be built.
 
 # Inputs
-Descriptions of each input is available in the [`action`](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L3-L44) file.
+Descriptions of each input is available in the [`action`](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L3-L58) file.
 
 # Outputs
-Descriptions of each output is available in the [`action`](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L46-L52) file.
+Descriptions of each output is available in the [`action`](https://github.com/kyma-project/test-infra/blob/main/.github/actions/image-builder/action.yml#L60-L69) file.
 
 # How It Works?
 
@@ -40,4 +40,7 @@ If the execution fails, the image-builder action fails. If the execution succeed
           dockerfile: 'Dockerfile'
           env-file: 'envs'
           config: "./configs/kaniko-build-config.yaml"
+          build-engine: buildx
+          platforms: |
+            linux/amd64
 ```
