@@ -1,6 +1,8 @@
 name: Lint Markdown Links PR
 run-name: ${{github.event.pull_request.title}}
-on: [ pull_request ]
+on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
