@@ -1,0 +1,70 @@
+# This workflow controller contains the jobs that runs only on pull requests and merge groups.
+name: workflow-controller-pull-requests
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: controller-filters.yaml
+
+
+  pull-go-lint:
+    uses: kyma-project/test-infra/.github/workflowspull-go-lint.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
+
+  pull-gitleaks:
+    uses: kyma-project/test-infra/.github/workflowspull-gitleaks.yml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
+
+  image-builder-test:
+    uses: kyma-project/test-infra/.github/workflowspull-image-builder-test.yml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-image-builder-test-filter') }}
+
+  pull-plan-prod-terraform:
+    uses: kyma-project/test-infra/.github/workflowspull-plan-prod-terraform.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
+
+  pull-unit-test-go:
+    uses: kyma-project/test-infra/.github/workflowspull-unit-test-go.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
+
+  pull-validate-dockerfiles:
+    uses: kyma-project/test-infra/.github/workflowspull-validate-dockerfiles.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
+
+  pull-validate-kaniko-build-config:
+    uses: kyma-project/test-infra/.github/workflowspull-validate-kaniko-build-config.yml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
+
+  pull-validate-service-accounts:
+    uses: kyma-project/test-infra/.github/workflowspull-validate-service-accounts.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-service-accounts-filter') }}
+
+  tf-lint:
+    uses: kyma-project/test-infra/.github/workflowstf-lint.yaml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'tf-lint-filter') }}
+
+  code-checks-python:
+    uses: kyma-project/test-infra/.github/workflowscode-checks-python.yml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}

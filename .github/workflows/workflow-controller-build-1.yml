@@ -1,0 +1,75 @@
+name: workflow-controller-build-1
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: controller-filters.yaml
+
+  build-automated-approver:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-automated-approver-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-automated-approver.yml@refs/heads/main
+
+  build-cors-proxy:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-cors-proxy-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-cors-proxy.yml@refs/heads/main
+
+  build-dashboard-token-proxy:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-dashboard-token-proxy.yml@refs/heads/main
+
+  build-github-webhook-gateway:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-github-webhook-gateway.yml@refs/heads/main
+
+  build-image-autobumper:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-autobumper-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-image-autobumper.yaml@refs/heads/main
+
+  build-image-builder:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-image-builder.yml@refs/heads/main
+
+  build-image-detector:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-detector-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-image-detector.yml@refs/heads/main
+
+  build-image-syncer:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-syncer-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-image-syncer.yml@refs/heads/main
+
+  build-image-url-helper:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-image-url-helper.yml@refs/heads/main
+
+  build-markdown-index:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-markdown-index.yml@refs/heads/main
+
+  build-oidc-token-verifier:
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-oidc-token-verifier-filter') }}
+    uses: kyma-project/test-infra/.github/workflowsbuild-oidc-token-verifier.yml@refs/heads/main
+  
