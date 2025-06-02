@@ -11,7 +11,7 @@ permissions:
 jobs:
   # Build the base Alpine image
   build-alpine:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: alpine
       dockerfile: images/alpine/Dockerfile
@@ -36,7 +36,7 @@ jobs:
   # Build alpine/git image that depends on build-alpine  
   build-alpine-git:
     needs: [build-alpine, unpack-alpine]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: alpine-git
       dockerfile: images/alpine/git/Dockerfile
@@ -49,7 +49,7 @@ jobs:
   # Build alpine/git/gke-aws-auth image that depends on build-alpine-git
   build-alpine-git-gke-aws-auth:
     needs: [build-alpine, unpack-alpine]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: alpine-git-gke-aws-auth
       dockerfile: images/alpine/git/gke-aws-auth/Dockerfile
@@ -61,7 +61,7 @@ jobs:
 
   # Build the base buildpack image
   build-buildpack:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
@@ -86,7 +86,7 @@ jobs:
   # Build buildpack/go image that depends on build-buildpack
   build-buildpack-go:
     needs: [build-buildpack, unpack-buildpack]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: buildpack-go
       dockerfile: images/buildpack/go/Dockerfile
@@ -98,7 +98,7 @@ jobs:
 
   # Build unified-agent base image
   build-unified-agent:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
@@ -123,7 +123,7 @@ jobs:
   # Build unified-agent/go image that depends on build-unified-agent
   build-unified-agent-go:
     needs: [build-unified-agent, unpack-unified-agent]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: unified-agent-go
       dockerfile: images/unified-agent/go/Dockerfile
@@ -136,7 +136,7 @@ jobs:
   # Build unified-agent/nodejs image that depends on build-unified-agent
   build-unified-agent-nodejs:
     needs: [build-unified-agent, unpack-unified-agent]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: unified-agent-nodejs
       dockerfile: images/unified-agent/nodejs/Dockerfile
@@ -149,7 +149,7 @@ jobs:
   # Build unified-agent/python image that depends on build-unified-agent
   build-unified-agent-python:
     needs: [build-unified-agent, unpack-unified-agent]
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: unified-agent-python
       dockerfile: images/unified-agent/python/Dockerfile
@@ -161,7 +161,7 @@ jobs:
 
   # Build e2e-gcloud image
   build-e2e-gcloud:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: e2e-gcloud
       dockerfile: images/e2e-gcloud/Dockerfile
