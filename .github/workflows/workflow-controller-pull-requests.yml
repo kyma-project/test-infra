@@ -68,3 +68,8 @@ jobs:
     uses: kyma-project/test-infra/.github/workflowscode-checks-python.yml@refs/heads/main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}
+
+  lint-markdown-links-pr:
+    uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@refs/heads/main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'lint-markdown-links-pr-filter') }}

@@ -157,3 +157,6 @@ code-checks-python-filter:
   - ".github/workflows/code-checks-python.yml"
   - "**/*.py"
   - "**/requirements.txt"
+
+lint-markdown-links-pr-filter:
+  - "**/*"
