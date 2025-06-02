@@ -10,6 +10,7 @@ Key features:
 * Supports caching of built layers to reduce build times
 * Supports signing images with the Signify service
 * Supports pushing images to the Google Cloud Artifact Registry
+* Supports building images for multiple architectures
 
 ## Quickstart Guide
 
@@ -55,6 +56,9 @@ jobs:
          context: .
          env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}
+         build-engine: buildx
+         platforms: |
+            linux/amd64
    test-image:
       runs-on: ubuntu-latest
       needs: build-image
