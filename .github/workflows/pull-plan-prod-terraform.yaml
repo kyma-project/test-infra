@@ -4,7 +4,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 on:
   # This workflow is triggered by workflow controller.
-  workflow_call:
+  workflow_call: 
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "**.tf"
+      - "**.tfvars"
+      - "**.yaml"
+      - "**.yml"
     
 jobs:
   pull-plan-prod-terraform:
