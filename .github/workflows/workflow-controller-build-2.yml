@@ -21,41 +21,41 @@ jobs:
   build-rotate-service-account-keys:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-rotate-service-account-keys-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-rotate-service-account-keys.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-rotate-service-account-keys.yml@main
   
   build-service-account-keys-cleaner-filter:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-service-account-keys-cleaner-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-service-account-keys-cleaner.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-service-account-keys-cleaner.yml@main
 
   build-signify-secret-rotator:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-signify-secret-rotator-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-signify-secret-rotator.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-signify-secret-rotator.yml@main
 
   build-slack-message-sender:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-slack-message-sender-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-slack-message-sender.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-slack-message-sender.yml@main
 
   build-usersmapchecker:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-usersmapchecker-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-usersmapchecker.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-usersmapchecker.yml@main
 
   # !WARNING: This workflow counts as 2 separate jobs!
   build-buildpack:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-buildpack-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-buildpack.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-buildpack.yml@main
 
   # !WARNING: This workflow counts as 4 separate jobs!
   build-unified-agent:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-unified-agent-filter') }}
     needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-unified-agent.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-unified-agent.yml@main
  
   build-oidc-token-verifier:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-oidc-token-verifier-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-oidc-token-verifier.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-oidc-token-verifier.yml@main

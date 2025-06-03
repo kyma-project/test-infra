@@ -21,50 +21,50 @@ jobs:
   build-automated-approver:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-automated-approver-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-automated-approver.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-automated-approver.yml@main
 
   build-cors-proxy:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-cors-proxy-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-cors-proxy.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-cors-proxy.yml@main
 
   build-dashboard-token-proxy:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-dashboard-token-proxy.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-dashboard-token-proxy.yml@main
 
   build-github-webhook-gateway:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-github-webhook-gateway.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-github-webhook-gateway.yml@main
 
   build-image-autobumper:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-autobumper-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-autobumper.yaml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-image-autobumper.yaml@main
 
   build-image-builder:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@main
 
   build-image-detector:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-detector-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-detector.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-image-detector.yml@main
 
   build-image-syncer:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-syncer-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-syncer.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-image-syncer.yml@main
 
   build-image-url-helper:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@main
 
   build-markdown-index:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-markdown-index.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/build-markdown-index.yml@main
   
