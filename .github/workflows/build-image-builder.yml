@@ -1,6 +1,8 @@
 name: build-image-builder.yml
 # description: "Build image-builder image for image-builder application."
 on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
   pull_request_target:
     types: [ opened, edited, synchronize, reopened, ready_for_review ]
     paths:
@@ -25,7 +27,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: image-builder
       dockerfile: cmd/image-builder/images/kaniko/Dockerfile
