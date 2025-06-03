@@ -23,7 +23,7 @@ permissions:
 jobs:
   # Build the base buildpack image
   build-buildpack:
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
@@ -48,7 +48,7 @@ jobs:
   # Build buildpack/go image that depends on build-buildpack
   build-buildpack-go:
     needs: [build-buildpack, unpack-buildpack]
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: buildpack-go
       dockerfile: images/buildpack/go/Dockerfile
