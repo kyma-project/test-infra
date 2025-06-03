@@ -1,5 +1,7 @@
 name: build-cors-proxy
 on:
+  # This workflow is triggered by the workflow controller.
+  workflow_call:
   pull_request_target:
     types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
@@ -25,7 +27,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: cors-proxy
       dockerfile: cmd/cloud-run/cors-proxy/Dockerfile
