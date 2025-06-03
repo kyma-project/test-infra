@@ -1,0 +1,59 @@
+name: build-buildpack
+
+on:
+  # This workflow is triggered by the workflow controller.
+  workflow_call:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "images/buildpack/**"
+      - ".github/workflows/image-builder.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "images/buildpack/**"
+      - ".github/workflows/image-builder.yml"
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  # Build the base buildpack image
+  build-buildpack:
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
+    with:
+      name: buildpack
+      dockerfile: images/buildpack/Dockerfile
+      context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
+
+  unpack-buildpack:
+    runs-on: ubuntu-latest
+    needs: build-buildpack
+    outputs:
+      clean_image: ${{ steps.unpack-buildpack.outputs.clean_image }}
+    steps:
+      - name: Unpack image output to output variable
+        id: unpack-buildpack
+        run: |
+          IMAGE="${{ needs.build-buildpack.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "clean_image=$CLEAN_IMAGE" >> $GITHUB_OUTPUT
+
+  # Build buildpack/go image that depends on build-buildpack
+  build-buildpack-go:
+    needs: [build-buildpack, unpack-buildpack]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
+    with:
+      name: buildpack-go
+      dockerfile: images/buildpack/go/Dockerfile
+      context: .
+      build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
