@@ -3,6 +3,7 @@ import {
   id = "projects/kyma-project/locations/europe/repositories/dev-modules-internal"
 }
 
+# TODO (dekiel): remove after migration to modulectl is done
 resource "google_artifact_registry_repository" "dev_modules_internal" {
   provider               = google.kyma_project
   location               = var.dev_modules_internal_repository.location
@@ -22,8 +23,8 @@ import {
   to = google_service_account.kyma_project_kyma_submission_pipeline
 }
 
-# The submission pipeline should have only one identity in our projects.
-# The service account in kyma-project should be removed.
+# TODO (dekiel): The submission pipeline should have only one identity in our projects.
+#   The service account in kyma-project should be removed.
 resource "google_service_account" "kyma_project_kyma_submission_pipeline" {
   provider     = google.kyma_project
   account_id   = "kyma-submission-pipeline"
@@ -43,4 +44,36 @@ resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_
   repository = google_artifact_registry_repository.dev_modules_internal.id
   role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${google_service_account.kyma_project_kyma_submission_pipeline.email}"
+}
+
+module "dev_kyma_modules" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+  repository_prevent_destroy = var.dev_kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.dev_kyma_modules_repository.name
+  description                = var.dev_kyma_modules_repository.description
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
+}
+
+moved {
+  from = module.kyma_modules.google_artifact_registry_repository.artifact_registry
+  to   = module.kyma_modules.google_artifact_registry_repository.protected_repository[0]
+}
+
+module "kyma_modules" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_prevent_destroy = var.kyma_modules_repository.repository_prevent_destroy
+  repository_name            = var.kyma_modules_repository.name
+  description                = var.kyma_modules_repository.description
+  type                       = var.kyma_modules_repository.type
+  reader_serviceaccounts     = var.kyma_modules_repository.reader_serviceaccounts
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }

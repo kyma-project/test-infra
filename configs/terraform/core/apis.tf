@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.6.1"
+
   backend "gcs" {
     bucket = "tf-state-kyma-project"
     prefix = "core"
@@ -6,7 +8,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "6.27.0"
+      version = "6.37.0"
     }
   }
 }

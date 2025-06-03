@@ -2,16 +2,10 @@ name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-on: # runs on main
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    branches:
-      - main
-    paths:
-      - "**.tf"
-      - "**.tfvars"
-      - "**.yaml"
-      - "**.yml"
+on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
+    
 jobs:
   pull-plan-prod-terraform:
     permissions:
@@ -23,22 +17,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout code from the PR merge commit
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
+          fetch-depth: 50        
+        if: ${{ github.event_name == 'pull_request_target' }}
+      # Checkout code from the merge group branch
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
           fetch-depth: 50
+        if: ${{ github.event_name != 'pull_request_target' }}
 
       # Important security check: https://github.com/actions/checkout/issues/518
       - name: Sanity check
         id: sanity-check
         run: |
           [[ "$(git rev-parse 'HEAD^1')" == "${{ github.event.pull_request.head.sha }}" || "$(git rev-parse 'HEAD^2')" == "${{ github.event.pull_request.head.sha }}" ]]
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@0144da6a252d1986d817826d963ad3a9af1e7fdf
+        uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac
 
       - name: Authenticate to GCP
         id: gcp_auth
@@ -54,31 +57,9 @@ jobs:
           secrets: |-
              gh-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
 
-      # Build tofu CLI from source until setup-opentofu action will become stable
-
-      - name: Download the tofu source
-        uses: actions/checkout@v4
-        with:
-          repository: opentofu/opentofu
-          path: opentofu
-          ref: 89ca50f3fe8c5327ec9943e9590bdb7b023fd4eb # v1.6.1
-        
-      - name: Install tofu tooling
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: opentofu/go.mod
-          cache-dependency-path: opentofu/go.sum
-
-
-      - name: Prepare the tofu command
-        working-directory: opentofu
-        run: |
-          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/ ./cmd/tofu
-          echo $(pwd)/bin >> $GITHUB_PATH
-
-      # - name: Setup Terraform
-      #   id: setup_terraform
-      #   uses: opentofu/setup-opentofu@b06654f7ba51088e987c0a454d042360df3ebe86
+      - name: Setup Terraform
+        id: setup_terraform
+        uses: opentofu/setup-opentofu@v1
 
       - name: Setup GitHub comments
         id: setup-github-comment

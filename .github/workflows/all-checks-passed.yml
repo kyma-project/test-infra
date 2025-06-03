@@ -9,8 +9,9 @@ on:
         ready_for_review,
         edited,
         labeled,
-        milestoned,
       ]
+  merge_group:
+   
 
 jobs:
   all-checks:
@@ -19,7 +20,7 @@ jobs:
       checks: read
       contents: read
     steps:
-      - uses: wechuli/allcheckspassed@f4669eca31dbad8fea1a0eb91c419d02c5b42200
+      - uses: wechuli/allcheckspassed@e22f45a4f25f4cf821d1273705ac233355400db1
         with:
           delay: '3'
           retries: '30'
