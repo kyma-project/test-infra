@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-url-helper
       dockerfile: cmd/image-url-helper/Dockerfile
