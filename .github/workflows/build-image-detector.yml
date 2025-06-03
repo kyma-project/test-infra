@@ -1,22 +1,7 @@
 name: build-image-detector
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-detector/*.go"
-      - "cmd/image-detector/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/image-detector/*.go"
-      - "cmd/image-detector/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -24,7 +9,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-detector
       dockerfile: cmd/image-detector/Dockerfile

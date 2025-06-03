@@ -1,23 +1,7 @@
 name: build-image-autobumper
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - 'cmd/image-autobumper/Dockerfile'
-      - 'cmd/image-autobumper/**'
-      - 'pkg/github/bumper/**'
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - 'cmd/image-autobumper/Dockerfile'
-      - 'cmd/image-autobumper/**'
-      - 'pkg/github/bumper/**'
-      - 'go.mod'
-      - 'go.sum'
-  workflow_dispatch: {}
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -25,7 +9,7 @@ permissions:
   
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-autobumper
       dockerfile: cmd/image-autobumper/Dockerfile

@@ -1,23 +1,7 @@
 name: build-image-url-helper
 on:
-  pull_request_target:
-    types: [ opened, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-url-helper/*.go"
-      - "cmd/image-url-helper/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/image-url-helper/*.go"
-      - "cmd/image-url-helper/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  workflow_dispatch: {}
+  # This workflow is triggered by the workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -25,7 +9,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-url-helper
       dockerfile: cmd/image-url-helper/Dockerfile

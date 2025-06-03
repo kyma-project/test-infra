@@ -1,22 +1,7 @@
 name: build-image-syncer
 on:
-  pull_request_target:
-    types: [ opened, edited, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/image-syncer/*.go"
-      - "cmd/image-syncer/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/image-syncer/*.go"
-      - "cmd/image-syncer/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -24,7 +9,7 @@ permissions:
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-syncer
       dockerfile: cmd/image-syncer/Dockerfile

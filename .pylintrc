@@ -1,0 +1,7 @@
+[FORMAT]
+max-line-length=140
+
+# TODO(kacpermalachowski): Remove this after https://github.com/kyma-project/test-infra/issues/12888
+[MESSAGES CONTROL]
+# globally disable pylint checks (comma separated)
+disable=fixme
