@@ -1,5 +1,7 @@
 name: build-automated-approver
 on:
+  # This workflow is triggered by the workflow controller.
+  workflow_call:
   pull_request_target:
     types: [ opened, synchronize, reopened, ready_for_review ]
     paths:
@@ -18,14 +20,14 @@ on:
       - "go.mod"
       - "go.sum"
   workflow_dispatch: {}
-
+  
 permissions:
   id-token: write # This is required for requesting the JWT token
   contents: read # This is required for actions/checkout
 
 jobs:
   build-image:
-    uses: ./.github/workflows/image-builder.yml
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main
     with:
       name: automated-approver
       dockerfile: cmd/external-plugins/automated-approver/Dockerfile
