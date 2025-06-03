@@ -2,24 +2,6 @@ name: build-cors-proxy
 on:
   # This workflow is triggered by the workflow controller.
   workflow_call:
-  pull_request_target:
-    types: [ opened, synchronize, reopened, ready_for_review ]
-    paths:
-      - "cmd/cloud-run/cors-proxy/*.go"
-      - "cmd/cloud-run/cors-proxy/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  push:
-    branches:
-      - main
-    paths:
-      - "cmd/cloud-run/cors-proxy/*.go"
-      - "cmd/cloud-run/cors-proxy/Dockerfile"
-      - "pkg/**"
-      - "go.mod"
-      - "go.sum"
-  workflow_dispatch: {}
 
 permissions:
   id-token: write # This is required for requesting the JWT token
