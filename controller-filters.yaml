@@ -117,12 +117,6 @@ pull-go-lint-filter:
 pull-gitleaks-filter:
   - "**/*"
 
-pull-image-builder-test-filter:
-  - ".github/workflows/pull-image-builder-test.yml"
-  - ".github/workflows/image-builder.yml"
-  - ".github/actions/expose-jwt-action/**"
-  - ".github/actions/image-builder/**"
-
 pull-plan-prod-terraform-filter:
   - "**.tf"
   - "**.tfvars"
@@ -140,12 +134,6 @@ pull-validate-dockerfiles-filter:
 pull-validate-kaniko-build-config-filter:
   - "configs/image-builder-client-config.yaml"
   - ".github/workflows/pull-validate-kaniko-build-config.yaml"
-
-pull-validate-service-accounts-filter:
-  - "**.tf"
-  - "**.tfvars"
-  - "**.yaml"
-  - "**.yml"
 
 tf-lint-filter:
   - ".github/workflows/tf-lint.yaml"
