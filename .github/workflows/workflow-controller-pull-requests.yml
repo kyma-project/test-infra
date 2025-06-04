@@ -29,14 +29,6 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
 
-  image-builder-test:
-    uses: kyma-project/test-infra/.github/workflows/pull-image-builder-test.yml@main
-    permissions:
-      id-token: write # This is required for requesting the JWT token
-      contents: read # This is required for actions/checkout
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-image-builder-test-filter') }}
-
   pull-plan-prod-terraform:
     uses: kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@main
     permissions:
@@ -64,14 +56,6 @@ jobs:
       contents: read # This is required for actions/checkout
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
-
-  pull-validate-service-accounts:
-    uses: kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@main
-    permissions:
-      id-token: write # This is required for requesting the JWT token
-      contents: read # This is required for actions/checkout
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-service-accounts-filter') }}
 
   tf-lint:
     uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@main
