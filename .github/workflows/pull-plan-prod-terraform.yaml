@@ -82,11 +82,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-planner-token }}
         id: terraform_plan
-        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number || 0 }} -sha ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
 
       - name: Hide GitHub comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: hide-github-comment
         run: github-comment hide --org $GITHUB_REPOSITORY_OWNER --repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha1 ${{ github.event.pull_request.head.sha }}
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request_target' }}
