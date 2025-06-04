@@ -20,7 +20,7 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: pathFilters
         with:
-          filters: controller-filters.yaml
+          filters: .github/controller-filters.yaml
 
   build-rotate-service-account-keys:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-rotate-service-account-keys-filter') }}
