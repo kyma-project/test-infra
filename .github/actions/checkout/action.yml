@@ -16,13 +16,15 @@ runs:
         id: checkout
         uses: actions/checkout@v4
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"      
+          ref: "refs/pull/${{ github.event.number }}/merge"
+          fetch-depth: ${{ inputs.fetch-depth }}
         if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
 
       # Checkout code from the merge group branch
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: ${{ inputs.fetch-depth }}
         if: ${{ github.event_name != 'pull_request_target' && github.event_name != 'pull_request' }}
 
       # Important security check: https://github.com/actions/checkout/issues/518
