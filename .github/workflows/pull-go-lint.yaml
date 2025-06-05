@@ -9,16 +9,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Test Infra 
-        id: checkout
-        uses: actions/checkout@v4
-        with:
-          repository: kyma-project/test-infra
-          ref: main
-          path: test-infra
-
       - name: Checkout PR code
-        uses: test-infra/.github/actions/checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Set up Go
         uses: actions/setup-go@v5

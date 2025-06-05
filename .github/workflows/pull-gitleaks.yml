@@ -10,16 +10,8 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Test Infra 
-        id: checkout
-        uses: actions/checkout@v4
-        with:
-          repository: kyma-project/test-infra
-          ref: main
-          path: test-infra
-
       - name: Checkout PR code
-        uses: test-infra/.github/actions/checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Fetch gitleaks ${{ env.GITLEAKS_VERSION }}
         run: curl -Lso gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v${{ env.GITLEAKS_VERSION }}/gitleaks_${{ env.GITLEAKS_VERSION }}_linux_x64.tar.gz && tar -xvzf ./gitleaks.tar.gz
