@@ -17,27 +17,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code from the PR merge commit
-      - name: Checkout
+      - name: Checkout Test Infra 
         id: checkout
         uses: actions/checkout@v4
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"
-          fetch-depth: 50        
-        if: ${{ github.event_name == 'pull_request_target' }}
-      # Checkout code from the merge group branch
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
-        if: ${{ github.event_name != 'pull_request_target' }}
+          repository: kyma-project/test-infra
+          ref: main
+          path: test-infra
 
-      # Important security check: https://github.com/actions/checkout/issues/518
-      - name: Sanity check
-        id: sanity-check
-        run: |
-          [[ "$(git rev-parse 'HEAD^1')" == "${{ github.event.pull_request.head.sha }}" || "$(git rev-parse 'HEAD^2')" == "${{ github.event.pull_request.head.sha }}" ]]
-        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
+      - name: Checkout PR code
+        uses: test-infra/.github/actions/checkout
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
