@@ -6,7 +6,7 @@ inputs:
   fetch-depth:
     description: The number of commits to fetch. Defaults to 1, which means only the latest commit is fetched.
     required: false
-    default: 1
+    default: 5
 
 runs:
   using: "composite"
