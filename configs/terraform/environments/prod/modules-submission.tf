@@ -70,6 +70,6 @@ module "kyma_modules" {
   description                = var.kyma_modules_repository.description
   type                       = var.kyma_modules_repository.type
   reader_serviceaccounts     = var.kyma_modules_repository.reader_serviceaccounts
-    reader_groups            = var.kyma_modules_repository.reader_groups
+  reader_groups              = var.kyma_modules_repository.reader_groups
   repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email]
 }
