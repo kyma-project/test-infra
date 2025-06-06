@@ -46,10 +46,10 @@ resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_
   member     = "serviceAccount:${google_service_account.kyma_project_kyma_submission_pipeline.email}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "kyma_modules_admin_sre" {
+resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader_sre" {
   provider   = google.kyma_project
   repository = var.kyma_modules_repository.name
-  role       = "roles/artifactregistry.admin"
+  role       = "roles/artifactregistry.reader"
   member     = "group:cam_dx_kyma_gcp_sre@sap.com"
 }
 
