@@ -55,7 +55,7 @@ resource "google_artifact_registry_repository" "protected_repository" {
         try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username = remote_config.value.upstream_username
+            username                = remote_config.value.upstream_username
             password_secret_version = remote_config.value.upstream_password_secret
           }
         }
@@ -118,7 +118,7 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
         try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username = remote_config.value.upstream_username
+            username                = remote_config.value.upstream_username
             password_secret_version = remote_config.value.upstream_password_secret
           }
         }
@@ -169,6 +169,15 @@ resource "google_artifact_registry_repository_iam_member" "service_account_reade
   repository = local.repository.name
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${each.value}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "group_reader_access" {
+  for_each   = toset(var.reader_groups)
+  project    = data.google_client_config.this.project
+  location   = local.location
+  repository = local.repository.name
+  role       = "roles/artifactregistry.reader"
+  member     = "group:${each.value}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "public_access" {

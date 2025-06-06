@@ -47,6 +47,7 @@ variable "kyma_modules_repository" {
     description                = string
     type                       = string
     reader_serviceaccounts     = list(string)
+    reader_groups              = list(string)
     repository_prevent_destroy = bool
   })
   default = {
@@ -57,6 +58,9 @@ variable "kyma_modules_repository" {
       "klm-controller-manager@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com",
       "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com",
       "klm-controller-manager@sap-ti-dx-kyma-mps-prod.iam.gserviceaccount.com"
+    ]
+    reader_groups = [
+      "cam_dx_kyma_gcp_sre@sap.com"
     ]
     repository_prevent_destroy = true
   }
