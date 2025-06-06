@@ -14,9 +14,10 @@ This action checks out a repository so your workflow can access its contents. It
 | **fetch-depth**  | The number of commits to fetch. Only the latest by default.      | false    | `1`      |
 
 ## Usage
+To use this custom checkout action in your workflow, add the following step:
 ```yaml
 - name: Checkout PR code
-  uses: ./.github/actions/checkout
+  uses: kyma-project/test-infra/.github/actions/checkout
   with:
     fetch-depth: 1  # Optional, defaults to 1
 ```
