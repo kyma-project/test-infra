@@ -171,7 +171,7 @@ resource "google_artifact_registry_repository_iam_member" "service_account_reade
   member     = "serviceAccount:${each.value}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "additional_group_reader_access" {
+resource "google_artifact_registry_repository_iam_member" "group_reader_access" {
   for_each   = toset(var.reader_groups)
   project    = data.google_client_config.this.project
   location   = local.location
