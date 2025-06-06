@@ -47,7 +47,7 @@ variable "kyma_modules_repository" {
     description                = string
     type                       = string
     reader_serviceaccounts     = list(string)
-    reader_groups     = list(string)
+    reader_groups              = list(string)
     repository_prevent_destroy = bool
   })
   default = {

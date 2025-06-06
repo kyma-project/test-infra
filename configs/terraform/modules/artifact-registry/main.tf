@@ -55,7 +55,7 @@ resource "google_artifact_registry_repository" "protected_repository" {
         try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username = remote_config.value.upstream_username
+            username                = remote_config.value.upstream_username
             password_secret_version = remote_config.value.upstream_password_secret
           }
         }
@@ -118,7 +118,7 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
         try(remote_config.value.upstream_password_secret, null) != null) ? [1] : []
         content {
           username_password_credentials {
-            username = remote_config.value.upstream_username
+            username                = remote_config.value.upstream_username
             password_secret_version = remote_config.value.upstream_password_secret
           }
         }
