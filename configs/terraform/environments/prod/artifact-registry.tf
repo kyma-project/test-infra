@@ -1,8 +1,3 @@
-moved {
-  from = module.artifact_registry["modules-internal"].google_artifact_registry_repository.artifact_registry
-  to   = module.artifact_registry["modules-internal"].google_artifact_registry_repository.protected_repository[0]
-}
-
 # TODO (dekiel): remove after migration to modulectl is done
 module "artifact_registry" {
   source = "../../modules/artifact-registry"
@@ -26,11 +21,6 @@ module "artifact_registry" {
   cleanup_policies          = each.value.cleanup_policies
 }
 
-moved {
-  from = module.prod_docker_repository.google_artifact_registry_repository.artifact_registry
-  to   = module.prod_docker_repository.google_artifact_registry_repository.protected_repository[0]
-}
-
 module "prod_docker_repository" {
   source = "../../modules/artifact-registry"
 
@@ -46,11 +36,6 @@ module "prod_docker_repository" {
   cleanup_policies           = var.prod_docker_repository.cleanup_policies
   cleanup_policy_dry_run     = var.prod_docker_repository.cleanup_policy_dry_run
   repository_prevent_destroy = var.prod_docker_repository.repository_prevent_destroy
-}
-
-moved {
-  from = module.dev_docker_repository.google_artifact_registry_repository.artifact_registry
-  to   = module.dev_docker_repository.google_artifact_registry_repository.protected_repository[0]
 }
 
 module "dev_docker_repository" {
