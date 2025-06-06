@@ -27,6 +27,12 @@ variable "reader_serviceaccounts" {
   default     = []
 }
 
+variable "reader_groups" {
+  type        = list(string)
+  description = "User Groups with read access"
+  default     = []
+}
+
 variable "type" {
   type        = string
   description = "Environment for the resources"
