@@ -3,7 +3,7 @@
 This action checks out a repository so your workflow can access its contents. It supports checking out a single branch, tag, or commit SHA, and is designed to work with pull request workflows, including **pull_request_target**.
 
 ## Features
-- Checks out code from a pull request merge commit for secure review workflows.
+- Checks out code from a pull request merge commit for secure workflows validation of the proper code.
 - Supports standard branch/tag/commit checkout for other event types.
 - Includes a security sanity check to ensure the checked-out code matches the expected pull request head SHA (see [actions/checkout#518](https://github.com/actions/checkout/issues/518)).
 - Configurable fetch depth.
