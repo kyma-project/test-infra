@@ -21,10 +21,7 @@ This action checks out a repository so your workflow can access its contents. It
     fetch-depth: 1  # Optional, defaults to 1
 ```
 
-## How It Works
-- For **pull_request** and **pull_request_target** events, the action checks out the PR merge commit for accurate testing.
-- For other events, the action performs a standard checkout.
-- The action runs a sanity check to verify that the checked-out commit matches the PR head SHA for security.
+## How it works
+- For `pull_request` and `pull_request_target` events, checks out the PR merge commit for accurate testing.
+- For other events, performs a standard checkout.
 
-## Security
-This action includes a sanity check to help prevent malicious code injection by verifying that the checked-out commit matches the expected PR head SHA. For more details, see [actions/checkout#518](https://github.com/actions/checkout/issues/518).
