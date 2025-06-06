@@ -1,6 +1,6 @@
 # Custom Checkout Action
 
-This action checks out a repository so your workflow can access its contents. It supports checking out a single branch, tag, or commit SHA, and is designed to work with pull request workflows, including `pull_request_target`.
+This action checks out a repository so your workflow can access its contents. It supports checking out a single branch, tag, or commit SHA, and is designed to work with pull request workflows, including **pull_request_target**.
 
 ## Features
 - Checks out code from a pull request merge commit for secure review workflows.
@@ -11,7 +11,7 @@ This action checks out a repository so your workflow can access its contents. It
 ## Inputs
 | Name         | Description                                                      | Required | Default |
 |--------------|------------------------------------------------------------------|----------|---------|
-| fetch-depth  | The number of commits to fetch. Only the latest by default.      | false    | 1       |
+| **fetch-depth**  | The number of commits to fetch. Only the latest by default.      | false    | `1`      |
 
 ## Usage
 ```yaml
@@ -21,10 +21,10 @@ This action checks out a repository so your workflow can access its contents. It
     fetch-depth: 1  # Optional, defaults to 1
 ```
 
-## How it works
-- For `pull_request` and `pull_request_target` events, checks out the PR merge commit for accurate testing.
-- For other events, performs a standard checkout.
-- Runs a sanity check to verify the checked-out commit matches the PR head SHA for security.
+## How It Works
+- For **pull_request** and **pull_request_target** events, the action checks out the PR merge commit for accurate testing.
+- For other events, the action performs a standard checkout.
+- The action runs a sanity check to verify that the checked-out commit matches the PR head SHA for security.
 
 ## Security
-This action includes a sanity check to help prevent malicious code injection by verifying the checked-out commit matches the expected PR head SHA. See [actions/checkout#518](https://github.com/actions/checkout/issues/518) for more details.
+This action includes a sanity check to help prevent malicious code injection by verifying that the checked-out commit matches the expected PR head SHA. For more details, see [actions/checkout#518](https://github.com/actions/checkout/issues/518).
