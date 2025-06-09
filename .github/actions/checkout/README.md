@@ -22,7 +22,7 @@ To use this custom checkout action in your workflow, add the following step:
     fetch-depth: 1  # Optional, defaults to 1
 ```
 
-## How it works
-- For `pull_request` and `pull_request_target` events, checks out the PR merge commit for accurate testing.
-- For other events, performs a standard checkout.
+## How It Works
+- For **pull_request** and **pull_request_target** events, the action checks out the PR merge commit for accurate testing.
+- For other events, the action performs a standard checkout.
 
