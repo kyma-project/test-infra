@@ -9,94 +9,108 @@ import (
 
 // Result holds the outcome of a filtering operation.
 type Result struct {
-	MatchedFilterKeys       []string
-	IndividualFilterResults map[string]bool
-	MatchedFilesByFilter    map[string][]string
+	MatchedJobKeys          []string
+	IndividualJobRunResults map[string]bool
 }
 
-// Filter represents a single named filter with its associated glob patterns.
-type Filter struct {
-	Name     string
-	Patterns []string
+// Job represents a single job with all its filtering rules.
+type Job struct {
+	Name          string
+	FilePatterns  []string
+	BranchFilters configloader.BranchFilters
+	log           *zap.SugaredLogger
 }
 
-// findFilesMatchingPattern checks a single pattern against a list of files and returns matches.
-func findFilesMatchingPattern(pattern string, files []git.ChangedFile) []string {
-	var matchedFiles []string
-	for _, file := range files {
-		if ok, _ := matcher.Match(pattern, file.Path); ok {
-			matchedFiles = append(matchedFiles, file.Path)
+// shouldRun determines if a job should be triggered based on event, branch, and file changes.
+func (j *Job) shouldRun(eventName, targetBranch string, changedFiles []git.ChangedFile) bool {
+	if !j.matchesBranch(eventName, targetBranch) {
+		j.log.Debugw("Job skipped due to branch/event filter mismatch", "job", j.Name, "event", eventName, "branch", targetBranch)
+
+		return false
+	}
+
+	if !j.matchesFiles(changedFiles) {
+		j.log.Debugw("Job skipped due to file filter mismatch", "job", j.Name)
+
+		return false
+	}
+
+	j.log.Debugw("Job conditions met, will be triggered", "job", j.Name)
+
+	return true
+}
+
+// matchesBranch checks if the current event and branch match the job's branch filters.
+func (j *Job) matchesBranch(eventName, targetBranch string) bool {
+	if j.BranchFilters.Events == nil {
+		return true
+	}
+
+	allowedBranches, eventDefined := j.BranchFilters.Events[eventName]
+	if !eventDefined {
+		return false
+	}
+
+	for _, allowedBranch := range allowedBranches {
+		if allowedBranch == targetBranch {
+			return true
 		}
 	}
 
-	return matchedFiles
+	return false
 }
 
-// matches checks if this filter is matched by any of the changed files.
-func (f *Filter) matches(changedFiles []git.ChangedFile) (bool, []string) {
-	var allMatchedFiles []string
-	for _, pattern := range f.Patterns {
-		matchedForPattern := findFilesMatchingPattern(pattern, changedFiles)
-		allMatchedFiles = append(allMatchedFiles, matchedForPattern...)
+// matchesFiles checks if any changed files match the job's file patterns.
+func (j *Job) matchesFiles(changedFiles []git.ChangedFile) bool {
+	if len(j.FilePatterns) == 0 {
+		return true
 	}
 
-	if len(allMatchedFiles) > 0 {
-		return true, unique(allMatchedFiles)
+	for _, pattern := range j.FilePatterns {
+		for _, file := range changedFiles {
+			if ok, _ := matcher.Match(pattern, file.Path); ok {
+				return true
+			}
+		}
 	}
-
-	return false, nil
+	return false
 }
 
-// Processor encapsulates the filtering logic for a set of filter definitions.
+// Processor encapsulates the filtering logic for a set of job definitions.
 type Processor struct {
-	filters []Filter
-	log     *zap.SugaredLogger
+	jobs []Job
+	log  *zap.SugaredLogger
 }
 
-// NewProcessor creates a new filter processor from filter definitions.
-func NewProcessor(definitions configloader.Definition, log *zap.SugaredLogger) *Processor {
-	var filters []Filter
-	for name, patterns := range definitions {
-		filters = append(filters, Filter{Name: name, Patterns: patterns})
+// NewProcessor creates a new filter processor from job definitions.
+func NewProcessor(definitions configloader.JobDefinitions, log *zap.SugaredLogger) *Processor {
+	var jobs []Job
+	for name, def := range definitions {
+		jobs = append(jobs, Job{
+			Name:          name,
+			FilePatterns:  def.FileFilters,
+			BranchFilters: def.BranchFilters,
+			log:           log,
+		})
 	}
-	return &Processor{filters: filters, log: log}
+
+	return &Processor{jobs: jobs, log: log}
 }
 
 // Process is the primary method that applies all filters to a list of changed files.
-func (p *Processor) Process(changedFiles []git.ChangedFile) Result {
+func (p *Processor) Process(eventName, targetBranch string, changedFiles []git.ChangedFile) Result {
 	result := Result{
-		MatchedFilterKeys:       []string{},
-		IndividualFilterResults: make(map[string]bool),
-		MatchedFilesByFilter:    make(map[string][]string),
+		MatchedJobKeys:          []string{},
+		IndividualJobRunResults: make(map[string]bool),
 	}
 
-	for _, f := range p.filters {
-		result.IndividualFilterResults[f.Name] = false
-	}
-
-	for _, f := range p.filters {
-		p.log.Debugw("Checking filter", "key", f.Name)
-		if isMatch, matchedFiles := f.matches(changedFiles); isMatch {
-			p.log.Debugw("Found match for filter", "key", f.Name, "files_count", len(matchedFiles))
-			result.MatchedFilterKeys = append(result.MatchedFilterKeys, f.Name)
-			result.IndividualFilterResults[f.Name] = true
-			result.MatchedFilesByFilter[f.Name] = matchedFiles
+	for _, job := range p.jobs {
+		shouldRun := job.shouldRun(eventName, targetBranch, changedFiles)
+		result.IndividualJobRunResults[job.Name] = shouldRun
+		if shouldRun {
+			result.MatchedJobKeys = append(result.MatchedJobKeys, job.Name)
 		}
 	}
 
 	return result
-}
-
-// unique is a helper function to remove duplicates from a slice of strings.
-func unique(slice []string) []string {
-	keys := make(map[string]struct{})
-	var list []string
-	for _, entry := range slice {
-		if _, exists := keys[entry]; !exists {
-			keys[entry] = struct{}{}
-			list = append(list, entry)
-		}
-	}
-
-	return list
 }

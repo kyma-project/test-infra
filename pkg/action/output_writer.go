@@ -8,21 +8,18 @@ import (
 	"go.uber.org/zap"
 )
 
-// OutputWriter implements the logic for writing to the GITHUB_OUTPUT file.
 type OutputWriter struct {
 	log *zap.SugaredLogger
 }
 
-// NewOutputWriter creates a new instance of OutputWriter.
 func NewOutputWriter(log *zap.SugaredLogger) *OutputWriter {
 	return &OutputWriter{log: log}
 }
 
-// Write processes the filter result and writes it as action outputs.
 func (w *OutputWriter) Write(result filter.Result) error {
 	outputFilePath := os.Getenv("GITHUB_OUTPUT")
 	if outputFilePath == "" {
-		w.log.Infow("GITHUB_OUTPUT environment variable not set. Skipping writing outputs.")
+		w.log.Warnw("GITHUB_OUTPUT environment variable not set. Skipping writing outputs.")
 		return nil
 	}
 
@@ -33,25 +30,25 @@ func (w *OutputWriter) Write(result filter.Result) error {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-			w.log.Errorw("could not close the file", file.Name())
+			fmt.Printf("could not close GITHUB_OUTPUT file %s: %v\n", outputFilePath, err)
 		}
 	}(file)
 
-	for key, matched := range result.IndividualFilterResults {
-		if err := w.set(file, key, fmt.Sprintf("%t", matched)); err != nil {
+	w.log.Infow("Writing individual job run results to output...")
+	for key, shouldRun := range result.IndividualJobRunResults {
+		if err := w.set(file, key, fmt.Sprintf("%t", shouldRun)); err != nil {
 			return err
 		}
 	}
 
+	w.log.Infow("Finished writing outputs.")
 	return nil
 }
 
-// set is a helper to write a single key-value pair to the output file.
 func (w *OutputWriter) set(file *os.File, key, value string) error {
-	w.log.Infow("Setting output", "key", key, "value", value)
+	w.log.Debugw("Setting output", "key", key, "value", value)
 	if _, err := fmt.Fprintf(file, "%s=%s\n", key, value); err != nil {
 		return fmt.Errorf("failed to write to GITHUB_OUTPUT for key %s: %w", key, err)
 	}
-
 	return nil
 }

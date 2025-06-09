@@ -18,7 +18,8 @@ type Options struct {
 	Base             string
 	Head             string
 	WorkingDirectory string
-	Debug            bool
+	EventName        string
+	TargetBranch     string
 	SetOutput        bool
 }
 
@@ -36,10 +37,10 @@ func main() {
 func init() {
 	rootCmd = &cobra.Command{
 		Use:   "pathsfilter",
-		Short: "A tool to filter changed file paths based on YAML definitions.",
+		Short: "A tool to filter changed file paths and branches based on YAML definitions.",
 		Long: `pathsfilter detects changed files between two git refs and filters them
-against glob patterns defined in a YAML file. It's designed for use in GitHub Actions
-to conditionally run workflow jobs.`,
+			against file and branch patterns defined in a YAML file. It's designed for use in GitHub Actions
+			to conditionally run workflow jobs based on both file changes and event context (event type, target branch).`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			log := logging.NewLogger()
 			defer func(log *zap.SugaredLogger) {
@@ -67,12 +68,13 @@ to conditionally run workflow jobs.`,
 			if err != nil {
 				return fmt.Errorf("failed to get changed files: %w", err)
 			}
+
 			log.Infow("Found changed files", "count", len(changedFiles))
 
 			log.Infow("Applying filters...")
 			filterProcessor := filter.NewProcessor(definitions, log)
-			filterResult := filterProcessor.Process(changedFiles)
-			log.Infow("Found matching filters", "count", len(filterResult.MatchedFilterKeys))
+			filterResult := filterProcessor.Process(opts.EventName, opts.TargetBranch, changedFiles)
+			log.Infow("Found matching filters", "count", len(filterResult.MatchedJobKeys))
 
 			if opts.SetOutput {
 				log.Infow("Setting outputs for GitHub Actions")
@@ -92,6 +94,7 @@ to conditionally run workflow jobs.`,
 	rootCmd.Flags().StringVarP(&opts.Base, "base", "b", "main", "Base git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.Head, "head", "H", "HEAD", "Head git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.WorkingDirectory, "working-dir", "w", ".", "Working directory containing the .git repository")
-	rootCmd.Flags().BoolVar(&opts.Debug, "debug", false, "Enable debug logging")
+	rootCmd.Flags().StringVarP(&opts.EventName, "event-name", "e", "", "The name of the GitHub event (e.g., 'push', 'pull_request_target')")
+	rootCmd.Flags().StringVarP(&opts.TargetBranch, "target-branch", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
 	rootCmd.Flags().BoolVar(&opts.SetOutput, "set-output", false, "Enable setting outputs for GitHub Actions")
 }
