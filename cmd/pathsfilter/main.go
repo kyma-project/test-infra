@@ -3,16 +3,16 @@ package main
 import (
 	"fmt"
 
-	"github.com/kyma-project/test-infra/pkg/action"
 	"github.com/kyma-project/test-infra/pkg/configloader"
-	"github.com/kyma-project/test-infra/pkg/filter"
-	"github.com/kyma-project/test-infra/pkg/git"
+	"github.com/kyma-project/test-infra/pkg/github"         // Changed import
+	"github.com/kyma-project/test-infra/pkg/github/actions" // New import
 	"github.com/kyma-project/test-infra/pkg/logging"
+	"github.com/kyma-project/test-infra/pkg/pathsfilter" // New import
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
 
-// Options holds all command-line flag values for the application.
+// Options holds all command-line flag values.
 type Options struct {
 	FiltersFile      string
 	Base             string
@@ -30,7 +30,7 @@ var (
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		_ = fmt.Errorf("error executing command")
+		_ = fmt.Errorf("error executing command: %w", err)
 	}
 }
 
@@ -46,16 +46,18 @@ func init() {
 			defer func(log *zap.SugaredLogger) {
 				err := log.Sync()
 				if err != nil {
-					fmt.Printf("error syncing log: %v\n", err)
+					fmt.Printf("error syncing logger: %v\n", err)
 				}
 			}(log)
 
 			log.Infow("Starting paths filter process")
 
-			gitRepo, err := git.NewRepository(opts.WorkingDirectory)
+			gitRepo, err := github.NewRepository(opts.WorkingDirectory)
 			if err != nil {
-				return fmt.Errorf("failed to initialize git repository client: %w", err)
+				return fmt.Errorf("failed to initialize git repository adapter: %w", err)
 			}
+
+			outputWriter := actions.NewOutputWriter(log)
 
 			log.Infow("Loading filter definitions", "path", opts.FiltersFile)
 			definitions, err := configloader.Load(opts.FiltersFile)
@@ -63,29 +65,13 @@ func init() {
 				return fmt.Errorf("failed to load filter definitions: %w", err)
 			}
 
-			log.Infow("Fetching changed files", "base", opts.Base, "head", opts.Head)
-			changedFiles, err := gitRepo.GetChangedFiles(opts.Base, opts.Head)
-			if err != nil {
-				return fmt.Errorf("failed to get changed files: %w", err)
-			}
+			appService := pathsfilter.NewService(log, gitRepo, outputWriter, definitions)
 
-			log.Infow("Found changed files", "count", len(changedFiles))
-
-			log.Infow("Applying filters...")
-			filterProcessor := filter.NewProcessor(definitions, log)
-			filterResult := filterProcessor.Process(opts.EventName, opts.TargetBranch, changedFiles)
-			log.Infow("Found matching filters", "count", len(filterResult.MatchedJobKeys))
-
-			if opts.SetOutput {
-				log.Infow("Setting outputs for GitHub Actions")
-				outputWriter := action.NewOutputWriter(log)
-				if err := outputWriter.Write(filterResult); err != nil {
-					return fmt.Errorf("failed to set action outputs: %w", err)
-				}
+			if err := appService.Run(opts.EventName, opts.TargetBranch, opts.Base, opts.Head, opts.SetOutput); err != nil {
+				return fmt.Errorf("application run failed: %w", err)
 			}
 
 			log.Infow("Paths filter process completed successfully")
-
 			return nil
 		},
 	}

@@ -26,4 +26,5 @@ pull-unit-test-go:
         - "feature-1"
         - "feature-2"
       merge_group:
+        - "main"
         - "feature-3"

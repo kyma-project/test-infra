@@ -1,24 +1,21 @@
-package git
+package github
 
 import (
 	"errors"
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"github.com/kyma-project/test-infra/pkg/pathsfilter" // Import the package with the ports
 )
 
-// ChangedFile represents a single file that has been changed.
-type ChangedFile struct {
-	Path   string
-	Status string
-}
-
 // Repository is a client for performing local Git operations.
+// It acts as an adapter for the ChangedFilesProvider port.
 type Repository struct {
 	workingDir string
 }
 
-// NewRepository creates a new local Git repository client.
+// NewRepository creates a new Git repository adapter.
 func NewRepository(workingDir string) (*Repository, error) {
 	if _, err := exec.LookPath("git"); err != nil {
 		return nil, fmt.Errorf("command 'git' not found in PATH")
@@ -27,8 +24,8 @@ func NewRepository(workingDir string) (*Repository, error) {
 	return &Repository{workingDir: workingDir}, nil
 }
 
-// GetChangedFiles retrieves the list of changed files between two git refs.
-func (r *Repository) GetChangedFiles(base, head string) ([]ChangedFile, error) {
+// GetChangedFiles retrieves the list of changed files, implementing the ChangedFilesProvider port.
+func (r *Repository) GetChangedFiles(base, head string) ([]pathsfilter.ChangedFile, error) {
 	cmd := exec.Command("git", "-C", r.workingDir, "diff", "--name-status", fmt.Sprintf("%s...%s", base, head))
 	output, err := cmd.Output()
 	if err != nil {
@@ -40,16 +37,15 @@ func (r *Repository) GetChangedFiles(base, head string) ([]ChangedFile, error) {
 		return nil, err
 	}
 
-	var files []ChangedFile
+	var files []pathsfilter.ChangedFile
 	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
 	for _, line := range lines {
 		if line == "" {
 			continue
 		}
-
 		parts := strings.Fields(line)
 		if len(parts) >= 2 {
-			files = append(files, ChangedFile{
+			files = append(files, pathsfilter.ChangedFile{
 				Status: parts[0],
 				Path:   strings.Join(parts[1:], " "),
 			})
