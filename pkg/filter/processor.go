@@ -22,7 +22,7 @@ type Job struct {
 }
 
 // shouldRun determines if a job should be triggered based on event, branch, and file changes.
-func (j *Job) shouldRun(eventName, targetBranch string, changedFiles []git.ChangedFile) bool {
+func (j *Job) shouldRun(eventName string, targetBranch string, changedFiles []git.ChangedFile) bool {
 	if !j.matchesBranch(eventName, targetBranch) {
 		j.log.Debugw("Job skipped due to branch/event filter mismatch", "job", j.Name, "event", eventName, "branch", targetBranch)
 
@@ -41,7 +41,7 @@ func (j *Job) shouldRun(eventName, targetBranch string, changedFiles []git.Chang
 }
 
 // matchesBranch checks if the current event and branch match the job's branch filters.
-func (j *Job) matchesBranch(eventName, targetBranch string) bool {
+func (j *Job) matchesBranch(eventName string, targetBranch string) bool {
 	if j.BranchFilters.Events == nil {
 		return true
 	}
@@ -98,7 +98,7 @@ func NewProcessor(definitions configloader.JobDefinitions, log *zap.SugaredLogge
 }
 
 // Process is the primary method that applies all filters to a list of changed files.
-func (p *Processor) Process(eventName, targetBranch string, changedFiles []git.ChangedFile) Result {
+func (p *Processor) Process(eventName string, targetBranch string, changedFiles []git.ChangedFile) Result {
 	result := Result{
 		MatchedJobKeys:          []string{},
 		IndividualJobRunResults: make(map[string]bool),
