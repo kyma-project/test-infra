@@ -1,0 +1,42 @@
+name: 'Paths Filter Action'
+description: 'Builds and runs the custom pathsfilter tool'
+inputs:
+  filters-file:
+    description: 'Path to the YAML file with filter definitions'
+    required: true
+    default: '.github/controller-filters.yaml'
+  base:
+    description: 'Base git ref for comparison'
+    required: true
+  head:
+    description: 'Head git ref for comparison'
+    required: true
+  event-name:
+    description: 'The name of the GitHub event'
+    required: true
+  target-branch:
+    description: 'The target branch of the event'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Build pathsfilter tool
+      shell: bash
+      run: go build -o ./.github/actions/paths-filter/pathsfilter ./cmd/paths-filter
+
+    - name: Run pathsfilter
+      shell: bash
+      run: |
+        ./.github/actions/paths-filter/pathsfilter \
+          --filters-file ${{ inputs.filters-file }} \
+          --base ${{ inputs.base }} \
+          --head ${{ inputs.head }} \
+          --event-name ${{ inputs.event-name }} \
+          --target-branch ${{ inputs.target-branch }} \
+          --set-output

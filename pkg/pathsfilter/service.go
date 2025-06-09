@@ -16,7 +16,6 @@ type Service struct {
 }
 
 // NewService creates a new instance of the application service.
-// This acts as a factory for creating a configured service object.
 func NewService(log *zap.SugaredLogger, provider ChangedFilesProvider, writer ResultWriter, definitions configloader.JobDefinitions) *Service {
 	return &Service{
 		log:           log,
@@ -34,9 +33,6 @@ func (s *Service) Run(eventName, targetBranch, base, head string, setOutput bool
 		return fmt.Errorf("failed to get changed files: %w", err)
 	}
 
-	// The filter.Processor expects its own ChangedFile type. We convert our domain type
-	// to the type expected by this specific processor.
-	// In a more advanced refactoring, the filter.Processor would also use the core domain type.
 	var filesForFilter []ChangedFile
 	for _, f := range changedFiles {
 		filesForFilter = append(filesForFilter, ChangedFile{

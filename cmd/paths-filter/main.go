@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/kyma-project/test-infra/pkg/configloader"
-	"github.com/kyma-project/test-infra/pkg/github"         // Changed import
-	"github.com/kyma-project/test-infra/pkg/github/actions" // New import
+	"github.com/kyma-project/test-infra/pkg/github"
+	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/logging"
-	"github.com/kyma-project/test-infra/pkg/pathsfilter" // New import
+	"github.com/kyma-project/test-infra/pkg/pathsfilter"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
