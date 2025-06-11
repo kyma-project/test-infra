@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Determine event-specific refs
-        id: get_refs
+        id: getRefs
         run: |
           if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
             echo "base_sha=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
@@ -39,10 +39,10 @@ jobs:
         id: pathFilters
         with:
           filters-file: .github/controller-test-filters.yaml
-          base: ${{ steps.get_refs.outputs.base_sha }}
-          head: ${{ steps.get_refs.outputs.head_sha }}
+          base: ${{ steps.getRefs.outputs.base_sha }}
+          head: ${{ steps.getRefs.outputs.head_sha }}
           event-name: ${{ github.event_name }}
-          target-branch: ${{ steps.get_refs.outputs.target_branch }}
+          target-branch: ${{ steps.getRefs.outputs.target_branch }}
 
   unit-test-go:
     uses: ./.github/workflows/unit-test-go.yml
