@@ -29,28 +29,8 @@ jobs:
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
 
-      # Verify if the pull request merge commit sha is available.
-      # If this is not true, fail the workflow because we have no correct merge commit to work with.
-      - name: Verify merge commit sha
-        id: verify_merge_commit_sha
-        run: |
-          if [ -z "${{ github.event.pull_request.merge_commit_sha }}" ]; then
-            echo "::error title=PR Commit Merge Error::The pull request does not have a merge commit SHA. Skipping the workflow. Please create a new empty commit using the --allow-empty flag and try again."
-            exit 1
-          fi
-        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
-
-      - name: Checkout PR merge commit
-        id: checkout_pr_merge_commit
-        uses: actions/checkout@v4
-        with:
-          ref: "${{ github.event.pull_request.merge_commit_sha }}"
-        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
-      
-      - name: Checkout target branch
-        id: checkout_target_branch
-        uses: actions/checkout@v4
-        if: ${{ github.event_name == 'push' }}
+      - name: Checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
       
       # Set the dry-run flag based on the event type.
       # Dry-run flag is enforced for workflow runs triggered by pull requests.
@@ -100,7 +80,7 @@ jobs:
           --workdir /github/workspace
           --rm
           --volume "$GITHUB_WORKSPACE:/github/workspace"
-          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250530-f52961a3
+          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250610-79666816
           --images-file=/github/workspace/external-images.yaml
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}

@@ -4,7 +4,9 @@ on:
   pull_request_target: 
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-  merge_group: 
+   branches-ignore:
+     - gh-readonly-*
+  merge_group:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -17,6 +19,9 @@ jobs:
       files: ${{ toJSON(steps.pathFilters.outputs) }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
       - uses: ./.github/actions/paths-filter
         id: pathFilters
         with:
