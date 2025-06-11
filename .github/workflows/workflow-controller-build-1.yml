@@ -6,7 +6,7 @@ on:
   push:
    branches-ignore:
      - gh-readonly-*
-  merge_group:
+  merge_group: 
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -16,20 +16,16 @@ jobs:
   detect-changed-files:
     runs-on: ubuntu-latest
     outputs:
-      files: ${{ toJSON(steps.pathFilters.outputs) }}
+      files: ${{ steps.pathFilters.outputs.changes }}
     steps:
       - uses: actions/checkout@v4
         with:
           repository: kyma-project/test-infra
           ref: main
-      - uses: ./.github/actions/paths-filter
+      - uses: dorny/paths-filter@v3
         id: pathFilters
         with:
-          filters-file: .github/controller-filters.yaml
-          base: ${{ github.event.pull_request.base.sha }}
-          head: ${{ github.event.pull_request.head.sha }}
-          event-name: ${{ github.event_name }}
-          target-branch: ${{ github.base_ref }}
+          filters: .github/controller-filters.yaml
 
   build-automated-approver:
     needs: detect-changed-files
@@ -80,3 +76,4 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-markdown-index.yml@main
+  

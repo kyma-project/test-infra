@@ -60,6 +60,7 @@ func init() {
 			outputWriter := actions.NewOutputWriter(log)
 
 			log.Infow("Loading filter definitions", "path", opts.FiltersFile)
+
 			definitions, err := configloader.Load(opts.FiltersFile)
 			if err != nil {
 				return fmt.Errorf("failed to load filter definitions: %w", err)
@@ -72,6 +73,7 @@ func init() {
 			}
 
 			log.Infow("Paths filter process completed successfully")
+
 			return nil
 		},
 	}
@@ -82,5 +84,5 @@ func init() {
 	rootCmd.Flags().StringVarP(&opts.WorkingDirectory, "working-dir", "w", ".", "Working directory containing the .git repository")
 	rootCmd.Flags().StringVarP(&opts.EventName, "event-name", "e", "", "The name of the GitHub event (e.g., 'push', 'pull_request_target')")
 	rootCmd.Flags().StringVarP(&opts.TargetBranch, "target-branch", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
-	rootCmd.Flags().BoolVar(&opts.SetOutput, "set-output", false, "Enable setting outputs for GitHub Actions")
+	rootCmd.Flags().BoolVarP(&opts.SetOutput, "set-output", "o", false, "Enable setting outputs for GitHub Actions")
 }

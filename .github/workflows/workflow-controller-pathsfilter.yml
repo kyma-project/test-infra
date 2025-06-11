@@ -1,0 +1,55 @@
+name: workflow-controller-build-1
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+  merge_group:
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  detect-changed-files:
+    runs-on: [ self-hosted, solinas ]
+    outputs:
+      changes: ${{ steps.pathFilters.outputs.results-json }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine event-specific refs
+        id: get_refs
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
+            echo "base_sha=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+            echo "head_sha=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+            echo "target_branch=${{ github.base_ref }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "merge_group" ]]; then
+            echo "base_sha=${{ github.event.merge_group.base_sha }}" >> $GITHUB_OUTPUT
+            echo "head_sha=${{ github.event.merge_group.head_sha }}" >> $GITHUB_OUTPUT
+            echo "target_branch=${{ github.event.merge_group.base_ref }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "base_sha=${{ github.event.before }}" >> $GITHUB_OUTPUT
+            echo "head_sha=${{ github.event.after }}" >> $GITHUB_OUTPUT
+            echo "target_branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+      - uses: ./.github/actions/paths-filter
+        id: pathFilters
+        with:
+          filters-file: .github/controller-test-filters.yaml
+          base: ${{ steps.get_refs.outputs.base_sha }}
+          head: ${{ steps.get_refs.outputs.head_sha }}
+          event-name: ${{ github.event_name }}
+          target-branch: ${{ steps.get_refs.outputs.target_branch }}
+
+  unit-test-go:
+    uses: ./.github/workflows/unit-test-go.yml
+    needs: detect-changed-files
+    if: ${{ fromJSON(needs.detect-changed-files.outputs.changes).unit-test-go == 'true' }}
+
+  validate-dockerfiles:
+    uses: ./.github/workflows/validate-dockerfiles.yml
+    needs: detect-changed-files
+    if: ${{ fromJSON(needs.detect-changed-files.outputs.changes).validate-dockerfiles == 'true' }}

@@ -1,0 +1,22 @@
+validate-dockerfiles:
+  file-filters:
+    - '.github/workflows/validate-dockerfiles.yml'
+    - '**/Dockerfile'
+  branch-filters:
+    events:
+      pull_request_target:
+        - "refs/head/main"
+        - "feature-1"
+      merge_group:
+        - "refs/head/main"
+
+unit-test-go:
+  file-filters:
+    - '.github/workflows/unit-test-go.yml'
+    - '**/*.go'
+  branch-filters:
+    events:
+      pull_request_target:
+        - "feature-1"
+      merge_group:
+        - "refs/heads/main"

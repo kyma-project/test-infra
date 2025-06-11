@@ -1,10 +1,14 @@
 name: 'Paths Filter Action'
-description: 'Builds and runs the custom pathsfilter tool'
+description: 'Builds and runs the custom paths-filter tool'
+outputs:
+  results-json:
+    description: "A JSON string containing all the true/false results from the filter."
+    value: ${{ toJSON(steps.pathsFilter.outputs) }}
 inputs:
   filters-file:
     description: 'Path to the YAML file with filter definitions'
     required: true
-    default: '.github/controller-filters.yaml'
+    default: '.github/controller-test-filters.yaml'
   base:
     description: 'Base git ref for comparison'
     required: true
@@ -25,12 +29,12 @@ runs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.24'
-
-    - name: Build pathsfilter tool
+    - name: Build paths-filter tool
       shell: bash
       run: go build -o ./.github/actions/paths-filter/pathsfilter ./cmd/paths-filter
 
     - name: Run pathsfilter
+      id: pathsFilter
       shell: bash
       run: |
         ./.github/actions/paths-filter/pathsfilter \
