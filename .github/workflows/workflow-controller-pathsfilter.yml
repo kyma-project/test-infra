@@ -1,4 +1,4 @@
-name: workflow-controller-build-1
+name: workflow-controller-pathsfilter
 
 on:
   pull_request_target:
