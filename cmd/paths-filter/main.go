@@ -78,7 +78,7 @@ func init() {
 		},
 	}
 
-	rootCmd.Flags().StringVarP(&opts.FiltersFile, "filters-file", "f", ".github/controller-filters.yaml", "Path to the YAML file with filter definitions")
+	rootCmd.Flags().StringVarP(&opts.FiltersFile, "filters-file", "f", ".github/controller-test-filters.yaml", "Path to the YAML file with filter definitions")
 	rootCmd.Flags().StringVarP(&opts.Base, "base", "b", "main", "Base git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.Head, "head", "H", "HEAD", "Head git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.WorkingDirectory, "working-dir", "w", ".", "Working directory containing the .git repository")
