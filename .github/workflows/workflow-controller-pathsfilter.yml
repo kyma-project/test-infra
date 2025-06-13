@@ -42,7 +42,7 @@ jobs:
           base: ${{ steps.getRefs.outputs.base_sha }}
           head: ${{ steps.getRefs.outputs.head_sha }}
           event-name: ${{ github.event_name }}
-          target-branch: ${{ steps.getRefs.outputs.target_branch }}
+          target-branch-name: ${{ steps.getRefs.outputs.target_branch }}
 
   unit-test-go:
     uses: ./.github/workflows/unit-test-go.yml

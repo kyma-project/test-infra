@@ -18,8 +18,8 @@ inputs:
   event-name:
     description: 'The name of the GitHub event'
     required: true
-  target-branch:
-    description: 'The target branch of the event'
+  target-branch-name:
+    description: 'The target branch name of the event'
     required: true
 
 runs:
@@ -42,5 +42,4 @@ runs:
           --base ${{ inputs.base }} \
           --head ${{ inputs.head }} \
           --event-name ${{ inputs.event-name }} \
-          --target-branch ${{ inputs.target-branch }} \
-          --set-output
+          --target-branch-name ${{ inputs.target-branch-name }}
