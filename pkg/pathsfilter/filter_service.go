@@ -37,15 +37,10 @@ func (s *FilterService) Run(eventName string, targetBranchName string, base stri
 		return fmt.Errorf("failed to get changed files: %w", err)
 	}
 
-	var filesForFilter []string
-	for _, filePath := range changedFiles {
-		filesForFilter = append(filesForFilter, filePath)
-	}
-
-	s.log.Infow("Found changed files", "count", len(filesForFilter))
+	s.log.Infow("Found changed files", "count", len(changedFiles))
 	s.log.Infow("Applying filters...")
 
-	jobsFilterResult := s.jobMatcher.MatchJobs(eventName, targetBranchName, filesForFilter)
+	jobsFilterResult := s.jobMatcher.MatchJobs(eventName, targetBranchName, changedFiles)
 
 	s.log.Infow("Found matching filters", "count", len(jobsFilterResult.TriggeredJobKeys))
 	s.log.Infow("Setting outputs for GitHub Actions")
