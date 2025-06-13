@@ -19,7 +19,7 @@ func NewOutputWriter(log *zap.SugaredLogger) *OutputWriter {
 }
 
 // Write writes the results to the GITHUB_OUTPUT file.
-func (w *OutputWriter) Write(result pathsfilter.Result) error {
+func (w *OutputWriter) Write(result pathsfilter.JobFiltersResult) error {
 	outputFilePath := os.Getenv("GITHUB_OUTPUT")
 	if outputFilePath == "" {
 		w.log.Warnw("GITHUB_OUTPUT environment variable not set. Skipping writing outputs.")
@@ -40,7 +40,7 @@ func (w *OutputWriter) Write(result pathsfilter.Result) error {
 	}(file)
 
 	w.log.Infow("Writing individual job run results to output...")
-	for key, shouldRun := range result.IndividualJobRunResults {
+	for key, shouldRun := range result.JobTriggers {
 		if err := w.set(file, key, fmt.Sprintf("%t", shouldRun)); err != nil {
 			return err
 		}

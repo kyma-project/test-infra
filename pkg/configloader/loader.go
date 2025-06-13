@@ -7,18 +7,18 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// EventFilters maps an event type (like "push") to a list of allowed branch names.
-type EventFilters map[string][]string
-
-// BranchFilters contains event-specific branch filtering rules.
-type BranchFilters struct {
-	Events EventFilters `yaml:"events"`
+// EventRules holds the branch filtering rules for a single event.
+type EventRules struct {
+	Branches []string `yaml:"branches"`
 }
+
+// OnDefinition maps an event name (e.g., "pull_request_target") to its specific rules.
+type OnDefinition map[string]EventRules
 
 // JobDefinition represents the full configuration for a single job.
 type JobDefinition struct {
-	FileFilters   []string      `yaml:"file-filters"`
-	BranchFilters BranchFilters `yaml:"branch-filters"`
+	Paths []string     `yaml:"paths"`
+	On    OnDefinition `yaml:"on"`
 }
 
 // JobDefinitions is the top-level structure of the YAML file.

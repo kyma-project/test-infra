@@ -14,13 +14,12 @@ import (
 
 // Options holds all command-line flag values.
 type Options struct {
-	FiltersFile      string
-	Base             string
-	Head             string
-	WorkingDirectory string
-	EventName        string
-	TargetBranch     string
-	SetOutput        bool
+	FiltersFile  string
+	Base         string
+	Head         string
+	RepoPath     string
+	EventName    string
+	TargetBranch string
 }
 
 var (
@@ -52,7 +51,7 @@ func init() {
 
 			log.Infow("Starting paths filter process")
 
-			gitRepo, err := github.NewRepository(opts.WorkingDirectory)
+			gitRepo, err := github.NewRepository(opts.RepoPath)
 			if err != nil {
 				return fmt.Errorf("failed to initialize git repository adapter: %w", err)
 			}
@@ -66,9 +65,10 @@ func init() {
 				return fmt.Errorf("failed to load filter definitions: %w", err)
 			}
 
-			appService := pathsfilter.NewService(log, gitRepo, outputWriter, definitions)
+			jobMatcher := pathsfilter.NewJobMatcher(definitions, log)
+			filterService := pathsfilter.NewFilterService(jobMatcher, gitRepo, outputWriter, log)
 
-			if err := appService.Run(opts.EventName, opts.TargetBranch, opts.Base, opts.Head, opts.SetOutput); err != nil {
+			if err := filterService.Run(opts.EventName, opts.TargetBranch, opts.Base, opts.Head); err != nil {
 				return fmt.Errorf("application run failed: %w", err)
 			}
 
@@ -81,8 +81,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opts.FiltersFile, "filters-file", "f", ".github/controller-test-filters.yaml", "Path to the YAML file with filter definitions")
 	rootCmd.Flags().StringVarP(&opts.Base, "base", "b", "main", "Base git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.Head, "head", "H", "HEAD", "Head git ref for comparison")
-	rootCmd.Flags().StringVarP(&opts.WorkingDirectory, "working-dir", "w", ".", "Working directory containing the .git repository")
+	rootCmd.Flags().StringVarP(&opts.RepoPath, "working-dir", "w", ".", "Working directory containing the .git repository")
 	rootCmd.Flags().StringVarP(&opts.EventName, "event-name", "e", "", "The name of the GitHub event (e.g., 'push', 'pull_request_target')")
 	rootCmd.Flags().StringVarP(&opts.TargetBranch, "target-branch", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
-	rootCmd.Flags().BoolVarP(&opts.SetOutput, "set-output", "o", false, "Enable setting outputs for GitHub Actions")
 }
