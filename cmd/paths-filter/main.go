@@ -40,7 +40,7 @@ func init() {
 		Long: `pathsfilter detects changed files between two git refs and filters them
 			against file and branch patterns defined in a YAML file. It's designed for use in GitHub Actions
 			to conditionally run workflow jobs based on both file changes and event context (event type, target branch).`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			log := logging.NewLogger()
 			defer func(log *zap.SugaredLogger) {
 				err := log.Sync()
