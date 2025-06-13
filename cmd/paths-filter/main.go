@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/kyma-project/test-infra/pkg/configloader"
+	"github.com/kyma-project/test-infra/pkg/controllerfilters"
 	"github.com/kyma-project/test-infra/pkg/github"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/logging"
@@ -60,7 +60,7 @@ func init() {
 
 			log.Infow("Loading filter definitions", "path", opts.FiltersFile)
 
-			definitions, err := configloader.Load(opts.FiltersFile)
+			definitions, err := controllerfilters.Load(opts.FiltersFile)
 			if err != nil {
 				return fmt.Errorf("failed to load filter definitions: %w", err)
 			}
@@ -83,5 +83,5 @@ func init() {
 	rootCmd.Flags().StringVarP(&opts.Head, "head", "H", "HEAD", "Head git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.RepoPath, "repo-path", "p", ".", "Path to the local repository root directory")
 	rootCmd.Flags().StringVarP(&opts.EventName, "event-name", "e", "", "The name of the GitHub event (e.g., 'push', 'pull_request_target')")
-	rootCmd.Flags().StringVarP(&opts.TargetBranchName, "target-branch", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
+	rootCmd.Flags().StringVarP(&opts.TargetBranchName, "target-branch-name", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
 }

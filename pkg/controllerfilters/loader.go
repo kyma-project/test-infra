@@ -1,4 +1,4 @@
-package configloader
+package controllerfilters
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 
 // EventRules holds the branch filtering rules for a single event.
 type EventRules struct {
+	Paths    []string `yaml:"paths"`
 	Branches []string `yaml:"branches"`
 }
 
@@ -17,8 +18,7 @@ type OnDefinition map[string]EventRules
 
 // JobDefinition represents the full configuration for a single job.
 type JobDefinition struct {
-	Paths []string     `yaml:"paths"`
-	On    OnDefinition `yaml:"on"`
+	On OnDefinition `yaml:"on"`
 }
 
 // JobDefinitions is the top-level structure of the YAML file.
@@ -36,5 +36,12 @@ func Load(filePath string) (JobDefinitions, error) {
 		return nil, fmt.Errorf("cannot parse YAML file %s: %w", filePath, err)
 	}
 
-	return defs, nil
+	jobDefs := make(JobDefinitions)
+	for key, value := range defs {
+		if key[0] != '.' {
+			jobDefs[key] = value
+		}
+	}
+
+	return jobDefs, nil
 }

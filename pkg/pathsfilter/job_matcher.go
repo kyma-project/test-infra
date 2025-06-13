@@ -1,7 +1,7 @@
 package pathsfilter
 
 import (
-	"github.com/kyma-project/test-infra/pkg/configloader"
+	"github.com/kyma-project/test-infra/pkg/controllerfilters"
 	"github.com/kyma-project/test-infra/pkg/matcher"
 	"go.uber.org/zap"
 )
@@ -14,48 +14,40 @@ type JobFiltersResult struct {
 
 // Job represents a single job with all its filtering rules.
 type Job struct {
-	Name         string
-	PathPatterns []string
-	OnRules      configloader.OnDefinition
-	log          *zap.SugaredLogger
+	Name    string
+	OnRules controllerfilters.OnDefinition
+	log     *zap.SugaredLogger
 }
 
 // shouldRun determines if a job should be triggered based on event, branch, and file changes.
 func (j *Job) shouldRun(eventName string, targetBranchName string, changedFiles []string) bool {
-	if !j.matchBranchAndEvent(eventName, targetBranchName) {
-		j.log.Debugw("Job skipped due to branch/event filter mismatch", "job", j.Name, "event", eventName, "branch", targetBranchName)
-
-		return false
-	}
-
-	if !j.matchesFiles(changedFiles) {
-		j.log.Debugw("Job skipped due to file filter mismatch", "job", j.Name)
-
-		return false
-	}
-
-	j.log.Debugw("Job conditions met, will be triggered", "job", j.Name)
-
-	return true
-}
-
-// matchesBranchAndEvent checks if the current event and branch match the rules in the 'on' block.
-func (j *Job) matchBranchAndEvent(eventName string, targetBranchName string) bool {
-	if j.OnRules == nil {
-		return true
-	}
-
 	eventRules, eventDefined := j.OnRules[eventName]
 	if !eventDefined {
+		j.log.Debugw("Job skipped, event not defined in config", "job", j.Name, "event", eventName)
+
 		return false
 	}
 
-	if len(eventRules.Branches) == 0 {
+	branchMatch := j.isBranchAllowed(eventRules.Branches, targetBranchName)
+	fileMatch := j.hasMatchingFileChanges(eventRules.Paths, changedFiles)
+
+	j.log.Debugw("Condition evaluation for job",
+		"job", j.Name,
+		"branch_match", branchMatch,
+		"file_match", fileMatch,
+	)
+
+	return branchMatch && fileMatch
+}
+
+// isBranchAllowed checks if the target branch is in the list of allowed branches for the current event.
+func (j *Job) isBranchAllowed(allowedBranches []string, targetBranchName string) bool {
+	if len(allowedBranches) == 0 {
 		return true
 	}
 
-	for _, allowedBranch := range eventRules.Branches {
-		if allowedBranch == targetBranchName {
+	for _, allowedBranchName := range allowedBranches {
+		if allowedBranchName == targetBranchName {
 			return true
 		}
 	}
@@ -63,13 +55,13 @@ func (j *Job) matchBranchAndEvent(eventName string, targetBranchName string) boo
 	return false
 }
 
-// matchesFiles checks if any changed files match the job's file patterns.
-func (j *Job) matchesFiles(changedFiles []string) bool {
-	if len(j.PathPatterns) == 0 {
+// hasMatchingFileChanges checks if any changed files match the job's file path patterns.
+func (j *Job) hasMatchingFileChanges(pathPatterns []string, changedFiles []string) bool {
+	if len(pathPatterns) == 0 {
 		return true
 	}
 
-	for _, pattern := range j.PathPatterns {
+	for _, pattern := range pathPatterns {
 		for _, filePath := range changedFiles {
 			if ok, _ := matcher.Match(pattern, filePath); ok {
 				return true
@@ -87,14 +79,13 @@ type JobMatcher struct {
 }
 
 // NewJobMatcher creates a new instance of JobMatcher.
-func NewJobMatcher(definitions configloader.JobDefinitions, log *zap.SugaredLogger) JobMatcher {
+func NewJobMatcher(definitions controllerfilters.JobDefinitions, log *zap.SugaredLogger) JobMatcher {
 	var jobs []Job
 	for name, def := range definitions {
 		jobs = append(jobs, Job{
-			Name:         name,
-			PathPatterns: def.Paths,
-			OnRules:      def.On,
-			log:          log,
+			Name:    name,
+			OnRules: def.On,
+			log:     log,
 		})
 	}
 

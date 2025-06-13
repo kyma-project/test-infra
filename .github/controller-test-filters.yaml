@@ -1,24 +1,30 @@
-validate-dockerfiles:
-  paths:
+.definitions:
+  validate-dockerfiles-paths: &validate-dockerfiles-paths
     - '.github/workflows/validate-dockerfiles.yml'
     - '**/Dockerfile'
+  unit-test-go-paths: &unit-test-go-paths
+    - '.github/workflows/unit-test-go.yml'
+    - '**/*.go'
+
+validate-dockerfiles:
   on:
     pull_request_target:
+      paths: *validate-dockerfiles-paths
       branches:
         - "main"
         - "feature-1"
     merge_group:
+      paths: *validate-dockerfiles-paths
       branches:
         - "main"
 
 unit-test-go:
-  paths:
-    - '.github/workflows/unit-test-go.yml'
-    - '**/*.go'
   on:
     pull_request_target:
+      paths: *unit-test-go-paths
       branches:
         - "feature-1"
     push:
+      paths: *unit-test-go-paths
       branches:
         - "main"
