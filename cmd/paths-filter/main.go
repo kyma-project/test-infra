@@ -81,7 +81,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&opts.FiltersFile, "filters-file", "f", ".github/controller-test-filters.yaml", "Path to the YAML file with filter definitions")
 	rootCmd.Flags().StringVarP(&opts.Base, "base", "b", "main", "Base git ref for comparison")
 	rootCmd.Flags().StringVarP(&opts.Head, "head", "H", "HEAD", "Head git ref for comparison")
-	rootCmd.Flags().StringVarP(&opts.RepoPath, "working-dir", "w", ".", "Working directory containing the .git repository")
+	rootCmd.Flags().StringVarP(&opts.RepoPath, "repo-path", "p", ".", "Path to the local repository root directory")
 	rootCmd.Flags().StringVarP(&opts.EventName, "event-name", "e", "", "The name of the GitHub event (e.g., 'push', 'pull_request_target')")
 	rootCmd.Flags().StringVarP(&opts.TargetBranchName, "target-branch", "t", "", "The target branch of the event (e.g., 'main', 'develop')")
 }
