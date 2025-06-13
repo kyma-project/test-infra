@@ -30,7 +30,7 @@ func NewFilterService(
 }
 
 // Run executes the main logic of the paths filter.
-func (s *FilterService) Run(eventName string, targetBranch string, base string, head string) error {
+func (s *FilterService) Run(eventName string, targetBranchName string, base string, head string) error {
 	s.log.Infow("Fetching changed files", "base", base, "head", head)
 	changedFiles, err := s.filesProvider.GetChangedFiles(base, head)
 	if err != nil {
@@ -45,7 +45,7 @@ func (s *FilterService) Run(eventName string, targetBranch string, base string, 
 	s.log.Infow("Found changed files", "count", len(filesForFilter))
 	s.log.Infow("Applying filters...")
 
-	jobsFilterResult := s.jobMatcher.MatchJobs(eventName, targetBranch, filesForFilter)
+	jobsFilterResult := s.jobMatcher.MatchJobs(eventName, targetBranchName, filesForFilter)
 
 	s.log.Infow("Found matching filters", "count", len(jobsFilterResult.TriggeredJobKeys))
 	s.log.Infow("Setting outputs for GitHub Actions")

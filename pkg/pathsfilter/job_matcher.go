@@ -21,9 +21,9 @@ type Job struct {
 }
 
 // shouldRun determines if a job should be triggered based on event, branch, and file changes.
-func (j *Job) shouldRun(eventName string, targetBranch string, changedFiles []string) bool {
-	if !j.matchBranchAndEvent(eventName, targetBranch) {
-		j.log.Debugw("Job skipped due to branch/event filter mismatch", "job", j.Name, "event", eventName, "branch", targetBranch)
+func (j *Job) shouldRun(eventName string, targetBranchName string, changedFiles []string) bool {
+	if !j.matchBranchAndEvent(eventName, targetBranchName) {
+		j.log.Debugw("Job skipped due to branch/event filter mismatch", "job", j.Name, "event", eventName, "branch", targetBranchName)
 
 		return false
 	}
@@ -40,7 +40,7 @@ func (j *Job) shouldRun(eventName string, targetBranch string, changedFiles []st
 }
 
 // matchesBranchAndEvent checks if the current event and branch match the rules in the 'on' block.
-func (j *Job) matchBranchAndEvent(eventName string, targetBranch string) bool {
+func (j *Job) matchBranchAndEvent(eventName string, targetBranchName string) bool {
 	if j.OnRules == nil {
 		return true
 	}
@@ -55,7 +55,7 @@ func (j *Job) matchBranchAndEvent(eventName string, targetBranch string) bool {
 	}
 
 	for _, allowedBranch := range eventRules.Branches {
-		if allowedBranch == targetBranch {
+		if allowedBranch == targetBranchName {
 			return true
 		}
 	}
@@ -102,14 +102,14 @@ func NewJobMatcher(definitions configloader.JobDefinitions, log *zap.SugaredLogg
 }
 
 // MatchJobs is the primary method that applies all filters to a list of changed files.
-func (p *JobMatcher) MatchJobs(eventName string, targetBranch string, changedFiles []string) JobFiltersResult {
+func (p *JobMatcher) MatchJobs(eventName string, targetBranchName string, changedFiles []string) JobFiltersResult {
 	result := JobFiltersResult{
 		TriggeredJobKeys: []string{},
 		JobTriggers:      make(map[string]bool),
 	}
 
 	for _, job := range p.jobs {
-		shouldRun := job.shouldRun(eventName, targetBranch, changedFiles)
+		shouldRun := job.shouldRun(eventName, targetBranchName, changedFiles)
 		result.JobTriggers[job.Name] = shouldRun
 		if shouldRun {
 			result.TriggeredJobKeys = append(result.TriggeredJobKeys, job.Name)
