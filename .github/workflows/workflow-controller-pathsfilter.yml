@@ -33,7 +33,8 @@ jobs:
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             echo "base_sha=${{ github.event.before }}" >> $GITHUB_OUTPUT
             echo "head_sha=${{ github.event.after }}" >> $GITHUB_OUTPUT
-            echo "target_branch=${{ github.ref##*/ }}" >> $GITHUB_OUTPUT
+            ref="${{ github.ref }}"
+            echo "target_branch=${ref##*/}" >> $GITHUB_OUTPUT
           fi
       - uses: ./.github/actions/paths-filter
         id: pathFilters
