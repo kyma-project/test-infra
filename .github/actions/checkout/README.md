@@ -11,15 +11,13 @@ This action checks out a repository so your workflow can access its contents. It
 ## Inputs
 | Name         | Description                                                      | Required | Default |
 |--------------|------------------------------------------------------------------|----------|---------|
-| **fetch-depth**  | The number of commits to fetch. Only the latest by default.      | false    | `1`      |
+| **fetch-depth**  | The number of commits to fetch. It must be greater than or equal to 4 for sanity check to pass.      | false    | `5`      |
 
 ## Usage
 To use this custom checkout action in your workflow, add the following step:
 ```yaml
 - name: Checkout PR code
-  uses: kyma-project/test-infra/.github/actions/checkout
-  with:
-    fetch-depth: 1  # Optional, defaults to 1
+  uses: kyma-project/test-infra/.github/actions/checkout@main
 ```
 
 ## How It Works

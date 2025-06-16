@@ -4,7 +4,7 @@ description: |
   It can checkout a pull request code in pull_request_target workflow.
 inputs:
   fetch-depth:
-    description: The number of commits to fetch. Defaults to 1, which means only the latest commit is fetched.
+    description: The number of commits to fetch. Defaults to 5, which means only the 5 latest commit is fetched. It must be greater than 4 for sanity check to pass.
     required: false
     default: "5"
 
@@ -27,7 +27,7 @@ runs:
           fetch-depth: ${{ inputs.fetch-depth }}
         if: ${{ github.event_name != 'pull_request_target' && github.event_name != 'pull_request' }}
 
-      # Important security check: https://github.com/actions/checkout/issues/518
+      # Important security check: https://github.com/actions/checkout/issues/518#issuecomment-1534294236
       - name: Sanity check
         shell: bash
         id: sanity-check
