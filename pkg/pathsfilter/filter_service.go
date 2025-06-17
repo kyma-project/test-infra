@@ -42,7 +42,6 @@ func (s *FilterService) Run(eventName string, targetBranchName string, base stri
 
 	jobsFilterResults := s.jobMatcher.MatchJobs(eventName, targetBranchName, changedFiles)
 
-	s.log.Infow("Found matching filters", "count", len(jobsFilterResults))
 	s.log.Infow("Setting outputs for GitHub Actions")
 
 	if err := s.resultWriter.Write(jobsFilterResults); err != nil {
