@@ -13,5 +13,5 @@ type ChangedFilesProvider interface {
 
 // ResultWriter is a port for an adapter that writes the result of a filtering operation.
 type ResultWriter interface {
-	Write(result JobFiltersResult) error
+	Write(results map[string]bool) error
 }

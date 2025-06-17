@@ -6,12 +6,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// JobFiltersResult holds the outcome of a filtering operation.
-type JobFiltersResult struct {
-	TriggeredJobKeys []string
-	JobTriggers      map[string]bool
-}
-
 // Job represents a single job with all its filtering rules.
 type Job struct {
 	Name    string
@@ -93,18 +87,12 @@ func NewJobMatcher(definitions controllerfilters.JobDefinitions, log *zap.Sugare
 }
 
 // MatchJobs is the primary method that applies all filters to a list of changed files.
-func (p *JobMatcher) MatchJobs(eventName string, targetBranchName string, changedFiles []string) JobFiltersResult {
-	result := JobFiltersResult{
-		TriggeredJobKeys: []string{},
-		JobTriggers:      make(map[string]bool),
-	}
+func (p *JobMatcher) MatchJobs(eventName string, targetBranchName string, changedFiles []string) map[string]bool {
+	result := make(map[string]bool)
 
 	for _, job := range p.jobs {
 		shouldRun := job.shouldRun(eventName, targetBranchName, changedFiles)
-		result.JobTriggers[job.Name] = shouldRun
-		if shouldRun {
-			result.TriggeredJobKeys = append(result.TriggeredJobKeys, job.Name)
-		}
+		result[job.Name] = shouldRun
 	}
 
 	return result

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kyma-project/test-infra/pkg/pathsfilter"
 	"go.uber.org/zap"
 )
 
@@ -19,7 +18,7 @@ func NewOutputWriter(log *zap.SugaredLogger) *OutputWriter {
 }
 
 // Write writes the results to the GITHUB_OUTPUT file.
-func (w *OutputWriter) Write(result pathsfilter.JobFiltersResult) error {
+func (w *OutputWriter) Write(results map[string]bool) error {
 	outputFilePath := os.Getenv("GITHUB_OUTPUT")
 	if outputFilePath == "" {
 		w.log.Warnw("GITHUB_OUTPUT environment variable not set. Skipping writing outputs.")
@@ -40,7 +39,7 @@ func (w *OutputWriter) Write(result pathsfilter.JobFiltersResult) error {
 	}(file)
 
 	w.log.Infow("Writing individual job run results to output...")
-	for key, shouldRun := range result.JobTriggers {
+	for key, shouldRun := range results {
 		if err := w.set(file, key, fmt.Sprintf("%t", shouldRun)); err != nil {
 			return err
 		}

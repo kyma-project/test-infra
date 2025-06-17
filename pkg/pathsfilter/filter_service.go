@@ -40,12 +40,12 @@ func (s *FilterService) Run(eventName string, targetBranchName string, base stri
 	s.log.Infow("Found changed files", "count", len(changedFiles))
 	s.log.Infow("Applying filters...")
 
-	jobsFilterResult := s.jobMatcher.MatchJobs(eventName, targetBranchName, changedFiles)
+	jobsFilterResults := s.jobMatcher.MatchJobs(eventName, targetBranchName, changedFiles)
 
-	s.log.Infow("Found matching filters", "count", len(jobsFilterResult.TriggeredJobKeys))
+	s.log.Infow("Found matching filters", "count", len(jobsFilterResults))
 	s.log.Infow("Setting outputs for GitHub Actions")
 
-	if err := s.resultWriter.Write(jobsFilterResult); err != nil {
+	if err := s.resultWriter.Write(jobsFilterResults); err != nil {
 		return fmt.Errorf("failed to set action outputs: %w", err)
 	}
 
