@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automated-approver
-        image: europe-docker.pkg.dev/kyma-project/prod/automated-approver:v20250616-f33bf72b
+        image: europe-docker.pkg.dev/kyma-project/prod/automated-approver:v20250617-a30d8ac7
         imagePullPolicy: Always
         args:
         - --dry-run=false
