@@ -4,7 +4,7 @@ description: |
   It can checkout a pull request code in pull_request_target workflow.
 inputs:
   fetch-depth:
-    description: The number of commits to fetch. Defaults to 5, which means only the 5 latest commit is fetched. It must be greater than 4 for sanity check to pass.
+    description: The number of commits to fetch. Defaults to 5, which means only the 5 latest commits are fetched. It must be greater than 4 for the sanity check to pass.
     required: false
     default: "5"
 
