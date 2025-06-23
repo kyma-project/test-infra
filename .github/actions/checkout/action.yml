@@ -33,7 +33,7 @@ runs:
       # We must use GITHUB_WORKSPACE instead of ${{ github.workspace }}, see: https://github.com/actions/runner/issues/2058
       - name: Add current github workspace to git config as safe directory
         shell: bash
-        run: git config --system --add safe.directory "${GITHUB_WORKSPACE}"
+        run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
 
       # Important security check: https://github.com/actions/checkout/issues/518
       - name: Sanity check
