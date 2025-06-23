@@ -27,6 +27,14 @@ runs:
           fetch-depth: ${{ inputs.fetch-depth }}
         if: ${{ github.event_name != 'pull_request_target' && github.event_name != 'pull_request' }}
 
+      # Add current working directory to git config
+      # This is necessary to avoid the "fatal: detected dubious ownership in repository at" error
+      # It's same as the actions/checkout@v4 does, but we need to do it here because we are using a custom action.
+      # We must use GITHUB_WORKSPACE instead of ${{ github.workspace }}, see: https://github.com/actions/runner/issues/2058
+      - name: Add current github workspace to git config as safe directory
+        shell: bash
+        run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+
       # Important security check: https://github.com/actions/checkout/issues/518
       - name: Sanity check
         shell: bash
