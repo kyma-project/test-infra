@@ -39,7 +39,12 @@ resource "google_service_account" "kyma-submission-pipeline" {
   description = "The submission-pipeline ADO pipeline."
 }
 
-resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin" {
+moved {
+  from = google_artifact_registry_repository_iam_member.dev_modules_internal_repo_admin
+  to =   google_artifact_registry_repository_iam_member.dev_modules_internal_repo_admin_legacy
+}
+
+resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin_legacy" {
   provider   = google.kyma_project
   repository = google_artifact_registry_repository.dev_modules_internal.id
   role       = "roles/artifactregistry.repoAdmin"
