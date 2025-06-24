@@ -58,3 +58,4 @@ To add a new workflow to a workflow controller, follow these steps:
 - ADR-004: Adoption of Merge Queue
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [dorny/paths-filter Action](https://github.com/dorny/paths-filter)
+- [Workflow Controller](../what-is/what-is_workflow_controller.md)
