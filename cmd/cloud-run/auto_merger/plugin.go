@@ -197,10 +197,9 @@ func (hb *HandlerBackend) waitForPrSuccessStatuses(ctx context.Context, logger *
 			case "pending":
 				logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prNumber)
 				for _, prStatus := range prStatuses.Statuses {
-					switch prStatus.State {
-					case "failure":
+					if prStatus.State == "failure" {
 						return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
-					case "pending":
+					} else if prStatus.State == "pending" {
 						statusErr := fmt.Errorf("pull request status check %s is pending", prStatus.Context)
 						logger.Debug(statusErr.Error())
 						return statusErr
