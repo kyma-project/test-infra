@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -44,6 +45,14 @@ func main() {
 	}
 }
 
+// sanitizeUserInput removes control characters like newlines and carriage returns from user input.
+// This is a basic sanitization function to prevent injection attacks.
+func sanitizeUserInput(userInput string) string {
+	// Remove newlines and carriage returns
+	re := regexp.MustCompile(`[\r\n]+`)
+	return re.ReplaceAllString(userInput, "")
+}
+
 func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if clientID == "" || clientSecret == "" {
@@ -62,9 +71,10 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 		}
 
 		code := r.Form["oauthz_code"][0]
+		sanitizedCode := sanitizeUserInput(code)
 
 		data := url.Values{}
-		data.Add("code", code)
+		data.Add("code", sanitizedCode)
 		data.Add("client_id", clientID)
 		data.Add("client_secret", clientSecret)
 
