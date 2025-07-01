@@ -117,7 +117,7 @@ Certain parameters need to be defined by the user in addition to the data taken 
 - **Tags**: The tags to be applied to the image.
 - **ExportTags**: Whether to export the tags.
 - **EnvFile**: The environment variables file.
-- **BuildEngine**: The build engine to be used. Allowed values are `kaniko` and `buildx`. The default is `kaniko`.
+- **BuildEngine**: The build engine to be used. Allowed values are `kaniko` and `buildx`. The default is `buildx`.
 - **Platforms**: A list of platforms to be built in the format `os/arch`. For `buildx` BuildEngine, the default is `linux/amd64` and `linux/arm64`.
 
 See the list of reusable workflow inputs in

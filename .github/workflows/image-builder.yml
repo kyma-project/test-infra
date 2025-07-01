@@ -49,7 +49,7 @@ on:
         description: The build engine to use for building the image. Either kaniko or buildx
         required: false
         type: string
-        default: "kaniko"
+        default: "buildx"
       platforms:
         description: The platforms to build the image for, one per line. If not set, the default platforms (linux/arm64,linux/amd64) will be used.
         required: false
