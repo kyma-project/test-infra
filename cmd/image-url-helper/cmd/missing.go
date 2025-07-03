@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/images"
+	imgs "github.com/kyma-project/test-infra/pkg/image-url-helper/images"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/missing"
 
@@ -32,30 +32,30 @@ func MissingCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			images := make(images.ComponentImageMap)
-			testImages := make(images.ComponentImageMap)
+			images := make(imgs.ComponentImageMap)
+			testImages := make(imgs.ComponentImageMap)
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
-				images.PrintAndFail(1, "Cannot traverse directory: %s\n", err)
+				imgs.PrintAndFail(1, "Cannot traverse directory: %s\n", err)
 			}
 
-			allImages := make(images.ComponentImageMap)
-			images.MergeImageMap(allImages, images)
+			allImages := make(imgs.ComponentImageMap)
+			imgs.MergeImageMap(allImages, images)
 			if !options.excludeTestImages {
-				images.MergeImageMap(allImages, testImages)
+				imgs.MergeImageMap(allImages, testImages)
 			}
 
-			missingImages := make(images.ComponentImageMap)
+			missingImages := make(imgs.ComponentImageMap)
 
 			err = missing.CheckForMissingImages(allImages, missingImages)
 			if err != nil {
-				images.PrintAndFail(2, "Cannot check for missing images: %s\n", err)
+				imgs.PrintAndFail(2, "Cannot check for missing images: %s\n", err)
 			}
 
-			err = images.PrintComponentImageMap(missingImages, options.outputFormat)
+			err = imgs.PrintComponentImageMap(missingImages, options.outputFormat)
 			if err != nil {
-				images.PrintAndFail(3, "Cannot print image list: %s\n", err)
+				imgs.PrintAndFail(3, "Cannot print image list: %s\n", err)
 			}
 
 			if len(missingImages) > 0 {

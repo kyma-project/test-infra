@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/images"
+	imgs "github.com/kyma-project/test-infra/pkg/image-url-helper/images"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 
 	"github.com/jamiealquiza/envy"
@@ -32,8 +32,8 @@ func ListCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			images := make(images.ComponentImageMap)
-			testImages := make(images.ComponentImageMap)
+			images := make(imgs.ComponentImageMap)
+			testImages := make(imgs.ComponentImageMap)
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
@@ -41,15 +41,15 @@ func ListCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			allImages := make(images.ComponentImageMap)
-			images.MergeImageMap(allImages, images)
+			allImages := make(imgs.ComponentImageMap)
+			imgs.MergeImageMap(allImages, images)
 			if !options.excludeTestImages {
-				images.MergeImageMap(allImages, testImages)
+				imgs.MergeImageMap(allImages, testImages)
 			}
 
-			err = images.PrintComponentImageMap(allImages, options.outputFormat)
+			err = imgs.PrintComponentImageMap(allImages, options.outputFormat)
 			if err != nil {
-				images.PrintAndFail(3, "Cannot print image list: %s\n", err)
+				imgs.PrintAndFail(3, "Cannot print image list: %s\n", err)
 			}
 		},
 	}
