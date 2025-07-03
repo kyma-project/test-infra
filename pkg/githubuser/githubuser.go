@@ -1,4 +1,4 @@
-package types
+package githubuser
 
 import (
 	"github.com/zricethezav/gitleaks/v8/report"

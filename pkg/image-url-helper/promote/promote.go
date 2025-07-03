@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/common"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/image"
 
 	"gopkg.in/yaml.v3"
 )
@@ -22,7 +22,7 @@ type ExcludesList struct {
 	Excludes []string `yaml:"excludes"`
 }
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages common.ComponentImageMap, excludes ExcludesMap) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages image.ComponentImageMap, excludes ExcludesMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -45,7 +45,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		var parsedFile yaml.Node
-		var parsedImagesFile common.ValueFile
+		var parsedImagesFile image.ValueFile
 		lines := make([]string, 0)
 
 		yamlFile, err := os.Open(path)
@@ -80,7 +80,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
-		common.AppendImagesToMap(parsedImagesFile, images, testImages, "")
+		image.AppendImagesToMap(parsedImagesFile, images, testImages, "")
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {

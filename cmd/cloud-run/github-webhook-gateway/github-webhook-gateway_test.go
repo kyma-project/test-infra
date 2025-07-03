@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/kyma-project/test-infra/pkg/types"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
 	"testing"
 )
 
@@ -13,7 +13,7 @@ const (
 )
 
 func TestGetSlackUsername(t *testing.T) {
-	usersMap := []types.User{
+	usersMap := []githubuser.User{
 		{
 			ComGithubUsername:          githubUsername,
 			SapToolsGithubUsername:     enterpriseUsername,

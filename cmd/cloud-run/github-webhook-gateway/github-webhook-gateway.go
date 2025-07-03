@@ -12,7 +12,7 @@ import (
 	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/pkg/github/client"
-	"github.com/kyma-project/test-infra/pkg/types"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
 
 	"github.com/google/go-github/v48/github"
 )
@@ -43,7 +43,7 @@ var (
 type GithubClient interface {
 	MuRLock()
 	MuRUnlock()
-	GetUsersMap(ctx context.Context) ([]types.User, error)
+	GetUsersMap(ctx context.Context) ([]githubuser.User, error)
 	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, githubToken []byte) (bool, error)
 }
 
@@ -146,7 +146,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		supported = false
 	}
 	if supported {
-		var usersMap []types.User
+		var usersMap []githubuser.User
 		ctx := context.Background()
 		sapToolsClient.MuRLock()
 		usersMap, err = sapToolsClient.GetUsersMap(ctx)
@@ -214,7 +214,7 @@ func checkIfEventSupported(allowed map[string]map[string]struct{}, eventGroup, e
 }
 
 // getSlackusername loks through usersmap and returns GH username
-func getSlackUsername(usersMap []types.User, githubUsername string) string {
+func getSlackUsername(usersMap []githubuser.User, githubUsername string) string {
 	for _, user := range usersMap {
 		if githubUsername == user.SapToolsGithubUsername {
 			return user.ComEnterpriseSlackUsername

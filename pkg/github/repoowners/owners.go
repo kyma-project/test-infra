@@ -3,7 +3,7 @@ package repoowners
 import (
 	"fmt"
 
-	toolstypes "github.com/kyma-project/test-infra/pkg/types"
+	toolstypes "github.com/kyma-project/test-infra/pkg/githubuser"
 
 	"os"
 	"path/filepath"

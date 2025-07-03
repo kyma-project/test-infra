@@ -12,7 +12,7 @@ import (
 	"sync"
 
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	"github.com/kyma-project/test-infra/pkg/types"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
 
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/oauth2"
@@ -229,8 +229,8 @@ func (c *SapToolsClient) Reauthenticate(ctx context.Context, logger *cloudfuncti
 }
 
 // GetUsersMap will get users-map.yaml file from github.tools.sap/kyma/test-infra repository.
-func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
-	var usersMap []types.User
+func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]githubuser.User, error) {
+	var usersMap []githubuser.User
 	// Get file from github.
 	usersMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
@@ -253,8 +253,8 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 }
 
 // GetAliasesMap will get aliasess-map.yaml file from github.tools.sap/kyma/test-infra repository.
-func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]types.Alias, error) {
-	var aliasesMap []types.Alias
+func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]githubuser.Alias, error) {
+	var aliasesMap []githubuser.Alias
 	// Get file from github.
 	aliasesMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/aliases-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {

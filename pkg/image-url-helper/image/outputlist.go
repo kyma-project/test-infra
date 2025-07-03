@@ -1,4 +1,4 @@
-package common
+package image
 
 import (
 	"encoding/json"
