@@ -1,4 +1,4 @@
-package image
+package images
 
 // ContainerRegistry stores path to a container registry
 type ContainerRegistry struct {

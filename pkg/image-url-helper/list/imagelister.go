@@ -5,12 +5,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/image"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/images"
 
 	"gopkg.in/yaml.v3"
 )
 
-func GetWalkFunc(resourcesDirectory string, images, testImages image.ComponentImageMap) filepath.WalkFunc {
+func GetWalkFunc(resourcesDirectory string, images, testImages images.ComponentImageMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -27,7 +27,7 @@ func GetWalkFunc(resourcesDirectory string, images, testImages image.ComponentIm
 			return nil
 		}
 
-		var parsedFile image.ValueFile
+		var parsedFile images.ValueFile
 
 		yamlFile, err := os.ReadFile(path)
 		if err != nil {
@@ -42,7 +42,7 @@ func GetWalkFunc(resourcesDirectory string, images, testImages image.ComponentIm
 		component := strings.ReplaceAll(path, resourcesDirectory+"/", "")
 		component = strings.ReplaceAll(component, "/values.yaml", "")
 
-		image.AppendImagesToMap(parsedFile, images, testImages, component)
+		images.AppendImagesToMap(parsedFile, images, testImages, component)
 
 		return nil
 	}

@@ -1,14 +1,14 @@
 package missing
 
 import (
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/image"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/images"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func createComponentImage(image image.Image) image.ComponentImage {
-	componentImage := image.ComponentImage{
+func createComponentImage(image images.Image) images.ComponentImage {
+	componentImage := images.ComponentImage{
 		Components: make(map[string]bool),
 		Image:      image,
 	}
@@ -22,12 +22,12 @@ func errorNotNil(err error) bool {
 func TestImageMissing(t *testing.T) {
 	tests := []struct {
 		name     string
-		image    image.ComponentImage
+		image    images.ComponentImage
 		expected bool
 	}{
 		{
 			name: "Existing image with tag",
-			image: createComponentImage(image.Image{
+			image: createComponentImage(images.Image{
 				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
 				ContainerRepositoryPath: "prod",
 				Name:                    "automated-approver",
@@ -38,7 +38,7 @@ func TestImageMissing(t *testing.T) {
 		},
 		{
 			name: "Existing image with SHA",
-			image: createComponentImage(image.Image{
+			image: createComponentImage(images.Image{
 				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
 				ContainerRepositoryPath: "prod",
 				Name:                    "automated-approver",
@@ -49,7 +49,7 @@ func TestImageMissing(t *testing.T) {
 		},
 		{
 			name: "Nonexistent image",
-			image: createComponentImage(image.Image{
+			image: createComponentImage(images.Image{
 				ContainerRegistryURL:    "europe-docker.pkg.dev/kyma-project",
 				ContainerRepositoryPath: "prod",
 				Name:                    "automated-approver",
