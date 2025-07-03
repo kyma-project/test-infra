@@ -3,7 +3,7 @@ package templates
 import (
 	"bytes"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
-	"github.com/kyma-project/test-infra/pkg/types"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
 	"text/template"
 )
 
@@ -13,7 +13,7 @@ type IssueData interface {
 
 type SecretsLeakIssueData struct {
 	pubsub.ProwMessage
-	types.SecretsLeakScannerMessage
+	githubuser.SecretsLeakScannerMessage
 	SecretsLeaksScannerID      string
 	KymaSecurityGithubTeamName string // kyma/security
 }

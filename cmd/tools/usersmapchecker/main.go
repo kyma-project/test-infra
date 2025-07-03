@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/kyma-project/test-infra/pkg/github/client"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
 	"github.com/kyma-project/test-infra/pkg/prow"
-	"github.com/kyma-project/test-infra/pkg/types"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -59,7 +59,7 @@ import (
 
 // checkUserInMap is a function that checks if the author exists in the usersMap.
 // It returns true if found and false otherwise.
-func checkUserInMap(author string, usersMap []types.User) bool {
+func checkUserInMap(author string, usersMap []githubuser.User) bool {
 	for _, user := range usersMap {
 		if user.ComGithubUsername == author {
 			return true
