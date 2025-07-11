@@ -1,11 +1,8 @@
 name: pull-validate-kaniko-build-config
 
 on:
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review] 
-    paths:
-      - "configs/image-builder-client-config.yaml"
-      - ".github/workflows/pull-validate-kaniko-build-config.yaml"
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -50,7 +47,7 @@ jobs:
           secrets: |-
             ado-pat:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME }}
 
-      - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240621-63f4f2b1
+      - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250710-19ce14bf
         id: build
         with:
-          args: --name=test-infra/ginkgo --context=. --dockerfile=prow/images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true --config="./configs/image-builder-client-config.yaml"
+          args: --name=test-infra/ginkgo --context=. --dockerfile=images/ginkgo/Dockerfile --azure-access-token=${{ steps.secrets.outputs.ado-pat }} --oidc-token=${{ steps.get_oidc.outputs.jwt }} --env-file='envs' --build-in-ado=true --test-kaniko-build-config=true --config="./configs/image-builder-client-config.yaml"

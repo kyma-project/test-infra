@@ -1,3 +1,19 @@
+/*
+Copyright 2019 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package main
 
 import (
@@ -13,8 +29,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kyma-project/test-infra/cmd/image-autobumper/bumper"
 	"github.com/kyma-project/test-infra/cmd/image-autobumper/imagebumper"
+	"github.com/kyma-project/test-infra/pkg/github/bumper"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"golang.org/x/oauth2/google"
@@ -117,16 +133,16 @@ type imageBumper interface {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
-func (c *client) Changes() []func(context.Context) (string, error) {
-	return []func(context.Context) (string, error){
-		func(ctx context.Context) (string, error) {
+func (c *client) Changes() []func(context.Context) (string, []string, error) {
+	return []func(context.Context) (string, []string, error){
+		func(ctx context.Context) (string, []string, error) {
 			var err error
 			if c.images, err = updateReferencesWrapper(ctx, c.o); err != nil {
-				return "", fmt.Errorf("failed to update image references: %w", err)
+				return "", nil, fmt.Errorf("failed to update image references: %w", err)
 			}
 
 			if c.versions, err = getVersionsAndCheckConsistency(c.o.Prefixes, c.images); err != nil {
-				return "", err
+				return "", nil, err
 			}
 
 			var body string
@@ -136,7 +152,7 @@ func (c *client) Changes() []func(context.Context) (string, error) {
 				body = body + generateSummary(prefix.Repo, prefix.Prefix, prefix.Summarise, c.images) + "\n\n"
 			}
 
-			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), nil
+			return fmt.Sprintf("Bumping %s\n\n%s", strings.Join(prefixNames, " and "), body), []string{"-A"}, nil
 		},
 	}
 }
@@ -308,7 +324,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 		return nil
 	}
 	updateYAMLFile := func(name string) error {
-		if (strings.HasSuffix(name, ".yaml") || strings.HasSuffix(name, ".yml")) && !isUnderPath(name, o.ExcludedConfigPaths) {
+		if (strings.HasSuffix(name, ".yaml") || strings.HasSuffix(name, ".yml") || strings.HasSuffix(name, ".tf") || strings.HasSuffix(name, ".tfvars")) && !isUnderPath(name, o.ExcludedConfigPaths) {
 			return updateFile(name)
 		}
 		return nil
@@ -376,11 +392,12 @@ func upstreamConfigVersions(upstreamVersionType string, o *options, parse func(u
 	versions = make(map[string]string)
 	var upstreamAddress string
 	for _, prefix := range o.Prefixes {
-		if upstreamVersionType == upstreamVersion {
+		switch upstreamVersionType {
+		case upstreamVersion:
 			upstreamAddress = o.UpstreamURLBase + "/" + prefix.RefConfigFile
-		} else if upstreamVersionType == upstreamStagingVersion {
+		case upstreamStagingVersion:
 			upstreamAddress = o.UpstreamURLBase + "/" + prefix.StagingRefConfigFile
-		} else {
+		default:
 			return nil, fmt.Errorf("unsupported upstream version type: %s, must be one of %v",
 				upstreamVersionType, []string{upstreamVersion, upstreamStagingVersion})
 		}

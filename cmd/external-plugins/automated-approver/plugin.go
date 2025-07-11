@@ -18,7 +18,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"k8s.io/test-infra/prow/github"
+	"sigs.k8s.io/prow/pkg/github"
 )
 
 type githubClient interface {
@@ -183,7 +183,6 @@ func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes
 	defer logger.Sync()
 	logger.Debugf("Checking if PR changed only allowed files: %v", ac.ChangedFiles)
 	for _, change := range changes {
-		change := change
 		logger.Debugf("Checking file: %s", change.Filename)
 		matched := slices.ContainsFunc(ac.ChangedFiles, func(allowedFile string) bool {
 			filesMatcher := regexp.MustCompile(allowedFile)
@@ -214,7 +213,6 @@ func (hb *HandlerBackend) ReadConfig() error {
 }
 
 // checkPrStatuses checks if all statuses are in success state.
-// Tide required status check is not taken into account. It will be always pending until PR is ready to merge.
 // Timeout limits time waiting for statuses became success.
 func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prHeadSha string, prNumber int) error {
 	defer logger.Sync()
@@ -241,8 +239,8 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 				logger.Error(gherr.Error())
 				return gherr
 			}
-			// Don't check if pr checks status is success as that means all context are success, even tide context.
-			// That means a pr was already approved and is ready for merge, because tide context transition to success
+			// Don't check if pr checks status is success as that means all context are success.
+			// That means a pr was already approved and is ready for merge.
 			// when pr is ready for merge.
 			logger.Debugf("Pull request %d status: %s", prNumber, prStatuses.State)
 			switch prState := prStatuses.State; prState {
@@ -251,9 +249,10 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 			case "pending":
 				logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prNumber)
 				for _, prStatus := range prStatuses.Statuses {
-					if prStatus.State == "failure" {
+					switch prStatus.State {
+					case "failure":
 						return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
-					} else if prStatus.State == "pending" && prStatus.Context != "tide" {
+					case "pending":
 						statusErr := fmt.Errorf("pull request status check %s is pending", prStatus.Context)
 						logger.Debug(statusErr.Error())
 						return statusErr

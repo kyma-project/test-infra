@@ -57,7 +57,7 @@ updates:
       prefix: "tf"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/ginkgo"
+    directory: "/images/ginkgo"
     labels:
       - "docker"
       - "skip-review"
@@ -67,66 +67,6 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "ginkgo"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/clonerefs"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "clonerefs"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/kyma-integration"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "kyma-integrate"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/whitesource-scanner"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "whitesource"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/golangci-lint"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "golangci-lint"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/cla-assistant-external-plugin"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "cla-plugin"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/move-gcs-bucket"
@@ -151,6 +91,18 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "slack-msg-sender"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/cmd/cloud-run/signifysecretrotator"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "signifysecretrotator"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/rotate-service-account"
@@ -237,7 +189,7 @@ updates:
       prefix: "unified-agent"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/images/e2e-dind-gcloud"
+    directory: "/images/e2e-gcloud"
     labels:
       - "docker"
       - "skip-review"
@@ -246,45 +198,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "e2e-dind-gcloud"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/images/e2e-dind-garden"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "e2e-dind-garden"
-      include: "scope"
-  # Busola must prepare for node update to newest version.
-  # We can enable this once preparation is done.
-  #  - package-ecosystem: "docker"
-  #    directory: "/images/e2e-dind-nodejs"
-  #    labels:
-  #      - "docker"
-  #      - "skip-review"
-  #      - "area/dependency"
-  #      - "kind/chore"
-  #    schedule:
-  #      interval: "daily"
-  #    commit-message:
-  #      prefix: "e2e-dind-nodejs"
-  #      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/images/e2e-dind-k3d"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "e2e-dind-k3d"
+      prefix: "e2e-gcloud"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/images/alpine/git/gke-aws-auth"
@@ -356,9 +270,25 @@ updates:
     commit-message:
       prefix: "actions"
       include: "scope"
-    ignore:
-      - dependency-name: "ahmadnassri/action-workflow-queue"
-      - dependency-name: "gaurav-nelson/github-action-markdown-link-check"
-      - dependency-name: "slackapi/slack-github-action"
-      - dependency-name: "shmokmt/actions-setup-tfcmt"
-      - dependency-name: "gitleaks/gitleaks-action"
+  - package-ecosystem: "pip"
+    directory: "cmd/cloud-run/signifysecretrotator"
+    labels:
+      - "python"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "pip"
+      include: "scope"
+  - package-ecosystem: "pip"
+    directory: "cmd/cloud-run/slack-message-sender"
+    labels:
+      - "python"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "pip"
+      include: "scope"

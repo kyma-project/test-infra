@@ -14,31 +14,31 @@ func TestLoadSecurityConfig(t *testing.T) {
 		FileContent    string
 	}{
 		{
-			Name:    "valid full config, pass",
+			Name:           "empty config file, fail",
+			WantErr:        true,
+			ExpectedConfig: nil,
+			FileContent:    ``,
+		},
+		{
+			Name:    "Valid config with mend, pass",
 			WantErr: false,
 			ExpectedConfig: &SecurityConfig{
 				ModuleName: "test-infra",
 				Images:     []string{"europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee"},
-				Whitesource: Whitesource{
+				Mend: Mend{
 					Language:    "golang-mod",
 					SubProjects: true,
 					Exclude:     []string{"**/examples/**"},
 				},
 			},
 			FileContent: `module-name: test-infra
-protecode:
+bdba:
   - europe-docker.pkg.dev/kyma-project/prod/buildpack-go:v20230717-e09b0fee
-whitesource:
+mend:
   language: golang-mod
   subprojects: true
   exclude:
     - "**/examples/**"`,
-		},
-		{
-			Name:           "empty config file, fail",
-			WantErr:        true,
-			ExpectedConfig: nil,
-			FileContent:    ``,
 		},
 	}
 

@@ -10,3 +10,16 @@ packages:
       all: True
       dir: "{{.InterfaceDir}}/mocks"
       outpkg: "{{.PackageName}}mocks"
+  github.com/kyma-project/test-infra/cmd/oidc-token-verifier:
+    config:
+      dir:    "{{.InterfaceDir}}/mocks"
+      outpkg: "{{.PackageName}}mocks"
+    interfaces:
+      TrustedIssuerProvider:
+  github.com/kyma-project/test-infra/pkg/github/bumper:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      outpkg: "{{.PackageName}}mocks"
+      with-expecter: true
+    interfaces:
+      GitHubClientAdapterInterface: {}

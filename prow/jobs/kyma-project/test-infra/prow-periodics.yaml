@@ -1,36 +1,5 @@
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-test-infra-markdown-index-autobump
-      annotations:
-        description: "autobump markdown index.md"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      run_if_changed: '.md$'
-      skip_report: false
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      reporter_config:
-        slack:
-          channel: kyma-neighbors-alerts
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20241007-aa6bbc21"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/markdown-index"
-            args:
-              - "--config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml"
-              - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-deploy-prow
       annotations:
         description: "Deploy prow components"
@@ -52,7 +21,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20241008-42497589"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/e2e-gcloud:v20250529-bbf50be2"
             securityContext:
               privileged: false
               seccompProfile:
@@ -60,72 +29,3 @@ postsubmits: # runs on main
               allowPrivilegeEscalation: false
             command:
               - "prow/cluster/deploy.sh"
-  
-periodics: # runs on schedule
-    - name: ci-prow-autobump
-      annotations:
-        description: "Autobump prow components image versions"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "ci-prow-autobump"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      cron: "30 * * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-neighbors-alerts
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240805-37a08f946"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "generic-autobumper"
-            args:
-              - "--config=configs/autobump-config/prow-cluster-autobump-config.yaml"
-              - "--labels-override=kind/chore,area/prow"
-    - name: ci-prow-autobump-jobs
-      annotations:
-        description: "Autobump image versions in prow jobs"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "ci-prow-autobump-jobs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      cron: "45 * * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-neighbors-alerts
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20240805-37a08f946"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "generic-autobumper"
-            args:
-              - "--config=configs/autobump-config/test-infra-autobump-config.yaml"
-              - "--labels-override=skip-review,area/ci,kind/chore"
-  

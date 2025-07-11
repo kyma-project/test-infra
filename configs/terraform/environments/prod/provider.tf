@@ -1,9 +1,17 @@
 terraform {
+  required_version = ">= 1.6.1"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
       version = ">= 6.0.1"
     }
+
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = ">= 6.0.1"
+    }
+
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.22.0"
@@ -41,12 +49,6 @@ provider "google" {
   alias   = "kyma_project"
   project = var.kyma_project_gcp_project_id
   region  = var.kyma_project_gcp_region
-}
-
-provider "google" {
-  alias   = "workloads"
-  project = var.workloads_project_id
-  region  = var.gcp_region
 }
 
 provider "google-beta" {

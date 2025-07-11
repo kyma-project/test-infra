@@ -1,22 +1,29 @@
 package securityconfig
 
 import (
+	"gopkg.in/yaml.v3"
 	"io"
 	"os"
-
-	"gopkg.in/yaml.v3"
 )
 
-type Whitesource struct {
+type CheckmarxOne struct {
+	Preset  string   `yaml:"preset,omitempty"`
+	Exclude []string `yaml:"exclude,omitempty"`
+}
+
+type Mend struct {
 	Language    string   `yaml:"language,omitempty"`
 	SubProjects bool     `yaml:"subprojects,omitempty"`
 	Exclude     []string `yaml:"exclude,omitempty"`
 }
 
 type SecurityConfig struct {
-	ModuleName  string      `yaml:"module-name,omitempty"`
-	Images      []string    `yaml:"protecode"`
-	Whitesource Whitesource `yaml:"whitesource,omitempty"`
+	ModuleName   string       `yaml:"module-name,omitempty"`
+	RcTag        string       `yaml:"rc-tag,omitempty"`
+	Kind         string       `yaml:"kind,omitempty"`
+	Images       []string     `yaml:"bdba,omitempty"`
+	Mend         Mend         `yaml:"mend,omitempty"`
+	CheckmarxOne CheckmarxOne `yaml:"checkmarx-one,omitempty"`
 }
 
 func ParseSecurityConfig(reader io.Reader) (*SecurityConfig, error) {

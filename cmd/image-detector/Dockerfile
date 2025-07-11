@@ -1,4 +1,4 @@
-FROM golang:1.23-alpine as builder
+FROM golang:1.24.5-alpine3.21 as builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ WORKDIR /app/cmd/image-detector
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
-FROM alpine:3.20.3
+FROM alpine:3.22.0
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/image-detector
 

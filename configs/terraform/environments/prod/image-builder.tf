@@ -88,49 +88,53 @@ resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secre
   value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
 }
 
-resource "google_artifact_registry_repository" "dockerhub_mirror" {
-  repository_id = var.dockerhub_mirror.repository_id
-  description   = var.dockerhub_mirror.description
-  format        = "DOCKER"
-  location      = var.dockerhub_mirror.location
-  mode          = "REMOTE_REPOSITORY"
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
+module "dockerhub_mirror" {
+  source = "../../modules/artifact-registry"
 
-  remote_repository_config {
-    description = "Mirror of Docker Hub"
-    docker_repository {
-      public_repository = "DOCKER_HUB"
-    }
+  providers = {
+    google = google.kyma_project
   }
 
-  cleanup_policy_dry_run = false
+  repository_prevent_destroy = var.dockerhub_mirror.repository_prevent_destroy
+  repository_name            = var.dockerhub_mirror.name
+  description                = var.dockerhub_mirror.description
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
+  location                   = var.dockerhub_mirror.location
+  format                     = var.dockerhub_mirror.format
+  mode                       = var.dockerhub_mirror.mode
+  cleanup_policy_dry_run     = var.dockerhub_mirror.cleanup_policy_dry_run
 
-  cleanup_policies {
-    id = "cleanup-old-images"
-    action = "DELETE"
-
-    condition {
-      older_than = var.dockerhub_mirror.cleanup_age
-      tag_state  = "ANY"
-    }
+  remote_repository_config = {
+    description = var.dockerhub_mirror.remote_repository_config.description
+    docker_public_repository = var.dockerhub_mirror.remote_repository_config.docker_public_repository
+    upstream_username = var.dockerhub_credentials != null ? var.dockerhub_credentials.username : null
+    upstream_password_secret = data.google_secret_manager_secret_version.dockerhub_oat_secret[0].name
   }
 }
 
-import {
-  id = "projects/${var.kyma_project_gcp_project_id}/serviceAccounts/${var.image_builder_kyma-project_identity.id}@${var.kyma_project_gcp_project_id}.iam.gserviceaccount.com"
-  to = google_service_account.kyma_project_image_builder
+# This resource will be destroyed and created in case of any changes. This is not a crucial for this resource.
+module "docker_cache" {
+  source = "../../modules/artifact-registry"
+
+  providers = {
+    google = google.kyma_project
+  }
+
+  repository_prevent_destroy = var.docker_cache_repository.repository_prevent_destroy
+  repository_name            = var.docker_cache_repository.name
+  description                = var.docker_cache_repository.description
+  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
+  location                   = var.docker_cache_repository.location
+  format                     = var.docker_cache_repository.format
+  immutable_tags             = var.docker_cache_repository.immutable_tags
+  mode                       = var.docker_cache_repository.mode
+  cleanup_policy_dry_run     = var.docker_cache_repository.cleanup_policy_dry_run
+  cleanup_policies           = var.docker_cache_repository.cleanup_policies
 }
 
 resource "google_service_account" "kyma_project_image_builder" {
-  provider = google.kyma_project
-  account_id = var.image_builder_kyma-project_identity.id
+  provider    = google.kyma_project
+  account_id  = var.image_builder_kyma-project_identity.id
   description = var.image_builder_kyma-project_identity.description
-}
-
-resource "google_artifact_registry_repository_iam_member" "dockerhub_mirror_access" {
-  provider   = google.kyma_project
-  project    = var.kyma_project_gcp_project_id
-  location   = google_artifact_registry_repository.dockerhub_mirror.location
-  repository = google_artifact_registry_repository.dockerhub_mirror.repository_id
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.kyma_project_image_builder.email}"
 }

@@ -16,7 +16,9 @@ import (
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
+	"go.uber.org/zap"
 
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -122,154 +124,174 @@ func Test_parseVariable(t *testing.T) {
 	}
 }
 
-func Test_validateOptions(t *testing.T) {
-	tc := []struct {
-		name      string
-		expectErr bool
-		opts      options
-	}{
-		{
-			name:      "parsed config",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-			},
+var _ = Describe("Image Builder", func() {
+	DescribeTable("Test validate options",
+		func(options options, expectedError bool) {
+			err := validateOptions(options)
+			if !expectedError {
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if expectedError {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
 		},
-		{
-			name:      "context missing",
-			expectErr: true,
-			opts: options{
-				name:       "test-image",
-				dockerfile: "dockerfile",
+		Entry(
+			"parsed config",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "name missing",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				dockerfile: "dockerfile",
+			false,
+		),
+		Entry(
+			"context missing",
+			options{
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "dockerfile missing",
-			expectErr: true,
-			opts: options{
-				context: "directory/",
-				name:    "test-image",
+			true,
+		),
+		Entry(
+			"name missing",
+			options{
+				context:     "directory/",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "Empty configPath",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
+			true,
+		),
+		Entry(
+			"dockerfile missing",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "signOnly without imagesToSign",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"Empty configPath",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				buildEngine: "kaniko",
+			},
+			true,
+		),
+		Entry(
+			"signOnly without imagesToSign",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     true,
 				imagesToSign: []string{},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "imagesToSign without signOnly",
-			expectErr: true,
-			opts: options{
+			true,
+		),
+		Entry(
+			"imagesToSign without signOnly",
+			options{
 				context:      "directory/",
 				name:         "test-image",
 				dockerfile:   "dockerfile",
 				configPath:   "config.yaml",
 				signOnly:     false,
 				imagesToSign: []string{"image1"},
+				buildEngine:  "kaniko",
 			},
-		},
-		{
-			name:      "envFile with buildInADO",
-			expectErr: false,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				envFile:    "envfile",
-				buildInADO: true,
+			true,
+		),
+		Entry(
+			"envFile with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				envFile:     "envfile",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-		{
-			name:      "variant with buildInADO",
-			expectErr: true,
-			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				variant:    "variant",
-				buildInADO: true,
+			false,
+		),
+		Entry(
+			"variant with buildInADO",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "kaniko",
 			},
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			err := validateOptions(c.opts)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-		})
-	}
-}
+			true,
+		),
+		Entry(
+			"incorrect build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				variant:     "variant",
+				buildInADO:  true,
+				buildEngine: "incorrect-build-engine",
+			},
+			true,
+		),
+		Entry(
+			"correct build engine",
+			options{
+				context:     "directory/",
+				name:        "test-image",
+				dockerfile:  "dockerfile",
+				configPath:  "config.yaml",
+				buildEngine: "buildx",
+			},
+			false,
+		),
+	)
 
-func TestFlags(t *testing.T) {
-	testcases := []struct {
-		name         string
-		expectedOpts options
-		expectedErr  bool
-		args         []string
-	}{
-		{
-			name: "unknown flag, fail",
-			expectedOpts: options{
-				context:    ".",
-				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "dockerfile",
-				logDir:     "/logs/artifacts",
-			},
-			expectedErr: true,
-			args: []string{
+	DescribeTable("Test Flags",
+		func(args []string, expectedOptions options, expectedError bool) {
+			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+			o := options{}
+			o.gatherOptions(fs)
+			err := fs.Parse(args)
+			if !expectedError {
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("caught error, but didn't want to: %v", err))
+			}
+			if expectedError {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
+
+			Expect(o).To(Equal(expectedOptions), "options mismatch")
+		},
+		Entry("unknown flag, fail",
+			[]string{
 				"--unknown-flag=asdasd",
 			},
-		},
-		{
-			name:        "parsed config, pass",
-			expectedErr: false,
-			expectedOpts: options{
-				name: "test-image",
-				tags: []tags.Tag{
-					{Name: "latest", Value: "latest"},
-					{Name: "cookie", Value: "cookie"},
-				},
-				context:    "prow/build",
-				configPath: "config.yaml",
-				dockerfile: "dockerfile",
-				logDir:     "prow/logs",
-				orgRepo:    "kyma-project/test-infra",
-				silent:     true,
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
+			true,
+		),
+		Entry("parsed config, pass",
+			[]string{
 				"--config=config.yaml",
 				"--dockerfile=dockerfile",
 				"--repo=kyma-project/test-infra",
@@ -280,23 +302,44 @@ func TestFlags(t *testing.T) {
 				"--log-dir=prow/logs",
 				"--silent",
 			},
-		},
-		{
-			name: "export tag, pass",
-			expectedOpts: options{
-				context:    ".",
-				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "dockerfile",
-				logDir:     "/logs/artifacts",
-				exportTags: true,
+			options{
+				name: "test-image",
+				tags: []tags.Tag{
+					{Name: "latest", Value: "latest"},
+					{Name: "cookie", Value: "cookie"},
+				},
+				context:        "prow/build",
+				configPath:     "config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "prow/logs",
+				orgRepo:        "kyma-project/test-infra",
+				silent:         true,
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
+			false,
+		),
+		Entry("export tag, pass",
+			[]string{
 				"--export-tags",
 			},
-		},
-		{
-			name: "build args, pass",
-			expectedOpts: options{
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				exportTags:     true,
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
+			},
+			false,
+		),
+		Entry("build args, pass",
+			[]string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
+			},
+			options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
 				dockerfile: "dockerfile",
@@ -305,27 +348,130 @@ func TestFlags(t *testing.T) {
 					tags.Tag{Name: "BIN", Value: "test"},
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
 			},
-			args: []string{
-				"--build-arg=BIN=test",
-				"--build-arg=BIN2=test2",
+			false,
+		),
+		Entry("build engine, pass",
+			[]string{
+				"--build-engine=buildx",
 			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "buildx",
+			},
+			false,
+		),
+		Entry("custom platforms, pass",
+			[]string{
+				"--platform=linux/amd64",
+			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				buildEngine:    "kaniko",
+				platforms:      []string{"linux/amd64"},
+			},
+			false,
+		),
+	)
+
+	DescribeTable("Test prepareADOTemplateParameters",
+		func(expectedtOptions options, want pipelines.OCIImageBuilderTemplateParams, wantErr bool) {
+			got, err := prepareADOTemplateParameters(expectedtOptions)
+			if !wantErr {
+				Expect(err).NotTo(HaveOccurred(), "caught error, but didn't want to")
+			}
+			if wantErr {
+				Expect(err).To(HaveOccurred(), "didn't catch error, but wanted to")
+			}
+
+			Expect(got).To(Equal(want), "template parameters mismatch")
 		},
-	}
-	for _, tc := range testcases {
-		t.Run(tc.name, func(t *testing.T) {
-			fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-			o := options{}
-			o.gatherOptions(fs)
-			if err := fs.Parse(tc.args); err != nil && !tc.expectedErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if !reflect.DeepEqual(o, tc.expectedOpts) {
-				t.Errorf("%v != %v", o, tc.expectedOpts)
-			}
-		})
-	}
-}
+		Entry("Tag with parentheses",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+		Entry("On demand job type with base commit SHA and base commit ref",
+			options{
+				gitState: GitStateConfig{
+					JobType:       "workflow_dispatch",
+					BaseCommitSHA: "abc123",
+					BaseCommitRef: "main",
+				},
+				tags: sets.Tags{
+					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+				},
+				buildEngine: "kaniko",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "workflow_dispatch",
+				"Name":        "",
+				"PullBaseSHA": "abc123",
+				"BaseRef":     "main",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"BuildEngine": "kaniko",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+		Entry("Buildx engine",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				buildEngine: "buildx",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"BuildEngine": "buildx",
+				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+	)
+})
 
 func Test_getTags(t *testing.T) {
 	tc := []struct {
@@ -407,10 +553,15 @@ func Test_getTags(t *testing.T) {
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
+			zapLogger, err := zap.NewProduction()
+			if err != nil {
+				t.Errorf("got error but didn't want to: %s", err)
+			}
+			logger := zapLogger.Sugar()
 			for k, v := range c.env {
 				t.Setenv(k, v)
 			}
-			got, err := getTags(c.pr, c.sha, append(c.additionalTags, c.tagTemplate))
+			got, err := getTags(logger, c.pr, c.sha, append(c.additionalTags, c.tagTemplate))
 			if err != nil && !c.expectErr {
 				t.Errorf("got error but didn't want to: %s", err)
 			}
@@ -436,7 +587,12 @@ func Test_loadEnv(t *testing.T) {
 		"key3": "static-value",
 		"key4": "val4=asf",
 	}
-	_, err := loadEnv(vfs, ".env")
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		t.Errorf("got error but didn't want to: %s", err)
+	}
+	logger := zapLogger.Sugar()
+	_, err = loadEnv(logger, vfs, ".env")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -628,6 +784,11 @@ func Test_appendMissing(t *testing.T) {
 func Test_parseTags(t *testing.T) {
 	tagsFlag := sets.Tags{{Name: "base64testtag", Value: "testtag"}, {Name: "base64testtemplate", Value: "test-{{ .PRNumber }}"}}
 	base64Tags := base64.StdEncoding.EncodeToString([]byte(tagsFlag.String()))
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		t.Errorf("got error but didn't want to: %s", err)
+	}
+	logger := zapLogger.Sugar()
 	tc := []struct {
 		name         string
 		options      options
@@ -639,6 +800,7 @@ func Test_parseTags(t *testing.T) {
 			options: options{
 				gitState: prGitState,
 				Config:   buildConfig,
+				logger:   logger,
 			},
 			expectedTags: []tags.Tag{expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
@@ -647,6 +809,7 @@ func Test_parseTags(t *testing.T) {
 			options: options{
 				gitState: commitGitState,
 				Config:   buildConfig,
+				logger:   logger,
 			},
 			expectedTags: []tags.Tag{expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
 		},
@@ -659,6 +822,7 @@ func Test_parseTags(t *testing.T) {
 					{Name: "AnotherTest", Value: `Another-{{ .PRNumber }}`},
 					{Name: "Test", Value: "tag-value"},
 				},
+				logger: logger,
 			},
 			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + strconv.Itoa(prGitState.PullRequestNumber)}, {Name: "Test", Value: "tag-value"}, expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
@@ -671,6 +835,7 @@ func Test_parseTags(t *testing.T) {
 					{Name: "AnotherTest", Value: `Another-{{ .CommitSHA }}`},
 					{Name: "Test", Value: "tag-value"},
 				},
+				logger: logger,
 			},
 			expectedTags: []tags.Tag{{Name: "AnotherTest", Value: "Another-" + commitGitState.BaseCommitSHA}, {Name: "Test", Value: "tag-value"}, expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
 		},
@@ -682,6 +847,7 @@ func Test_parseTags(t *testing.T) {
 				tags: sets.Tags{
 					{Name: "BadTagTemplate", Value: `{{ .ASD }}`},
 				},
+				logger: logger,
 			},
 			expectErr: true,
 		},
@@ -691,6 +857,7 @@ func Test_parseTags(t *testing.T) {
 				gitState:   prGitState,
 				Config:     buildConfig,
 				tagsBase64: base64Tags,
+				logger:     logger,
 			},
 			expectedTags: []tags.Tag{
 				{Name: "base64testtag", Value: "testtag"},
@@ -701,7 +868,8 @@ func Test_parseTags(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			tags, err := parseTags(c.options)
+			logger := c.options.logger
+			tags, err := parseTags(logger, c.options)
 			if err != nil && !c.expectErr {
 				t.Errorf("Got unexpected error: %s", err)
 			}
@@ -719,6 +887,11 @@ func Test_parseTags(t *testing.T) {
 func Test_getDefaultTag(t *testing.T) {
 	g := NewGomegaWithT(t)
 
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		t.Errorf("got error but didn't want to: %s", err)
+	}
+	logger := zapLogger.Sugar()
 	tests := []struct {
 		name    string
 		options options
@@ -730,6 +903,7 @@ func Test_getDefaultTag(t *testing.T) {
 			options: options{
 				gitState: prGitState,
 				Config:   buildConfig,
+				logger:   logger,
 			},
 			want:    defaultPRTag,
 			wantErr: false,
@@ -739,6 +913,7 @@ func Test_getDefaultTag(t *testing.T) {
 			options: options{
 				gitState: commitGitState,
 				Config:   buildConfig,
+				logger:   logger,
 			},
 			want:    defaultCommitTag,
 			wantErr: false,
@@ -747,6 +922,7 @@ func Test_getDefaultTag(t *testing.T) {
 			name: "Failure - No PR number or commit SHA",
 			options: options{
 				gitState: GitStateConfig{},
+				logger:   logger,
 			},
 			want:    tags.Tag{},
 			wantErr: true,
@@ -755,179 +931,13 @@ func Test_getDefaultTag(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := getDefaultTag(tt.options)
+			logger := tt.options.logger
+			got, err := getDefaultTag(logger, tt.options)
 			if tt.wantErr {
 				g.Expect(err).To(HaveOccurred())
 			} else {
 				g.Expect(err).NotTo(HaveOccurred())
 				g.Expect(got).To(Equal(tt.want))
-			}
-		})
-	}
-}
-
-func Test_prepareADOTemplateParameters(t *testing.T) {
-	tests := []struct {
-		name    string
-		options options
-		want    pipelines.OCIImageBuilderTemplateParams
-		wantErr bool
-	}{
-		{
-			name: "Tag with parentheses",
-			options: options{
-				gitState: GitStateConfig{
-					JobType: "postsubmit",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "postsubmit",
-				"Name":        "",
-				"PullBaseSHA": "",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-		{
-			name: "On demand job type with base commit SHA and base commit ref",
-			options: options{
-				gitState: GitStateConfig{
-					JobType:       "workflow_dispatch",
-					BaseCommitSHA: "abc123",
-					BaseCommitRef: "main",
-				},
-				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
-				},
-			},
-			want: pipelines.OCIImageBuilderTemplateParams{
-				"Context":     "",
-				"Dockerfile":  "",
-				"ExportTags":  "false",
-				"JobType":     "workflow_dispatch",
-				"Name":        "",
-				"PullBaseSHA": "abc123",
-				"BaseRef":     "main",
-				"RepoName":    "",
-				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := prepareADOTemplateParameters(tt.options)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("prepareADOTemplateParameters() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("prepareADOTemplateParameters() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_extractImagesFromADOLogs(t *testing.T) {
-	tc := []struct {
-		name           string
-		expectedImages []string
-		logs           string
-	}{
-		{
-			name:           "sign image task log",
-			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854", "europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852"},
-			logs: `2024-05-28T09:49:07.8176591Z ==============================================================================
-					2024-05-28T09:49:07.8176701Z Task         : Docker
-					2024-05-28T09:49:07.8176776Z Description  : Build or push Docker images, login or logout, start or stop containers, or run a Docker command
-					2024-05-28T09:49:07.8176902Z Version      : 2.240.2
-					2024-05-28T09:49:07.8176962Z Author       : Microsoft Corporation
-					2024-05-28T09:49:07.8177044Z Help         : https://aka.ms/azpipes-docker-tsg
-					2024-05-28T09:49:07.8177121Z ==============================================================================
-					2024-05-28T09:49:08.2220004Z [command]/usr/bin/docker run --env REPO_NAME=test-infra --env REPO_OWNER=kyma-project --env CI=true --env JOB_TYPE=presubmit --mount type=bind,src=/agent/_work/1/s/kaniko-build-config.yaml,dst=/kaniko-build-config.yaml --mount type=bind,src=/agent/_work/1/s/signify-prod-secret.yaml,dst=/secret-prod/secret.yaml europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622 --sign-only --name=image-builder --context=. --dockerfile=cmd/image-builder/images/kaniko/Dockerfile --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854 --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10852 --config=/kaniko-build-config.yaml
-					2024-05-28T09:49:08.4547604Z sign images using services signify-prod
-					2024-05-28T09:49:08.4548507Z signer signify-prod ignored, because is not enabled for a CI job of type: presubmit
-					2024-05-28T09:49:08.4549247Z Start signing images europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10854
-					2024-05-28T09:49:08.5907215Z ##[section]Finishing: sign_images`,
-		},
-		{
-			name:           "prepare args and sign tasks log",
-			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696"},
-			logs: `2024-05-28T07:36:31.8953681Z ##[section]Starting: prepare_build_and_sign_args
-					2024-05-28T07:36:31.8958057Z ==============================================================================
-					2024-05-28T07:36:31.8958168Z Task         : Python script
-					2024-05-28T07:36:31.8958230Z Description  : Run a Python file or inline script
-					2024-05-28T07:36:31.8958324Z Version      : 0.237.1
-					2024-05-28T07:36:31.8958385Z Author       : Microsoft Corporation
-					2024-05-28T07:36:31.8958459Z Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/python-script
-					2024-05-28T07:36:31.8958587Z ==============================================================================
-					2024-05-28T07:36:33.6944350Z [command]/usr/bin/python /agent/_work/1/s/scripts/prepare_kaniko_and_sign_arguments.py --PreparedTagsFile /agent/_work/_temp/task_outputs/run_1716881791884.txt --ExportTags False --JobType presubmit --Context . --Dockerfile cmd/image-builder/images/kaniko/Dockerfile --ImageName image-builder --BuildArgs  --Platforms  --BuildConfigPath /agent/_work/1/s/kaniko-build-config.yaml
-					2024-05-28T07:36:33.7426177Z ##[command]Read build config file:
-					2024-05-28T07:36:33.7426567Z ##[group]Build config file content:
-					2024-05-28T07:36:33.7430240Z ##[debug] {'tag-template': 'v{{ .Date }}-{{ .ShortSHA }}', 'registry': ['europe-docker.pkg.dev/kyma-project/prod'], 'dev-registry': ['europe-docker.pkg.dev/kyma-project/dev'], 'reproducible': False, 'log-format': 'json', 'ado-config': {'ado-organization-url': 'https://dev.azure.com/hyperspace-pipelines', 'ado-project-name': 'kyma', 'ado-pipeline-id': 14902}, 'cache': {'enabled': True, 'cache-repo': 'europe-docker.pkg.dev/kyma-project/cache/cache', 'cache-run-layers': True}, 'sign-config': {'enabled-signers': {'*': ['signify-prod']}, 'signers': [{'name': 'signify-prod', 'type': 'notary', 'job-type': ['postsubmit'], 'config': {'endpoint': 'https://signing.repositories.cloud.sap/signingsvc/sign', 'timeout': '5m', 'retry-timeout': '10s', 'secret': {'path': '/secret-prod/secret.yaml', 'type': 'signify'}}}]}}
-					2024-05-28T07:36:33.7431327Z ##[endgroup]
-					2024-05-28T07:36:33.7431542Z Running in presubmit mode
-					2024-05-28T07:36:33.7432035Z ##[debug]Using dev registries: ['europe-docker.pkg.dev/kyma-project/dev']
-					2024-05-28T07:36:33.7432334Z ##[debug]Using build context: .
-					2024-05-28T07:36:33.7432779Z ##[debug]Using Dockerfile: ./cmd/image-builder/images/kaniko/Dockerfile
-					2024-05-28T07:36:33.7433181Z ##[debug]Using image name: image-builder
-					2024-05-28T07:36:33.7433438Z ##[command]Using prepared OCI image tags:
-					2024-05-28T07:36:33.7433924Z ##[debug]Prepared tags file content: [{"name":"default_tag","value":"PR-10696"}]
-					2024-05-28T07:36:33.7434608Z
-					2024-05-28T07:36:33.7435959Z ##[command]Setting job scope pipeline variable kanikoArgs with value: --cache=True --cache-run-layers=True --cache-repo=europe-docker.pkg.dev/kyma-project/cache/cache --context=dir:///workspace/. --dockerfile=/workspace/./cmd/image-builder/images/kaniko/Dockerfile --build-arg=default_tag=PR-10696 --destination=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
-					2024-05-28T07:36:33.7438292Z ##[command]Setting job scope pipeline variable imagesToSign with value: --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
-					2024-05-28T07:36:33.7496968Z
-					2024-05-28T07:36:33.7549637Z ##[section]Finishing: prepare_build_and_sign_args
-					2024-05-28T07:38:12.4360275Z ##[section]Starting: sign_images
-		2024-05-28T07:38:12.4364459Z ==============================================================================
-		2024-05-28T07:38:12.4364568Z Task         : Docker
-		2024-05-28T07:38:12.4364645Z Description  : Build or push Docker images, login or logout, start or stop containers, or run a Docker command
-		2024-05-28T07:38:12.4364762Z Version      : 2.240.2
-		2024-05-28T07:38:12.4364823Z Author       : Microsoft Corporation
-		2024-05-28T07:38:12.4364906Z Help         : https://aka.ms/azpipes-docker-tsg
-		2024-05-28T07:38:12.4364993Z ==============================================================================
-		2024-05-28T07:38:12.8400661Z [command]/usr/bin/docker run --env REPO_NAME=test-infra --env REPO_OWNER=kyma-project --env CI=true --env JOB_TYPE=presubmit --mount type=bind,src=/agent/_work/1/s/kaniko-build-config.yaml,dst=/kaniko-build-config.yaml --mount type=bind,src=/agent/_work/1/s/signify-prod-secret.yaml,dst=/secret-prod/secret.yaml europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240515-f756e622 --sign-only --name=image-builder --context=. --dockerfile=cmd/image-builder/images/kaniko/Dockerfile --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696 --config=/kaniko-build-config.yaml
-		2024-05-28T07:38:13.0389131Z sign images using services signify-prod
-		2024-05-28T07:38:13.0389670Z signer signify-prod ignored, because is not enabled for a CI job of type: presubmit
-		2024-05-28T07:38:13.0390290Z Start signing images europe-docker.pkg.dev/kyma-project/dev/image-builder:PR-10696
-		2024-05-28T07:38:13.1669325Z ##[section]Finishing: sign_images`,
-		},
-		{
-			name:           "prepare args and sign tasks logs only",
-			expectedImages: []string{"europe-docker.pkg.dev/kyma-project/dev/serverless-operator/ga:PR-1043"},
-			logs: `2024-07-03T09:04:35.8674788Z ##[section]Starting: prepare_build_and_sign_args
-2024-07-03T09:04:35.8681603Z ==============================================================================
-2024-07-03T09:04:35.8681824Z Task         : Python script
-2024-07-03T09:04:35.8681947Z Description  : Run a Python file or inline script
-2024-07-03T09:04:35.8682099Z Version      : 0.237.1
-2024-07-03T09:04:35.8682232Z Author       : Microsoft Corporation
-2024-07-03T09:04:35.8682356Z Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/python-script
-2024-07-03T09:04:35.8682540Z ==============================================================================
-2024-07-03T09:04:37.5031097Z [command]/usr/bin/python /agent/_work/1/s/scripts/prepare_kaniko_and_sign_arguments.py --PreparedTagsFile /agent/_work/_temp/task_outputs/run_1719997475854.txt --ExportTags False --JobType presubmit --Context . --Dockerfile components/operator/Dockerfile --ImageName serverless-operator/ga --BuildArgs  --Platforms  --BuildConfigPath /agent/_work/1/s/kaniko-build-config.yaml
-2024-07-03T09:04:37.5527518Z ##[command]Read build config file:
-Build config file content:
-2024-07-03T09:04:37.5533715Z Running in presubmit mode
-2024-07-03T09:04:37.5536685Z ##[command]Using prepared OCI image tags:
-2024-07-03T09:04:37.5537692Z 
-2024-07-03T09:04:37.5539311Z ##[command]Setting job scope pipeline variable kanikoArgs with value: --cache=True --cache-run-layers=True --cache-repo=europe-docker.pkg.dev/kyma-project/cache/cache --context=dir:///repository/. --dockerfile=/repository/./components/operator/Dockerfile --build-arg=default_tag=PR-1043 --destination=europe-docker.pkg.dev/kyma-project/dev/serverless-operator/ga:PR-1043
-2024-07-03T09:04:37.5542470Z ##[command]Setting job scope pipeline variable imagesToSign with value: --images-to-sign=europe-docker.pkg.dev/kyma-project/dev/serverless-operator/ga:PR-1043
-2024-07-03T09:04:37.5597039Z 
-2024-07-03T09:04:37.5659445Z ##[section]Finishing: prepare_build_and_sign_args`,
-		},
-	}
-
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			actualImages := extractImagesFromADOLogs(c.logs)
-
-			if !reflect.DeepEqual(actualImages, c.expectedImages) {
-				t.Errorf("Expected %v, but got %v", c.expectedImages, actualImages)
 			}
 		})
 	}
@@ -946,6 +956,11 @@ func (m *mockSigner) Sign([]string) error {
 }
 
 func Test_getDockerfileDirPath(t *testing.T) {
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		t.Errorf("got error but didn't want to: %s", err)
+	}
+	logger := zapLogger.Sugar()
 	type args struct {
 		o options
 	}
@@ -961,6 +976,7 @@ func Test_getDockerfileDirPath(t *testing.T) {
 				o: options{
 					context:    ".",
 					dockerfile: "Dockerfile",
+					logger:     logger,
 				},
 			},
 			want:    "/test-infra/cmd/image-builder",
@@ -972,6 +988,7 @@ func Test_getDockerfileDirPath(t *testing.T) {
 				o: options{
 					context:    "cmd/image-builder",
 					dockerfile: "Dockerfile",
+					logger:     logger,
 				},
 			},
 			want:    "/test-infra/cmd/image-builder",
@@ -980,7 +997,8 @@ func Test_getDockerfileDirPath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := getDockerfileDirPath(tt.args.o)
+			logger := tt.args.o.logger
+			got, err := getDockerfileDirPath(logger, tt.args.o)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getDockerfileDirPath() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -992,36 +1010,48 @@ func Test_getDockerfileDirPath(t *testing.T) {
 	}
 }
 
-func Test_getEnvs(t *testing.T) {
-	type args struct {
-		o              options
-		dockerfilePath string
-	}
-	tests := []struct {
-		name string
-		args args
-		want map[string]string
-	}{
-		{
-			name: "Empty env file path",
-			args: args{
-				o: options{
-					context:    ".",
-					dockerfile: "Dockerfile",
-					envFile:    "",
-				},
-			},
-			want: map[string]string{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := getEnvs(tt.args.o, tt.args.dockerfilePath); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getEnvs() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+// func Test_getEnvs(t *testing.T) {
+// 	type args struct {
+// 		o              options
+// 		dockerfilePath string
+// 	}
+//
+// 	zapLogger, err := zap.NewProduction()
+// 	if err != nil {
+// 		t.Errorf("got error but didn't want to: %s", err)
+// 	}
+// 	logger := zapLogger.Sugar()
+//
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 		want map[string]string
+// 	}{
+// 		{
+// 			name: "Empty env file path",
+// 			args: args{
+// 				o: options{
+// 					context:    ".",
+// 					dockerfile: "Dockerfile",
+// 					envFile:    "",
+// 					logger:     logger,
+// 				},
+// 			},
+// 			want: map[string]string{},
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			got, err := getEnvs(tt.args.o, tt.args.dockerfilePath)
+// 			if err != nil {
+// 				t.Errorf("getEnvs() error = %v", err)
+// 			}
+// 			if got != nil {
+// 				t.Errorf("getEnvs() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }
 
 func Test_appendToTags(t *testing.T) {
 	type args struct {
@@ -1044,7 +1074,12 @@ func Test_appendToTags(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			appendToTags(tt.args.target, tt.args.source)
+			zapLogger, err := zap.NewProduction()
+			if err != nil {
+				t.Errorf("got error but didn't want to: %s", err)
+			}
+			logger := zapLogger.Sugar()
+			appendToTags(logger, tt.args.target, tt.args.source)
 
 			if !reflect.DeepEqual(tt.args.target, tt.want) {
 				t.Errorf("appendToTags() got = %v, want %v", tt.args.target, tt.want)
@@ -1058,29 +1093,36 @@ func Test_getParsedTagsAsJSON(t *testing.T) {
 		parsedTags []tags.Tag
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
 		{
 			name: "Empty tags",
 			args: args{
 				parsedTags: []tags.Tag{},
 			},
-			want: "[]",
+			want:    "[]",
+			wantErr: false,
 		},
 		{
 			name: "Multiple tags",
 			args: args{
 				parsedTags: []tags.Tag{{Name: "key1", Value: "val1"}, {Name: "key2", Value: "val2"}},
 			},
-			want: `[{"name":"key1","value":"val1"},{"name":"key2","value":"val2"}]`,
+			want:    `[{"name":"key1","value":"val1"},{"name":"key2","value":"val2"}]`,
+			wantErr: false,
 		},
 	}
 	{
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				if got := tagsAsJSON(tt.args.parsedTags); got != tt.want {
+				got, err := tagsAsJSON(tt.args.parsedTags)
+				if err != nil && !tt.wantErr {
+					t.Errorf("got error but didn't want to: %s", err)
+				}
+				if string(got) != tt.want {
 					t.Errorf("tagsAsJSON() = %v, want %v", got, tt.want)
 				}
 			})

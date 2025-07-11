@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -18,6 +19,8 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	"github.com/google/go-containerregistry/pkg/name"
 )
 
 // generateTestCert generates a self-signed certificate and private key.
@@ -100,33 +103,19 @@ func TestImageService_ParseReference_Invalid(t *testing.T) {
 
 // TestImageService_GetImage_Valid checks fetching a valid image.
 func TestImageService_GetImage_Valid(t *testing.T) {
-	// Mock dependencies
+	ref, err := name.ParseReference("docker.io/library/alpine:latest")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	mockImageRepository := &MockImageRepository{
-		MockParseReference: func(image string) (ReferenceInterface, error) {
-			return &MockReference{
-				MockName: func() string {
-					return image
-				},
-				MockGetRepositoryName: func() string {
-					return "docker.io/library/alpine"
-				},
-				MockGetTag: func() (string, error) {
-					return "latest", nil
-				},
-			}, nil
+		MockParseReference: func(image string) (name.Reference, error) {
+			return ref, nil
 		},
-		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
+		MockGetImage: func(ref name.Reference) (ImageInterface, error) {
 			return &MockImage{
-				MockManifest: func() (ManifestInterface, error) {
-					return &MockManifest{
-						MockGetConfigSize: func() int64 {
-							return 1024
-						},
-						MockGetConfigDigest: func() string {
-							return "sha256:dummy-digest"
-						},
-					}, nil
-				},
+				MockGetDigest: func() (string, error) { return "dummy-digest", nil },
+				MockGetSize:   func() (int64, error) { return 1024, nil },
 			}, nil
 		},
 	}
@@ -134,44 +123,46 @@ func TestImageService_GetImage_Valid(t *testing.T) {
 	// Use mockImageRepository as imageService
 	imageService := mockImageRepository
 
-	ref, err := imageService.ParseReference("docker.io/library/alpine:latest")
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-
 	img, err := imageService.GetImage(ref)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-	manifest, err := img.Manifest()
+
+	// Additional checks for new methods
+	digest, err := img.GetDigest()
 	if err != nil {
-		t.Errorf("Expected no error getting manifest, got %v", err)
+		t.Errorf("Expected no error getting digest, got %v", err)
 	}
-	if manifest.GetConfigSize() != 1024 {
-		t.Errorf("Expected config size to be 1024, got %d", manifest.GetConfigSize())
+	if digest != "dummy-digest" {
+		t.Errorf("Expected digest to be 'dummy-digest', got '%s'", digest)
 	}
-	if manifest.GetConfigDigest() != "sha256:dummy-digest" {
-		t.Errorf("Expected config digest to be 'sha256:dummy-digest', got '%s'", manifest.GetConfigDigest())
+
+	size, err := img.GetSize()
+	if err != nil {
+		t.Errorf("Expected no error getting size, got %v", err)
+	}
+	if size != 1024 {
+		t.Errorf("Expected size to be 1024, got %d", size)
 	}
 }
 
 // TestImageService_GetImage_Invalid checks fetching an invalid image.
 func TestImageService_GetImage_Invalid(t *testing.T) {
+	ref, err := name.ParseReference("invalid_image:latest")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	mockImageRepository := &MockImageRepository{
-		MockParseReference: func(image string) (ReferenceInterface, error) {
-			return &MockReference{}, nil
+		MockParseReference: func(image string) (name.Reference, error) {
+			return ref, nil
 		},
-		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
+		MockGetImage: func(ref name.Reference) (ImageInterface, error) {
 			return nil, fmt.Errorf("failed to fetch image")
 		},
 	}
 
 	imageService := mockImageRepository
-
-	ref, err := imageService.ParseReference("invalid_image")
-	if err != nil {
-		t.Errorf("Expected no error parsing reference, got %v", err)
-	}
 
 	_, err = imageService.GetImage(ref)
 	if err == nil {
@@ -181,56 +172,45 @@ func TestImageService_GetImage_Invalid(t *testing.T) {
 
 // TestPayloadBuilder_BuildPayload_Valid checks building a payload for valid images.
 func TestPayloadBuilder_BuildPayload_Valid(t *testing.T) {
-	mockRef := &MockReference{
-		MockGetRepositoryName: func() string {
-			return "docker.io/library/alpine"
-		},
-		MockGetTag: func() (string, error) {
-			return "latest", nil
-		},
-	}
+	t.Run("single image", func(t *testing.T) {
+		ref, err := name.ParseReference("docker.io/library/alpine:latest")
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	mockManifest := &MockManifest{
-		MockGetConfigSize: func() int64 {
-			return 1024
-		},
-		MockGetConfigDigest: func() string {
-			return "sha256:dummy-digest"
-		},
-	}
+		mockImageRepository := &MockImageRepository{
+			MockParseReference: func(image string) (name.Reference, error) {
+				return ref, nil
+			},
+			MockGetImage: func(ref name.Reference) (ImageInterface, error) {
+				return &MockImage{
+					MockGetDigest: func() (string, error) { return "dummy-manifest-digest", nil },
+					MockGetSize:   func() (int64, error) { return 2048, nil },
+				}, nil
+			},
+			MockIsManifestList: func(name.Reference) (bool, error) { return false, nil },
+		}
 
-	mockImage := &MockImage{
-		MockManifest: func() (ManifestInterface, error) {
-			return mockManifest, nil
-		},
-	}
+		payloadBuilder := PayloadBuilder{
+			ImageService: mockImageRepository,
+		}
 
-	mockImageRepository := &MockImageRepository{
-		MockParseReference: func(image string) (ReferenceInterface, error) {
-			return mockRef, nil
-		},
-		MockGetImage: func(ref ReferenceInterface) (ImageInterface, error) {
-			return mockImage, nil
-		},
-	}
+		payload, err := payloadBuilder.BuildPayload([]string{"docker.io/library/alpine:latest"})
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
 
-	payloadBuilder := PayloadBuilder{
-		ImageService: mockImageRepository,
-	}
-
-	payload, err := payloadBuilder.BuildPayload([]string{"docker.io/library/alpine:latest"})
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-	if len(payload.GunTargets) == 0 {
-		t.Errorf("Expected GunTargets to be populated")
-	}
+		expectedGUN := "index.docker.io/library/alpine"
+		if payload.GunTargets[0].GUN != expectedGUN {
+			t.Errorf("Expected GUN '%s', got '%s'", expectedGUN, payload.GunTargets[0].GUN)
+		}
+	})
 }
 
 // TestPayloadBuilder_BuildPayload_Invalid checks building a payload for invalid images.
 func TestPayloadBuilder_BuildPayload_Invalid(t *testing.T) {
 	mockImageRepository := &MockImageRepository{
-		MockParseReference: func(image string) (ReferenceInterface, error) {
+		MockParseReference: func(image string) (name.Reference, error) {
 			return nil, fmt.Errorf("failed to parse reference")
 		},
 	}
@@ -345,7 +325,7 @@ func TestNotarySigner_Sign_Valid(t *testing.T) {
 							{
 								Name:     "latest",
 								ByteSize: 1024,
-								Digest:   "sha256:dummy-digest",
+								Digest:   "dummy-manifest-digest",
 							},
 						},
 					},
@@ -592,5 +572,75 @@ func TestNotaryConfig_NewSigner_InvalidTLSCredentials(t *testing.T) {
 	}
 	if signer != nil {
 		t.Errorf("Expected signer to be nil due to error")
+	}
+}
+
+func TestImageService_IsManifestList(t *testing.T) {
+	mockRepo := &MockImageRepository{
+		MockIsManifestList: func(ref name.Reference) (bool, error) {
+			return true, nil
+		},
+	}
+
+	ref, err := name.ParseReference("docker.io/library/alpine:latest")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	isList, err := mockRepo.IsManifestList(ref)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if !isList {
+		t.Error("Expected manifest list detection")
+	}
+}
+
+func TestNotarySigner_Sign_ManifestList(t *testing.T) {
+	mockHTTPClient := &MockHTTPClient{
+		MockDo: func(req *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: http.StatusAccepted,
+				Body:       io.NopCloser(bytes.NewReader([]byte{})),
+			}, nil
+		},
+		MockSetTLSConfig: func(tlsConfig *tls.Config) error {
+			return nil
+		},
+	}
+
+	mockPayloadBuilder := &MockPayloadBuilder{
+		MockBuildPayload: func(images []string) (SigningPayload, error) {
+			return SigningPayload{
+				GunTargets: []GUNTargets{{
+					GUN: "docker.io/library/multiarch",
+					Targets: []Target{{
+						Name:     "latest",
+						ByteSize: 4096,
+						Digest:   "manifest-list-digest",
+					}},
+				}},
+			}, nil
+		},
+	}
+
+	mockTLSProvider := &MockTLSProvider{
+		MockGetTLSConfig: func() (*tls.Config, error) {
+			return &tls.Config{}, nil
+		},
+	}
+
+	notarySigner := NotarySigner{
+		payloadBuilder: mockPayloadBuilder,
+		tlsProvider:    mockTLSProvider,
+		httpClient:     mockHTTPClient,
+		url:            "http://example.com",
+		retryTimeout:   1 * time.Second,
+	}
+
+	err := notarySigner.Sign([]string{"docker.io/library/multiarch:latest"})
+	if err != nil {
+		t.Fatalf("Signing failed: %v", err)
 	}
 }

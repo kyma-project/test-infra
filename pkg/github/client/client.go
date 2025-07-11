@@ -7,16 +7,17 @@ import (
 	"crypto/sha256"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	"github.com/kyma-project/test-infra/pkg/types"
 	"hash"
 	"net/http"
 	"sync"
 
+	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
+	"github.com/kyma-project/test-infra/pkg/githubuser"
+
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
-	"k8s.io/test-infra/prow/config/secret"
+	"sigs.k8s.io/prow/pkg/config/secret"
 )
 
 const (
@@ -228,8 +229,8 @@ func (c *SapToolsClient) Reauthenticate(ctx context.Context, logger *cloudfuncti
 }
 
 // GetUsersMap will get users-map.yaml file from github.tools.sap/kyma/test-infra repository.
-func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
-	var usersMap []types.User
+func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]githubuser.User, error) {
+	var usersMap []githubuser.User
 	// Get file from github.
 	usersMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
@@ -252,8 +253,8 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 }
 
 // GetAliasesMap will get aliasess-map.yaml file from github.tools.sap/kyma/test-infra repository.
-func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]types.Alias, error) {
-	var aliasesMap []types.Alias
+func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]githubuser.Alias, error) {
+	var aliasesMap []githubuser.Alias
 	// Get file from github.
 	aliasesMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/aliases-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
@@ -305,4 +306,24 @@ func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo stri
 	// Read commit author Login.
 	l := commit.GetAuthor().GetLogin()
 	return &l, nil
+}
+
+// MuLock wraps client mutex Lock method
+func (c *Client) MuLock() {
+	c.WrapperClientMu.Lock()
+}
+
+// MuUnlock wraps client mutex Unlock method
+func (c *Client) MuUnlock() {
+	c.WrapperClientMu.Unlock()
+}
+
+// MuRLock wraps client mutex RLock method
+func (c *Client) MuRLock() {
+	c.WrapperClientMu.RLock()
+}
+
+// MuRUnlock wraps client mutex RUnlock method
+func (c *Client) MuRUnlock() {
+	c.WrapperClientMu.RUnlock()
 }

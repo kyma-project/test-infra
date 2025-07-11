@@ -1,14 +1,33 @@
-FROM python:3.12.6-slim
+# Stage 1: Build with dependencies inside venv
+FROM cgr.dev/chainguard/python:latest-dev as builder
 
-# Allow statements and log messages to immediately appear in the Knative logs
-ENV PYTHONUNBUFFERED True
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY ./cmd/cloud-run/signifysecretrotator .
+# Create a virtual environment
+RUN python -m venv /app/venv
+
+# Activate venv and install dependencies
+ENV PATH="/app/venv/bin:$PATH"
+
 COPY ./cmd/cloud-run/signifysecretrotator/requirements.txt .
 
-RUN pip3 install --upgrade -r requirements.txt && \
-	apt-get install ca-certificates
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]
+# Stage 2: Production image
+FROM cgr.dev/chainguard/python:latest
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1
+
+# Copy app source code
+COPY ./cmd/cloud-run/signifysecretrotator .
+
+# Copy the virtual environment from the builder stage
+COPY --from=builder /app/venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
+ENTRYPOINT ["/app/venv/bin/python"]
+CMD ["/app/venv/bin/gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "0", "signifysecretrotator:app"]

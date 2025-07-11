@@ -184,13 +184,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 }
 
 // SyncImages is a main syncing function that takes care of copying images.
-func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, authCfg []byte) error {
-	var auth authn.Authenticator
-	if cfg.TargetKeyFile != "" {
-		auth = &authn.Basic{Username: "_json_key", Password: string(authCfg)}
-	} else {
-		auth = &authn.Bearer{Token: string(authCfg)}
-	}
+func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, auth authn.Authenticator) error {
 	for _, img := range images.Images {
 		target, err := getTarget(img.Source, cfg.TargetRepoPrefix, img.Tag)
 		imageType := "Index"
@@ -198,23 +192,17 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, aut
 			return err
 		}
 		log.WithField("image", img.Source).Info("Start sync")
-		if img.AMD64Only {
-			// sync whole index if possible, otherwise sync singular image
-			// we force users to set explicit info about single-arch images
-			var isIndex bool
-			isIndex, err = isImageIndex(ctx, img.Source)
-			if err != nil {
-				return err
-			}
-			if isIndex {
-				_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
-			} else {
-				imageType = "Image"
-				_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
-			}
-		} else {
-			// sync whole index
+		// Sync the whole index if possible. Otherwise, sync a single image.
+		var isIndex bool
+		isIndex, err = isImageIndex(ctx, img.Source)
+		if err != nil {
+			return err
+		}
+		if isIndex {
 			_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
+		} else {
+			imageType = "Image"
+			_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
 		}
 		if err != nil {
 			return err
@@ -222,6 +210,40 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesync.SyncDef, aut
 		log.WithField("target", target).Infof("%s synced successfully", imageType)
 	}
 	return nil
+}
+
+// newAuthenticator creates a new authenticator based on the provided configuration
+// An authenticator is used to authenticate to the target repository.
+func (cfg *Config) newAuthenticator() (authn.Authenticator, error) {
+	log.Debug("started creating new authenticator")
+	var (
+		auth    authn.Authenticator
+		authCfg []byte
+		err     error
+	)
+
+	if cfg.TargetKeyFile != "" {
+		log.WithField("targetKeyFile", cfg.TargetKeyFile).Debug("target key file path provided, reading the file")
+
+		authCfg, err = os.ReadFile(cfg.TargetKeyFile)
+		if err != nil {
+			return nil, fmt.Errorf("could not open target auth key JSON file, error: %w", err)
+		}
+		log.Debug("target key file read successfully, creating basic authenticator")
+
+		auth = &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+		log.WithField("username", "_json_key").Debug("basic authenticator created successfully")
+
+		return auth, nil
+	}
+	if cfg.AccessToken != "" {
+		log.Debug("access token provided, creating bearer authenticator")
+		auth = &authn.Bearer{Token: cfg.AccessToken}
+
+		return auth, nil
+	}
+
+	return nil, fmt.Errorf("no target auth key file or access token provided")
 }
 
 func main() {
@@ -234,7 +256,6 @@ func main() {
 		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
 		//nolint:revive
 		Run: func(cmd *cobra.Command, args []string) {
-			var authCfg []byte
 			logLevel := logrus.InfoLevel
 			if cfg.Debug {
 				logLevel = logrus.DebugLevel
@@ -248,26 +269,22 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
-			if cfg.TargetKeyFile != "" {
-				authCfg, err = os.ReadFile(cfg.TargetKeyFile)
-				if err != nil {
-					log.WithError(err).Fatal("Could not open target auth key JSON")
-				}
+			log.Info("Parsed images file")
+
+			auth, err := cfg.newAuthenticator()
+			if err != nil {
+				log.WithError(err).Fatal("Failed to create authenticator")
 			}
+			log.Info("Created authenticator for target repository")
 
 			if cfg.DryRun {
 				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
 			}
 
-			// This error looks like some leftover.
-			if err != nil {
-				log.WithError(err).Fatal("Failed to create signer instance")
-			}
-			if err := SyncImages(ctx, &cfg, imagesFile, authCfg); err != nil {
+			if err := SyncImages(ctx, &cfg, imagesFile, auth); err != nil {
 				log.WithError(err).Fatal("Failed to sync images")
-			} else {
-				log.Info("All images synced successfully")
 			}
+			log.Info("All images synced successfully")
 		},
 	}
 

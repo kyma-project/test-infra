@@ -13,7 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/securityconfig"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/prow/pkg/config"
 )
 
 var (
@@ -154,8 +154,8 @@ func (c *client) Changes() []func(context.Context) (string, []string, error) {
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
-func (c *client) PRTitleBody() (string, string, error) {
-	return "Update sec-scanners-config.yaml", "", nil
+func (c *client) PRTitleBody() (string, string) {
+	return "Update sec-scanners-config.yaml", ""
 }
 
 // options is the options for autobumper operations.

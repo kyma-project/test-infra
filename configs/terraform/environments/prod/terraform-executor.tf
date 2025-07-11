@@ -28,14 +28,6 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
   service_account_id = google_service_account.terraform_executor.name
 }
 
-
-# Grant owner role to terraform executor service account in the gcp workloads project.
-resource "google_project_iam_member" "terraform_executor_workloads_project_owner" {
-  project = var.workloads_project_id
-  role    = "roles/owner"
-  member  = "serviceAccount:${google_service_account.terraform_executor.email}"
-}
-
 # Create the terraform planner GCP service account.
 # Grants the browser permissions to refresh state of the resources.
 
@@ -70,20 +62,18 @@ resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access"
 
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
   members = [
-    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform"
+    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform",
+
+    # This is used by the reusable workflow to run the plan prod terraform workflow
+    "principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@refs/heads/main",
+    "principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@refs/heads/main",
+
+    # This is used by the reusable workflow to run the pull-validate-service-accounts workflow
+    "principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main",
+    "principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
-}
-
-
-resource "google_project_iam_member" "terraform_planner_workloads_project_read_access" {
-  for_each = toset([
-    "roles/viewer",
-  ])
-  project = var.workloads_project_id
-  role    = each.key
-  member  = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
 resource "google_service_account_iam_member" "terraform_executor_workload_identity_user" {

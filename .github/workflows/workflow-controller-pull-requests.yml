@@ -1,0 +1,76 @@
+# This workflow controller contains the jobs that runs only on pull requests and merge groups.
+name: workflow-controller-pull-requests
+
+on:
+  pull_request_target: 
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group: 
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+      - uses: dorny/paths-filter@v3
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+
+  pull-go-lint:
+    uses: kyma-project/test-infra/.github/workflows/pull-go-lint.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
+
+  pull-gitleaks:
+    uses: kyma-project/test-infra/.github/workflows/pull-gitleaks.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
+
+  pull-plan-prod-terraform:
+    uses: kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@main
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
+      issues: "write" # needed for tfcmt to post comments
+      pull-requests: "write" # needed for tfcmt to post comments
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
+
+  pull-unit-test-go:
+    uses: kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
+
+  pull-validate-dockerfiles:
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-dockerfiles.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
+
+  pull-validate-kaniko-build-config:
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-kaniko-build-config.yml@main
+    permissions:
+      id-token: write # This is required for requesting the JWT token
+      contents: read # This is required for actions/checkout
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
+
+  tf-lint:
+    uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'tf-lint-filter') }}
+
+  code-checks-python:
+    uses: kyma-project/test-infra/.github/workflows/code-checks-python.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}
+
+  lint-markdown-links-pr:
+    uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'lint-markdown-links-pr-filter') }}

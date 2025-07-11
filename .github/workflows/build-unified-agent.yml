@@ -1,0 +1,73 @@
+name: build-unified-agent
+
+on:
+  # This workflow is triggered by the workflow controller.
+  workflow_call:
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  # Build unified-agent base image
+  build-unified-agent:
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: unified-agent
+      dockerfile: images/unified-agent/Dockerfile
+      context: .
+      build-engine: buildx
+      platforms: |
+        linux/amd64
+
+  unpack-unified-agent:
+    runs-on: ubuntu-latest
+    needs: build-unified-agent
+    outputs:
+      clean_image: ${{ steps.unpack-unified-agent.outputs.clean_image }}
+    steps:
+      - name: Unpack image output to output variable
+        id: unpack-unified-agent
+        run: |
+          IMAGE="${{ needs.build-unified-agent.outputs.images }}"
+          CLEAN_IMAGE=$(echo "$IMAGE" | sed 's/[][]//g')
+          echo "clean_image=$CLEAN_IMAGE" >> $GITHUB_OUTPUT
+          
+  # Build unified-agent/go image that depends on build-unified-agent
+  build-unified-agent-go:
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: unified-agent-go
+      dockerfile: images/unified-agent/go/Dockerfile
+      context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
+
+  # Build unified-agent/nodejs image that depends on build-unified-agent
+  build-unified-agent-nodejs:
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: unified-agent-nodejs
+      dockerfile: images/unified-agent/nodejs/Dockerfile
+      context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64
+
+  # Build unified-agent/python image that depends on build-unified-agent
+  build-unified-agent-python:
+    needs: [build-unified-agent, unpack-unified-agent]
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: unified-agent-python
+      dockerfile: images/unified-agent/python/Dockerfile
+      context: .
+      build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
+      build-engine: buildx
+      platforms: |
+        linux/amd64

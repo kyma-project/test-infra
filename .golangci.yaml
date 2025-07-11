@@ -1,26 +1,34 @@
-# https://golangci-lint.run/usage/configuration/
-
+version: "2"
 run:
-  timeout: 10m
-  # skip test files
   tests: false
-output:
-  sort-results: true
 linters:
-  disable-all: true
+  default: none
   enable:
-    - unused
-    - exportloopref
-    - gosimple
+    - copyloopvar
     - govet
     - ineffassign
     - misspell
+    - revive
     - staticcheck
-    - revive # replaces golint
+    - unused
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
 issues:
-  # To list all excluded by default patterns execute `golangci-lint run --help`.
-  # exclude-use-default: false
-  # default: 50
   max-issues-per-linter: 0
-  # show all issues of one type instead of only 3
   max-same-issues: 0
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

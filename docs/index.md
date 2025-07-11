@@ -4,13 +4,13 @@
 
 [Automated Approver](/cmd/external-plugins/automated-approver/README.md) - With the Automated Approver tool, you can automatically approve a pull request (PR) based on the rules you define. The tool enables automation of the approval process for PRs in repositories that need reviews before merge. The tool automates the PR review process without limiting user `write` permission on the repository. It can provide an automated review process for all PR authors.
 
-[Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
+[Image Autobumper](/cmd/image-autobumper/README.md) - Image Autobumper is a tool for automatically updating the version of a Docker image in a GitHub repository.
 
-[Image Builder](/cmd/image-builder/README_deprecated.md) - > Deprecation Notice
+[Image Builder](/cmd/image-builder/README.md) - Image Builder is a tool for building OCI-compliant images in an SLC-29-compliant system from a GitHub workflow.
 
 [Image Builder GitHub Workflow Integration](/cmd/image-builder/github-workflow-integration.md) - The Image Builder solution integrates with GitHub workflows and uses an Azure DevOps pipeline to run the process of building OCI
 
-[Image Builder](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images.
+[Image Builder: Maintenance Guide](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images using the Azure DevOps (ADO) pipeline backend.
 
 [Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
@@ -18,41 +18,29 @@
 
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
-[JobGuard ](/cmd/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests (PRs) and waits for some of them to finish.
-
 [OIDC Token Verifier](/cmd/oidc-token-verifier/README.md) - The OIDC Token Verifier is a command-line tool designed to validate the OIDC token and its claim values. It is primarily used in the
-
-[Clusters Garbage Collector](/cmd/tools/clusterscollector/README.md) - This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud project.
-
-[Disks Garbage Collector](/cmd/tools/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud project.
-
-[IP Address and DNS Record Garbage Collector](/cmd/tools/dnscollector/README.md) - This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud project.
 
 [External Secrets Checker](/cmd/tools/externalsecretschecker/README.md) - This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
 
-[IP cleaner](/cmd/tools/ipcleaner/README.md) - This command finds and removes orphaned IP addresses created by jobs in the Google Cloud project.
-
-[Job Guard](/cmd/tools/jobguard/README.md) - Job Guard was moved to the [`cmd`](/cmd/jobguard) directory.
-
-[Virtual Machines Garbage Collector](/cmd/tools/vmscollector/README.md) - This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud project.
-
-[Artifact Registry Creator Tool (GCP, Terraform)](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
+[Artifact Registry Module](/configs/terraform/modules/artifact-registry/README.md) - The Artifact Registry module for Google Cloud is designed to maintain a standardized and reusable way of creating Artifact Registry in Google Cloud.
 
 [Documentation Guidelines](/docs/documentation_guidelines.md) - Follow the rules listed in this document to provide high-quality documentation.
 
+[IaC Configuration Guideline](/docs/guidelines_iac.md) - This document outlines the standard Terraform configuration and provides guidelines.
+
 [Add a Custom Secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add and use a custom secret in the Prow pipeline.
 
-[Standard Terraform Configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in the `test-infra` repository. 
+[Guidelines for Managing Follow-Up Issues](/docs/how-to/how-to-manage-follow-up-issues.md) - This document provides clear guidelines on how to effectively handle follow-up issues identified during events such as Technical Sprint Reviews.
 
 [Name a Secret](/docs/how-to/how-to-name-secret.md) - This tutorial describes how to name a secret in Google Secret Manager.
+
+[Manage Workflow Controllers](/docs/how-to/how-to_manage_workflow_controller.md) - This guide explains how to manage Workflow Controllers. Workflow Controllers are responsible for orchestrating and triggering jobs in GitHub Actions workflows, especially for advanced scenarios like merge queues.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the Google Cloud project you own.
 
 [Crier](/docs/prow/crier.md) - Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
-
-[Run K3d Cluster Inside ProwJobs](/docs/prow/k3d-no-ssh.md) - This document provides simple instructions, with examples, on how to prepare a ProwJob to use a K3d cluster and Docker.
 
 [Obligatory Security Measures](/docs/prow/obligatory-security-measures.md) - Read about the obligatory security measures to take on a regular basis and when a Kyma organization member leaves the project.
 
@@ -66,19 +54,15 @@
 
 [HTML Lens](/docs/prow/prow-html-lens.md) - Spyglass HTML lens allows to render HTML files in the job results.
 
-[Image Autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs.
-
 [Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
 
 [Prow Test Clusters](/docs/prow/test-clusters.md) - This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 
-[Tide Introduction](/docs/prow/tide-introduction-notes.md) - Along with the Prow upgrade, we want to introduce Tide for merging the PRs automatically.
-
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` Google Cloud project. We use two workload clusters for trusted and untrusted Prow jobs.
 
-[Prow Runtime Images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
+[Workflow Controller](/docs/what-is/what-is_workflow_controller.md) - Workflow Controller is a GitHub Actions workflow that orchestrates and triggers downstream workflows based on repository changes. It implements advanced CI/CD logic, such as merge queues and selective job execution, by applying path-based filters to changed files. It was created due to a lack of filtering capabilities in GitHub Actions workflows for merge queues.
 
-[PR Tag Builder](/pkg/tools/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request (PR) number for a commit.
+[Prow Runtime Images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
 
 [Cluster](/prow/cluster/README.md) - This folder contains files related to the configuration of the Prow production cluster that are used during the cluster provisioning.
 
@@ -86,6 +70,3 @@
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
-[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
-
-[Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.

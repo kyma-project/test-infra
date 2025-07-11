@@ -1,17 +1,21 @@
 name: Lint Markdown Links PR
 run-name: ${{github.event.pull_request.title}}
-on: [ pull_request ]
+on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: gaurav-nelson/github-action-markdown-link-check@d53a906aa6b22b8979d33bc86170567e619495ec
+      - name: Checkout PR code
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+
+      - name: Install node.js
+        uses: actions/setup-node@v4
         with:
-          use-quiet-mode: 'yes'  
-          use-verbose-mode: 'yes'
-          config-file: '.mlc.config.json'
-          folder-path: '.'
-          max-depth: -1
-          check-modified-files-only: 'yes'
-          base-branch: 'main'
+          node-version: '22.x'
+      - name: Install md-check-link
+        run: npm install -g md-check-link
+      - name: Verify links
+        run: |
+          md-check-link -q -n 8 -c https://raw.githubusercontent.com/kyma-project/md-check-link/main/.mlc.config.json ./

@@ -10,6 +10,24 @@ variable "signify_prod_secret_name" {
   default     = "signify-prod-secret"
 }
 
+variable "dockerhub_credentials" {
+  type = object({
+    oat_secret_name = string
+    username        = string
+  })
+  default = {
+    oat_secret_name = "docker_sap_org_service_auth_token"
+    username        = "sapcom"
+  }
+}
+
+data "google_secret_manager_secret_version" "dockerhub_oat_secret" {
+  count   = var.dockerhub_credentials != null ? 1 : 0
+  project = var.gcp_project_id
+  secret  = var.dockerhub_credentials.oat_secret_name
+  version = "latest"
+}
+
 # GitHub resources
 
 variable "image_builder_reusable_workflow_ref" {
@@ -30,30 +48,116 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
 variable "image_builder_kyma-project_identity" {
   description = "Configuration for identity of image-builder in main kyma-project GCP project. It's used to access artifact registries."
   type = object({
-    id = string
+    id          = string
     description = string
   })
 
   default = {
-    id = "azure-pipeline-image-builder"
+    id          = "azure-pipeline-image-builder"
     description = "OCI image builder running in kyma development service azure pipelines"
   }
 }
 
-# Variable for Docker Hub Mirror configuration
 variable "dockerhub_mirror" {
-  description = "Configuration for the Docker Hub mirror repository"
   type = object({
-    repository_id = string
-    description = string
-    location = string
-    cleanup_age = string
+    name                       = string
+    description                = string
+    repository_prevent_destroy = bool
+    location                   = string
+    format                     = string
+    mode                       = string
+    cleanup_policy_dry_run     = bool
+    labels                     = map(string)
+    remote_repository_config = optional(object({
+      description              = string
+      docker_public_repository = string
+    }))
+    cleanup_policies = optional(list(object({
+      id     = string
+      action = string
+      condition = object({
+        tag_state  = optional(string)
+        older_than = string
+      })
+    })), [])
   })
-
   default = {
-    repository_id = "dockerhub-mirror"
-    description = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
-    location = "europe"
-    cleanup_age = "63072000s" # 63072000s = 730 days = 2 years
+    name                       = "dockerhub-mirror"
+    description                = "Remote repository mirroring Docker Hub. For more details, see https://github.tools.sap/kyma/oci-image-builder/blob/main/README.md"
+    repository_prevent_destroy = false
+    location                   = "europe"
+    format                     = "DOCKER"
+    mode                       = "REMOTE_REPOSITORY"
+    cleanup_policy_dry_run     = true
+    labels = {
+      "type"  = "development"
+      "name"  = "dockerhub-mirror"
+      "owner" = "neighbors"
+    }
+    remote_repository_config = {
+      description              = "Remote repository mirroring Docker Hub"
+      docker_public_repository = "DOCKER_HUB"
+    }
+    cleanup_policies = [{
+      id     = "delete-old-cache"
+      action = "DELETE"
+      condition = {
+        tag_state  = "ANY"
+        older_than = "604800s"
+      }
+    }]
+  }
+}
+
+variable "docker_cache_repository" {
+  type = object({
+    name                       = string
+    description                = string
+    repository_prevent_destroy = bool
+    location                   = string
+    format                     = string
+    immutable_tags             = bool
+    mode                       = string
+    cleanup_policy_dry_run     = bool
+    labels                     = map(string)
+    cleanup_policies = optional(list(object({
+      id     = string
+      action = string
+      condition = object({
+        tag_state  = optional(string)
+        older_than = string
+      })
+    })), [])
+  })
+  default = {
+    name                       = "cache"
+    description                = "Cache repo for kyma-project"
+    repository_prevent_destroy = false
+    location                   = "europe"
+    format                     = "DOCKER"
+    immutable_tags             = false
+    mode                       = "STANDARD_REPOSITORY"
+    cleanup_policy_dry_run     = false
+    labels = {
+      "type"  = "development"
+      "name"  = "docker-cache"
+      "owner" = "neighbors"
+    }
+    cleanup_policies = [{
+      id     = "delete-old-cache"
+      action = "DELETE"
+      condition = {
+        tag_state  = "ANY"
+        older_than = "604800s"
+      }
+      },
+      {
+        id     = "delete-untagged"
+        action = "DELETE"
+        condition = {
+          tag_state  = "UNTAGGED"
+          older_than = "3600s"
+        }
+    }]
   }
 }

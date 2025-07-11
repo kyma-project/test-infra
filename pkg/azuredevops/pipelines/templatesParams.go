@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch", "schedule"}
+var validJobTypes = []string{"presubmit", "postsubmit", "workflow_dispatch", "schedule", "merge_group"}
 
 func GetValidJobTypes() []string {
 	return validJobTypes
@@ -57,6 +57,11 @@ func (p OCIImageBuilderTemplateParams) SetWorkflowDispatchJobType() {
 // SetScheduleJobType sets required parameter JobType to schedule.
 func (p OCIImageBuilderTemplateParams) SetScheduleJobType() {
 	p["JobType"] = "schedule"
+}
+
+// SetMergeGroup sets required parameter JobType to merge_group.
+func (p OCIImageBuilderTemplateParams) SetMergeGroupJobType() {
+	p["JobType"] = "merge_group"
 }
 
 // SetPullNumber sets optional parameter PullNumber.
@@ -138,6 +143,33 @@ func (p OCIImageBuilderTemplateParams) SetAuthorization(authorizationToken strin
 	p["Authorization"] = authorizationToken
 }
 
+// SetUseGoInternalSAPModules sets UseGoInternalModules parameter.
+// This parameter is used to setup access to internal Go modules.
+// Modules are fetched with go mod vendor command.
+func (p OCIImageBuilderTemplateParams) SetUseGoInternalSAPModules() {
+	p["UseGoInternalSAPModules"] = "true"
+}
+
+// SetKanikoBuildEngine sets BuildEngine parameter to kaniko.
+// This parameter is used to setup kaniko build engine.
+func (p OCIImageBuilderTemplateParams) SetKanikoBuildEngine() {
+	p["BuildEngine"] = "kaniko"
+}
+
+// SetBuildxBuildEngine sets BuildEngine parameter to buildx.
+func (p OCIImageBuilderTemplateParams) SetBuildxBuildEngine() {
+	p["BuildEngine"] = "buildx"
+}
+
+// SetPlatform sets Platform parameter.
+// This parameter is used to set the platform for the image build.
+// It is used to specify the target architecture and OS for the image.
+// For example, "linux/amd64" or "linux/arm64".
+// Multiple platforms can be specified as a comma-separated list.
+func (p OCIImageBuilderTemplateParams) SetPlatforms(platforms string) {
+	p["Platforms"] = platforms
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {
@@ -169,5 +201,6 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if _, ok = p["Context"]; !ok {
 		return ErrRequiredParamNotSet("BuildContext")
 	}
+
 	return nil
 }

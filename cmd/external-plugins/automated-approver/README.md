@@ -19,7 +19,7 @@ To identify PRs that must be approved by the tool, Automated Approver evaluates 
  - PR required labels
  - PR changed files
 
-If a PR meets the conditions, the tool checks if the PR tests are finished. The `Tide` context is an exception: the `pending` status for `Tide` is ignored. The tool uses a backoff algorithm for sleep duration between subsequent status checks. A `wait-for-statuses-timeout` flag defines a timeout period while waiting for statuses to finish and reports its state back to GitHub. Once the tests are finished, it checks whether they were successful. Currently, the tool doesn't support optional tests. When all checks and conditions are met, the tool approves the PR.
+If a PR meets the conditions, the tool checks if the PR tests are finished. The tool uses a backoff algorithm for sleep duration between subsequent status checks. A `wait-for-statuses-timeout` flag defines a timeout period while waiting for statuses to finish and reports its state back to GitHub. Once the tests are finished, it checks whether they were successful. Currently, the tool doesn't support optional tests. When all checks and conditions are met, the tool approves the PR.
 
 Automated Approver uses the identity of a dedicated GitHub user to approve PRs. Depending on repository configuration, the user must have `write` permission on the repository, must be added to repository collaborators, and as a code owner in the `CODEOWNERS` file.
 

@@ -2,15 +2,16 @@ package repoowners
 
 import (
 	"fmt"
-	toolstypes "github.com/kyma-project/test-infra/pkg/types"
+
+	toolstypes "github.com/kyma-project/test-infra/pkg/githubuser"
 
 	"os"
 	"path/filepath"
 
 	"k8s.io/apimachinery/pkg/util/sets"
 
-	"k8s.io/test-infra/prow/github"
-	k8sowners "k8s.io/test-infra/prow/repoowners"
+	"sigs.k8s.io/prow/pkg/github"
+	k8sowners "sigs.k8s.io/prow/pkg/repoowners"
 )
 
 // AllOwners holds repository owners as map.

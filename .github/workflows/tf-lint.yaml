@@ -1,0 +1,34 @@
+name: tf-lint
+
+on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
+    
+
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Test Infra 
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+          path: test-infra
+
+      - name: Checkout PR code
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --recursive --config "$(pwd)/.tflint.hcl" --format compact
+        

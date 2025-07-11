@@ -41,9 +41,6 @@ prow_components=(
 "statusreconciler_rbac.yaml"
 "statusreconciler_deployment.yaml"
 "status-kyma-prow_managedcertificate.yaml"
-"tide_rbac.yaml"
-"tide_deployment.yaml"
-"tide_service.yaml"
 "tls-ing_ingress.yaml"
 "web_server_deployment.yaml"
 )

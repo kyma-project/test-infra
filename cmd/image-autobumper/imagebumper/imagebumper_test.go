@@ -153,12 +153,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190329-811f7954b"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190329-811f7954b"},
 				},
 			},
 			bestTag: "v20190404-65af07d",
@@ -168,12 +168,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999", "latest"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999", "latest"},
 				},
 			},
 			bestTag: "v20190330-811f79999",
@@ -183,12 +183,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b-experimental",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999-experimental"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999-experimental"},
 				},
 			},
 			bestTag: "v20190330-811f79999-experimental",
@@ -198,12 +198,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b-experimental",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d", "latest"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d", "latest"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999-experimental"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999-experimental"},
 				},
 			},
 			bestTag: "v20190330-811f79999-experimental",
@@ -213,12 +213,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999-experimental", "latest-experimental"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999-experimental", "latest-experimental"},
 				},
 			},
 			bestTag: "v20190404-65af07d",
@@ -228,12 +228,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b-experimental",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d-experimental"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d-experimental"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999-experimental", "latest-experimental"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999-experimental", "latest-experimental"},
 				},
 			},
 			bestTag: "v20190330-811f79999-experimental",
@@ -243,12 +243,12 @@ func TestPickBestTag(t *testing.T) {
 			tag:  "v20190329-811f7954b-master",
 			manifest: manifest{
 				"image1": {
-					TimeCreatedMs: "2000",
-					Tags:          []string{"v20190404-65af07d-experimental"},
+					TimeUploadedMs: "2000",
+					Tags:           []string{"v20190404-65af07d-experimental"},
 				},
 				"image2": {
-					TimeCreatedMs: "1000",
-					Tags:          []string{"v20190330-811f79999-experimental", "latest-experimental"},
+					TimeUploadedMs: "1000",
+					Tags:           []string{"v20190330-811f79999-experimental", "latest-experimental"},
 				},
 			},
 			expectErr: true,

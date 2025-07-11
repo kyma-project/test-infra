@@ -1,0 +1,127 @@
+name: code-checks-python
+
+on:
+  # This workflow is triggered by workflow controller.
+  workflow_call:
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          echo "Searching applications directories..."
+          py_dirs=$(find . -type f -name "*.py" -exec dirname {} \; | sort -u)
+
+          echo "Found Python files in directories:"
+          echo "$py_dirs"
+
+          echo "Searching root directories..."
+          root_dirs=""
+          for dir in $py_dirs; do
+            parent=$(dirname "$dir")
+
+            # If parent does not contain any .py files, consider as root dir
+            if ! find "$parent" -maxdepth 1 -type f -name "*.py" | grep -q .; then
+              root_dirs="$root_dirs ${dir#./}"
+            fi
+          done
+
+          echo "Found applications directories: $root_dirs"
+          echo "Generating matrix..."
+
+          # Converts the space-separated list of root directories into a JSON object suitable for a GitHub Actions matrix.
+          # This uses jq to split the directory string into an array under the "app" key, 
+          # resulting in: {"app": ["dir1", "dir2", ...]}
+          matrix=$(echo -n $root_dirs | jq -Rsc '. | split(" ") | {app: .}')
+
+          echo "Generated matrix: $matrix"
+          echo "Setting matrix output..."
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  unittest:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+
+      - name: Set up python venv
+        run: |
+          python -m venv venv
+        working-directory: ${{ matrix.app }}
+
+      # Install dependencies if requirements.txt exists
+      - name: Install dependencies
+        run: |
+          source venv/bin/activate
+
+          pip install -r requirements.txt
+        # Run only if requirements.txt exists
+        # See: https://stackoverflow.com/a/77081661
+        if: hashFiles("${{ matrix.app }}/requirements.txt") != ''
+        working-directory: ${{ matrix.app }}
+      
+      - name: Run unit tests
+        run: |
+          source venv/bin/activate
+
+          python -m unittest discover
+        working-directory: ${{ matrix.app }}
+  
+  lint:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      # Do not skip any jobs in the matrix if one fails
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+
+      - name: Set up venv
+        run: |
+          python -m venv venv
+        working-directory: ${{ matrix.app }}
+
+      - name: Install tools
+        run: |
+          source venv/bin/activate
+          
+          python -m pip install --upgrade pip
+          pip install pylint
+        working-directory: ${{ matrix.app }}
+
+      - name: Install dependencies
+        run: |
+          source venv/bin/activate
+          
+          pip install -r requirements.txt
+        # Run only if requirements.txt exists
+        # See: https://stackoverflow.com/a/77081661
+        if: hashFiles("${{ matrix.app }}/requirements.txt") != ''
+        working-directory: ${{ matrix.app }}
+
+      - name: Analysing the code with pylint
+        run: |
+          source venv/bin/activate
+          
+          pylint --rcfile=${{ github.workspace }}/.pylintrc --ignore-paths=venv --recursive=y .
+        working-directory: ${{ matrix.app }}

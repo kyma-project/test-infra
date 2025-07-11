@@ -3,8 +3,8 @@ package client
 import (
 	"fmt"
 
-	prowflagutil "k8s.io/test-infra/prow/flagutil"
-	"k8s.io/test-infra/prow/github"
+	prowflagutil "sigs.k8s.io/prow/pkg/flagutil"
+	"sigs.k8s.io/prow/pkg/github"
 )
 
 // GithubClientConfig holds configuration for GithubClient.
@@ -36,7 +36,7 @@ func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (Git
 			return nil, fmt.Errorf("failed applying functional option: %w", err)
 		}
 	}
-	client, err := o.GitHubOptions.GitHubClient(o.DryRun)
+	client, err := o.GitHubClient(o.DryRun)
 	if err != nil {
 		return nil, err
 	}
