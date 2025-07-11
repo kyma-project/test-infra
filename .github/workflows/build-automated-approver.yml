@@ -14,6 +14,5 @@ jobs:
       name: automated-approver
       dockerfile: cmd/external-plugins/automated-approver/Dockerfile
       context: .
-      build-engine: buildx
       platforms: |
         linux/amd64

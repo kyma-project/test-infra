@@ -16,7 +16,6 @@ jobs:
       name: buildpack
       dockerfile: images/buildpack/Dockerfile
       context: .
-      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -42,6 +41,5 @@ jobs:
       dockerfile: images/buildpack/go/Dockerfile
       context: .
       build-args: BASE_BUILDPACK_IMAGE=${{ needs.unpack-buildpack.outputs.clean_image }}
-      build-engine: buildx
       platforms: |
         linux/amd64

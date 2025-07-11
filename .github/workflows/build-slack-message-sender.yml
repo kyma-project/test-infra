@@ -15,6 +15,5 @@ jobs:
       name: test-infra/slackmessagesender
       dockerfile: cmd/cloud-run/slackmessagesender/Dockerfile
       context: .
-      build-engine: buildx
       platforms: |
         linux/amd64
