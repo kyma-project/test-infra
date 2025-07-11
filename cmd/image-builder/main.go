@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -72,13 +71,6 @@ type options struct {
 type Logger interface {
 	logging.StructuredLoggerInterface
 	logging.WithLoggerInterface
-}
-
-// parseVariable returns a build-arg.
-// Keys are set to upper-case.
-func parseVariable(key, value string) string {
-	k := strings.TrimSpace(key)
-	return k + "=" + strings.TrimSpace(value)
 }
 
 // prepareADOTemplateParameters is a function that prepares the parameters for the Azure DevOps oci-image-builder pipeline.
@@ -332,15 +324,6 @@ func buildInADO(o options) error {
 	return nil
 }
 
-// appendMissing appends key, values pairs from source array to target map
-func appendMissing(target *map[string]string, source []tags.Tag) {
-	for _, arg := range source {
-		if _, exists := (*target)[arg.Name]; !exists {
-			(*target)[arg.Name] = arg.Value
-		}
-	}
-}
-
 // appendToTags appends key-value pairs from source map to target slice of tags.Tag
 // This allows creation of image tags from key value pairs.
 func appendToTags(logger Logger, target *[]tags.Tag, source map[string]string) {
@@ -493,17 +476,6 @@ func getTags(logger Logger, pr, sha string, templates []tags.Tag) ([]tags.Tag, e
 	return p, nil
 }
 
-func gatherDestinations(repo []string, name string, tags []tags.Tag) []string {
-	var dst []string
-	for _, t := range tags {
-		for _, r := range repo {
-			image := path.Join(r, name)
-			dst = append(dst, image+":"+strings.ReplaceAll(t.Value, " ", "-"))
-		}
-	}
-	return dst
-}
-
 // validateOptions handles options validation. All checks should be provided here
 func validateOptions(o options) error {
 	var errs []error
@@ -601,22 +573,6 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 	}
 	logger.Debugw("Finished processing env file")
 	return vars, nil
-}
-
-// Add parsed tags to environments which will be passed to dockerfile
-func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
-	m := make(map[string]string)
-
-	for _, t := range tags {
-		key := fmt.Sprintf("TAG_%s", t.Name)
-		m[key] = t.Value
-	}
-
-	for k, v := range envs {
-		m[k] = v
-	}
-
-	return m
 }
 
 func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
