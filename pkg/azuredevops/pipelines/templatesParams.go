@@ -150,17 +150,6 @@ func (p OCIImageBuilderTemplateParams) SetUseGoInternalSAPModules() {
 	p["UseGoInternalSAPModules"] = "true"
 }
 
-// SetKanikoBuildEngine sets BuildEngine parameter to kaniko.
-// This parameter is used to setup kaniko build engine.
-func (p OCIImageBuilderTemplateParams) SetKanikoBuildEngine() {
-	p["BuildEngine"] = "kaniko"
-}
-
-// SetBuildxBuildEngine sets BuildEngine parameter to buildx.
-func (p OCIImageBuilderTemplateParams) SetBuildxBuildEngine() {
-	p["BuildEngine"] = "buildx"
-}
-
 // SetPlatform sets Platform parameter.
 // This parameter is used to set the platform for the image build.
 // It is used to specify the target architecture and OS for the image.

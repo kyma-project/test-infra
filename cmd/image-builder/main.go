@@ -6,15 +6,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -70,9 +67,6 @@ type options struct {
 	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
 	// reported as an output variable in Azure DevOps
 	adoStateOutput bool
-	// buildEngine indicates which build engine should be used for building the image
-	// either kaniko or buildx
-	buildEngine string
 }
 
 type Logger interface {
@@ -87,124 +81,12 @@ func parseVariable(key, value string) string {
 	return k + "=" + strings.TrimSpace(value)
 }
 
-// runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
-// This function is used only in customized environment
-func runInBuildKit(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	dockerfile := filepath.Base(o.dockerfile)
-	dockerfileDir := filepath.Dir(o.dockerfile)
-	args := []string{
-		"build", "--frontend=dockerfile.v0",
-		"--local", "context=" + o.context,
-		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
-		"--opt", "filename=" + dockerfile,
-	}
-
-	// output definition, multiple images support
-	args = append(args, "--output", "type=image,\"name="+strings.Join(destinations, ",")+"\",push=true")
-
-	// build-args
-	for k, v := range buildArgs {
-		args = append(args, "--opt", "build-arg:"+parseVariable(k, v))
-	}
-
-	if len(platforms) > 0 {
-		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
-	}
-
-	if o.Cache.Enabled {
-		// TODO (@Ressetkk): Implement multiple caches, see https://github.com/moby/buildkit#export-cache
-		args = append(args,
-			"--export-cache", "type=registry,ref="+o.Cache.CacheRepo,
-			"--import-cache", "type=registry,ref="+o.Cache.CacheRepo)
-	}
-
-	cmd := exec.Command("buildctl-daemonless.sh", args...)
-
-	var outw []io.Writer
-	var errw []io.Writer
-
-	if !o.silent {
-		outw = append(outw, os.Stdout)
-		errw = append(errw, os.Stderr)
-	}
-
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
-	if err != nil {
-		return fmt.Errorf("could not create log file: %w", err)
-	}
-
-	outw = append(outw, f)
-	errw = append(errw, f)
-
-	cmd.Stdout = io.MultiWriter(outw...)
-	cmd.Stderr = io.MultiWriter(errw...)
-
-	return cmd.Run()
-}
-
-// runInKaniko prepares command execution and handles gathering logs to file
-func runInKaniko(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	args := []string{
-		"--context=" + o.context,
-		"--dockerfile=" + o.dockerfile,
-	}
-	for _, dst := range destinations {
-		args = append(args, "--destination="+dst)
-	}
-
-	for k, v := range buildArgs {
-		args = append(args, "--build-arg="+parseVariable(k, v))
-	}
-
-	if len(platforms) > 0 {
-		fmt.Println("'--platform' parameter not supported in kaniko-mode. Use buildkit-enabled image")
-	}
-
-	if o.Cache.Enabled {
-		args = append(args, "--cache="+strconv.FormatBool(o.Cache.Enabled),
-			"--cache-copy-layers="+strconv.FormatBool(o.Cache.CacheCopyLayers),
-			"--cache-run-layers="+strconv.FormatBool(o.Cache.CacheRunLayers),
-			"--cache-repo="+o.Cache.CacheRepo)
-	}
-
-	if o.LogFormat != "" {
-		args = append(args, "--log-format="+o.LogFormat)
-	}
-
-	if o.Reproducible {
-		args = append(args, "--reproducible=true")
-	}
-
-	cmd := exec.Command("/kaniko/executor", args...)
-
-	var outw []io.Writer
-	var errw []io.Writer
-
-	if !o.silent {
-		outw = append(outw, os.Stdout)
-		errw = append(errw, os.Stderr)
-	}
-
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
-	if err != nil {
-		return fmt.Errorf("could not create log file: %w", err)
-	}
-
-	outw = append(outw, f)
-	errw = append(errw, f)
-
-	cmd.Stdout = io.MultiWriter(outw...)
-	cmd.Stderr = io.MultiWriter(errw...)
-
-	return cmd.Run()
-}
-
 // prepareADOTemplateParameters is a function that prepares the parameters for the Azure DevOps oci-image-builder pipeline.
 // These parameters are used to trigger the pipeline with API call and build the image in the ADO environment.
 // It takes an options struct as an argument and returns an OCIImageBuilderTemplateParams struct and an error.
 // The function fetches various environment variables such as REPO_NAME, REPO_OWNER, JOB_TYPE, PULL_NUMBER, PULL_BASE_SHA, and PULL_PULL_SHA.
 // It validates these variables are present and sets them in the templateParameters struct.
-// It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, useKanikoConfigFromPR, buildArgs, and imageTags.
+// It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, buildArgs, and imageTags.
 // The function validates the templateParameters and returns it along with any error that occurred during the process.
 // TODO: rename this function to indicate that it's preparing ADO pipeline parameters for oci-image-builder pipeline.
 func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
@@ -269,15 +151,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	if options.useGoInternalSAPModules {
 		templateParameters.SetUseGoInternalSAPModules()
-	}
-
-	switch options.buildEngine {
-	case "kaniko":
-		templateParameters.SetKanikoBuildEngine()
-	case "buildx":
-		templateParameters.SetBuildxBuildEngine()
-	default:
-		return nil, fmt.Errorf("unknown build engine received, ensure provided value is either 'kaniko' or 'buildx'")
 	}
 
 	if len(options.platforms) > 0 {
@@ -456,119 +329,6 @@ func buildInADO(o options) error {
 	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
 		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
-	return nil
-}
-
-// buildLocally is a function that builds an image locally using either Kaniko or BuildKit.
-// It takes an options struct as an argument and returns an error.
-// The function determines the build tool to use based on the USE_BUILDKIT environment variable.
-// If USE_BUILDKIT is set to "true", BuildKit is used, otherwise Kaniko is used.
-// The function fetches various environment variables such as JOB_TYPE, PULL_NUMBER, and PULL_BASE_SHA.
-// It validates these variables are present and sets them in the appropriate variables.
-// It also sets other variables from the options struct such as context, envFile, name, dockerfile, variant, and tags.
-// The function validates the options and returns an error if any of the required options are not set or are invalid.
-// The function triggers the build process and waits for it to finish.
-// It fetches the build logs and prints them.
-// If the build fails, the function returns an error.
-// If the build is successful, the function returns nil.
-func buildLocally(o options) error {
-	// Determine the build tool to use based on the USE_BUILDKIT environment variable.
-	runFunc := runInKaniko
-	if os.Getenv("USE_BUILDKIT") == "true" {
-		runFunc = runInBuildKit
-	}
-	var sha, pr string
-	var err error
-	var variant Variants
-	var envs map[string]string
-
-	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
-	// 		We should call this function before calling image building functions.
-	dockerfilePath, err := getDockerfileDirPath(o.logger, o)
-	if err != nil {
-		return fmt.Errorf("get dockerfile path failed, error: %w", err)
-	}
-	// Load environment variables from the envFile or variants.yaml file.
-	if len(o.envFile) > 0 {
-		envs, err = loadEnv(o.logger, os.DirFS(dockerfilePath), o.envFile)
-		if err != nil {
-			return fmt.Errorf("load env failed, error: %w", err)
-		}
-
-	} else {
-		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
-		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
-		if err != nil {
-			if !os.IsNotExist(err) {
-				return fmt.Errorf("get variants failed, error: %w", err)
-			}
-		}
-		if len(variant) > 0 {
-			return fmt.Errorf("building variants is not not working and is not supported anymore")
-		}
-	}
-
-	repo := o.Registry
-	if o.isCI {
-		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
-		if presubmit {
-			if len(o.DevRegistry) > 0 {
-				repo = o.DevRegistry
-			}
-			if n := os.Getenv("PULL_NUMBER"); n != "" {
-				pr = n
-			}
-		}
-
-		if c := os.Getenv("PULL_BASE_SHA"); c != "" {
-			sha = c
-		}
-	}
-
-	// if sha is still not set, fail the pipeline
-	if sha == "" {
-		return fmt.Errorf("'sha' could not be determined")
-	}
-
-	defaultTag, err := getDefaultTag(o.logger, o)
-	if err != nil {
-		return err
-	}
-
-	// Get the tags for the image.
-	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
-	if err != nil {
-		return err
-	}
-
-	// Provide parsedTags as buildArgs for developers
-	var buildArgs map[string]string
-	if o.exportTags {
-		buildArgs = addTagsToEnv(parsedTags, envs)
-	} else {
-		buildArgs = envs
-	}
-
-	if buildArgs == nil {
-		buildArgs = make(map[string]string)
-	}
-
-	appendMissing(&buildArgs, o.buildArgs)
-
-	// variants.yaml file not present or either empty. Run single build.
-	destinations := gatherDestinations(repo, o.name, parsedTags)
-	fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-	err = runFunc(o, "build", destinations, o.platforms, buildArgs)
-	if err != nil {
-		return fmt.Errorf("build encountered error: %w", err)
-	}
-
-	// Sign the images.
-	err = signImages(&o, destinations)
-	if err != nil {
-		return fmt.Errorf("sign encountered error: %w", err)
-	}
-	fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 	return nil
 }
 
@@ -787,10 +547,6 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is provided, but adoPreviewRun flag is not set to true"))
 	}
 
-	if o.buildEngine != "kaniko" && o.buildEngine != "buildx" {
-		errs = append(errs, fmt.Errorf("build-engine flag  has invalid value, please provide either 'kaniko' or 'buildx'"))
-	}
-
 	return errutil.NewAggregate(errs)
 }
 
@@ -883,7 +639,6 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
-	flagSet.BoolVar(&o.buildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
 	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
@@ -893,7 +648,6 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
-	flagSet.StringVar(&o.buildEngine, "build-engine", "kaniko", "Build engine to use. Supported values: kaniko, buildx")
 
 	return flagSet
 }
@@ -991,12 +745,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	o.logger.Warnw("Local build is deprecated and will be removed soon, the tool will not support local building anymore. Please migrate to the ADO build backend.")
-	err = buildLocally(o)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 	fmt.Println("Job's done.")
 }
 

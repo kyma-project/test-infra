@@ -26,13 +26,6 @@ config_updater:
       name: config
     prow/plugins.yaml:
       name: plugins
-    configs/kaniko-build-config.yaml:
-      name: kaniko-build-config
-      clusters:
-        trusted-workload:
-          - default
-        untrusted-workload:
-          - default
     prow/cluster/static-files/*:
       name: static-files
 

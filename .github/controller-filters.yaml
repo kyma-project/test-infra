@@ -39,7 +39,6 @@ build-image-autobumper-filter:
 
 build-image-builder-filter:
   - "cmd/image-builder/*.go"
-  - "cmd/image-builder/images/kaniko/*"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
@@ -133,7 +132,6 @@ pull-validate-dockerfiles-filter:
 
 pull-validate-kaniko-build-config-filter:
   - "configs/image-builder-client-config.yaml"
-  - ".github/workflows/pull-validate-kaniko-build-config.yaml"
 
 tf-lint-filter:
   - ".github/workflows/tf-lint.yaml"

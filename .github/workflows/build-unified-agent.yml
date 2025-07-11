@@ -16,7 +16,6 @@ jobs:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
       context: .
-      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -42,7 +41,6 @@ jobs:
       dockerfile: images/unified-agent/go/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
-      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -55,7 +53,6 @@ jobs:
       dockerfile: images/unified-agent/nodejs/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
-      build-engine: buildx
       platforms: |
         linux/amd64
 
@@ -68,6 +65,5 @@ jobs:
       dockerfile: images/unified-agent/python/Dockerfile
       context: .
       build-args: BASE_UNIFIED_AGENT_IMAGE=${{ needs.unpack-unified-agent.outputs.clean_image }}
-      build-engine: buildx
       platforms: |
         linux/amd64
