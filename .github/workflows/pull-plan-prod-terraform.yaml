@@ -44,7 +44,7 @@ jobs:
 
       - name: Setup GitHub comments
         id: setup-github-comment
-        uses: shmokmt/actions-setup-github-comment@93d9e7c3ea11e473e3061a8dbed8231faea13dea
+        uses: shmokmt/actions-setup-github-comment@1299f2274bfb3cd0c35f867160a6fb74fd82fdf8
         with:
           version: v6.0.2
         if: ${{ !cancelled() }}
