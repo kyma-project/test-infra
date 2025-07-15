@@ -134,7 +134,7 @@ var _ = Describe("Image Builder", func() {
 	)
 
 	BeforeEach(func() {
-		logger, _ := zap.NewDevelopment()
+		logger := zap.NewNop()
 		sugarLogger = logger.Sugar()
 
 		var err error
@@ -150,7 +150,8 @@ var _ = Describe("Image Builder", func() {
 	AfterEach(func() {
 		err := os.Chdir(originalWd)
 		Expect(err).NotTo(HaveOccurred())
-		os.RemoveAll(tempDir)
+		err = os.RemoveAll(tempDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	setupTestFS := func(fs fstest.MapFS) {
@@ -190,8 +191,14 @@ var _ = Describe("Image Builder", func() {
 		Expect(err).NotTo(HaveOccurred())
 		err = json.Unmarshal(content, &actual)
 		Expect(err).NotTo(HaveOccurred())
-
 		Expect(actual).To(ConsistOf(expected))
+	}
+
+	tagsToJSON := func(tagsToMarshal []tags.Tag) string {
+		bytes, err := json.Marshal(tagsToMarshal)
+		Expect(err).NotTo(HaveOccurred())
+
+		return string(bytes)
 	}
 
 	DescribeTable("Test generateTags",
@@ -203,77 +210,188 @@ var _ = Describe("Image Builder", func() {
 		},
 
 		Entry("Success - Pull Request context",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "build/Dockerfile", context: ".", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "build/Dockerfile",
+				context:        ".",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"build/Dockerfile": {}},
-			`[{"name":"default_tag","value":"PR-5","validation":"^(PR-[0-9]+)$"}]`,
+			tagsToJSON(
+				[]tags.Tag{
+					expectedDefaultPRTag(prGitState.PullRequestNumber),
+				},
+			),
 			false,
 		),
 
 		Entry("Success - Commit context",
-			options{Config: buildConfig, gitState: commitGitState, dockerfile: "Dockerfile", context: ".", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       commitGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}},
-			`[{"name":"default_tag","value":"`+expectedDefaultCommitTag(commitGitState.BaseCommitSHA).Value+`","validation":"^(v[0-9]{8}-[0-9a-f]{8})$"}]`,
+			tagsToJSON(
+				[]tags.Tag{
+					expectedDefaultCommitTag(commitGitState.BaseCommitSHA),
+				},
+			),
 			false,
 		),
 
 		Entry("Success - With env file",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				envFile:        ".env",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("VERSION=1.2.3\nAPP_NAME=my-app")}},
-			`[{"name":"default_tag","value":"PR-5","validation":"^(PR-[0-9]+)$"},{"name":"VERSION","value":"1.2.3"},{"name":"APP_NAME","value":"my-app"}]`,
+			tagsToJSON([]tags.Tag{
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+				{Name: "VERSION", Value: "1.2.3"},
+				{Name: "APP_NAME", Value: "my-app"},
+			}),
 			false,
 		),
 
 		Entry("Success - With Base64 tags",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", tagsBase64: base64.StdEncoding.EncodeToString([]byte("latest,version={{ .ShortSHA }}")), tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsBase64:     base64.StdEncoding.EncodeToString([]byte("latest,version={{ .ShortSHA }}")),
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}},
-			`[{"name":"latest","value":"latest"},{"name":"version","value":""},{"name":"default_tag","value":"PR-5","validation":"^(PR-[0-9]+)$"}]`,
+			tagsToJSON([]tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "version", Value: ""},
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+			}),
 			false,
 		),
 
 		Entry("Success - All inputs combined",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "build/Dockerfile", context: ".", envFile: ".env", tags: sets.Tags{{Name: "stable", Value: "true"}}, tagsBase64: base64.StdEncoding.EncodeToString([]byte("latest")), tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "build/Dockerfile",
+				context:        ".",
+				envFile:        ".env",
+				tags:           sets.Tags{{Name: "stable", Value: "true"}},
+				tagsBase64:     base64.StdEncoding.EncodeToString([]byte("latest")),
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"build/Dockerfile": {}, "build/.env": {Data: []byte("RELEASE_NAME=summer-release")}},
-			`[{"name":"stable","value":"true"},{"name":"latest","value":"latest"},{"name":"default_tag","value":"PR-5","validation":"^(PR-[0-9]+)$"},{"name":"RELEASE_NAME","value":"summer-release"}]`,
+			tagsToJSON([]tags.Tag{
+				{Name: "stable", Value: "true"},
+				{Name: "latest", Value: "latest"},
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+				{Name: "RELEASE_NAME", Value: "summer-release"},
+			}),
 			false,
 		),
 
 		Entry("Edge Case - Empty env file",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				envFile:        ".env",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("")}},
-			`[{"name":"default_tag","value":"PR-5","validation":"^(PR-[0-9]+)$"}]`,
+			tagsToJSON([]tags.Tag{
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+			}),
 			false,
 		),
 
 		Entry("Edge Case - No output file specified",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", tagsOutputFile: ""},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsOutputFile: "",
+			},
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			false,
 		),
 
 		Entry("Error - Invalid Dockerfile path with env file",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "nonexistent/Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "nonexistent/Dockerfile",
+				context:        ".",
+				envFile:        ".env",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{},
 			"",
 			true,
 		),
 
 		Entry("Error - Invalid tag template",
-			options{Config: buildConfig, gitState: prGitState, tags: sets.Tags{{Name: "bad_template", Value: `{{ .InvalidField }}`}}, dockerfile: "Dockerfile", context: ".", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				tags:           sets.Tags{{Name: "bad_template", Value: `{{ .InvalidField }}`}},
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			true,
 		),
 
 		Entry("Error - Invalid Base64 encoding",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", tagsBase64: "not-a-valid-base64-string-!@#", tagsOutputFile: "tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsBase64:     "not-a-valid-base64-string-!@#",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			true,
 		),
 
 		Entry("Error - Unwritable output file",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", tagsOutputFile: "/unwritable-dir/tags.json"},
+			options{
+				Config:         buildConfig,
+				gitState:       prGitState,
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsOutputFile: "/unwritable-dir/tags.json",
+			},
+			fstest.MapFS{"Dockerfile": {}},
+			"",
+			true,
+		),
+
+		Entry("Error - Incomplete Git state",
+			options{
+				Config:         buildConfig,
+				gitState:       GitStateConfig{},
+				dockerfile:     "Dockerfile",
+				context:        ".",
+				tagsOutputFile: "tags.json",
+			},
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			true,
