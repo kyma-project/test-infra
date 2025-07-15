@@ -4,7 +4,7 @@ on:
     inputs:
       docker-image:
         description: 'Docker image with tag to be used'
-        default: 'europe-docker.pkg.dev/kyma-project/prod/image-autobumper:v20250710-19ce14bf'
+        default: 'europe-docker.pkg.dev/kyma-project/prod/image-autobumper:v20250711-98c7103c'
         type: string
       autobump-config-path:
         description: 'Path to the autobump config file, relative to the repository root'
