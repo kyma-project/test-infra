@@ -6,15 +6,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -85,118 +82,6 @@ type Logger interface {
 func parseVariable(key, value string) string {
 	k := strings.TrimSpace(key)
 	return k + "=" + strings.TrimSpace(value)
-}
-
-// runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
-// This function is used only in customized environment
-func runInBuildKit(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	dockerfile := filepath.Base(o.dockerfile)
-	dockerfileDir := filepath.Dir(o.dockerfile)
-	args := []string{
-		"build", "--frontend=dockerfile.v0",
-		"--local", "context=" + o.context,
-		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
-		"--opt", "filename=" + dockerfile,
-	}
-
-	// output definition, multiple images support
-	args = append(args, "--output", "type=image,\"name="+strings.Join(destinations, ",")+"\",push=true")
-
-	// build-args
-	for k, v := range buildArgs {
-		args = append(args, "--opt", "build-arg:"+parseVariable(k, v))
-	}
-
-	if len(platforms) > 0 {
-		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
-	}
-
-	if o.Cache.Enabled {
-		// TODO (@Ressetkk): Implement multiple caches, see https://github.com/moby/buildkit#export-cache
-		args = append(args,
-			"--export-cache", "type=registry,ref="+o.Cache.CacheRepo,
-			"--import-cache", "type=registry,ref="+o.Cache.CacheRepo)
-	}
-
-	cmd := exec.Command("buildctl-daemonless.sh", args...)
-
-	var outw []io.Writer
-	var errw []io.Writer
-
-	if !o.silent {
-		outw = append(outw, os.Stdout)
-		errw = append(errw, os.Stderr)
-	}
-
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
-	if err != nil {
-		return fmt.Errorf("could not create log file: %w", err)
-	}
-
-	outw = append(outw, f)
-	errw = append(errw, f)
-
-	cmd.Stdout = io.MultiWriter(outw...)
-	cmd.Stderr = io.MultiWriter(errw...)
-
-	return cmd.Run()
-}
-
-// runInKaniko prepares command execution and handles gathering logs to file
-func runInKaniko(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	args := []string{
-		"--context=" + o.context,
-		"--dockerfile=" + o.dockerfile,
-	}
-	for _, dst := range destinations {
-		args = append(args, "--destination="+dst)
-	}
-
-	for k, v := range buildArgs {
-		args = append(args, "--build-arg="+parseVariable(k, v))
-	}
-
-	if len(platforms) > 0 {
-		fmt.Println("'--platform' parameter not supported in kaniko-mode. Use buildkit-enabled image")
-	}
-
-	if o.Cache.Enabled {
-		args = append(args, "--cache="+strconv.FormatBool(o.Cache.Enabled),
-			"--cache-copy-layers="+strconv.FormatBool(o.Cache.CacheCopyLayers),
-			"--cache-run-layers="+strconv.FormatBool(o.Cache.CacheRunLayers),
-			"--cache-repo="+o.Cache.CacheRepo)
-	}
-
-	if o.LogFormat != "" {
-		args = append(args, "--log-format="+o.LogFormat)
-	}
-
-	if o.Reproducible {
-		args = append(args, "--reproducible=true")
-	}
-
-	cmd := exec.Command("/kaniko/executor", args...)
-
-	var outw []io.Writer
-	var errw []io.Writer
-
-	if !o.silent {
-		outw = append(outw, os.Stdout)
-		errw = append(errw, os.Stderr)
-	}
-
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
-	if err != nil {
-		return fmt.Errorf("could not create log file: %w", err)
-	}
-
-	outw = append(outw, f)
-	errw = append(errw, f)
-
-	cmd.Stdout = io.MultiWriter(outw...)
-	cmd.Stderr = io.MultiWriter(errw...)
-
-	return cmd.Run()
 }
 
 // prepareADOTemplateParameters is a function that prepares the parameters for the Azure DevOps oci-image-builder pipeline.
@@ -456,119 +341,6 @@ func buildInADO(o options) error {
 	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
 		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
-	return nil
-}
-
-// buildLocally is a function that builds an image locally using either Kaniko or BuildKit.
-// It takes an options struct as an argument and returns an error.
-// The function determines the build tool to use based on the USE_BUILDKIT environment variable.
-// If USE_BUILDKIT is set to "true", BuildKit is used, otherwise Kaniko is used.
-// The function fetches various environment variables such as JOB_TYPE, PULL_NUMBER, and PULL_BASE_SHA.
-// It validates these variables are present and sets them in the appropriate variables.
-// It also sets other variables from the options struct such as context, envFile, name, dockerfile, variant, and tags.
-// The function validates the options and returns an error if any of the required options are not set or are invalid.
-// The function triggers the build process and waits for it to finish.
-// It fetches the build logs and prints them.
-// If the build fails, the function returns an error.
-// If the build is successful, the function returns nil.
-func buildLocally(o options) error {
-	// Determine the build tool to use based on the USE_BUILDKIT environment variable.
-	runFunc := runInKaniko
-	if os.Getenv("USE_BUILDKIT") == "true" {
-		runFunc = runInBuildKit
-	}
-	var sha, pr string
-	var err error
-	var variant Variants
-	var envs map[string]string
-
-	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
-	// 		We should call this function before calling image building functions.
-	dockerfilePath, err := getDockerfileDirPath(o.logger, o)
-	if err != nil {
-		return fmt.Errorf("get dockerfile path failed, error: %w", err)
-	}
-	// Load environment variables from the envFile or variants.yaml file.
-	if len(o.envFile) > 0 {
-		envs, err = loadEnv(o.logger, os.DirFS(dockerfilePath), o.envFile)
-		if err != nil {
-			return fmt.Errorf("load env failed, error: %w", err)
-		}
-
-	} else {
-		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
-		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
-		if err != nil {
-			if !os.IsNotExist(err) {
-				return fmt.Errorf("get variants failed, error: %w", err)
-			}
-		}
-		if len(variant) > 0 {
-			return fmt.Errorf("building variants is not not working and is not supported anymore")
-		}
-	}
-
-	repo := o.Registry
-	if o.isCI {
-		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
-		if presubmit {
-			if len(o.DevRegistry) > 0 {
-				repo = o.DevRegistry
-			}
-			if n := os.Getenv("PULL_NUMBER"); n != "" {
-				pr = n
-			}
-		}
-
-		if c := os.Getenv("PULL_BASE_SHA"); c != "" {
-			sha = c
-		}
-	}
-
-	// if sha is still not set, fail the pipeline
-	if sha == "" {
-		return fmt.Errorf("'sha' could not be determined")
-	}
-
-	defaultTag, err := getDefaultTag(o.logger, o)
-	if err != nil {
-		return err
-	}
-
-	// Get the tags for the image.
-	parsedTags, err := getTags(o.logger, pr, sha, append(o.tags, defaultTag))
-	if err != nil {
-		return err
-	}
-
-	// Provide parsedTags as buildArgs for developers
-	var buildArgs map[string]string
-	if o.exportTags {
-		buildArgs = addTagsToEnv(parsedTags, envs)
-	} else {
-		buildArgs = envs
-	}
-
-	if buildArgs == nil {
-		buildArgs = make(map[string]string)
-	}
-
-	appendMissing(&buildArgs, o.buildArgs)
-
-	// variants.yaml file not present or either empty. Run single build.
-	destinations := gatherDestinations(repo, o.name, parsedTags)
-	fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-	err = runFunc(o, "build", destinations, o.platforms, buildArgs)
-	if err != nil {
-		return fmt.Errorf("build encountered error: %w", err)
-	}
-
-	// Sign the images.
-	err = signImages(&o, destinations)
-	if err != nil {
-		return fmt.Errorf("sign encountered error: %w", err)
-	}
-	fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 	return nil
 }
 
@@ -991,12 +763,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	o.logger.Warnw("Local build is deprecated and will be removed soon, the tool will not support local building anymore. Please migrate to the ADO build backend.")
-	err = buildLocally(o)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 	fmt.Println("Job's done.")
 }
 
