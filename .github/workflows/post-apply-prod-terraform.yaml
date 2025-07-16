@@ -48,7 +48,7 @@ jobs:
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@0d2b0c4cc4b5edc9c2dfdf7eb0c33ee7b23a7c85
+        uses: shmokmt/actions-setup-tfcmt@04d5aa6dc61eaa69a4d00257224c9b97f4857819
         with:
           version: v4.7.1
       - name: Terraform Init
