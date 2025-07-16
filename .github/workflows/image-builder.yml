@@ -132,7 +132,6 @@ jobs:
           env-file: ${{ inputs.env-file }}
           config: "./configs/image-builder-client-config.yaml"
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
-          build-engine: ${{ inputs.build-engine }}
           platforms: ${{ inputs.platforms }}
 
       - name: Print built images

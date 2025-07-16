@@ -66,9 +66,6 @@ type options struct {
 	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
 	// reported as an output variable in Azure DevOps
 	adoStateOutput bool
-	// buildEngine indicates which build engine should be used for building the image
-	// either kaniko or buildx
-	buildEngine string
 }
 
 type Logger interface {
@@ -146,15 +143,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	if options.useGoInternalSAPModules {
 		templateParameters.SetUseGoInternalSAPModules()
-	}
-
-	switch options.buildEngine {
-	case "kaniko":
-		templateParameters.SetKanikoBuildEngine()
-	case "buildx":
-		templateParameters.SetBuildxBuildEngine()
-	default:
-		return nil, fmt.Errorf("unknown build engine received, ensure provided value is either 'kaniko' or 'buildx'")
 	}
 
 	if len(options.platforms) > 0 {
@@ -531,10 +519,6 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is provided, but adoPreviewRun flag is not set to true"))
 	}
 
-	if o.buildEngine != "kaniko" && o.buildEngine != "buildx" {
-		errs = append(errs, fmt.Errorf("build-engine flag  has invalid value, please provide either 'kaniko' or 'buildx'"))
-	}
-
 	return errutil.NewAggregate(errs)
 }
 
@@ -621,7 +605,6 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
-	flagSet.StringVar(&o.buildEngine, "build-engine", "kaniko", "Build engine to use. Supported values: kaniko, buildx")
 
 	return flagSet
 }
