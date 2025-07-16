@@ -316,6 +316,19 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 
+		Entry("Edge Case - .env with empty value",
+			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
+			fstest.MapFS{
+				"Dockerfile": {},
+				".env":       {Data: []byte("EMPTY_VAL=")},
+			},
+			tagsToJSON([]tags.Tag{
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+				{Name: "EMPTY_VAL", Value: ""},
+			}),
+			false,
+		),
+
 		Entry("Edge Case - No output file specified",
 			options{
 				Config:         buildConfig,
@@ -327,6 +340,16 @@ var _ = Describe("Image Builder", func() {
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			false,
+		),
+
+		Entry("Error - .env with empty key",
+			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
+			fstest.MapFS{
+				"Dockerfile": {},
+				".env":       {Data: []byte("=some_value")},
+			},
+			"",
+			true,
 		),
 
 		Entry("Error - Invalid Dockerfile path with env file",
