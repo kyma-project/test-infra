@@ -46,6 +46,11 @@ inputs:
     description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
+  build-engine:
+    #TODO: Remove when all repos remove it
+    description: Deprecated. Build engine parameter is not used anymore, but is kept for backward compatibility. To Remove when all repos remove it.
+    required: false
+    default: "kaniko"
   platforms:
     description: The platforms to build the image for, one per line. If not set, the default platforms (linux/arm64,linux/amd64) will be used.
     required: false
@@ -103,7 +108,7 @@ runs:
       id: prepare-platforms
       shell: bash
     
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250711-98c7103c
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250717-6ff84002
       id: build
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}
