@@ -52,14 +52,6 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
 
-  pull-validate-kaniko-build-config:
-    uses: kyma-project/test-infra/.github/workflows/pull-validate-kaniko-build-config.yml@main
-    permissions:
-      id-token: write # This is required for requesting the JWT token
-      contents: read # This is required for actions/checkout
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-kaniko-build-config-filter') }}
-
   tf-lint:
     uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@main
     needs: detect-changed-files

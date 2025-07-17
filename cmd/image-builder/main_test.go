@@ -428,21 +428,8 @@ var _ = Describe("Image Builder", func() {
 				dockerfile: "dockerfile",
 				configPath: "config.yaml",
 				envFile:    "envfile",
-				buildInADO: true,
 			},
 			false,
-		),
-		Entry(
-			"variant with buildInADO",
-			options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				variant:    "variant",
-				buildInADO: true,
-			},
-			true,
 		),
 	)
 
