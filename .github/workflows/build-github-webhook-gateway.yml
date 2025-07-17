@@ -14,6 +14,5 @@ jobs:
       name: github-webhook-gateway
       dockerfile: cmd/cloud-run/github-webhook-gateway/Dockerfile
       context: .
-      build-engine: buildx
       platforms: |
         linux/amd64
