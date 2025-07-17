@@ -34,7 +34,6 @@ type options struct {
 	dockerfile string
 	envFile    string
 	name       string
-	variant    string
 	logDir     string
 	logger     Logger
 	orgRepo    string
@@ -48,7 +47,6 @@ type options struct {
 	// signOnly only sign images. No build will be performed.
 	signOnly                bool
 	imagesToSign            sets.Strings
-	buildInADO              bool
 	adoPreviewRun           bool
 	adoPreviewRunYamlPath   string
 	parseTagsOnly           bool
@@ -503,14 +501,6 @@ func validateOptions(o options) error {
 		errs = append(errs, fmt.Errorf("flag '--sign-only' is missing or has false value, please set it to true when using '--images-to-sign' flag"))
 	}
 
-	if o.variant != "" && o.buildInADO {
-		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
-	}
-
-	if o.adoPreviewRun && !o.buildInADO {
-		errs = append(errs, fmt.Errorf("ado-preview-run flag is not supported when running locally"))
-	}
-
 	if o.adoPreviewRun && o.adoPreviewRunYamlPath == "" {
 		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is missing, please provide path to yaml file with ADO pipeline definition"))
 	}
@@ -582,7 +572,6 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
 	flagSet.StringVar(&o.name, "name", "", "name of the image to be built")
 	flagSet.StringVar(&o.dockerfile, "dockerfile", "dockerfile", "Path to dockerfile file relative to context")
-	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	flagSet.BoolVar(&o.debug, "debug", false, "Enable debug logging")
 	flagSet.BoolVar(&o.dryRun, "dry-run", false, "Do not build the image, only print a ADO API call pipeline parameters")
@@ -692,13 +681,10 @@ func main() {
 		logger.Infow("Tags parsed successfully")
 		os.Exit(0)
 	}
-	if o.buildInADO {
-		err = buildInADO(o)
-		if err != nil {
-			o.logger.Errorw("Image build failed", "error", err, "JobType", o.gitState.JobType)
-			os.Exit(1)
-		}
-		os.Exit(0)
+	err = buildInADO(o)
+	if err != nil {
+		o.logger.Errorw("Image build failed", "error", err, "JobType", o.gitState.JobType)
+		os.Exit(1)
 	}
 
 	fmt.Println("Job's done.")

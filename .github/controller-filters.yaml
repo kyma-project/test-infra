@@ -130,9 +130,6 @@ pull-validate-dockerfiles-filter:
   - ".github/workflows/pull-validate-dockerfiles.yaml"
   - "**/Dockerfile"
 
-pull-validate-kaniko-build-config-filter:
-  - "configs/image-builder-client-config.yaml"
-
 tf-lint-filter:
   - ".github/workflows/tf-lint.yaml"
   - "**/*.tf"

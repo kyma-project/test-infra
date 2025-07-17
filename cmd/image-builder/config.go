@@ -19,7 +19,6 @@ type CISystem string
 
 // Enum of supported CI/CD systems to read data from
 const (
-	Prow          CISystem = "Prow"
 	GithubActions CISystem = "GithubActions"
 	AzureDevOps   CISystem = "AzureDevOps"
 	Jenkins       CISystem = "Jenkins"
@@ -77,33 +76,6 @@ func (c *Config) ParseConfig(f []byte) error {
 	return yaml.Unmarshal(f, c)
 }
 
-type Variants map[string]map[string]string
-
-// GetVariants fetches variants from provided file.
-// If variant flag is used, it fetches the requested variant.
-func GetVariants(variant string, f string, fileGetter func(string) ([]byte, error)) (Variants, error) {
-	var v Variants
-	b, err := fileGetter(f)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return nil, err
-		}
-		// variant file not found, skipping
-		return nil, nil
-	}
-	if err := yaml.Unmarshal(b, &v); err != nil {
-		return nil, err
-	}
-	if variant != "" {
-		va, ok := v[variant]
-		if !ok {
-			return nil, fmt.Errorf("requested variant '%s', but it's not present in variants.yaml file", variant)
-		}
-		return Variants{variant: va}, nil
-	}
-	return v, nil
-}
-
 // Registry is a custom type that defines a destination registry provided by config.yaml
 type Registry []string
 
@@ -152,8 +124,8 @@ func (gitState GitStateConfig) IsPullRequest() bool {
 // TODO (dekiel): Add logger parameter to all functions reading a git state.
 func LoadGitStateConfig(logger Logger, ciSystem CISystem) (GitStateConfig, error) {
 	switch ciSystem {
-	// Load from env specific for Azure DevOps and Prow Jobs
-	case AzureDevOps, Prow:
+	// Load from env specific for Azure DevOps
+	case AzureDevOps:
 		return loadADOGitState()
 	// Load from env specific for Github Actions
 	case GithubActions:
@@ -429,13 +401,6 @@ func determineUsedCISystem(envGetter func(key string) string, envLookup func(key
 	isGithubActions := envGetter("GITHUB_ACTIONS")
 	if isGithubActions == "true" {
 		return GithubActions, nil
-	}
-
-	// PROW_JOB_ID environment variables contains ID of prow job
-	// See: https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
-	_, isProwJob := envLookup("PROW_JOB_ID")
-	if isProwJob {
-		return Prow, nil
 	}
 
 	// BUILD_BUILDID environment variable is set in Azure DevOps pipeline
