@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"reflect"
 	"testing"
 
@@ -79,88 +78,6 @@ default-pr-tag:
 	}
 }
 
-func Test_getVariants(t *testing.T) {
-	tc := []struct {
-		name           string
-		variant        string
-		expectVariants Variants
-		expectErr      bool
-		variantsFile   string
-	}{
-		{
-			name:         "valid file, variants passed",
-			expectErr:    false,
-			variantsFile: "variants.yaml",
-			expectVariants: Variants{
-				"main": map[string]string{"KUBECTL_VERSION": "1.24.4"},
-				"1.23": map[string]string{"KUBECTL_VERSION": "1.23.9"},
-			},
-		},
-		{
-			name:           "variant file does not exist, pass",
-			expectErr:      false,
-			variantsFile:   "",
-			expectVariants: nil,
-		},
-		{
-			name:           "other error during getting file, fail",
-			expectErr:      true,
-			variantsFile:   "err-deadline-exceeded",
-			expectVariants: nil,
-		},
-		{
-			name:         "get only single variant, pass",
-			expectErr:    false,
-			variantsFile: "variants.yaml",
-			variant:      "main",
-			expectVariants: Variants{
-				"main": map[string]string{"KUBECTL_VERSION": "1.24.4"},
-			},
-		},
-		{
-			name:           "variant is not present in variants file, fail",
-			expectErr:      true,
-			variantsFile:   "variants.yaml",
-			variant:        "missing-variant",
-			expectVariants: nil,
-		},
-		{
-			name:           "malformed variants file, fail",
-			expectErr:      true,
-			variantsFile:   "malformed-variants.yaml",
-			expectVariants: nil,
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			fakeFileGetter := func(f string) ([]byte, error) {
-				if f == "malformed-variants.yaml" {
-					return []byte("'asd':\n- malformed variant as list`"), nil
-				}
-				if f == "err-deadline-exceeded" {
-					return nil, os.ErrDeadlineExceeded
-				}
-				vf := "'main':\n  KUBECTL_VERSION: \"1.24.4\"\n'1.23':\n  KUBECTL_VERSION: \"1.23.9\""
-				if f == "variants.yaml" {
-					return []byte(vf), nil
-				}
-				return nil, os.ErrNotExist
-			}
-
-			v, err := GetVariants(c.variant, c.variantsFile, fakeFileGetter)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-			if !reflect.DeepEqual(v, c.expectVariants) {
-				t.Errorf("%v != %v", v, c.expectVariants)
-			}
-		})
-	}
-}
-
 func TestLoadGitStateConfig(t *testing.T) {
 	tc := []struct {
 		name        string
@@ -169,64 +86,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 		gitState    GitStateConfig
 		expectError bool
 	}{
-		{
-			name: "Load config from ProwJobEnv for ADO presubmit",
-			options: options{
-				buildInADO: true,
-				ciSystem:   Prow,
-			},
-			env: map[string]string{
-				"REPO_NAME":     "test-repo",
-				"REPO_OWNER":    "test-owner",
-				"JOB_TYPE":      "presubmit",
-				"PULL_NUMBER":   "1234",
-				"PULL_BASE_SHA": "art654",
-				"PULL_PULL_SHA": "qwe456",
-				"PROW_JOB_ID":   "1234",
-			},
-			gitState: GitStateConfig{
-				RepositoryName:    "test-repo",
-				RepositoryOwner:   "test-owner",
-				JobType:           "presubmit",
-				PullRequestNumber: 1234,
-				BaseCommitSHA:     "art654",
-				PullHeadCommitSHA: "qwe456",
-				isPullRequest:     true,
-			},
-		},
-		{
-			name: "Invalid job type value in prowjob env",
-			options: options{
-				buildInADO: true,
-				ciSystem:   Prow,
-			},
-			env: map[string]string{
-				"REPO_NAME":     "test-repo",
-				"REPO_OWNER":    "test-owner",
-				"JOB_TYPE":      "periodic",
-				"PULL_NUMBER":   "1234",
-				"PULL_BASE_SHA": "art654",
-				"PULL_PULL_SHA": "qwe456",
-				"PROW_JOB_ID":   "1234",
-			},
-			expectError: true,
-		},
-		{
-			name: "Missing repo name value in prowjob env",
-			options: options{
-				buildInADO: true,
-				ciSystem:   Prow,
-			},
-			env: map[string]string{
-				"REPO_OWNER":    "test-owner",
-				"JOB_TYPE":      "periodic",
-				"PULL_NUMBER":   "1234",
-				"PULL_BASE_SHA": "art654",
-				"PULL_PULL_SHA": "qwe456",
-				"PROW_JOB_ID":   "1234",
-			},
-			expectError: true,
-		},
 		{
 			name: "Load data from event payload for github pull_request_target",
 			options: options{
@@ -326,38 +185,6 @@ func TestLoadGitStateConfig(t *testing.T) {
 			},
 			expectError: true,
 			gitState:    GitStateConfig{},
-		},
-		{
-			name: "Unsupported prow event, err",
-			options: options{
-				ciSystem: Prow,
-			},
-			env: map[string]string{
-				"JOB_TYPE": "periodic",
-			},
-			expectError: true,
-			gitState:    GitStateConfig{},
-		},
-		{
-			name: "postsubmit prowjob",
-			options: options{
-				buildInADO: true,
-				ciSystem:   Prow,
-			},
-			env: map[string]string{
-				"REPO_NAME":     "test-repo",
-				"REPO_OWNER":    "test-owner",
-				"JOB_TYPE":      "postsubmit",
-				"PULL_BASE_SHA": "art654",
-				"PULL_PULL_SHA": "", // TODO(kacpermalachowski): Use mockEnv instead
-				"PROW_JOB_ID":   "1234",
-			},
-			gitState: GitStateConfig{
-				RepositoryName:  "test-repo",
-				RepositoryOwner: "test-owner",
-				JobType:         "postsubmit",
-				BaseCommitSHA:   "art654",
-			},
 		},
 		{
 			name: "load data from event payload for github merge_group event",
@@ -472,13 +299,6 @@ func Test_determineCISystem(t *testing.T) {
 		ciSystem  CISystem
 		expectErr bool
 	}{
-		{
-			name: "detect running in prow jobs",
-			env: mockEnv{
-				"PROW_JOB_ID": "some-id",
-			},
-			ciSystem: Prow,
-		},
 		{
 			name: "detect running in github actions",
 			env: mockEnv{
