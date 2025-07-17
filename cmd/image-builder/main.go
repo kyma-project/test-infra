@@ -686,7 +686,6 @@ func main() {
 		o.logger.Errorw("Image build failed", "error", err, "JobType", o.gitState.JobType)
 		os.Exit(1)
 	}
-	os.Exit(0)
 
 	fmt.Println("Job's done.")
 }
