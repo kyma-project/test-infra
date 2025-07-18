@@ -39,7 +39,6 @@ build-image-autobumper-filter:
 
 build-image-builder-filter:
   - "cmd/image-builder/*.go"
-  - "cmd/image-builder/images/kaniko/*"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
