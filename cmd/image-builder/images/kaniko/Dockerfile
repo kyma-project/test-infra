@@ -9,7 +9,8 @@ WORKDIR /
 COPY . /app/
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
-FROM alpine:3.20.3
+FROM gcr.io/kaniko-project/executor:v1.24.0
+
 RUN apk add --no-cache ca-certificates
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
