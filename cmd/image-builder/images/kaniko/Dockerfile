@@ -9,7 +9,7 @@ WORKDIR /
 COPY . /app/
 RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
-FROM gcr.io/kaniko-project/executor:v1.24.0
+FROM scratch
 
 RUN apk add --no-cache ca-certificates
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
