@@ -5,4 +5,5 @@ RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/
 
 FROM scratch
 COPY --from=builder /app/image-builder /image-builder
+WORKDIR /workspace
 ENTRYPOINT ["/image-builder"]
