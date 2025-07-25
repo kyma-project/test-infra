@@ -38,7 +38,7 @@ require (
 	k8s.io/client-go v0.30.1
 	k8s.io/utils v0.0.0-20240102154912-e7106e64919e
 	sigs.k8s.io/prow v0.0.0-20250307150146-7a867cddc9d5
-	sigs.k8s.io/yaml v1.5.0
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
