@@ -23,5 +23,4 @@ COPY --from=builder /usr/bin/docker-credential-gcr /usr/bin/
 COPY --from=builder /root/.docker/config.json /home/nonroot/.docker/config.json
 COPY --from=builder /image-builder /image-builder
 ENV USE_BUILDKIT=true
-USER 65532:65532
 ENTRYPOINT ["/image-builder"]
