@@ -76,7 +76,7 @@ type Logger interface {
 // It takes an options struct as an argument and returns an OCIImageBuilderTemplateParams struct and an error.
 // The function fetches various environment variables such as REPO_NAME, REPO_OWNER, JOB_TYPE, PULL_NUMBER, PULL_BASE_SHA, and PULL_PULL_SHA.
 // It validates these variables are present and sets them in the templateParameters struct.
-// It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, useKanikoConfigFromPR, buildArgs, and imageTags.
+// It also sets other parameters from the options struct such as imageName, dockerfilePath, buildContext, exportTags, buildArgs, and imageTags.
 // The function validates the templateParameters and returns it along with any error that occurred during the process.
 // TODO: rename this function to indicate that it's preparing ADO pipeline parameters for oci-image-builder pipeline.
 func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {

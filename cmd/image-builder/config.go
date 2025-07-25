@@ -32,7 +32,7 @@ type Config struct {
 	// If not set then the Registry field is used.
 	// This field is only valid when running in CI (CI env variable is set to `true`)
 	DevRegistry Registry `yaml:"dev-registry" json:"dev-registry"`
-	// Cache options that are directly related to kaniko flags
+	// Cache options that are directly related to docker buildx flags
 	Cache CacheConfig `yaml:"cache" json:"cache"`
 	// Default Tag template used for images build on commit.
 	// The value can be a go-template string or literal tag value string.
@@ -42,7 +42,7 @@ type Config struct {
 	// The value can be a go-template string or literal tag value string.
 	// See tags.Tag struct for more information and available fields
 	DefaultPRTag tags.Tag `yaml:"default-pr-tag" json:"default-pr-tag"`
-	// LogFormat defines the format kaniko logs are projected.
+	// LogFormat defines the format docker buildx logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`
 	// Set this option to strip timestamps out of the built image and make it Reproducible.
@@ -61,11 +61,11 @@ type SignConfig struct {
 }
 
 type CacheConfig struct {
-	// Enabled sets if kaniko cache is enabled or not
+	// Enabled sets if docker buildx cache is enabled or not
 	Enabled bool `yaml:"enabled" json:"enabled"`
-	// CacheRunLayers sets if kaniko should cache run layers
+	// CacheRunLayers sets if docker buildx should cache run layers
 	CacheRunLayers bool `yaml:"cache-run-layers" json:"cache-run-layers"`
-	// CacheCopyLayers sets if kaniko should cache copy layers
+	// CacheCopyLayers sets if docker buildx should cache copy layers
 	CacheCopyLayers bool `yaml:"cache-copy-layers" json:"cache-copy-layers"`
 	// Remote Docker directory used for cache
 	CacheRepo string `yaml:"cache-repo" json:"cache-repo"`
