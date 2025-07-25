@@ -16,7 +16,7 @@ RUN cd cmd/image-builder && \
     -ldflags '-w -s -extldflags "-static"' \
     .
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static:latest
 WORKDIR /workspace
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/bin/docker-credential-gcr /usr/bin/
