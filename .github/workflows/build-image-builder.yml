@@ -13,7 +13,7 @@ jobs:
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-builder
-      dockerfile: cmd/image-builder/images/kaniko/Dockerfile
+      dockerfile: cmd/image-builder/Dockerfile
       context: .
       platforms: |
         linux/amd64
