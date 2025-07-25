@@ -356,19 +356,6 @@ presets:
       - name: sa-kyma-artifacts
         mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
-      preset-sa-prow-job-github-issues: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-github-issues/service-account.json
-    volumes:
-      - name: sa-prow-job-github-issues
-        secret:
-          secretName: sa-prow-job-github-issues
-    volumeMounts:
-      - name: sa-prow-job-github-issues
-        mountPath: /etc/credentials/sa-prow-job-github-issues
-        readOnly: true
-  - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
       - name: AZURE_CREDENTIALS_FILE
