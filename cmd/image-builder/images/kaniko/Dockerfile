@@ -16,12 +16,12 @@ RUN cd cmd/image-builder && \
     -ldflags '-w -s -extldflags "-static"' \
     .
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static:nonroot
 WORKDIR /workspace
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/bin/docker-credential-gcr /usr/bin/
 COPY --from=builder /root/.docker/config.json /home/nonroot/.docker/config.json
 COPY --from=builder /image-builder /image-builder
 ENV USE_BUILDKIT=true
-USER nonroot
+USER 65532:65532
 ENTRYPOINT ["/image-builder"]
