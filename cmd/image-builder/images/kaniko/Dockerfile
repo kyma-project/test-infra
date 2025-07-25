@@ -22,5 +22,5 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/bin/docker-credential-gcr /usr/bin/
 COPY --from=builder /root/.docker/config.json /home/nonroot/.docker/config.json
 COPY --from=builder /image-builder /image-builder
-ENV USE_BUILDKIT=true
+
 ENTRYPOINT ["/image-builder"]
