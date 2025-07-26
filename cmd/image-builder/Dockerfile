@@ -1,4 +1,4 @@
-FROM golang:1.24.2-alpine3.21 AS builder
+FROM golang:1.24.5-alpine3.21 AS builder
 RUN apk add --no-cache ca-certificates curl
 
 RUN curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.22/docker-credential-gcr_linux_amd64-2.1.22.tar.gz" \
