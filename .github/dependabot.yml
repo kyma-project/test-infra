@@ -236,30 +236,6 @@ updates:
     commit-message:
       prefix: "alpine"
       include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/images/buildpack/go"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "buildpack-go"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/images/buildpack"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "buildpack"
-      include: "scope"
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:

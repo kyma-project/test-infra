@@ -52,12 +52,6 @@ jobs:
     needs: detect-changed-files
     uses: kyma-project/test-infra/.github/workflows/build-usersmapchecker.yml@main
 
-  # !WARNING: This workflow counts as 2 separate jobs!
-  build-buildpack:
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-buildpack-filter') }}
-    needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-buildpack.yml@main
-
   # !WARNING: This workflow counts as 4 separate jobs!
   build-unified-agent:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-unified-agent-filter') }}
