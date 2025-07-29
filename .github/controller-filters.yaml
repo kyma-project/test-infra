@@ -39,6 +39,7 @@ build-image-autobumper-filter:
 
 build-image-builder-filter:
   - "cmd/image-builder/*.go"
+  - "cmd/image-builder/*"
   - "pkg/**"
   - "go.mod"
   - "go.sum"
@@ -143,10 +144,6 @@ code-checks-python-filter:
 
 lint-markdown-links-pr-filter:
   - "**/*"
-
-build-buildpack-filter:
-  - "images/buildpack/**"
-  - ".github/workflows/image-builder.yml"
 
 build-unified-agent-filter:
   - "images/unified-agent/**"
