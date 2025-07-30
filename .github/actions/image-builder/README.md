@@ -40,7 +40,6 @@ If the execution fails, the image-builder action fails. If the execution succeed
           dockerfile: 'Dockerfile'
           env-file: 'envs'
           config: "./configs/kaniko-build-config.yaml"
-          build-engine: buildx
           platforms: |
             linux/amd64
 ```
