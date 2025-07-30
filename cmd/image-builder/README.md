@@ -56,7 +56,6 @@ jobs:
          context: .
          env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}
-         build-engine: buildx
          platforms: |
             linux/amd64
    test-image:
