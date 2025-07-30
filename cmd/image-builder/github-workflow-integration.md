@@ -55,7 +55,7 @@ The Image Builder solution consists of the following components:
    It uses the information from pipeline parameters to set the appropriate parameters for the build and signing images too.
 
 6. **Building the OCI Image**: The `oci-image-builder` pipeline proceeds to build the OCI image.
-   The build process uses a kaniko executor as a build engine.
+   The build process uses a docker buildx as a build engine.
 
 7. **Pushing the OCI Image**: After the OCI image is built, it is pushed to a specified OCI registry.
    The `oci-image-builder` pipeline pushes the OCI image to dev or prod registry, depending on the event that triggered the pipeline.
@@ -117,8 +117,7 @@ Certain parameters need to be defined by the user in addition to the data taken 
 - **Tags**: The tags to be applied to the image.
 - **ExportTags**: Whether to export the tags.
 - **EnvFile**: The environment variables file.
-- **BuildEngine**: The build engine to be used. Allowed values are `kaniko` and `buildx`. The default is `buildx`.
-- **Platforms**: A list of platforms to be built in the format `os/arch`. For `buildx` BuildEngine, the default is `linux/amd64` and `linux/arm64`.
+- **Platforms**: A list of platforms to be built in the format `os/arch`. The default is `linux/amd64` and `linux/arm64`.
 
 See the list of reusable workflow inputs in
 the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/image-builder.yml#L5-L40)
