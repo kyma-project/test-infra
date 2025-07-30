@@ -12,7 +12,7 @@ Descriptions of each output is available in the [`action`](https://github.com/ky
 
 # How It Works?
 
-The image-builder action uses a **europe-docker.pkg.dev/kyma-project/prod/image-builder** Docker image to trigger a pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO. The definition of parameters passed through REST API is taken from kaniko-build-config located on the `main` branch of the `test-infra` repository and GitHub context.
+The image-builder action uses a **europe-docker.pkg.dev/kyma-project/prod/image-builder** Docker image to trigger a pipeline in Azure DevOps (ADO). It passes parameters using REST API provided by ADO. The definition of parameters passed through REST API is taken from `configs/oci-image-builder-config.yaml` located on the `main` branch of the `kyma/oci-image-builder` repository and GitHub context.
 
 During the ADO pipeline execution, the image-builder action checks for the status to be reported. When the execution ends, it fetches the status and logs.
 
@@ -39,7 +39,7 @@ If the execution fails, the image-builder action fails. If the execution succeed
           image-name: 'ginkgo'
           dockerfile: 'Dockerfile'
           env-file: 'envs'
-          config: "./configs/kaniko-build-config.yaml"
+          config: "./configs/image-builder-client-config.yaml"
           platforms: |
             linux/amd64
 ```
