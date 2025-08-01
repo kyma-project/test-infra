@@ -46,11 +46,6 @@ inputs:
     description: Setup access to Go internal SAP modules in build environment
     required: false
     default: false
-  build-engine:
-    #TODO: Remove when all repos remove it
-    description: Deprecated. Build engine parameter is not used anymore, but is kept for backward compatibility. To Remove when all repos remove it.
-    required: false
-    default: "kaniko"
   platforms:
     description: The platforms to build the image for, one per line. If not set, the default platforms (linux/arm64,linux/amd64) will be used.
     required: false

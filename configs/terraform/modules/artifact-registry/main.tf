@@ -11,6 +11,12 @@ locals {
     ) : (
     var.location != "" ? var.location : error("multi_region is false, but location is not set.")
   )
+  reader_members = concat(
+    [for sa in var.reader_serviceaccounts : "serviceAccount:${sa}"],
+    [for group in var.reader_groups : "group:${group}"]
+  )
+
+
 }
 
 # Resource with prevent_destroy lifecycle
@@ -162,22 +168,13 @@ resource "google_artifact_registry_repository_iam_member" "service_account_write
   member     = "serviceAccount:${each.value}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "service_account_reader_access" {
-  for_each   = toset(var.reader_serviceaccounts)
+resource "google_artifact_registry_repository_iam_member" "reader_access" {
+  for_each   = toset(local.reader_members)
   project    = data.google_client_config.this.project
   location   = local.location
   repository = local.repository.name
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${each.value}"
-}
-
-resource "google_artifact_registry_repository_iam_member" "group_reader_access" {
-  for_each   = toset(var.reader_groups)
-  project    = data.google_client_config.this.project
-  location   = local.location
-  repository = local.repository.name
-  role       = "roles/artifactregistry.reader"
-  member     = "group:${each.value}"
+  member     = each.value
 }
 
 resource "google_artifact_registry_repository_iam_member" "public_access" {
