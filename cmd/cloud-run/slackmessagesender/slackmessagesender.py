@@ -351,7 +351,7 @@ def issue_labeled() -> Response:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": f"@here Issue {title} was labeled as `{label}`. <{issue_url}|`{number}`>",
+                                "text": f"@here Issue `{title}` was labeled as `{label}`. <{issue_url}|`{number}`>",
                             },
                         },
                     ],
