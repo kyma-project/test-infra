@@ -58,28 +58,6 @@ variable "untrusted_workload_k8s_cluster" {
   description = "Details of the untrusted-workload k8s cluster."
 }
 
-variable "external_secrets_k8s_sa_trusted_cluster" {
-  type = object({
-    name      = string
-    namespace = string
-  })
-  default = {
-    name      = "secret-manager-trusted"
-    namespace = "external-secrets"
-  }
-  description = <<-EOT
-    Details of external secrets service account. This is service account used as identity for external secrets controller.
-    name: Name of the external secret controller service account.
-    namespace: Namespace of the external secret controller service account.
-    EOT
-}
-
-variable "prow_cluster_ip_range" {
-  type        = string
-  default     = "10.8.0.0/14"
-  description = "Internal IP address range for pods."
-}
-
 variable "kyma_project_gcp_region" {
   type        = string
   description = "Default Google Cloud region to create resources in kyma-project"
