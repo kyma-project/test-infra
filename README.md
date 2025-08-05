@@ -13,13 +13,6 @@ See also the internally available [test-infra onboarding](https://github.tools.s
 
 Please see the [index page](/docs/index.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
 
-### Prow
-
-The `test-infra` repository contains the whole configuration of Prow. Its purpose is to replace the internal Continuous Integration (CI) tool in the `kyma-project` organization.
-
-For more detailed documentation on installation, configuration, development, and testing, go to the [`docs/prow`](./docs/prow) subfolder.
-
-
 ## License
 <!-- markdown-link-check-disable-next-line -->
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_large)
