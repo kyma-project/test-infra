@@ -1,3 +1,7 @@
+# DEPRECATED: This file is no longer used in the Kyma project.
+# It is kept for documentation purposes only.
+# It was used to define automated approver rules for pull requests when automated approver was running on Prow.
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

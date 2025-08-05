@@ -36,37 +36,7 @@
 
 [Manage Workflow Controllers](/docs/how-to/how-to_manage_workflow_controller.md) - This guide explains how to manage Workflow Controllers. Workflow Controllers are responsible for orchestrating and triggering jobs in GitHub Actions workflows, especially for advanced scenarios like merge queues.
 
-[Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
-
-[Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the Google Cloud project you own.
-
-[Crier](/docs/prow/crier.md) - Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
-
-[Obligatory Security Measures](/docs/prow/obligatory-security-measures.md) - Read about the obligatory security measures to take on a regular basis and when a Kyma organization member leaves the project.
-
-[Run ProwJobs in KinD or k3d](/docs/prow/pj-in-kind.md) - This document provides brief instructions on how to run ProwJobs in local kind (Kubernetes-in-Docker) or k3d locally.
-
-[Presets](/docs/prow/presets.md) - This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
-
-[Prow Architecture](/docs/prow/prow-architecture.md) - The document outlines Prow architecture and interconnections between different systems and components that are involved in it.
-
-[Prow Cluster Update](/docs/prow/prow-cluster-update.md) - Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow instance gets updated via a shell script. The shell script offers only a short list of the last pushed container tags and as a result, limits the versions to choose from. To cherry-pick updates, monitor [Prow announcements](https://docs.prow.k8s.io/docs/announcements/) to see when fixes or important changes are merged into the Kubernetes repository. This document describes how to update a Prow cluster using a cherry-picked Prow version.
-
-[HTML Lens](/docs/prow/prow-html-lens.md) - Spyglass HTML lens allows to render HTML files in the job results.
-
-[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
-
-[Prow Test Clusters](/docs/prow/test-clusters.md) - This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
-
-[Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` Google Cloud project. We use two workload clusters for trusted and untrusted Prow jobs.
-
 [Workflow Controller](/docs/what-is/what-is_workflow_controller.md) - Workflow Controller is a GitHub Actions workflow that orchestrates and triggers downstream workflows based on repository changes. It implements advanced CI/CD logic, such as merge queues and selective job execution, by applying path-based filters to changed files. It was created due to a lack of filtering capabilities in GitHub Actions workflows for merge queues.
 
 [Prow Runtime Images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
-
-[Cluster](/prow/cluster/README.md) - This folder contains files related to the configuration of the Prow production cluster that are used during the cluster provisioning.
-
-[Resources](/prow/cluster/resources/README.md) - This directory contains Helm charts used by a Prow cluster.
-
-[External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with Google Cloud Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
