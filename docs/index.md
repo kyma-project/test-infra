@@ -46,8 +46,6 @@
 
 [Run ProwJobs in KinD or k3d](/docs/prow/pj-in-kind.md) - This document provides brief instructions on how to run ProwJobs in local kind (Kubernetes-in-Docker) or k3d locally.
 
-[Presets](/docs/prow/presets.md) - This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
-
 [Prow Architecture](/docs/prow/prow-architecture.md) - The document outlines Prow architecture and interconnections between different systems and components that are involved in it.
 
 [Prow Cluster Update](/docs/prow/prow-cluster-update.md) - Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow instance gets updated via a shell script. The shell script offers only a short list of the last pushed container tags and as a result, limits the versions to choose from. To cherry-pick updates, monitor [Prow announcements](https://docs.prow.k8s.io/docs/announcements/) to see when fixes or important changes are merged into the Kubernetes repository. This document describes how to update a Prow cluster using a cherry-picked Prow version.
