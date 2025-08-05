@@ -16,20 +16,6 @@ variable "gcp_project_id" {
   description = "Google Cloud project to create resources."
 }
 
-variable "prow_k8s_cluster" {
-  type = object({
-    name     = string
-    location = string
-  })
-
-  default = {
-    name     = "prow"
-    location = "europe-west3-a"
-  }
-
-  description = "Details of the prow k8s cluster."
-}
-
 variable "kyma_project_gcp_region" {
   type        = string
   description = "Default Google Cloud region to create resources in kyma-project"
