@@ -59,14 +59,6 @@ plank:
           path_strategy: "explicit"
         gcs_credentials_secret: ""
         default_service_account_name: prowjob-default-sa
-    - cluster: "untrusted-workload"
-      config:
-        gcs_credentials_secret: ""
-        default_service_account_name: prowjob-default-sa
-    - cluster: "trusted-workload"
-      config:
-        gcs_credentials_secret: ""
-        default_service_account_name: prowjob-default-sa
 
 deck:
   spyglass:
@@ -222,12 +214,6 @@ slack_reporter_configs:
       {{with .Spec.Refs}}*Repository:* {{.Org}}/{{.Repo}}
       *Commit:* <{{.BaseLink}}|{{printf "%.7s" .BaseSHA}}>
       {{end}}*<{{.Status.URL}}|View logs>*
-
-in_repo_config:
-  enabled:
-    "*": true
-  allowed_clusters:
-    "*": ["untrusted-workload"]
 
 presets:
   - labels:
