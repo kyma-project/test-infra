@@ -34,7 +34,7 @@ Additionally, Automated Approver uses rules to approve PRs. You define the rules
 
 ## How to Install It
 
-Automated Approver runs in a Kubernetes cluster. A Pod and service specification is defined in the Kubernetes [deployment manifest file](../../../prow/cluster/components/automated-approver_external-plugin.yaml). A service is required for Prow to dispatch GitHub events to registered external plugins.
+Automated Approver runs in a Kubernetes cluster. A Pod and service specification is defined in the Kubernetes deployment manifest file. A service is required for Prow to dispatch GitHub events to registered external plugins.
 
 The rules against which Automated Approver validates PRs are defined in a Kubernetes [ConfigMap manifest file](../../../configs/automated-approver-rules.yaml).
 
