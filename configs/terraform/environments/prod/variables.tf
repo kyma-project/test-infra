@@ -30,34 +30,6 @@ variable "prow_k8s_cluster" {
   description = "Details of the prow k8s cluster."
 }
 
-variable "trusted_workload_k8s_cluster" {
-  type = object({
-    name     = string
-    location = string
-  })
-
-  default = {
-    name     = "trusted-workload-kyma-prow"
-    location = "europe-west4"
-  }
-
-  description = "Details of the trusted-workload k8s cluster."
-}
-
-variable "untrusted_workload_k8s_cluster" {
-  type = object({
-    name     = string
-    location = string
-  })
-
-  default = {
-    name     = "untrusted-workload-kyma-prow"
-    location = "europe-west3"
-  }
-
-  description = "Details of the untrusted-workload k8s cluster."
-}
-
 variable "kyma_project_gcp_region" {
   type        = string
   description = "Default Google Cloud region to create resources in kyma-project"
@@ -70,17 +42,6 @@ variable "kyma_project_gcp_project_id" {
   default     = "kyma-project"
 }
 
-variable "automated_approver_deployment_path" {
-  type        = string
-  description = "Path to the automated-approver deployment file"
-  default     = "../../../../prow/cluster/components/automated-approver_external-plugin.yaml"
-}
-
-variable "automated_approver_rules_path" {
-  type        = string
-  description = "Path to the automated-approver rules file"
-  default     = "../../../../configs/automated-approver-rules.yaml"
-}
 
 
 variable "kyma-project-github-org" {
