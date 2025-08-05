@@ -310,18 +310,7 @@ def issue_labeled() -> Response:
                 title = payload["issue"]["title"]
                 number = payload["issue"]["number"]
                 repo = payload["repository"]["name"]
-                org = payload["repository"]["owner"]["login"]
                 issue_url = payload["issue"]["html_url"]
-
-                assignee = (
-                    f"Issue #{number} in repository {org}/{repo} is not assigned."
-                )
-                if payload["assigneeSlackUsername"]:
-                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['assigneeSlackUsername']}>"
-
-                sender = payload["senderSlackUsername"]
-                if payload["senderSlackUsername"]:
-                    sender = f"<@{payload['senderSlackUsername']}>"
 
                 print(
                     LogEntry(
@@ -362,8 +351,7 @@ def issue_labeled() -> Response:
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n"
-                                + f"{assignee} <{issue_url}|See the issue here.>",
+                                "text": f"@here Issue `{title}` was labeled as `{label}`. <{issue_url}|`{number}`>",
                             },
                         },
                     ],
