@@ -58,27 +58,3 @@ provider "google-beta" {
 
 data "google_client_config" "gcp" {
 }
-
-data "google_container_cluster" "prow_k8s_cluster" {
-  name     = var.prow_k8s_cluster.name
-  location = var.prow_k8s_cluster.location
-}
-
-provider "kubernetes" {
-  alias = "prow_k8s_cluster"
-  host  = "https://${data.google_container_cluster.prow_k8s_cluster.endpoint}"
-  token = data.google_client_config.gcp.access_token
-  cluster_ca_certificate = base64decode(
-    data.google_container_cluster.prow_k8s_cluster.master_auth[0].cluster_ca_certificate,
-  )
-}
-
-provider "kubectl" {
-  alias = "prow_k8s_cluster"
-  host  = "https://${data.google_container_cluster.prow_k8s_cluster.endpoint}"
-  token = data.google_client_config.gcp.access_token
-  cluster_ca_certificate = base64decode(
-    data.google_container_cluster.prow_k8s_cluster.master_auth[0].cluster_ca_certificate,
-  )
-  load_config_file = false
-}
