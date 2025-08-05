@@ -23,7 +23,7 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1
 
 # Copy app source code
-COPY ./cmd/cloud-run/slack-message-sender/slack-message-sender.py .
+COPY ./cmd/cloud-run/slackmessagesender/slackmessagesender.py .
 
 # Copy the virtual environment from the builder stage
 COPY --from=builder /app/venv /app/venv
