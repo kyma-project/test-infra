@@ -1,7 +1,0 @@
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: gcsweb-kyma-prow
-spec:
-  domains:
-  - gcsweb.build.kyma-project.io
