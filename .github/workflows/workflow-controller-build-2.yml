@@ -6,6 +6,7 @@ on:
   push:
    branches-ignore:
      - gh-readonly-*/**
+     - dependabot/**
   merge_group: 
 
 permissions:
