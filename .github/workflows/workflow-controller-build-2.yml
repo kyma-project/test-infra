@@ -6,6 +6,7 @@ on:
   push:
    branches-ignore:
      - gh-readonly-*/**
+     - dependabot/**
   merge_group: 
 
 permissions:
@@ -46,11 +47,6 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-slack-message-sender-filter') }}
     needs: detect-changed-files
     uses: kyma-project/test-infra/.github/workflows/build-slack-message-sender.yml@main
-
-  build-usersmapchecker:
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-usersmapchecker-filter') }}
-    needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-usersmapchecker.yml@main
 
   # !WARNING: This workflow counts as 4 separate jobs!
   build-unified-agent:
