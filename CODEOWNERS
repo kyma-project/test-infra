@@ -12,11 +12,6 @@
 * @kyma-project/neighbors @neighbors-dev-bot
 
 /docs @kyma-project/neighbors @kyma-project/technical-writers
-/prow @kyma-project/neighbors @neighbors-dev-bot
-/prow/cluster @kyma-project/neighbors @neighbors-dev-bot
-/prow/images @kyma-project/neighbors @neighbors-dev-bot
-/prow/jobs @kyma-project/neighbors @neighbors-dev-bot
-/prow/scripts @kyma-project/neighbors @neighbors-dev-bot
 
 # All .md files
 *.md @kyma-project/technical-writers

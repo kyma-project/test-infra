@@ -98,13 +98,6 @@ build-signify-secret-rotator-filter:
 build-slack-message-sender-filter:
   - "cmd/cloud-run/slackmessagesender/**"
 
-build-usersmapchecker-filter:
-  - "cmd/cloud-run/rotate-service-account/*.go"
-  - "cmd/cloud-run/rotate-service-account/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
 buildx-images-filter:
   - "images/**"
   - ".github/workflows/image-builder.yml"
