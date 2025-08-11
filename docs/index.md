@@ -20,8 +20,6 @@
 
 [OIDC Token Verifier](/cmd/oidc-token-verifier/README.md) - The OIDC Token Verifier is a command-line tool designed to validate the OIDC token and its claim values. It is primarily used in the
 
-[External Secrets Checker](/cmd/tools/externalsecretschecker/README.md) - This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
-
 [Artifact Registry Module](/configs/terraform/modules/artifact-registry/README.md) - The Artifact Registry module for Google Cloud is designed to maintain a standardized and reusable way of creating Artifact Registry in Google Cloud.
 
 [Documentation Guidelines](/docs/documentation_guidelines.md) - Follow the rules listed in this document to provide high-quality documentation.
