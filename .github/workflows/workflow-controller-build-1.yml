@@ -28,11 +28,6 @@ jobs:
         with:
           filters: .github/controller-filters.yaml
 
-  build-automated-approver:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-automated-approver-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-automated-approver.yml@main
-
   build-cors-proxy:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-cors-proxy-filter') }}
