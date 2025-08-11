@@ -1,7 +1,7 @@
 package pubsub
 
 import (
-	"cloud.google.com/go/pubsub"
+	"cloud.google.com/go/pubsub/v2"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	"google.golang.org/api/option"
 	prowapi "sigs.k8s.io/prow/pkg/apis/prowjobs/v1"
