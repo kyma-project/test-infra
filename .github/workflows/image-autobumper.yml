@@ -38,7 +38,7 @@ jobs:
           chmod 644 ~/token
           
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
         # Setup git config with commiter data from config
         # Prevent silent passing github token
