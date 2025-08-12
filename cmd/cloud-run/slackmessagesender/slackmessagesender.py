@@ -16,7 +16,6 @@ import traceback
 import base64
 from typing import Dict, Any
 from flask import Flask, request, make_response, Response
-from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
 
 
