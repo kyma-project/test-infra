@@ -56,10 +56,6 @@ resource "google_cloud_run_service" "slack_message_sender" {
           value = "C01KSP10MB5" # kyma-prow-dev-null
         }
         env {
-          name  = "RELEASE_SLACK_CHANNEL_ID"
-          value = "C01KKPXCPK8" # kyma-skr-release
-        }
-        env {
           name  = "KYMA_TEAM_SLACK_CHANNEL_ID"
           value = "C01LGCBS196" # kyma-team
         }
