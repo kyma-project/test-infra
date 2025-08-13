@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout Test Infra 
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: kyma-project/test-infra
           ref: main
@@ -21,7 +21,7 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
+        uses: terraform-linters/setup-tflint@v5
 
       - name: Init TFLint
         run: tflint --init

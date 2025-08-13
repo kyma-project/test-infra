@@ -16,7 +16,6 @@ import traceback
 import base64
 from typing import Dict, Any
 from flask import Flask, request, make_response, Response
-from cloudevents.http import from_http  # type: ignore
 from slack_bolt import App
 
 
@@ -31,8 +30,6 @@ app = Flask(__name__)
 project_id: str = os.getenv("PROJECT_ID", "")
 component_name: str = os.getenv("COMPONENT_NAME", "")
 application_name: str = os.getenv("APPLICATION_NAME", "")
-slack_channel_id: str = os.getenv("PROW_DEV_NULL_SLACK_CHANNEL_ID", "")
-slack_release_channel_id: str = os.getenv("RELEASE_SLACK_CHANNEL_ID", "")
 slack_team_channel_id: str = os.getenv("KYMA_TEAM_SLACK_CHANNEL_ID", "")
 slack_base_url: str = os.getenv("SLACK_BASE_URL", "")  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv("KYMA_SECURITY_SLACK_GROUP_NAME", "")
@@ -114,183 +111,6 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
     resp.content_type = "application/json"
     resp.status_code = 500
     return resp
-
-
-@app.route("/secret-leak-found", methods=["POST"])
-def secret_leak_found() -> Response:
-    """secret_leak_found handles found secret leak Slack messages"""
-    log_fields: Dict[str, Any] = prepare_log_fields()
-    log_fields["labels"]["io.kyma.app"] = "secret-leak-found"
-
-    # create a CloudEvent
-    event = from_http(request.headers, request.get_data())
-    print(
-        LogEntry(
-            severity="DEBUG",
-            message=f"event data: {event.data}",
-            **log_fields,
-        )
-    )
-
-    try:
-        print(
-            LogEntry(
-                severity="INFO",
-                message=f"Sending notification to {slack_channel_id}.",
-                **log_fields,
-            )
-        )
-
-        result = slack_app.client.chat_postMessage(
-            channel=slack_channel_id,
-            text=f"Found secrets in {event.data['job_name']} {event.data['job_type']} prowjob logs.\n"
-            f"Please rotate secret and prevent further leaks.\n"
-            f"See details in Github issue {event.data['githubIssueURL']}.",
-            username="KymaBot",
-            # TODO: host icon on our infrastructure
-            icon_url="https://assets.stickpng.com/images/580b57fbd9996e24bc43bdfe.png",
-            unfurl_links=True,
-            unfurl_media=True,
-            link_names=True,
-            blocks=[
-                {
-                    "type": "header",
-                    "text": {"type": "plain_text", "text": "Secret leak found"},
-                },
-                {"type": "divider"},
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"Found secrets in {event.data['job_name']} {event.data['job_type']} prowjob logs.\n"
-                        f"Please rotate secret and prevent further leaks.\n"
-                        f"*See details in Github issue <{event.data['githubIssueURL']}|#{event.data['githubIssueNumber']}>.*",
-                    },
-                    "accessory": {
-                        "type": "image",
-                        "image_url": "https://assets.stickpng.com/images/5f42baae41b1ee000404b6f4.png",
-                        "alt_text": "URGENT",
-                    },
-                },
-                {"type": "divider"},
-            ],
-        )
-        print(
-            LogEntry(
-                severity="INFO",
-                message=f'Slack message send, message id: {result["ts"]}',
-                **log_fields,
-            )
-        )
-        result = slack_app.client.chat_postMessage(
-            channel=slack_channel_id,
-            text=f"<!subteam^{kyma_security_slack_group_id}>, just to let you know we got this.\n",
-            username="KymaBot",
-            thread_ts=result["ts"],
-            unfurl_links=True,
-            unfurl_media=True,
-            link_names=True,
-            blocks=[
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"<!subteam^{kyma_security_slack_group_id}>, just to let you know we got this.\n",
-                    },
-                }
-            ],
-        )
-        print(
-            LogEntry(
-                severity="INFO",
-                message=f'Slack message send, message id: {result["ts"]}',
-                **log_fields,
-            )
-        )
-        return prepare_success_response()
-    # pylint: disable=broad-exception-caught
-    except Exception as err:
-        return prepare_error_response(str(err), log_fields)
-
-
-@app.route("/release-cluster-created", methods=["POST"])
-def release_cluster_created() -> Response:
-    """this function sends kubeconfig in a Slack channel for newly created release cluster"""
-    log_fields: Dict[str, Any] = prepare_log_fields()
-    log_fields["labels"]["io.kyma.app"] = "release-cluster-created"
-    try:
-        pubsub_message = get_pubsub_message()
-        if isinstance(pubsub_message, dict) and "data" in pubsub_message:
-            release_info = json.loads(
-                base64.b64decode(pubsub_message["data"]).decode("utf-8").strip()
-            )
-            print(
-                LogEntry(
-                    severity="INFO",
-                    message=f"Sending notification to {slack_release_channel_id}.",
-                    **log_fields,
-                )
-            )
-
-            result = slack_app.client.chat_postMessage(
-                channel=slack_release_channel_id,
-                text=f"Kyma {release_info['kyma_version']} was released.",
-                username="ReleaseBot",
-                unfurl_links=True,
-                unfurl_media=True,
-                blocks=[
-                    {
-                        "type": "context",
-                        "elements": [
-                            {"type": "mrkdwn", "text": "_Kyma OS was released_"}
-                        ],
-                    },
-                    {
-                        "type": "header",
-                        "text": {
-                            "type": "plain_text",
-                            "text": f"Kyma OS {release_info['kyma_version']} was released :tada:",
-                        },
-                    },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": f"Kubeconfig for the `{release_info['cluster_name']}` cluster is in the thread",
-                        },
-                    },
-                ],
-            )
-            print(
-                LogEntry(
-                    severity="INFO",
-                    message=f'Slack message send, message id: {result["ts"]}',
-                    **log_fields,
-                )
-            )
-
-            kubeconfig_filename = f"kubeconfig-{release_info['cluster_name']}.yaml"
-            uploaded_kubeconfig = slack_app.client.files_upload(
-                content=release_info["kubeconfig"],
-                filename=kubeconfig_filename,
-                channels=slack_release_channel_id,
-                thread_ts=result["message"]["ts"],
-                initial_comment=f"Kubeconfig for the `{release_info['cluster_name']}` cluster: :blobwant:",
-            )
-            print(
-                LogEntry(
-                    severity="INFO",
-                    message=f'Slack message send, message id: {uploaded_kubeconfig["ts"]}',
-                    **log_fields,
-                )
-            )
-
-            return prepare_success_response()
-
-        return prepare_error_response("Cannot parse pubsub data", log_fields)
-    # pylint: disable=broad-exception-caught
-    except Exception as err:
-        return prepare_error_response(str(err), log_fields)
 
 
 @app.route("/issue-labeled", methods=["POST"])

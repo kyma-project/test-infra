@@ -38,7 +38,7 @@ resource "google_cloud_run_service" "slack_message_sender" {
     spec {
       service_account_name = google_service_account.slack_message_sender.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250807-efd03d36"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250813-f5280643"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
@@ -54,10 +54,6 @@ resource "google_cloud_run_service" "slack_message_sender" {
         env {
           name  = "PROW_DEV_NULL_SLACK_CHANNEL_ID"
           value = "C01KSP10MB5" # kyma-prow-dev-null
-        }
-        env {
-          name  = "RELEASE_SLACK_CHANNEL_ID"
-          value = "C01KKPXCPK8" # kyma-skr-release
         }
         env {
           name  = "KYMA_TEAM_SLACK_CHANNEL_ID"

@@ -11,7 +11,6 @@ import (
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
-	toolsclient "github.com/kyma-project/test-infra/pkg/github/client"
 	"github.com/kyma-project/test-infra/pkg/githubuser"
 
 	"github.com/google/go-github/v48/github"
@@ -27,17 +26,14 @@ var (
 		},
 	}
 
-	componentName        string
-	applicationName      string
-	projectID            string
-	toolsGithubTokenPath string
-	githubToken          []byte
-	webhookTokenPath     string
-	webhookToken         []byte
-	pubsubTopic          string
-	listenPort           string
-	sapToolsClient       GithubClient
-	pubsubClient         *pubsub.Client
+	componentName    string
+	applicationName  string
+	projectID        string
+	webhookTokenPath string
+	webhookToken     []byte
+	pubsubTopic      string
+	listenPort       string
+	pubsubClient     *pubsub.Client
 )
 
 type GithubClient interface {
@@ -56,7 +52,6 @@ func main() {
 	projectID = os.Getenv("PROJECT_ID")
 	listenPort = os.Getenv("LISTEN_PORT")
 	pubsubTopic = os.Getenv("PUBSUB_TOPIC")
-	toolsGithubTokenPath = os.Getenv("TOOLS_GITHUB_TOKEN_PATH")
 	webhookTokenPath = os.Getenv("WEBHOOK_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
@@ -64,20 +59,9 @@ func main() {
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
 
-	githubToken, err = os.ReadFile(toolsGithubTokenPath)
-	if err != nil {
-		mainLogger.LogCritical("failed read github token from file, error: %s", err)
-	}
-
 	webhookToken, err = os.ReadFile(webhookTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read webhook token from file, error: %s", err)
-	}
-
-	// Create tools github client.
-	sapToolsClient, err = toolsclient.NewSapToolsClient(ctx, string(githubToken))
-	if err != nil {
-		mainLogger.LogCritical("Failed creating tools GitHub client: %s", err)
 	}
 
 	pubsubClient, err = pubsub.NewClient(ctx, projectID)
@@ -146,49 +130,14 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		supported = false
 	}
 	if supported {
-		var usersMap []githubuser.User
 		ctx := context.Background()
-		sapToolsClient.MuRLock()
-		usersMap, err = sapToolsClient.GetUsersMap(ctx)
-		sapToolsClient.MuRUnlock()
-		if err != nil {
-			githubToken, err := os.ReadFile(toolsGithubTokenPath)
-			if err != nil {
-				logger.LogCritical("failed read github token from file, error: %s", err)
-			}
-			_, err = sapToolsClient.Reauthenticate(ctx, logger, githubToken)
-			if err != nil {
-				logger.LogCritical("failed reauthenticate github client, error %s", err)
-			}
 
-			// retry
-			sapToolsClient.MuRLock()
-			usersMap, err = sapToolsClient.GetUsersMap(ctx)
-			sapToolsClient.MuRUnlock()
-			if err != nil {
-				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting user map, error: %s", err)
-				return
-			}
-		}
 		// CloudEvents sourceID.
 		logger.LogInfo("received event of type: %s", eventType)
-		issue := event.(*github.IssuesEvent).GetIssue()
-		sender := event.(*github.IssuesEvent).GetSender()
 
 		// add Slack user name, or empty string
 		var payloadInterface map[string]any
 		json.Unmarshal(payload, &payloadInterface)
-
-		if issue.Assignee != nil {
-			// assigneee can be null
-			assigneeSlackUsername := getSlackUsername(usersMap, *issue.Assignee.Login)
-			payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
-		} else {
-			payloadInterface["assigneeSlackUsername"] = ""
-		}
-
-		senderSlackUsername := getSlackUsername(usersMap, *sender.Login)
-		payloadInterface["senderSlackUsername"] = senderSlackUsername
 
 		// send message to a pubsub topic
 		_, err = pubsubClient.PublishMessage(ctx, payloadInterface, pubsubTopic)
@@ -211,15 +160,4 @@ func checkIfEventSupported(allowed map[string]map[string]struct{}, eventGroup, e
 		return et, true
 	}
 	return "", false
-}
-
-// getSlackusername loks through usersmap and returns GH username
-func getSlackUsername(usersMap []githubuser.User, githubUsername string) string {
-	for _, user := range usersMap {
-		if githubUsername == user.SapToolsGithubUsername {
-			return user.ComEnterpriseSlackUsername
-		}
-	}
-
-	return ""
 }

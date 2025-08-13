@@ -13,9 +13,6 @@ resource "google_eventarc_trigger" "issue_labeled" {
     }
   }
   service_account = google_service_account.slack_message_sender.id
-  labels = {
-    application = "release_cluster_created"
-  }
   transport {
     pubsub {
       topic = "projects/${var.gcp_project_id}/topics/${var.issue_labeled_pubsub_topic_name}"

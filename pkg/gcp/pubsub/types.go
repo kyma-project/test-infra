@@ -4,7 +4,6 @@ import (
 	"cloud.google.com/go/pubsub/v2"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	"google.golang.org/api/option"
-	prowapi "sigs.k8s.io/prow/pkg/apis/prowjobs/v1"
 )
 
 // ClientConfig holds configuration for pubsub Client.
@@ -36,35 +35,6 @@ type MessagePayload struct {
 	Data        []byte            `json:"data"` // This property is base64 encoded
 	MessageID   string            `json:"messageId"`
 	PublishTime string            `json:"publishTime"`
-}
-
-// ProwMessage is the Data field of pubsub message payload, published by Prow.
-type ProwMessage struct {
-	Project *string `json:"project" validate:"required,min=1"`
-	Topic   *string `json:"topic" validate:"required,min=1"`
-	RunID   *string `json:"runid" validate:"required,min=1"`
-	Status  *string `json:"status" validate:"required,min=1"`
-	URL     *string `json:"url" validate:"required,min=1"`
-	GcsPath *string `json:"gcs_path" validate:"required,min=1"`
-	// TODO: define refs type to force using pointers
-	Refs    []prowapi.Refs `json:"refs,omitempty"`
-	JobType *string        `json:"job_type" validate:"required,min=1"`
-	JobName *string        `json:"job_name" validate:"required,min=1"`
-}
-
-// FailingTestMessage is the Data field of pubsub message payload, published by ci-force automation.
-// It wraps ProwMessage.
-// TODO: consider renaming it to something more generic to use it for other cases
-type FailingTestMessage struct {
-	ProwMessage
-	FirestoreDocumentID   *string  `json:"firestoreDocumentId,omitempty"`
-	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
-	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
-	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
-	GithubIssueURL        *string  `json:"githubIssueUrl,omitempty"`
-	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
-	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
-	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
 }
 
 type Rotation struct {
