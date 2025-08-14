@@ -6,14 +6,11 @@ toolchain go1.24.2
 
 require (
 	cloud.google.com/go/compute/metadata v0.8.0
-	cloud.google.com/go/firestore v1.18.0
 	cloud.google.com/go/logging v1.13.0
 	cloud.google.com/go/pubsub/v2 v2.0.0
 	github.com/avast/retry-go/v4 v4.6.1
-	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cloudevents/sdk-go/v2 v2.16.1
 	github.com/coreos/go-oidc/v3 v3.15.0
-	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-jose/go-jose/v4 v4.1.2
 	github.com/google/go-containerregistry v0.20.6
 	github.com/google/go-github/v48 v48.2.0
@@ -28,14 +25,12 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/zricethezav/gitleaks/v8 v8.28.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
 	golang.org/x/net v0.43.0
 	golang.org/x/oauth2 v0.30.0
-	google.golang.org/api v0.246.0
+	google.golang.org/api v0.247.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.30.1
-	k8s.io/client-go v0.30.1
 	k8s.io/utils v0.0.0-20240102154912-e7106e64919e
 	sigs.k8s.io/prow v0.0.0-20250307150146-7a867cddc9d5
 	sigs.k8s.io/yaml v1.6.0
@@ -44,7 +39,7 @@ require (
 require (
 	cel.dev/expr v0.24.0 // indirect
 	cloud.google.com/go v0.121.4 // indirect
-	cloud.google.com/go/auth v0.16.3 // indirect
+	cloud.google.com/go/auth v0.16.4 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/iam v1.5.2 // indirect
 	cloud.google.com/go/longrunning v0.6.7 // indirect
@@ -96,7 +91,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/charmbracelet/lipgloss v0.5.0 // indirect
 	github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466 // indirect
-	github.com/clarketm/json v1.13.4 // indirect
 	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.16.3 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
@@ -116,6 +110,7 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/fgprof v0.9.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fvbommel/sortorder v1.0.1 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
@@ -230,6 +225,7 @@ require (
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	gocloud.dev v0.40.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
+	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa // indirect
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/term v0.34.0 // indirect
@@ -240,15 +236,16 @@ require (
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20250603155806-513f23925822 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250721164621-a45f3dfb1074 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250728155136-f173205681a0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b // indirect
 	google.golang.org/grpc v1.74.2 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/protobuf v1.36.7 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/robfig/cron.v2 v2.0.0-20150107220207-be2e0b0deed5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
+	k8s.io/client-go v0.30.1 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340 // indirect
 	knative.dev/pkg v0.0.0-20240416145024-0f34a8815650 // indirect
