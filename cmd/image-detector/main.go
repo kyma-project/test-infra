@@ -13,16 +13,9 @@ import (
 	"github.com/kyma-project/test-infra/pkg/securityconfig"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	"sigs.k8s.io/prow/pkg/config"
 )
 
 var (
-	// ProwConfig contains path to prow config file
-	ProwConfig string
-
-	// JobsConfigDir contains root path for directory containing Prow Jobs Configs
-	JobsConfigDir string
-
 	// TerraformDir contains root path to directory containing terraform files
 	TerraformDir string
 
@@ -57,16 +50,6 @@ var rootCmd = &cobra.Command{
 
 		// don't use previously scanned images as it will not delete removed once
 		images := []string{}
-
-		// get images from prow jobs
-		if ProwConfig != "" && JobsConfigDir != "" {
-			prowConfig, err := config.Load(ProwConfig, JobsConfigDir, nil, "")
-			if err != nil {
-				log.Fatalf("failed to load prow job config: %s", err)
-			}
-
-			images = append(images, extractimageurls.FromProwJobConfig(prowConfig.JobConfig)...)
-		}
 
 		// get images from terraform
 		if TerraformDir != "" {
@@ -119,8 +102,6 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&ProwConfig, "prow-config", "", "path to the Prow config file")
-	rootCmd.PersistentFlags().StringVar(&JobsConfigDir, "prow-jobs-dir", "", "path to the directory which contains Prow job files")
 	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files")
 	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
