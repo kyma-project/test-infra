@@ -13,7 +13,6 @@ import (
 	"github.com/kyma-project/test-infra/pkg/securityconfig"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	"sigs.k8s.io/prow/pkg/config"
 )
 
 var (
