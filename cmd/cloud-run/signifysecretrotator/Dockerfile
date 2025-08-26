@@ -1,5 +1,5 @@
 # Stage 1: Build with dependencies inside venv
-FROM cgr.dev/chainguard/python:latest-dev as builder
+FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV PYTHONUNBUFFERED=1
 
