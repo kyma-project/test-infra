@@ -18,15 +18,6 @@ resource "google_artifact_registry_repository" "dev_modules_internal" {
   }
 }
 
-# TODO (dekiel): The submission pipeline should have only one identity in our projects.
-#   The service account in kyma-project should be removed.
-resource "google_service_account" "kyma_project_kyma_submission_pipeline" {
-  provider     = google.kyma_project
-  account_id   = "kyma-submission-pipeline"
-  display_name = "kyma-submission-pipeline"
-  description  = "The submission-pipeline ADO pipeline."
-}
-
 resource "google_service_account" "kyma-submission-pipeline" {
   account_id   = "kyma-submission-pipeline"
   display_name = "kyma-submission-pipeline"
@@ -38,14 +29,6 @@ moved {
   from = google_artifact_registry_repository_iam_member.dev_modules_internal_repo_admin
   to = google_artifact_registry_repository_iam_member.dev_modules_internal_repo_admin_kyma_project
 }
-
-resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin_kyma_project" {
-  provider   = google.kyma_project
-  repository = google_artifact_registry_repository.dev_modules_internal.id
-  role       = "roles/artifactregistry.repoAdmin"
-  member     = "serviceAccount:${google_service_account.kyma_project_kyma_submission_pipeline.email}"
-}
-
 
 resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin_kyma_prow" {
   repository = google_artifact_registry_repository.dev_modules_internal.id
@@ -63,7 +46,7 @@ module "dev_kyma_modules" {
   repository_prevent_destroy = var.dev_kyma_modules_repository.repository_prevent_destroy
   repository_name            = var.dev_kyma_modules_repository.name
   description                = var.dev_kyma_modules_repository.description
-  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email, google_service_account.kyma-submission-pipeline.email]
+  repoAdmin_serviceaccounts  = [google_service_account.kyma-submission-pipeline.email]
 }
 
 module "kyma_modules" {
@@ -79,5 +62,5 @@ module "kyma_modules" {
   type                       = var.kyma_modules_repository.type
   reader_serviceaccounts     = var.kyma_modules_repository.reader_serviceaccounts
   reader_groups              = var.kyma_modules_repository.reader_groups
-  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_kyma_submission_pipeline.email, google_service_account.kyma-submission-pipeline.email]
+  repoAdmin_serviceaccounts  = [google_service_account.kyma-submission-pipeline.email]
 }
