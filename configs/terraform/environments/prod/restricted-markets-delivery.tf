@@ -18,15 +18,6 @@ resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" 
   member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
 }
 
-# TODO (dekiel): remove after migration to modulectl is done
-resource "google_artifact_registry_repository_iam_member" "modules_internal_reader" {
-  project    = module.artifact_registry["modules-internal"].artifact_registry.project
-  repository = module.artifact_registry["modules-internal"].artifact_registry.name
-  location   = module.artifact_registry["modules-internal"].artifact_registry.location
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
-}
-
 variable "sre-restricted-markets-artifactregistry-reader" {
   type = object({
     registry-reader-sa          = string

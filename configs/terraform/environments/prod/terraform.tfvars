@@ -1,17 +1,3 @@
-kyma_project_artifact_registry_collection = {
-  modules-internal = {
-    name = "modules-internal"
-    owner = "neighbors"
-    type = "production"
-    description = "modules-internal registry"
-    reader_serviceaccounts = [
-      "klm-controller-manager@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com",
-      "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com",
-      "klm-controller-manager@sap-ti-dx-kyma-mps-prod.iam.gserviceaccount.com"
-    ]
-    repoAdmin_serviceaccounts = ["kyma-submission-pipeline@kyma-project.iam.gserviceaccount.com"]
-  },
-}
 service_account_keys_rotator_service_name            = "service-account-keys-rotator"
 service_account_keys_rotator_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250902-61d4d3a3" #gitleaks:allow
 service_account_keys_cleaner_service_name            = "service-account-keys-cleaner"
