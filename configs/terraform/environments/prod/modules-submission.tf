@@ -5,13 +5,6 @@ resource "google_service_account" "kyma-submission-pipeline" {
   description = "The submission-pipeline ADO pipeline."
 }
 
-resource "google_artifact_registry_repository_iam_member" "dev_modules_internal_repo_admin_kyma_prow" {
-  repository = google_artifact_registry_repository.dev_modules_internal.id
-  role       = "roles/artifactregistry.repoAdmin"
-  member     = "serviceAccount:${google_service_account.kyma-submission-pipeline.email}"
-}
-
-
 module "dev_kyma_modules" {
   source = "../../modules/artifact-registry"
 
