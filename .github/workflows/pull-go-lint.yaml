@@ -13,6 +13,6 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
 
       - uses: golangci/golangci-lint-action@v8.0.0

@@ -11,5 +11,5 @@ jobs:
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
         
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
       - run: go test -cover ./...
