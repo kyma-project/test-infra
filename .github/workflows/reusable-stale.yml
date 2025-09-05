@@ -18,5 +18,5 @@ jobs:
           exempt-issue-labels: 'antistale'
           stale-issue-message: 'This issue has been automatically marked as stale due to the lack of recent activity. It will soon be closed if no further activity occurs. Thank you for your contributions.'
           stale-pr-message: 'This pull request has been automatically marked as stale due to the lack of recent activity. It will soon be closed if no further activity occurs. Thank you for your contributions.'
-          close-issue-message: 'This issue has been automatically closed due to the lack of recent activity. It will soon be closed if no further activity occurs. Thank you for your contributions.'
-          close-pr-message: 'This pull request has been automatically closed due to the lack of recent activity. It will soon be closed if no further activity occurs. Thank you for your contributions.'
+          close-issue-message: 'This issue has been automatically closed due to the lack of recent activity. Thank you for your contributions.'
+          close-pr-message: 'This pull request has been automatically closed due to the lack of recent activity. Thank you for your contributions.'
