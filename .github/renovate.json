@@ -1,0 +1,3 @@
+{
+    "extends": ["kyma-project/test-infra//.github/renovate-sharable-config"]
+}
