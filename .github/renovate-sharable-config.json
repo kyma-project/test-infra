@@ -76,7 +76,7 @@
       "customType": "regex",
       "managerFilePatterns": ["/.ya?ml$/", "/.sh$/", "/.json$/"],
       "matchStrings": [
-        "(?<depName>[a-z0-9.-]+(?:\/[a-z0-9.-]+)*)[:](?<currentValue>[a-z0-9][a-z0-9._-]*)"
+        "(?<depName>[a-z0-9.-]+(?:\/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
       ],
       "depNameTemplate": "{{depName}}",
       "currentValueTemplate": "{{currentValue}}",
