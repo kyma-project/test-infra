@@ -1,0 +1,18 @@
+name: Reusable Manage Stale Issues
+
+on:
+  workflow_call:
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 360
+          days-before-close: 180
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'antistale'
+          stale-issue-message: 'This issue has been automatically marked as stale due to the lack of recent activity. It will soon be closed if no further activity occurs. Thank you for your contributions.'
+          close-issue-message: 'This issue has been automatically closed due to the lack of recent activity.'
