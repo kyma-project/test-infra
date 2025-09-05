@@ -12,4 +12,6 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
         
       - uses: actions/setup-go@v6
+        with:
+          go-version: '1.25.1'
       - run: go test -cover ./...
