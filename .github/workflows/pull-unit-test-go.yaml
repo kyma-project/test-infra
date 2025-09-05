@@ -14,4 +14,7 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: '1.25.1'
-      - run: go test ./...
+      # https://github.com/golang/go/issues/75031
+      - name: Set toolchain version
+        run: go env -w GOTOOLCHAIN=go1.25.1+auto
+      - run: go test -cover ./...
