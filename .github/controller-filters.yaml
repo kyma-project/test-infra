@@ -112,6 +112,8 @@ pull-plan-prod-terraform-filter:
 pull-unit-test-go-filter:
   - ".github/workflows/pull-unit-test-go.yaml"
   - "**/*.go"
+  - "go.mod"
+  - "go.sum"
 
 pull-validate-dockerfiles-filter:
   - ".github/workflows/pull-validate-dockerfiles.yaml"
