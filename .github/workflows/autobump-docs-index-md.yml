@@ -59,6 +59,6 @@ jobs:
             --workdir /github/test-infra \
             --privileged \
             --cap-drop ALL \
-            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20250908-1eff8b04 \
+            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20250908-e026114d \
             --config=${{ env.AUTOBUMP_CONFIG_PATH }} \
             --labels-override=kind/chore,area/documentation
