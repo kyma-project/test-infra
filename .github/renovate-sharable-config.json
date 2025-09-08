@@ -12,22 +12,6 @@
 
   "packageRules": [
     {
-      "matchDatasources": ["npm"],
-      "minimumReleaseAge": "3 days"
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "dependencies (non-major)"
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "devDependencies (non-major)"
-    },
-    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": true
@@ -43,30 +27,24 @@
       "enabled": false
     },
     {
-      "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "go modules (non-major)",
-      "postUpdateOptions": [
-        "gomodTidy",
-        "gomodUpdateImportPaths"
-      ]
+      "matchManagers": ["pip_requirements"],
+      "groupName": "python dependencies"
     },
     {
-      "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["major"],
-      "groupName": "go modules (major)",
-      "postUpdateOptions": [
-        "gomodTidy",
-        "gomodUpdateImportPaths"
-      ]
+      "matchDatasources": ["terraform-provider"],
+      "groupName": "terraform providers"
     },
     {
-    "matchManagers": ["pip_requirements"],
-    "matchUpdateTypes": ["patch", "minor"],
-    "groupName": "python deps (non-major)"
+      "matchDatasources": ["docker"],
+      "groupName": "docker images"
     },
     {
-      "matchDatasources": ["docker"]
+      "matchManagers": ["regex"],
+      "groupName": "custom docker images",
+      "datasources": ["docker"],
+      "versioning": "loose",
+      "commitMessageExtra": "to the newest version",
+      "separateMajorMinor": false
     }
   ]
 }
