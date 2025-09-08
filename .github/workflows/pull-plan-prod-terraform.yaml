@@ -5,7 +5,7 @@ concurrency:
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
-    
+
 jobs:
   pull-plan-prod-terraform:
     permissions:
@@ -22,7 +22,7 @@ jobs:
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@d4fbab18738500fb2cdf8e23ab3fb79374fcb375
+        uses: ahmadnassri/action-workflow-queue@v1.2.0
 
       - name: Authenticate to GCP
         id: gcp_auth
@@ -30,7 +30,7 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
-      
+
       - name: Retrieve Terraform Planner github PAT
         id: secrets
         uses: google-github-actions/get-secretmanager-secrets@v3
@@ -44,14 +44,14 @@ jobs:
 
       - name: Setup GitHub comments
         id: setup-github-comment
-        uses: shmokmt/actions-setup-github-comment@df03d9556916062beb772d38e752f876ba6d5a32
+        uses: shmokmt/actions-setup-github-comment@v2.1.1
         with:
           version: v6.0.2
         if: ${{ !cancelled() }}
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@390797f9dfcbc9008da34194f84d165ee7768090
+        uses: shmokmt/actions-setup-tfcmt@v2.1.1
         with:
           version: v4.7.1
 

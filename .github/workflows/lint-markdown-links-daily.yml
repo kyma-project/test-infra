@@ -23,7 +23,7 @@ jobs:
           md-check-link -q -n 8 -c https://raw.githubusercontent.com/kyma-project/md-check-link/main/.mlc.config.json ./
       - name: Send Notification to Slack
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@a560f02f1e4a8dee2a30c9f08cf9f8a1d04c3f11
+        uses: slackapi/slack-github-action@v2.1.1
         with:
             payload: |
               {
