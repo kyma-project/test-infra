@@ -1,7 +1,7 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250908-1eff8b04
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250908-e026114d
     - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250908-1eff8b04
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250908-1eff8b04
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250908-1eff8b04
