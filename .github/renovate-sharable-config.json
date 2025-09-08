@@ -66,21 +66,7 @@
     "groupName": "python deps (non-major)"
     },
     {
-      "matchDatasources": ["docker"],
-      "versioning": "loose"
+      "matchDatasources": ["docker"]
     }
   ],
-
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/.ya?ml$/", "/.sh$/", "/.json$/"],
-      "matchStrings": [
-        "(?<depName>[a-z0-9.-]+(?:\/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
-      ],
-      "depNameTemplate": "{{depName}}",
-      "currentValueTemplate": "{{currentValue}}",
-      "datasourceTemplate": "docker"
-    }
-  ]
 }
