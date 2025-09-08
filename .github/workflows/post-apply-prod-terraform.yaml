@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v5
       - name: Wait for other terraform executions
         id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac
+        uses: ahmadnassri/action-workflow-queue@d4fbab18738500fb2cdf8e23ab3fb79374fcb375
       - name: Authenticate to GCP
         id: gcp-auth
         uses: google-github-actions/auth@v3
@@ -48,7 +48,7 @@ jobs:
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@04d5aa6dc61eaa69a4d00257224c9b97f4857819
+        uses: shmokmt/actions-setup-tfcmt@390797f9dfcbc9008da34194f84d165ee7768090
         with:
           version: v4.7.1
       - name: Terraform Init
