@@ -22,7 +22,7 @@ jobs:
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac
+        uses: ahmadnassri/action-workflow-queue@d4fbab18738500fb2cdf8e23ab3fb79374fcb375
 
       - name: Authenticate to GCP
         id: gcp_auth
@@ -44,14 +44,14 @@ jobs:
 
       - name: Setup GitHub comments
         id: setup-github-comment
-        uses: shmokmt/actions-setup-github-comment@1299f2274bfb3cd0c35f867160a6fb74fd82fdf8
+        uses: shmokmt/actions-setup-github-comment@df03d9556916062beb772d38e752f876ba6d5a32
         with:
           version: v6.0.2
         if: ${{ !cancelled() }}
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@04d5aa6dc61eaa69a4d00257224c9b97f4857819
+        uses: shmokmt/actions-setup-tfcmt@390797f9dfcbc9008da34194f84d165ee7768090
         with:
           version: v4.7.1
 
