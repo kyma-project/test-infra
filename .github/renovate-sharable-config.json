@@ -12,6 +12,10 @@
 
   "packageRules": [
     {
+      "matchManagers": ["gomod"],
+      "groupName": "All Go dependencies"
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": true
