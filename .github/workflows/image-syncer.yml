@@ -80,7 +80,7 @@ jobs:
           --workdir /github/workspace
           --rm
           --volume "$GITHUB_WORKSPACE:/github/workspace"
-          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250908-4873e2d4
+          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250909-2c346fe2
           --images-file=/github/workspace/external-images.yaml
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
