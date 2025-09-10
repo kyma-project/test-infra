@@ -22,9 +22,6 @@ var (
 	// SecScannerConfig contains path to security scanners config .yaml file
 	SecScannerConfig string
 
-	// KubernetesFiles contains root path to directory containing kubernetes deployments file
-	KubernetesFiles string
-
 	// AutobumpConfig contains root path to config for autobumper for sec-scanners-config
 	AutobumpConfig string
 
@@ -66,21 +63,6 @@ var rootCmd = &cobra.Command{
 			images = append(images, imgs...)
 		}
 
-		// get images from kubernetes
-		if KubernetesFiles != "" {
-			files, err := extractimageurls.FindFilesInDirectory(KubernetesFiles, ".*.(yaml|yml)")
-			if err != nil {
-				log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
-			}
-
-			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromKubernetesDeployments)
-			if err != nil {
-				log.Fatalf("failed to extract images from kubernetes files: %s", err)
-			}
-
-			images = append(images, imgs...)
-		}
-
 		images = extractimageurls.UniqueImages(images)
 
 		// sort list of images to have consistent order
@@ -104,7 +86,6 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files")
 	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
-	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 
