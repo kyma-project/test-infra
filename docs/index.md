@@ -31,3 +31,4 @@
 [Manage Workflow Controllers](/docs/how-to/how-to_manage_workflow_controller.md) - This guide explains how to manage Workflow Controllers. Workflow Controllers are responsible for orchestrating and triggering jobs in GitHub Actions workflows, especially for advanced scenarios like merge queues.
 
 [Workflow Controller](/docs/what-is/what-is_workflow_controller.md) - Workflow Controller is a GitHub Actions workflow that orchestrates and triggers downstream workflows based on repository changes. It implements advanced CI/CD logic, such as merge queues and selective job execution, by applying path-based filters to changed files. It was created due to a lack of filtering capabilities in GitHub Actions workflows for merge queues.
+
