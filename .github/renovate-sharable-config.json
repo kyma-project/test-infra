@@ -55,7 +55,13 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/.ya?ml$/", "/.sh$/", "/.json$/"],
+      "managerFilePatterns": [
+        "/.ya?ml$/",
+        "/.sh$/",
+        "/.json$/",
+        "/.tf$/",
+        "/.tfvars$/"
+      ],
       "matchStrings": [
         "(?<depName>[a-z0-9.-]+(?:/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
       ],
