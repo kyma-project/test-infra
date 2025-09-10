@@ -13,7 +13,8 @@
   "packageRules": [
     {
       "matchManagers": ["gomod"],
-      "groupName": "All Go dependencies"
+      "groupName": "All Go dependencies",
+      "rangeStrategy": "bump"
     },
     {
       "matchManagers": ["github-actions"],
