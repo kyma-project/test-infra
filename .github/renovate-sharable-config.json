@@ -64,7 +64,7 @@
         "/.tfvars$/"
       ],
       "matchStrings": [
-        "(?<depName>[a-z0-9.-]+(?:/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
+        "(?<depName>[a-z0-9.-]*\\.[a-z0-9.-]*(?:/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
       ],
       "depNameTemplate": "{{depName}}",
       "currentValueTemplate": "{{currentValue}}",
