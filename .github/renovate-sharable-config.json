@@ -10,6 +10,12 @@
   "platformAutomerge": true,
   "rebaseWhen": "conflicted",
 
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/testdata/**"
+  ],
+
   "packageRules": [
     {
       "matchManagers": ["gomod"],
