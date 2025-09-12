@@ -10,7 +10,7 @@
 
 [Image Builder: Maintenance Guide](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images using the Azure DevOps (ADO) pipeline backend.
 
-[Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
+[Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images.
 
 [image-syncer](/cmd/image-syncer/README.md) - Contents:
 
