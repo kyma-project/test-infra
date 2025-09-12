@@ -121,7 +121,6 @@ sign-config:
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration
 in the **org/repo** key, Image Builder also uses this service to sign the image.
-If the job is running in CI (Prow), it picks up the current **org/repo** value from the default Prow variables.
 If binary is running outside of CI, the `--repo` flag must be used. Otherwise, the configuration is not used.
 
 Image Builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to
