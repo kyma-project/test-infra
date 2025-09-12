@@ -13,8 +13,9 @@
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
-    "**/testdata/**",
-    "**/tests/**"
+    "**/test*/**",
+    "**/cypress/**"
+
   ],
 
   "packageRules": [
