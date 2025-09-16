@@ -721,11 +721,6 @@ func generateTags(logger Logger, o options) error {
 		return fmt.Errorf("failed to parse tags from options: %w", err)
 	}
 	logger.Infow("tags parsed successfully", "parsedTags", parsedTags)
-	logger.Debugw("appending values from envFile to tags")
-	// Append environment variables to tags.
-	appendToTags(logger, &parsedTags, envs)
-	// Print parsed tags to stdout as json.
-	logger.Debugw("environment variables appended to tags", "parsedTags", parsedTags)
 	logger.Debugw("converting parsed tags to JSON")
 	jsonTags, err := tagsAsJSON(parsedTags)
 	if err != nil {
