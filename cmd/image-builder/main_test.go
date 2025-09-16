@@ -720,7 +720,7 @@ func Test_loadEnv(t *testing.T) {
 		t.Errorf("got error but didn't want to: %s", err)
 	}
 	logger := zapLogger.Sugar()
-	_, err = loadEnv(logger, vfs, ".env")
+	err = loadEnv(logger, vfs, ".env")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -1051,84 +1051,6 @@ func Test_getDockerfileDirPath(t *testing.T) {
 			}
 			if strings.HasSuffix(got, "tt.want") {
 				t.Errorf("getDockerfileDirPath() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// func Test_getEnvs(t *testing.T) {
-// 	type args struct {
-// 		o              options
-// 		dockerfilePath string
-// 	}
-//
-// 	zapLogger, err := zap.NewProduction()
-// 	if err != nil {
-// 		t.Errorf("got error but didn't want to: %s", err)
-// 	}
-// 	logger := zapLogger.Sugar()
-//
-// 	tests := []struct {
-// 		name string
-// 		args args
-// 		want map[string]string
-// 	}{
-// 		{
-// 			name: "Empty env file path",
-// 			args: args{
-// 				o: options{
-// 					context:    ".",
-// 					dockerfile: "Dockerfile",
-// 					envFile:    "",
-// 					logger:     logger,
-// 				},
-// 			},
-// 			want: map[string]string{},
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			got, err := getEnvs(tt.args.o, tt.args.dockerfilePath)
-// 			if err != nil {
-// 				t.Errorf("getEnvs() error = %v", err)
-// 			}
-// 			if got != nil {
-// 				t.Errorf("getEnvs() = %v, want %v", got, tt.want)
-// 			}
-// 		})
-// 	}
-// }
-
-func Test_appendToTags(t *testing.T) {
-	type args struct {
-		target *[]tags.Tag
-		source map[string]string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *[]tags.Tag
-	}{
-		{
-			name: "Append tags",
-			args: args{
-				target: &[]tags.Tag{{Name: "key1", Value: "val1"}},
-				source: map[string]string{"key2": "val2"},
-			},
-			want: &[]tags.Tag{{Name: "key1", Value: "val1"}, {Name: "key2", Value: "val2"}},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			zapLogger, err := zap.NewProduction()
-			if err != nil {
-				t.Errorf("got error but didn't want to: %s", err)
-			}
-			logger := zapLogger.Sugar()
-			appendToTags(logger, tt.args.target, tt.args.source)
-
-			if !reflect.DeepEqual(tt.args.target, tt.want) {
-				t.Errorf("appendToTags() got = %v, want %v", tt.args.target, tt.want)
 			}
 		})
 	}

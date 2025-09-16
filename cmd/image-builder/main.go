@@ -322,15 +322,6 @@ func buildInADO(o options) error {
 	return nil
 }
 
-// appendToTags appends key-value pairs from source map to target slice of tags.Tag
-// This allows creation of image tags from key value pairs.
-func appendToTags(logger Logger, target *[]tags.Tag, source map[string]string) {
-	for key, value := range source {
-		logger.Debugw("appending key-value pair to tags", "key", key, "value", value)
-		*target = append(*target, tags.Tag{Name: key, Value: value})
-	}
-}
-
 // TODO: write tests for this function
 func signImages(o *options, images []string) error {
 	// use o.orgRepo as default value since someone might have loaded is as a flag
@@ -513,22 +504,21 @@ func validateOptions(o options) error {
 }
 
 // loadEnv creates environment variables in application runtime from a file with key=value data
-func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error) {
+func loadEnv(logger Logger, vfs fs.FS, envFile string) error {
 	logger.Debugw("loading env file", "envFile_path", envFile)
 	if len(envFile) == 0 {
 		logger.Infow("provided env file path is empty, skipping loading env file")
 		// file is empty - ignore
-		return nil, nil
+		return nil
 	}
 	logger.Debugw("Opening env file")
 	file, err := vfs.Open(envFile)
 	if err != nil {
-		return nil, fmt.Errorf("open env file: %w", err)
+		return fmt.Errorf("open env file: %w", err)
 	}
 	defer file.Close()
 	logger.Debugw("File opened")
 	fileReader := bufio.NewScanner(file)
-	vars := make(map[string]string)
 	logger.Debugw("Reading env file line by line")
 	for fileReader.Scan() {
 		line := fileReader.Text()
@@ -537,7 +527,7 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 		logger.Debugw("Splitting envFile line", "separator", "=")
 		separatedValues := strings.SplitN(line, "=", 2)
 		if len(separatedValues) > 2 {
-			return nil, fmt.Errorf("env var split incorrectly, got more than two values, expected only two, values: %v", separatedValues)
+			return fmt.Errorf("env var split incorrectly, got more than two values, expected only two, values: %v", separatedValues)
 		}
 		// ignore empty lines, setup environment variable only if key and value are present
 		if len(separatedValues) == 2 {
@@ -554,15 +544,13 @@ func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error
 			logger.Debugw("Setting env file for a given key in runtime")
 			err := os.Setenv(key, val)
 			if err != nil {
-				return nil, fmt.Errorf("setenv: %w", err)
+				return fmt.Errorf("setenv: %w", err)
 			}
 			logger.Debugw("Adding env file key to vars, to be injected as build args")
-			// add value to the vars that will be injected as build args
-			vars[key] = val
 		}
 	}
 	logger.Debugw("Finished processing env file")
-	return vars, nil
+	return nil
 }
 
 func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
@@ -701,18 +689,9 @@ func generateTags(logger Logger, o options) error {
 	logger.Debugw("dockerfile directory path retrieved", "dockerfileDirPath", dockerfileDirPath)
 	logger.Debugw("getting environment variables from environment file", "envFile", o.envFile, "dockerfileDirPath", dockerfileDirPath)
 	// Load environment variables from the envFile.
-	envs, err := loadEnv(logger, os.DirFS(dockerfileDirPath), o.envFile)
+	err = loadEnv(logger, os.DirFS(dockerfileDirPath), o.envFile)
 	if err != nil {
 		return fmt.Errorf("failed to load environment variables from env file: %w", err)
-	}
-	// If envs is nil, alocate empty map. getEnvs returns nil if envFile path is empty.
-	if envs == nil {
-		envs = make(map[string]string)
-		logger.Infow("no environment file provided")
-		logger.Debugw("initialized empty envs map")
-	} else {
-		logger.Infow("environment variables successfully loaded from file")
-		logger.Debugw("environment variables", "envs", envs)
 	}
 	logger.Debugw("parsing tags from options")
 	// Parse tags from the provided options.
