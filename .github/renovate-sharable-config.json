@@ -3,7 +3,8 @@
 
   "extends": [
     "config:recommended",
-    "customManagers:dockerfileVersions"
+    "customManagers:dockerfileVersions",
+    "helpers:pinGitHubActionDigests"
   ],
 
   "labels": ["renovate-dependencies"],
@@ -31,16 +32,6 @@
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": true
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchDepNames": [
-        "wechuli/allcheckspassed",
-        "actions/deploy-pages",
-        "actions/upload-pages-artifact",
-        "actions/upload-artifact"
-      ],
-      "enabled": false
     },
     {
       "matchManagers": ["pip_requirements"],
