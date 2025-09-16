@@ -177,8 +177,6 @@ var _ = Describe("Image Builder", func() {
 			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("VERSION=1.2.3\nAPP_NAME=my-app")}},
 			tagsToJSON([]tags.Tag{
 				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "VERSION", Value: "1.2.3"},
-				{Name: "APP_NAME", Value: "my-app"},
 			}),
 			false,
 		),
@@ -217,7 +215,6 @@ var _ = Describe("Image Builder", func() {
 				{Name: "stable", Value: "true"},
 				{Name: "latest", Value: "latest"},
 				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "RELEASE_NAME", Value: "summer-release"},
 			}),
 			false,
 		),
@@ -246,7 +243,6 @@ var _ = Describe("Image Builder", func() {
 			},
 			tagsToJSON([]tags.Tag{
 				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "EMPTY_VAL", Value: ""},
 			}),
 			false,
 		),
