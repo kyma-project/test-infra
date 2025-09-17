@@ -165,24 +165,6 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 
-		Entry("Success - With env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("VERSION=1.2.3\nAPP_NAME=my-app")}},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "VERSION", Value: "1.2.3"},
-				{Name: "APP_NAME", Value: "my-app"},
-			}),
-			false,
-		),
-
 		Entry("Success - With Base64 tags",
 			options{
 				Config:         buildConfig,
@@ -201,56 +183,6 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 
-		Entry("Success - All inputs combined",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "build/Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tags:           sets.Tags{{Name: "stable", Value: "true"}},
-				tagsBase64:     base64.StdEncoding.EncodeToString([]byte("latest")),
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"build/Dockerfile": {}, "build/.env": {Data: []byte("RELEASE_NAME=summer-release")}},
-			tagsToJSON([]tags.Tag{
-				{Name: "stable", Value: "true"},
-				{Name: "latest", Value: "latest"},
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "RELEASE_NAME", Value: "summer-release"},
-			}),
-			false,
-		),
-
-		Entry("Edge Case - Empty env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("")}},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-			}),
-			false,
-		),
-
-		Entry("Edge Case - .env with empty value",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
-			fstest.MapFS{
-				"Dockerfile": {},
-				".env":       {Data: []byte("EMPTY_VAL=")},
-			},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-				{Name: "EMPTY_VAL", Value: ""},
-			}),
-			false,
-		),
-
 		Entry("Edge Case - No output file specified",
 			options{
 				Config:         buildConfig,
@@ -262,30 +194,6 @@ var _ = Describe("Image Builder", func() {
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			false,
-		),
-
-		Entry("Error - .env with empty key",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
-			fstest.MapFS{
-				"Dockerfile": {},
-				".env":       {Data: []byte("=some_value")},
-			},
-			"",
-			true,
-		),
-
-		Entry("Error - Invalid Dockerfile path with env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "nonexistent/Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{},
-			"",
-			true,
 		),
 
 		Entry("Error - Invalid tag template",
@@ -420,17 +328,6 @@ var _ = Describe("Image Builder", func() {
 			},
 			true,
 		),
-		Entry(
-			"envFile with buildInADO",
-			options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				envFile:    "envfile",
-			},
-			false,
-		),
 	)
 
 	DescribeTable("Test Flags",
@@ -555,7 +452,7 @@ var _ = Describe("Image Builder", func() {
 					JobType: "postsubmit",
 				},
 				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+					{Name: "1.25.1-ShortSHA", Value: "1.25.1-{{ .ShortSHA }}"},
 				},
 			},
 			pipelines.OCIImageBuilderTemplateParams{
@@ -567,7 +464,7 @@ var _ = Describe("Image Builder", func() {
 				"PullBaseSHA": "",
 				"RepoName":    "",
 				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Tags":        "MS4yNS4xLVNob3J0U0hBPTEuMjUuMS17eyAuU2hvcnRTSEEgfX0=",
 				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
@@ -580,7 +477,7 @@ var _ = Describe("Image Builder", func() {
 					BaseCommitRef: "main",
 				},
 				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+					{Name: "1.25.1-ShortSHA", Value: "1.25.1-{{ .ShortSHA }}"},
 				},
 			},
 			pipelines.OCIImageBuilderTemplateParams{
@@ -593,7 +490,7 @@ var _ = Describe("Image Builder", func() {
 				"BaseRef":     "main",
 				"RepoName":    "",
 				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Tags":        "MS4yNS4xLVNob3J0U0hBPTEuMjUuMS17eyAuU2hvcnRTSEEgfX0=",
 				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
@@ -700,37 +597,6 @@ func Test_getTags(t *testing.T) {
 				t.Errorf("%v != %v", got, c.expectResult)
 			}
 		})
-	}
-}
-
-func Test_loadEnv(t *testing.T) {
-	// static value that should not be overridden
-	t.Setenv("key3", "static-value")
-	vfs := fstest.MapFS{
-		".env": &fstest.MapFile{Data: []byte("KEY=VAL\nkey2=val2\nkey3=val3\nkey4=val4=asf"), Mode: 0666},
-	}
-	expected := map[string]string{
-		"KEY":  "VAL",
-		"key2": "val2",
-		"key3": "static-value",
-		"key4": "val4=asf",
-	}
-	zapLogger, err := zap.NewProduction()
-	if err != nil {
-		t.Errorf("got error but didn't want to: %s", err)
-	}
-	logger := zapLogger.Sugar()
-	_, err = loadEnv(logger, vfs, ".env")
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	for k, v := range expected {
-		got := os.Getenv(k)
-		if got != v {
-			t.Errorf("%v != %v", got, v)
-		}
-		os.Unsetenv(k)
 	}
 }
 
@@ -1051,84 +917,6 @@ func Test_getDockerfileDirPath(t *testing.T) {
 			}
 			if strings.HasSuffix(got, "tt.want") {
 				t.Errorf("getDockerfileDirPath() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// func Test_getEnvs(t *testing.T) {
-// 	type args struct {
-// 		o              options
-// 		dockerfilePath string
-// 	}
-//
-// 	zapLogger, err := zap.NewProduction()
-// 	if err != nil {
-// 		t.Errorf("got error but didn't want to: %s", err)
-// 	}
-// 	logger := zapLogger.Sugar()
-//
-// 	tests := []struct {
-// 		name string
-// 		args args
-// 		want map[string]string
-// 	}{
-// 		{
-// 			name: "Empty env file path",
-// 			args: args{
-// 				o: options{
-// 					context:    ".",
-// 					dockerfile: "Dockerfile",
-// 					envFile:    "",
-// 					logger:     logger,
-// 				},
-// 			},
-// 			want: map[string]string{},
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			got, err := getEnvs(tt.args.o, tt.args.dockerfilePath)
-// 			if err != nil {
-// 				t.Errorf("getEnvs() error = %v", err)
-// 			}
-// 			if got != nil {
-// 				t.Errorf("getEnvs() = %v, want %v", got, tt.want)
-// 			}
-// 		})
-// 	}
-// }
-
-func Test_appendToTags(t *testing.T) {
-	type args struct {
-		target *[]tags.Tag
-		source map[string]string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *[]tags.Tag
-	}{
-		{
-			name: "Append tags",
-			args: args{
-				target: &[]tags.Tag{{Name: "key1", Value: "val1"}},
-				source: map[string]string{"key2": "val2"},
-			},
-			want: &[]tags.Tag{{Name: "key1", Value: "val1"}, {Name: "key2", Value: "val2"}},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			zapLogger, err := zap.NewProduction()
-			if err != nil {
-				t.Errorf("got error but didn't want to: %s", err)
-			}
-			logger := zapLogger.Sugar()
-			appendToTags(logger, tt.args.target, tt.args.source)
-
-			if !reflect.DeepEqual(tt.args.target, tt.want) {
-				t.Errorf("appendToTags() got = %v, want %v", tt.args.target, tt.want)
 			}
 		})
 	}

@@ -33,9 +33,6 @@ cache:
 
 ### Environment Variables
 
-The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
-All variables and their values are loaded into the environment before the build starts.
-The file must be in the format of `KEY=VALUE` pairs, separated by newlines.
 Environment variables are mainly used to provide runtime values and configuration set by the CI/CD system.
 They provide details about the context in which the tool is running.
 
