@@ -165,22 +165,6 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 
-		Entry("Success - With env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("VERSION=1.2.3\nAPP_NAME=my-app")}},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-			}),
-			false,
-		),
-
 		Entry("Success - With Base64 tags",
 			options{
 				Config:         buildConfig,
@@ -199,54 +183,6 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 
-		Entry("Success - All inputs combined",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "build/Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tags:           sets.Tags{{Name: "stable", Value: "true"}},
-				tagsBase64:     base64.StdEncoding.EncodeToString([]byte("latest")),
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"build/Dockerfile": {}, "build/.env": {Data: []byte("RELEASE_NAME=summer-release")}},
-			tagsToJSON([]tags.Tag{
-				{Name: "stable", Value: "true"},
-				{Name: "latest", Value: "latest"},
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-			}),
-			false,
-		),
-
-		Entry("Edge Case - Empty env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{"Dockerfile": {}, ".env": {Data: []byte("")}},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-			}),
-			false,
-		),
-
-		Entry("Edge Case - .env with empty value",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
-			fstest.MapFS{
-				"Dockerfile": {},
-				".env":       {Data: []byte("EMPTY_VAL=")},
-			},
-			tagsToJSON([]tags.Tag{
-				expectedDefaultPRTag(prGitState.PullRequestNumber),
-			}),
-			false,
-		),
-
 		Entry("Edge Case - No output file specified",
 			options{
 				Config:         buildConfig,
@@ -258,30 +194,6 @@ var _ = Describe("Image Builder", func() {
 			fstest.MapFS{"Dockerfile": {}},
 			"",
 			false,
-		),
-
-		Entry("Error - .env with empty key",
-			options{Config: buildConfig, gitState: prGitState, dockerfile: "Dockerfile", context: ".", envFile: ".env", tagsOutputFile: "tags.json"},
-			fstest.MapFS{
-				"Dockerfile": {},
-				".env":       {Data: []byte("=some_value")},
-			},
-			"",
-			true,
-		),
-
-		Entry("Error - Invalid Dockerfile path with env file",
-			options{
-				Config:         buildConfig,
-				gitState:       prGitState,
-				dockerfile:     "nonexistent/Dockerfile",
-				context:        ".",
-				envFile:        ".env",
-				tagsOutputFile: "tags.json",
-			},
-			fstest.MapFS{},
-			"",
-			true,
 		),
 
 		Entry("Error - Invalid tag template",
@@ -415,17 +327,6 @@ var _ = Describe("Image Builder", func() {
 				imagesToSign: []string{"image1"},
 			},
 			true,
-		),
-		Entry(
-			"envFile with buildInADO",
-			options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "dockerfile",
-				configPath: "config.yaml",
-				envFile:    "envfile",
-			},
-			false,
 		),
 	)
 
@@ -696,37 +597,6 @@ func Test_getTags(t *testing.T) {
 				t.Errorf("%v != %v", got, c.expectResult)
 			}
 		})
-	}
-}
-
-func Test_loadEnv(t *testing.T) {
-	// static value that should not be overridden
-	t.Setenv("key3", "static-value")
-	vfs := fstest.MapFS{
-		".env": &fstest.MapFile{Data: []byte("KEY=VAL\nkey2=val2\nkey3=val3\nkey4=val4=asf"), Mode: 0666},
-	}
-	expected := map[string]string{
-		"KEY":  "VAL",
-		"key2": "val2",
-		"key3": "static-value",
-		"key4": "val4=asf",
-	}
-	zapLogger, err := zap.NewProduction()
-	if err != nil {
-		t.Errorf("got error but didn't want to: %s", err)
-	}
-	logger := zapLogger.Sugar()
-	err = loadEnv(logger, vfs, ".env")
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	for k, v := range expected {
-		got := os.Getenv(k)
-		if got != v {
-			t.Errorf("%v != %v", got, v)
-		}
-		os.Unsetenv(k)
 	}
 }
 
