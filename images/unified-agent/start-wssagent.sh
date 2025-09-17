@@ -91,6 +91,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     exit 1
   fi
   pushd "${FOLDER}" # change to passed parameter
+  ls -al
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
