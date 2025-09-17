@@ -27,8 +27,8 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/kyma-project/test-infra/pkg/github/updater"
 	"github.com/sirupsen/logrus"
-	"sigs.k8s.io/prow/cmd/generic-autobumper/updater"
 	"sigs.k8s.io/prow/pkg/config/secret"
 	"sigs.k8s.io/prow/pkg/github"
 )
