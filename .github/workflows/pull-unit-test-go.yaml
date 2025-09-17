@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version: '1.25.1'
       # https://github.com/golang/go/issues/75031

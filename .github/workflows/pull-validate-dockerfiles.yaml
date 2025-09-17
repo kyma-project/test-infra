@@ -12,7 +12,7 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Lint Dockerfiles
-        uses: hadolint/hadolint-action@v3.2.0
+        uses: hadolint/hadolint-action@3fc49fb50d59c6ab7917a2e4195dba633e515b29 # v3.2.0
         with:
           dockerfile: "Dockerfile"
           recursive: true
