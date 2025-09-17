@@ -452,7 +452,7 @@ var _ = Describe("Image Builder", func() {
 					JobType: "postsubmit",
 				},
 				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+					{Name: "1.25.1-ShortSHA", Value: "1.25.1-{{ .ShortSHA }}"},
 				},
 			},
 			pipelines.OCIImageBuilderTemplateParams{
@@ -464,7 +464,7 @@ var _ = Describe("Image Builder", func() {
 				"PullBaseSHA": "",
 				"RepoName":    "",
 				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Tags":        "MS4yNS4xLVNob3J0U0hBPTEuMjUuMS17eyAuU2hvcnRTSEEgfX0=",
 				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
@@ -477,7 +477,7 @@ var _ = Describe("Image Builder", func() {
 					BaseCommitRef: "main",
 				},
 				tags: sets.Tags{
-					{Name: "{{ .Env \"GOLANG_VERSION\" }}-ShortSHA", Value: "{{ .Env \"GOLANG_VERSION\" }}-{{ .ShortSHA }}"},
+					{Name: "1.25.1-ShortSHA", Value: "1.25.1-{{ .ShortSHA }}"},
 				},
 			},
 			pipelines.OCIImageBuilderTemplateParams{
@@ -490,7 +490,7 @@ var _ = Describe("Image Builder", func() {
 				"BaseRef":     "main",
 				"RepoName":    "",
 				"RepoOwner":   "",
-				"Tags":        "e3sgLkVudiAiR09MQU5HX1ZFUlNJT04iIH19LVNob3J0U0hBPXt7IC5FbnYgIkdPTEFOR19WRVJTSU9OIiB9fS17eyAuU2hvcnRTSEEgfX0=",
+				"Tags":        "MS4yNS4xLVNob3J0U0hBPTEuMjUuMS17eyAuU2hvcnRTSEEgfX0=",
 				"Platforms":   "linux/amd64,linux/arm64",
 			},
 			false,
