@@ -28,10 +28,3 @@ The workflow that uses Image Autobumper reusable workflow must use the exact ref
 ```yaml
 uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
 ```
-
-> [!WARNING]
-> Using different references to the reusable workflow results in an error during the workflow execution.
-
-## Reusable Workflow Inputs
-
-The Image Autobumper reusable workflow accepts inputs to parametrize the build process. See the accepted inputs description in the [`image-autobumper` reusable workflow](/.github/workflows/image-autobumper.yml) file.
