@@ -90,8 +90,11 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     echo "component name cannot be empty"
     exit 1
   fi
-  pushd "${FOLDER}" # change to passed parameter
   ls -al
+  pwd
+  pushd "${FOLDER}" # change to passed parameter
+  ls -al $1
+  pwd
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
