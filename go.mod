@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.25.1
 
 require (
-	cloud.google.com/go/compute/metadata v0.8.1
+	cloud.google.com/go/compute/metadata v0.8.2
 	cloud.google.com/go/logging v1.13.0
 	cloud.google.com/go/pubsub/v2 v2.0.0
 	github.com/avast/retry-go/v4 v4.6.1
