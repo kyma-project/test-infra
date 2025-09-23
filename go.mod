@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/logging v1.13.0
 	cloud.google.com/go/pubsub/v2 v2.0.0
 	github.com/avast/retry-go/v4 v4.6.1
-	github.com/cloudevents/sdk-go/v2 v2.16.1
+	github.com/cloudevents/sdk-go/v2 v2.16.2
 	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/go-jose/go-jose/v4 v4.1.2
 	github.com/google/go-containerregistry v0.20.6
