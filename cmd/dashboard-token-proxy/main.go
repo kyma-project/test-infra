@@ -70,7 +70,12 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 			return
 		}
 
-		code := r.Form["oauthz_code"][0]
+		code := r.FormValue("oauthz_code")
+		if code == "" {
+			log.Printf("oauthz_code is missing")
+			http.Error(w, "oauthz_code is missing", http.StatusBadRequest)
+			return
+		}
 		sanitizedCode := sanitizeUserInput(code)
 
 		data := url.Values{}
