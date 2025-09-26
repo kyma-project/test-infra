@@ -12,6 +12,7 @@ require (
 	github.com/go-jose/go-jose/v4 v4.1.2
 	github.com/google/go-containerregistry v0.20.6
 	github.com/google/go-github/v74 v74.0.0
+	github.com/google/go-github/v75 v75.0.0
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/onsi/ginkgo/v2 v2.25.3
