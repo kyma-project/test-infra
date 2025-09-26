@@ -1,0 +1,13 @@
+name: renovate-auto-approve
+
+on:
+  workflow_dispatch:
+jobs:
+  renovate-auto-approve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: DEBUG - Check repo id and owner id for token permissions
+        run: env
