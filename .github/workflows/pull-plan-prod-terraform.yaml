@@ -22,36 +22,36 @@ jobs:
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@v1.2.0
+        uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac # v1.2.0
 
       - name: Authenticate to GCP
         id: gcp_auth
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
 
       - name: Retrieve Terraform Planner github PAT
         id: secrets
-        uses: google-github-actions/get-secretmanager-secrets@v3
+        uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
         with:
           secrets: |-
              gh-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: opentofu/setup-opentofu@v1
+        uses: opentofu/setup-opentofu@000eeb8522f0572907c393e8151076c205fdba1b # v1
 
       - name: Setup GitHub comments
         id: setup-github-comment
-        uses: shmokmt/actions-setup-github-comment@v2.1.1
+        uses: shmokmt/actions-setup-github-comment@1299f2274bfb3cd0c35f867160a6fb74fd82fdf8 # v2.1.1
         with:
           version: v6.0.2
         if: ${{ !cancelled() }}
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@v2.1.1
+        uses: shmokmt/actions-setup-tfcmt@04d5aa6dc61eaa69a4d00257224c9b97f4857819 # v2.1.1
         with:
           version: v4.7.1
 
