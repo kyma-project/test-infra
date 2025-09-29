@@ -1,13 +1,13 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250910-d72a130f
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250910-d72a130f
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250910-d72a130f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250910-d72a130f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250910-d72a130f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250905-c1a9320e
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250910-77a3f821
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20250924-935a21c6
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20250924-935a21c6
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20250924-935a21c6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20250924-935a21c6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20250924-935a21c6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20250917-e51a4bba
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20250926-6853cb45
 mend:
     language: golang-mod
     exclude:

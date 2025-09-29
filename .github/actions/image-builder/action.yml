@@ -34,10 +34,6 @@ inputs:
     description: Path to the config file
     required: false
     default: "./configs/image-builder-client-config.yaml"
-  env-file:
-    description: Path to file with environment variables to be loaded in the build
-    required: false
-    default: ""
   dry-run:
     description: Prevent actual triggering the image builder
     required: false
@@ -103,7 +99,7 @@ runs:
       id: prepare-platforms
       shell: bash
     
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250912-39eb456a
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20250924-935a21c6
       id: build
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --env-file=${{ inputs.env-file }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }}

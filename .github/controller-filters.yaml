@@ -23,13 +23,6 @@ build-github-webhook-gateway-filter:
   - "go.mod"
   - "go.sum"
 
-build-image-autobumper-filter:
-  - "cmd/image-autobumper/Dockerfile"
-  - "cmd/image-autobumper/**"
-  - "pkg/github/bumper/**"
-  - "go.mod"
-  - "go.sum"
-
 build-image-builder-filter:
   - "cmd/image-builder/*.go"
   - "cmd/image-builder/*"
