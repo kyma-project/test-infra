@@ -47,6 +47,12 @@ on:
         default: |
           linux/arm64
           linux/amd64
+      target:
+        description: Specify which build stage in the Dockerfile to use as the target
+        required: false
+        type: string
+        default: ""
+
     outputs:
       images:
         description: JSON list of images built by image-builder
@@ -122,6 +128,7 @@ jobs:
           config: "./configs/image-builder-client-config.yaml"
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
           platforms: ${{ inputs.platforms }}
+          target: ${{ inputs.target }}
 
       - name: Print built images
         run: |
