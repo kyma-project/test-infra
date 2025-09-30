@@ -432,6 +432,20 @@ var _ = Describe("Image Builder", func() {
 			},
 			false,
 		),
+		Entry("target flag, pass",
+			[]string{
+				"--target=build",
+			},
+			options{
+				context:        ".",
+				configPath:     "/config/image-builder-config.yaml",
+				dockerfile:     "dockerfile",
+				logDir:         "/logs/artifacts",
+				tagsOutputFile: "/generated-tags.json",
+				target:         "build",
+			},
+			false,
+		),
 	)
 
 	DescribeTable("Test prepareADOTemplateParameters",
@@ -492,6 +506,27 @@ var _ = Describe("Image Builder", func() {
 				"RepoOwner":   "",
 				"Tags":        "MS4yNS4xLVNob3J0U0hBPTEuMjUuMS17eyAuU2hvcnRTSEEgfX0=",
 				"Platforms":   "linux/amd64,linux/arm64",
+			},
+			false,
+		),
+		Entry("With target set",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				target: "build",
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":     "",
+				"Dockerfile":  "",
+				"ExportTags":  "false",
+				"JobType":     "postsubmit",
+				"Name":        "",
+				"PullBaseSHA": "",
+				"RepoName":    "",
+				"RepoOwner":   "",
+				"Platforms":   "linux/amd64,linux/arm64",
+				"Target":      "build",
 			},
 			false,
 		),
