@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/google/go-github/v74/github"
+	"github.com/google/go-github/v75/github"
 	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
