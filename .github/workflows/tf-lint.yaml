@@ -21,7 +21,7 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@ae78205cfffec9e8d93fd2b3115c7e9d3166d4b6 # v5
+        uses: terraform-linters/setup-tflint@a8a2cbdfb17397afadcc4fb3fcd64fdb215f0f9f # v6
 
       - name: Init TFLint
         run: tflint --init

@@ -118,6 +118,7 @@ Certain parameters need to be defined by the user in addition to the data taken 
 - **ExportTags**: Whether to export the tags.
 - **EnvFile**: The environment variables file.
 - **Platforms**: A list of platforms to be built in the format `os/arch`. The default is `linux/amd64` and `linux/arm64`.
+- **Target**: A string which specifies the target build stage in the Dockerfile
 
 See the list of reusable workflow inputs in
 the [image-builder.yml](https://github.com/kyma-project/test-infra/blob/main/.github/workflows/image-builder.yml#L5-L40)
