@@ -7,7 +7,7 @@ resource "google_service_account" "terraform_executor" {
   project      = var.terraform_executor_gcp_service_account.project_id
   account_id   = var.terraform_executor_gcp_service_account.id
   display_name = var.terraform_executor_gcp_service_account.id
-  description  = "Identity of terraform executor. It's mapped to k8s service account through workload identity."
+  description  = "Identity of terraform executor."
 }
 
 # Grant owner role to terraform executor service account in the prow project.
