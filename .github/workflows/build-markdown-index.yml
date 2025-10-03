@@ -16,3 +16,4 @@ jobs:
       context: .
       platforms: |
         linux/amd64
+      target: runtime
