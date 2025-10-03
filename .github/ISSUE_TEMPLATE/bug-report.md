@@ -17,8 +17,6 @@ assignees: ''
 <!-- Provide a clear and concise description of the problem.
 Describe where it appears, when it occurred, and what it affects.  -->
 
-<!-- Provide relevant technical details such as the Kubernetes version, the cluster name and provider, the Prow version, the browser name and version, or the operating system. -->
-
 **Expected result**
 
 <!-- Describe what you expect to happen. -->

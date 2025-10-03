@@ -159,6 +159,10 @@ func (p OCIImageBuilderTemplateParams) SetPlatforms(platforms string) {
 	p["Platforms"] = platforms
 }
 
+func (p OCIImageBuilderTemplateParams) SetTarget(target string) {
+	p["Target"] = target
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {

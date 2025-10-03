@@ -14,7 +14,7 @@ terraform {
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.22.0"
+      version = "2.38.0"
     }
     kubectl = {
       source  = "alekc/kubectl"
@@ -22,7 +22,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "~> 6.2.3"
+      version = "~> 6.6.0"
     }
   }
 }

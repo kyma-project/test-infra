@@ -38,7 +38,6 @@ If the execution fails, the image-builder action fails. If the execution succeed
           export-tags: true
           image-name: 'ginkgo'
           dockerfile: 'Dockerfile'
-          env-file: 'envs'
           config: "./configs/image-builder-client-config.yaml"
           platforms: |
             linux/amd64

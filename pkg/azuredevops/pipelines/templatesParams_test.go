@@ -102,6 +102,11 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["Platforms"]).To(Equal("linux/amd64"))
 	})
 
+	It("sets the correct Target", func() {
+		params.SetTarget("build")
+		Expect(params["Target"]).To(Equal("build"))
+	})
+
 	// TODO: Improve assertions with more specific matchers and values.
 	It("validates the params correctly", func() {
 		// Set all required parameters

@@ -44,8 +44,7 @@ resource "google_project_iam_member" "terraform_planner_prow_project_read_access
   for_each = toset([
     "roles/viewer",
     "roles/storage.objectViewer",
-    "roles/iam.securityReviewer",
-    "roles/container.developer" # TODO(KacperMalachowski): Remove when Prow will be removed
+    "roles/iam.securityReviewer"
   ])
   project = var.terraform_planner_gcp_service_account.project_id
   role    = each.key

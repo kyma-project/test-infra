@@ -23,13 +23,6 @@ build-github-webhook-gateway-filter:
   - "go.mod"
   - "go.sum"
 
-build-image-autobumper-filter:
-  - "cmd/image-autobumper/Dockerfile"
-  - "cmd/image-autobumper/**"
-  - "pkg/github/bumper/**"
-  - "go.mod"
-  - "go.sum"
-
 build-image-builder-filter:
   - "cmd/image-builder/*.go"
   - "cmd/image-builder/*"
@@ -112,6 +105,8 @@ pull-plan-prod-terraform-filter:
 pull-unit-test-go-filter:
   - ".github/workflows/pull-unit-test-go.yaml"
   - "**/*.go"
+  - "go.mod"
+  - "go.sum"
 
 pull-validate-dockerfiles-filter:
   - ".github/workflows/pull-validate-dockerfiles.yaml"

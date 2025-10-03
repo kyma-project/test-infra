@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -32,7 +30,6 @@ type options struct {
 	configPath string
 	context    string
 	dockerfile string
-	envFile    string
 	name       string
 	logDir     string
 	logger     Logger
@@ -64,6 +61,7 @@ type options struct {
 	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
 	// reported as an output variable in Azure DevOps
 	adoStateOutput bool
+	target         string
 }
 
 type Logger interface {
@@ -119,10 +117,6 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 	templateParameters.SetDockerfilePath(options.dockerfile)
 
-	if len(options.envFile) > 0 {
-		templateParameters.SetEnvFilePath(options.envFile)
-	}
-
 	templateParameters.SetBuildContext(options.context)
 
 	templateParameters.SetExportTags(options.exportTags)
@@ -148,6 +142,10 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	} else {
 		// Set default platforms to linux/amd64,linux/arm64, if not set. There is no way to set during flag parsing.
 		templateParameters.SetPlatforms("linux/amd64,linux/arm64")
+	}
+
+	if options.target != "" {
+		templateParameters.SetTarget(options.target)
 	}
 
 	err := templateParameters.Validate()
@@ -291,7 +289,7 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot marshal list of architectures: %w", err)
 		}
 
-		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architetcures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
+		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architectures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
 
 		err = actions.SetOutput("images", string(imagesJSON))
 		if err != nil {
@@ -320,15 +318,6 @@ func buildInADO(o options) error {
 		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
 	}
 	return nil
-}
-
-// appendToTags appends key-value pairs from source map to target slice of tags.Tag
-// This allows creation of image tags from key value pairs.
-func appendToTags(logger Logger, target *[]tags.Tag, source map[string]string) {
-	for key, value := range source {
-		logger.Debugw("appending key-value pair to tags", "key", key, "value", value)
-		*target = append(*target, tags.Tag{Name: key, Value: value})
-	}
 }
 
 // TODO: write tests for this function
@@ -512,64 +501,10 @@ func validateOptions(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
-// loadEnv creates environment variables in application runtime from a file with key=value data
-func loadEnv(logger Logger, vfs fs.FS, envFile string) (map[string]string, error) {
-	logger.Debugw("loading env file", "envFile_path", envFile)
-	if len(envFile) == 0 {
-		logger.Infow("provided env file path is empty, skipping loading env file")
-		// file is empty - ignore
-		return nil, nil
-	}
-	logger.Debugw("Opening env file")
-	file, err := vfs.Open(envFile)
-	if err != nil {
-		return nil, fmt.Errorf("open env file: %w", err)
-	}
-	defer file.Close()
-	logger.Debugw("File opened")
-	fileReader := bufio.NewScanner(file)
-	vars := make(map[string]string)
-	logger.Debugw("Reading env file line by line")
-	for fileReader.Scan() {
-		line := fileReader.Text()
-		logger = logger.With("line", line)
-		logger.Debugw("Processing envFile line")
-		logger.Debugw("Splitting envFile line", "separator", "=")
-		separatedValues := strings.SplitN(line, "=", 2)
-		if len(separatedValues) > 2 {
-			return nil, fmt.Errorf("env var split incorrectly, got more than two values, expected only two, values: %v", separatedValues)
-		}
-		// ignore empty lines, setup environment variable only if key and value are present
-		if len(separatedValues) == 2 {
-			logger.Debugw("Separated values", "key", separatedValues[0], "value", separatedValues[1])
-			logger = logger.With("key", separatedValues[0], "value", separatedValues[1])
-			key, val := separatedValues[0], separatedValues[1]
-			logger.Debugw("Checking if env file for a given key is already present in runtime")
-			if _, ok := os.LookupEnv(key); ok {
-				// do not override env variable if it's already present in the runtime
-				// do not include in vars map since dev should not have access to it anyway
-				logger.Infow("Env file key already present in runtime, skipping setting it")
-				continue
-			}
-			logger.Debugw("Setting env file for a given key in runtime")
-			err := os.Setenv(key, val)
-			if err != nil {
-				return nil, fmt.Errorf("setenv: %w", err)
-			}
-			logger.Debugw("Adding env file key to vars, to be injected as build args")
-			// add value to the vars that will be injected as build args
-			vars[key] = val
-		}
-	}
-	logger.Debugw("Finished processing env file")
-	return vars, nil
-}
-
 func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
 	flagSet.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	flagSet.StringVar(&o.context, "context", ".", "Path to build directory context")
-	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
 	flagSet.StringVar(&o.name, "name", "", "name of the image to be built")
 	flagSet.StringVar(&o.dockerfile, "dockerfile", "dockerfile", "Path to dockerfile file relative to context")
 	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
@@ -593,6 +528,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
+	flagSet.StringVar(&o.target, "target", "", "Specify which build stage in the Dockerfile to use as the target")
 
 	return flagSet
 }
@@ -699,21 +635,6 @@ func generateTags(logger Logger, o options) error {
 		return fmt.Errorf("failed to get dockerfile path: %w", err)
 	}
 	logger.Debugw("dockerfile directory path retrieved", "dockerfileDirPath", dockerfileDirPath)
-	logger.Debugw("getting environment variables from environment file", "envFile", o.envFile, "dockerfileDirPath", dockerfileDirPath)
-	// Load environment variables from the envFile.
-	envs, err := loadEnv(logger, os.DirFS(dockerfileDirPath), o.envFile)
-	if err != nil {
-		return fmt.Errorf("failed to load environment variables from env file: %w", err)
-	}
-	// If envs is nil, alocate empty map. getEnvs returns nil if envFile path is empty.
-	if envs == nil {
-		envs = make(map[string]string)
-		logger.Infow("no environment file provided")
-		logger.Debugw("initialized empty envs map")
-	} else {
-		logger.Infow("environment variables successfully loaded from file")
-		logger.Debugw("environment variables", "envs", envs)
-	}
 	logger.Debugw("parsing tags from options")
 	// Parse tags from the provided options.
 	parsedTags, err := parseTags(logger, o)
@@ -721,11 +642,6 @@ func generateTags(logger Logger, o options) error {
 		return fmt.Errorf("failed to parse tags from options: %w", err)
 	}
 	logger.Infow("tags parsed successfully", "parsedTags", parsedTags)
-	logger.Debugw("appending values from envFile to tags")
-	// Append environment variables to tags.
-	appendToTags(logger, &parsedTags, envs)
-	// Print parsed tags to stdout as json.
-	logger.Debugw("environment variables appended to tags", "parsedTags", parsedTags)
 	logger.Debugw("converting parsed tags to JSON")
 	jsonTags, err := tagsAsJSON(parsedTags)
 	if err != nil {
@@ -825,8 +741,8 @@ func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 }
 
 // getDefaultTag returns the default tag based on the read git state.
-// The function provid default tag for pull request or commit.
-// The default tag is read from the provided options struct.
+// The function provide default tag for pull request or commit.
+// The default tag is read from the provided 'options' struct.
 func getDefaultTag(logger Logger, o options) (tags.Tag, error) {
 	logger.Debugw("reading gitstate data")
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {

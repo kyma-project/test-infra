@@ -19,11 +19,11 @@ jobs:
     outputs:
       files: ${{ steps.pathFilters.outputs.changes }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           repository: kyma-project/test-infra
           ref: main
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3
         id: pathFilters
         with:
           filters: .github/controller-filters.yaml
@@ -42,11 +42,6 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-github-webhook-gateway.yml@main
-
-  build-image-autobumper:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-autobumper-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-autobumper.yaml@main
 
   build-image-builder:
     needs: detect-changed-files

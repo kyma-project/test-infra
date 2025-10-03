@@ -1,4 +1,4 @@
-FROM golang:1.24.2-alpine3.21 as builder
+FROM golang:1.25.1-alpine3.22 as builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ WORKDIR /app/cmd/markdown-index
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
-FROM alpine:3.20.3
+FROM alpine:3.22.1 as runtime
 
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/markdown-index
 

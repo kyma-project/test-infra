@@ -11,7 +11,7 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
       - name: Install node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: '22.x'
       - name: Install md-check-link

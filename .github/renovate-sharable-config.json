@@ -1,0 +1,85 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "extends": [
+    "config:recommended",
+    "customManagers:dockerfileVersions",
+    "helpers:pinGitHubActionDigests"
+  ],
+
+  "labels": ["renovate-dependencies"],
+
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
+  "rebaseWhen": "conflicted",
+
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/test*/**",
+    "**/cypress/**"
+
+  ],
+
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "groupName": "All Go dependencies",
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions",
+      "separateMajorMinor": true
+    },
+    {
+      "matchManagers": ["pip_requirements"],
+      "groupName": "python dependencies"
+    },
+    {
+      "matchDatasources": ["terraform-provider"],
+      "groupName": "terraform providers"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "groupName": "docker images"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDatasources": ["docker"],
+      "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
+      "versioning": "semver",
+      "groupName": "custom docker images (semver)",
+      "commitMessageExtra": "to the newest version",
+      "separateMajorMinor": false
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDatasources": ["docker"],
+      "versioning": "loose",
+      "groupName": "custom docker images (loose)",
+      "commitMessageExtra": "to the newest version",
+      "separateMajorMinor": false
+    }
+  ],
+
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/.ya?ml$/",
+        "/.sh$/",
+        "/.json$/",
+        "/.tf$/",
+        "/.tfvars$/"
+      ],
+      "matchStrings": [
+        "(?<depName>[a-z0-9.-]*\\.[a-z0-9.-]*(?:/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
+      ],
+      "depNameTemplate": "{{depName}}",
+      "currentValueTemplate": "{{currentValue}}",
+      "datasourceTemplate": "docker"
+    }
+  ]
+}

@@ -54,7 +54,6 @@ jobs:
          name: test-infra/ginkgo
          dockerfile: images/ginkgo/Dockerfile
          context: .
-         env-file: "envs"
          tags: ${{ needs.compute-tag.outputs.tag }}
          platforms: |
             linux/amd64
@@ -197,11 +196,6 @@ Image Builder implements signing based on the following image types:
     1. Retrieves the image manifest digest directly
     2. Signs the image manifest digest
     3. Associates the signature with the specific image version
-
-## Environment File
-
-The `--env-file` specifies the path to the file with environment variables to be loaded in the build.
-The file must be in the format of `key=value` pairs, separated by newlines.
 
 ## Azure DevOps Backend (ADO)
 

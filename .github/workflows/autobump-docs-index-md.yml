@@ -22,7 +22,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
       - name: Setup git config
         run: |
@@ -35,14 +35,14 @@ jobs:
 
       - name: Authenticate in GCP
         id: 'auth'
-        uses: 'google-github-actions/auth@v3'
+        uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
 
       - name: Get kyma bot token from Secret Manager
         id: 'secrets'
-        uses: 'google-github-actions/get-secretmanager-secrets@v3'
+        uses: 'google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262' # v3
         with:
           secrets: |-
             kyma-autobump-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.KYMA_AUTOBUMP_BOT_GITHUB_SECRET_NAME }}
@@ -59,6 +59,6 @@ jobs:
             --workdir /github/test-infra \
             --privileged \
             --cap-drop ALL \
-            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20250904-8d6ff372 \
+            europe-docker.pkg.dev/kyma-project/prod/markdown-index:v20250929-51244ae0 \
             --config=${{ env.AUTOBUMP_CONFIG_PATH }} \
             --labels-override=kind/chore,area/documentation
