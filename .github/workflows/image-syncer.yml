@@ -64,7 +64,7 @@ jobs:
       #
       - name: Authenticate in GCP
         id: authenticate_in_gcp
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
@@ -80,7 +80,7 @@ jobs:
           --workdir /github/workspace
           --rm
           --volume "$GITHUB_WORKSPACE:/github/workspace"
-          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250924-935a21c6
+          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20250929-51244ae0
           --images-file=/github/workspace/external-images.yaml
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }}
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }}
