@@ -15,8 +15,9 @@ WORKDIR /app/cmd/markdown-index
 # Build the Go app with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
+RUN echo "Dockerfile build reached this step"
 FROM alpine:3.22.1
-
+RUN echo "Dockerfile build didn't reach this step"
 LABEL io.kyma-project.source=github.com/kyma-project/test-infra/cmd/markdown-index
 
 # Copy the built Go app from the builder stage
