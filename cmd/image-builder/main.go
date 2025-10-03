@@ -61,6 +61,7 @@ type options struct {
 	// adoStateOutput indicates if the success or failure of the command (sign or build) should be
 	// reported as an output variable in Azure DevOps
 	adoStateOutput bool
+	target         string
 }
 
 type Logger interface {
@@ -141,6 +142,10 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	} else {
 		// Set default platforms to linux/amd64,linux/arm64, if not set. There is no way to set during flag parsing.
 		templateParameters.SetPlatforms("linux/amd64,linux/arm64")
+	}
+
+	if options.target != "" {
+		templateParameters["Target"] = options.target
 	}
 
 	err := templateParameters.Validate()
@@ -284,7 +289,7 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot marshal list of architectures: %w", err)
 		}
 
-		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architetcures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
+		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architectures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
 
 		err = actions.SetOutput("images", string(imagesJSON))
 		if err != nil {
@@ -523,6 +528,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
+	flagSet.StringVar(&o.target, "target", "", "Specify which build stage in the Dockerfile to use as the target")
 
 	return flagSet
 }
@@ -735,8 +741,8 @@ func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 }
 
 // getDefaultTag returns the default tag based on the read git state.
-// The function provid default tag for pull request or commit.
-// The default tag is read from the provided options struct.
+// The function provide default tag for pull request or commit.
+// The default tag is read from the provided 'options' struct.
 func getDefaultTag(logger Logger, o options) (tags.Tag, error) {
 	logger.Debugw("reading gitstate data")
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
