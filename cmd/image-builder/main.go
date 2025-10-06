@@ -145,7 +145,7 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	}
 
 	if options.target != "" {
-		templateParameters["Target"] = options.target
+		templateParameters.SetTarget(options.target)
 	}
 
 	err := templateParameters.Validate()
