@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.25.1
+go 1.25.2
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
@@ -23,7 +23,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/zricethezav/gitleaks/v8 v8.28.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/net v0.44.0
+	golang.org/x/net v0.45.0
 	google.golang.org/api v0.252.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.34.1
