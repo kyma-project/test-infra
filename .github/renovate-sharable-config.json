@@ -31,7 +31,8 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
-      "separateMajorMinor": true
+      "separateMajorMinor": true,
+      "prPriority": 5
     },
     {
       "matchManagers": ["pip_requirements"],
