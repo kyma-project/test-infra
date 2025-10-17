@@ -1,8 +1,8 @@
 module "github-repository" {
-  for_each = toset(var.repository_names)
+  for_each = var.repositories_rulesets
 
   source = "../../modules/github-repository"
 
-  repository_name = each.value
-  rulesets        = var.rulesets
+  repository_name = each.key
+  rulesets        = each.value
 }

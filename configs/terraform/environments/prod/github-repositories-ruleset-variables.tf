@@ -1,16 +1,7 @@
-# Repository names variable
-variable "repository_names" {
-  description = "List of repository names to apply rulesets to"
-  type        = list(string)
-  default = [
-    "test-infra"
-  ]
-}
-
-# Rulesets variable
-variable "rulesets" {
-  description = "List of rulesets to apply to repositories"
-  type = list(object({
+# Repository rulesets mapping
+variable "repositories_rulesets" {
+  description = "Map of repository names to their specific rulesets"
+  type = map(list(object({
     name        = string
     target      = string
     enforcement = string
@@ -42,13 +33,13 @@ variable "rulesets" {
         negate   = optional(bool)
       }))
       merge_queue = optional(object({
-        check_response_timeout_minutes    = optional(number)
-        grouping_strategy                 = optional(string)
-        max_entries_to_build              = optional(number)
-        max_entries_to_merge              = optional(number)
-        merge_method                      = optional(string)
-        min_entries_to_merge              = optional(number)
-        min_entries_to_merge_wait_minutes = optional(number)
+        check_response_timeout_minutes       = optional(number)
+        grouping_strategy                   = optional(string)
+        max_entries_to_build                = optional(number)
+        max_entries_to_merge                = optional(number)
+        merge_method                        = optional(string)
+        min_entries_to_merge                = optional(number)
+        min_entries_to_merge_wait_minutes   = optional(number)
       }))
     })
     conditions = optional(object({
@@ -57,25 +48,45 @@ variable "rulesets" {
         exclude = optional(list(string))
       }))
     }))
-  }))
-  default = [
-    {
-      name        = "renovate-branch-allowance"
-      target      = "branch"
-      enforcement = "active"
-      rules = {
-        deletion         = false
-        non_fast_forward = false
-      }
-      conditions = {
-        ref_name = {
-          include = ["refs/heads/renovate/*"]
-          exclude = []
+  })))
+  default = {
+    "test-infra" = [
+      {
+        name        = "main-branch-protection"
+        target      = "branch"
+        enforcement = "active"
+        rules = {
+          deletion         = true
+          non_fast_forward = true
+          pull_request = {
+            dismiss_stale_reviews_on_push     = true
+            require_code_owner_review         = true
+            required_approving_review_count   = 1
+            required_review_thread_resolution = true
+          }
+        }
+        conditions = {
+          ref_name = {
+            include = ["refs/heads/main"]
+            exclude = []
+          }
+        }
+      },
+      {
+        name        = "renovate-branch-allowance"
+        target      = "branch"
+        enforcement = "active"
+        rules = {
+          deletion         = false
+          non_fast_forward = false
+        }
+        conditions = {
+          ref_name = {
+            include = ["refs/heads/renovate/*"]
+            exclude = []
+          }
         }
       }
-    }
-  ]
+    ]
+  }
 }
-
-
-

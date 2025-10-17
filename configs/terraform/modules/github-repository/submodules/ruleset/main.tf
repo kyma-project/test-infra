@@ -20,16 +20,16 @@ resource "github_repository_ruleset" "this" {
     required_linear_history = try(var.ruleset.rules.required_linear_history, null)
     required_signatures     = try(var.ruleset.rules.required_signatures, null)
 
-    # # Branch naming pattern rule
-    # dynamic "branch_name_pattern" {
-    #   for_each = try(each.value.rules.branch_name_pattern, null) != null ? [each.value.rules.branch_name_pattern] : []
-    #   content {
-    #     operator = try(branch_name_pattern.value.operator, "regex")
-    #     pattern  = try(branch_name_pattern.value.pattern, "")
-    #     name     = try(branch_name_pattern.value.name, null)
-    #     negate   = try(branch_name_pattern.value.negate, false)
-    #   }
-    # }
+    # Branch naming pattern rule
+    dynamic "branch_name_pattern" {
+      for_each = try(var.ruleset.rules.branch_name_pattern, null) != null ? [var.ruleset.rules.branch_name_pattern] : []
+      content {
+        operator = try(branch_name_pattern.value.operator, "regex")
+        pattern  = try(branch_name_pattern.value.pattern, "")
+        name     = try(branch_name_pattern.value.name, null)
+        negate   = try(branch_name_pattern.value.negate, false)
+      }
+    }
 
     # Pull request rules
     dynamic "pull_request" {
