@@ -21,7 +21,6 @@ resource "google_service_account" "terraform-planner" {
 resource "google_service_account" "terraform-executor" {
   account_id   = "terraform-executor"
   display_name = "terraform-executor"
-  description  = "Identity of terraform executor."
 
   lifecycle {
     prevent_destroy = true
