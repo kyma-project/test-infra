@@ -21,7 +21,7 @@ resource "google_service_account" "terraform-planner" {
 resource "google_service_account" "terraform-executor" {
   account_id   = "terraform-executor"
   display_name = "terraform-executor"
-  description  = "Identity of terraform executor."
+  description  = "Identity of terraform executor. It's mapped to k8s service account through workload identity."
 
   lifecycle {
     prevent_destroy = true
