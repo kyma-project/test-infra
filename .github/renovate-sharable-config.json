@@ -52,7 +52,6 @@
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
       "versioning": "semver",
       "groupName": "custom docker images (semver)",
-      "commitMessageExtra": "to the newest version",
       "separateMajorMinor": false
     },
     {
@@ -60,7 +59,6 @@
       "matchDatasources": ["docker"],
       "versioning": "loose",
       "groupName": "custom docker images (loose)",
-      "commitMessageExtra": "to the newest version",
       "separateMajorMinor": false
     }
   ],
