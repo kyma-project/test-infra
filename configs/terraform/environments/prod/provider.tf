@@ -38,12 +38,24 @@ provider "github" {
   alias = "kyma_project"
   owner = var.kyma-project-github-org
 }
-
+data "google_secret_manager_secret_version" "gh_tools_terraform_pat" {
+  secret = "gh_tools_terraform_token"
+}
+data "google_secret_manager_secret_version" "gh_tools_terraform_pat" {
+  secret = "gh_tools_terraform_token"
+}
+provider "github"{
+  alias = "github_tools_sap"
+  owner = var.gh_tools_kyma_org
+  token = data.google_secret_manager_secret_version.gh_tools_terraform_pat
+}
 # sap-kyma-prow project provider
 provider "google" {
   project = var.gcp_project_id
   region  = var.gcp_region
 }
+
+
 
 provider "google" {
   alias   = "kyma_project"
