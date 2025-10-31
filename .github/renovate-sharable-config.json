@@ -51,15 +51,19 @@
       "matchDatasources": ["docker"],
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
       "versioning": "semver",
-      "groupName": "custom docker images (semver)",
+      "groupName": "custom docker images (semver) to {{newVersion}}",
+      "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageExtra": "",
       "separateMajorMinor": false
     },
     {
-      "matchManagers": ["regex"],
-      "matchDatasources": ["docker"],
-      "versioning": "loose",
-      "groupName": "custom docker images (loose)",
-      "separateMajorMinor": false
+    "matchManagers": ["regex"],
+    "matchDatasources": ["docker"],
+    "versioning": "loose",
+    "groupName": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageExtra": "",
+    "separateMajorMinor": false
     }
   ],
 
