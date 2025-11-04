@@ -12,6 +12,6 @@ func SetupCommandSilence(rootCmd *cobra.Command) {
 	rootCmd.SilenceErrors = true
 
 	rootCmd.SetFlagErrorFunc(func(c *cobra.Command, err error) error {
-		return fmt.Errorf("wrong command usage: %w\n%s", err, c.UsageString())
+		return fmt.Errorf("error setting command flags: %w\n%s", err, c.UsageString())
 	})
 }
