@@ -41,7 +41,7 @@ var _ = Describe("SetupCommandSilence", func() {
 		err := cmd.Execute()
 
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("wrong command usage: unknown flag: --unknown"))
+		Expect(err.Error()).To(ContainSubstring("error setting command flags: unknown flag: --unknown"))
 		Expect(err.Error()).To(ContainSubstring(cmd.UsageString()))
 		Expect(stdout.String()).To(BeEmpty())
 		Expect(stderr.String()).To(BeEmpty())
