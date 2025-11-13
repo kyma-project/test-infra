@@ -23,7 +23,7 @@ project_id: str = os.getenv("PROJECT_ID", "sap-kyma-prow")
 component_name: str = os.getenv("COMPONENT_NAME", "signify-certificate-rotator")
 application_name: str = os.getenv("APPLICATION_NAME", "secret-rotator")
 secret_rotate_message_type = os.getenv("SECRET_ROTATE_MESSAGE_TYPE", "signify")
-rsa_key_size: int = 4096
+RSA_KEY_SIZE: int = 4096
 
 
 @app.route("/", methods=["POST"])
@@ -66,7 +66,7 @@ def rotate_signify_secret() -> Response:
             # see:
             # https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key
             public_exponent=65537,
-            key_size=rsa_key_size,
+            key_size=RSA_KEY_SIZE,
         )
 
         access_token: str = signify_client.fetch_access_token(
