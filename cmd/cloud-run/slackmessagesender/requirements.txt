@@ -1,5 +1,5 @@
-slack_bolt==1.26.0
-slack_sdk==3.37.0
+slack_bolt==1.27.0
+slack_sdk==3.38.0
 flask>=2.3.2
 cloudevents==1.12.0
 gunicorn==23.0.0
