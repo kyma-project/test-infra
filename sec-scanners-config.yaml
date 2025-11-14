@@ -6,7 +6,7 @@ bdba:
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20251113-03478ad8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20251113-03478ad8
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20251113-03478ad8
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20251014-c3133fef
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20251113-b9e254cf
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20251007-cd51f3bd
 mend:
     language: golang-mod
