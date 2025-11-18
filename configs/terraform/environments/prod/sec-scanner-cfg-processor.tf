@@ -33,7 +33,10 @@ resource "google_secret_manager_secret" "sec-scanner-cfg-processor-gcp-sa-key" {
 
   # Configure rotation to occur every 85 days (85 * 24 * 3600 = 7,344,000 seconds).
   rotation {
-    rotation_period = "7344000s"
+    rotation_period    = "7344000s"
+    # Next rotation time must be set when rotation period is specified.
+    # Set it to now + rotation period. We ignore future drifts via lifecycle below.
+    next_rotation_time = timeadd(timestamp(), "7344000s")
   }
 
   # Publish Secret Manager events (create, delete, etc.) to the given Pub/Sub topic.
@@ -43,6 +46,13 @@ resource "google_secret_manager_secret" "sec-scanner-cfg-processor-gcp-sa-key" {
 
   labels = {
     type = "service-account-key"
+  }
+
+  # Avoid perpetual diffs when next_rotation_time advances automatically on Google side
+  lifecycle {
+    ignore_changes = [
+      rotation[0].next_rotation_time,
+    ]
   }
 }
 
