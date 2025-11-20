@@ -5,6 +5,7 @@
 package oidc
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/url"
@@ -14,7 +15,6 @@ import (
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/kyma-project/test-infra/pkg/logging"
-	"golang.org/x/net/context"
 )
 
 var (
