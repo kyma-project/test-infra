@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/pubsub/v2 v2.3.0
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/cloudevents/sdk-go/v2 v2.16.2
-	github.com/coreos/go-oidc/v3 v3.16.0
+	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/go-jose/go-jose/v4 v4.1.3
 	github.com/google/go-containerregistry v0.20.6
 	github.com/google/go-github/v75 v75.0.0
