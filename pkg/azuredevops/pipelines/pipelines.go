@@ -6,6 +6,7 @@
 package pipelines
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,7 +18,7 @@ import (
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
-	"golang.org/x/net/context"
+
 	"gopkg.in/yaml.v3"
 	"k8s.io/utils/ptr"
 )

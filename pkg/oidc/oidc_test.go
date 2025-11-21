@@ -1,6 +1,7 @@
 package oidc_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
@@ -18,7 +19,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/mock"
 	"go.uber.org/zap"
-	"golang.org/x/net/context"
 )
 
 var _ = Describe("OIDC", func() {

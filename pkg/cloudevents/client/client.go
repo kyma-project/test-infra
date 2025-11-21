@@ -1,12 +1,12 @@
 package client
 
 import (
+	"context"
 	"fmt"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/v75/github"
 	"github.com/kyma-project/test-infra/pkg/logging"
-	"golang.org/x/net/context"
 )
 
 // Config holds configuration for Client.

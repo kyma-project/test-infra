@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
@@ -21,7 +22,6 @@ import (
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 	"go.uber.org/zap"
-	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
