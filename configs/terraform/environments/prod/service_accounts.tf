@@ -81,6 +81,16 @@ resource "google_service_account" "kyma-security-scanners" {
   }
 }
 
+resource "google_service_account" "kyma-compliance-pipeline" {
+  account_id   = "kyma-compliance-pipeline"
+  display_name = "kyma-compliance-pipeline"
+  description  = "Service account for retrieving secrets on the compliance Azure pipeline."
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "google_service_account" "neighbors-conduit-cli-builder" {
   account_id   = "neighbors-conduit-cli-builder"
   display_name = "neighbors-conduit-cli-builder"
