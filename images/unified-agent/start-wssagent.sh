@@ -15,6 +15,8 @@
 
 set -e
 
+echo "__DEBUG__: CUSTOM_EXCLUDES env var value = ${CUSTOM_EXCLUDES}"
+
 # whitesource config
 GO_MOD_CONFIG_PATH="/wss/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="/wss/javascript-wss-unified-agent.config"
@@ -95,8 +97,15 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   export WS_PROJECTNAME
 
 
-  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
-    export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
+  echo "__DEBUG__: CUSTOM_EXCLUDES env var value = ${CUSTOM_EXCLUDES}"
+  echo "__DEBUG__: WS_EXCLUDES env var value = ${WS_EXCLUDES}"
+  if [[ -n "$CUSTOM_EXCLUDES" ]]; then
+    WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDES}"
+    echo "__DEBUG__: WS_EXCLUDES after appending CUSTOM_EXCLUDES = ${WS_EXCLUDES}"
+    WS_EXCLUDES="${WS_EXCLUDES## }"
+    WS_EXCLUDES="${WS_EXCLUDES%% }"
+    echo "__DEBUG__: WS_EXCLUDES after trimming spaces = ${WS_EXCLUDES}"
+    export WS_EXCLUDES
   fi
 
   # WS_PRODUCTNAME is treat as a input
