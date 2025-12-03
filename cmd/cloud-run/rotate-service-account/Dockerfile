@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /rotateserviceaccount -ldflags="-s -w" ./cmd/cloud-run/rotate-service-account
 
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 
 COPY --from=builder /rotateserviceaccount /rotateserviceaccount
 RUN apk add --no-cache ca-certificates && \
