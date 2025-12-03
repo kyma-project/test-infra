@@ -1,4 +1,4 @@
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 
 ARG UNIFIED_AGENT_VERSION=v25.10.3.2
 
