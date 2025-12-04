@@ -12,10 +12,9 @@
 # - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
 # - INTERNAL_GITHUB_TOKEN - Token to authenticate against internal github to fetch private go modules
 # - INTERNAL_GITHUB_URL - URL for internal github to authenticate against using INTERNAL_GITHUB_TOKEN, required weh using INTERNAL_GITHUB_TOKEN
+# - CUSTOM_EXCLUDES - Path pattern to exclude from scanning. Space separated values.
 
 set -e
-
-echo "__DEBUG__: CUSTOM_EXCLUDES env var value = ${CUSTOM_EXCLUDES}"
 
 # whitesource config
 GO_MOD_CONFIG_PATH="/wss/go-mod-wss-unified-agent.config"
@@ -97,14 +96,12 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   export WS_PROJECTNAME
 
 
-  echo "__DEBUG__: CUSTOM_EXCLUDES env var value = ${CUSTOM_EXCLUDES}"
-  echo "__DEBUG__: WS_EXCLUDES env var value = ${WS_EXCLUDES}"
+  # Merge custom excludes with existing excludes variable.
   if [[ -n "$CUSTOM_EXCLUDES" ]]; then
     WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDES}"
-    echo "__DEBUG__: WS_EXCLUDES after appending CUSTOM_EXCLUDES = ${WS_EXCLUDES}"
+    # Trim leading and trailing spaces.
     WS_EXCLUDES="${WS_EXCLUDES## }"
     WS_EXCLUDES="${WS_EXCLUDES%% }"
-    echo "__DEBUG__: WS_EXCLUDES after trimming spaces = ${WS_EXCLUDES}"
     export WS_EXCLUDES
   fi
 
