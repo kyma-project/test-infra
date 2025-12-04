@@ -100,8 +100,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [[ -n "$CUSTOM_EXCLUDES" ]]; then
     WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDES}"
     # Trim leading and trailing spaces.
-    WS_EXCLUDES="${WS_EXCLUDES## }"
-    WS_EXCLUDES="${WS_EXCLUDES%% }"
+    WS_EXCLUDES="$(echo "$WS_EXCLUDES" | xargs)"
     export WS_EXCLUDES
   fi
 
