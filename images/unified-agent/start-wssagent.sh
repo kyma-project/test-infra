@@ -12,6 +12,7 @@
 # - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
 # - INTERNAL_GITHUB_TOKEN - Token to authenticate against internal github to fetch private go modules
 # - INTERNAL_GITHUB_URL - URL for internal github to authenticate against using INTERNAL_GITHUB_TOKEN, required weh using INTERNAL_GITHUB_TOKEN
+# - CUSTOM_EXCLUDES - Path pattern to exclude from scanning. Space separated values.
 
 set -e
 
@@ -95,8 +96,12 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   export WS_PROJECTNAME
 
 
-  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
-    export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
+  # Merge custom excludes with existing excludes variable.
+  if [[ -n "$CUSTOM_EXCLUDES" ]]; then
+    WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDES}"
+    # Trim leading and trailing spaces.
+    WS_EXCLUDES="$(echo "$WS_EXCLUDES" | xargs)"
+    export WS_EXCLUDES
   fi
 
   # WS_PRODUCTNAME is treat as a input
