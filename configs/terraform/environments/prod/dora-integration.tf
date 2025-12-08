@@ -17,16 +17,22 @@
 # Variables
 # ------------------------------------------------------------------------------
 
-variable "dora-integration-gcp-secret-name-public-github-token" {
-  type        = string
-  default     = "kyma-bot-github-public-repos-token"
-  description = "GCP Secret Manager secret name for public GitHub (github.com) token used by DORA integration"
-}
-
 variable "dora-integration-gcp-secret-name-internal-github-token" {
   type        = string
-  default     = "kyma-bot-github-internal-repos-token"
+  default     = "dora-integration-gh-tools-serviceuser-token"
   description = "GCP Secret Manager secret name for internal GitHub (github.tools.sap) token used by DORA integration"
+}
+
+variable "dora-integration-public-github-token-gcp-secret-name-github-organization-variable" {
+  type        = string
+  default     = "DORA_INTEGRATION_PUBLIC_GITHUB_TOKEN_GCP_SECRET_NAME"
+  description = "GitHub Actions variable name for the public GitHub token GCP secret name"
+}
+
+variable "dora-integration-internal-github-token-gcp-secret-name-github-organization-variable" {
+  type        = string
+  default     = "DORA_INTEGRATION_INTERNAL_GITHUB_TOKEN_GCP_SECRET_NAME"
+  description = "GitHub Actions variable name for the internal GitHub token GCP secret name"
 }
 
 variable "dora-integration-reusable-workflow-ref" {
@@ -36,32 +42,14 @@ variable "dora-integration-reusable-workflow-ref" {
 }
 
 # ------------------------------------------------------------------------------
-# GCP Secret Manager - Public GitHub Token
-# ------------------------------------------------------------------------------
-
-# TODO (dekiel): this secret already exists, define resource and import it to manage it via terraform
-# Import command: terraform import google_secret_manager_secret.dora-integration-public-github-token projects/sap-kyma-prow/secrets/kyma-bot-github-public-repos-token
-resource "google_secret_manager_secret" "dora-integration-public-github-token" {
-  project   = var.gcp_project_id
-  secret_id = var.dora-integration-gcp-secret-name-public-github-token
-
-  replication {
-    auto {}
-  }
-
-  labels = {
-    type        = "github-token"
-    purpose     = "dora-integration"
-    github-type = "public"
-  }
-}
-
-# ------------------------------------------------------------------------------
 # GCP Secret Manager - Internal GitHub Token
 # ------------------------------------------------------------------------------
 
-# TODO (dekiel): this secret already exists, define resource and import it to manage it via terraform
-# Import command: terraform import google_secret_manager_secret.dora-integration-internal-github-token projects/sap-kyma-prow/secrets/kyma-bot-github-internal-repos-token
+import {
+  id = "projects/${var.gcp_project_id}/secrets/${var.dora-integration-gcp-secret-name-internal-github-token}"
+  to = google_secret_manager_secret.dora-integration-internal-github-token
+}
+
 resource "google_secret_manager_secret" "dora-integration-internal-github-token" {
   project   = var.gcp_project_id
   secret_id = var.dora-integration-gcp-secret-name-internal-github-token
@@ -72,8 +60,11 @@ resource "google_secret_manager_secret" "dora-integration-internal-github-token"
 
   labels = {
     type        = "github-token"
-    purpose     = "dora-integration"
-    github-type = "internal"
+    tool        = "dora-integration"
+    github-instance = "internal"
+    owner = "neighbors"
+    component = "reusable-workflow"
+    entity = "dora-integration-serviceuser"
   }
 }
 
@@ -84,7 +75,7 @@ resource "google_secret_manager_secret" "dora-integration-internal-github-token"
 # Grant the DORA integration reusable workflow access to read public GitHub token
 resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_public_token_reader" {
   project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.dora-integration-public-github-token.secret_id
+  secret_id = google_secret_manager_secret.kyma-bot-public-github-token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.dora-integration-reusable-workflow-ref}"
 }
@@ -103,10 +94,10 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_in
 
 # Expose the public GitHub token secret name as a GitHub Actions organization variable
 resource "github_actions_organization_variable" "dora-integration-public-github-token-gcp-secret-name" {
-  provider      = github.kyma_project
+  provider      = github.github_tools_sap
   visibility    = "all"
-  variable_name = "DORA_INTEGRATION_PUBLIC_GITHUB_TOKEN_GCP_SECRET_NAME"
-  value         = google_secret_manager_secret.dora-integration-public-github-token.secret_id
+  variable_name = var.dora-integration-public-github-token-gcp-secret-name-github-organization-variable
+  value         = google_secret_manager_secret.kyma-bot-public-github-token.secret_id
 }
 
 # ------------------------------------------------------------------------------
@@ -118,6 +109,6 @@ resource "github_actions_organization_variable" "dora-integration-public-github-
 resource "github_actions_organization_variable" "dora-integration-internal-github-token-gcp-secret-name" {
   provider      = github.github_tools_sap
   visibility    = "all"
-  variable_name = "DORA_INTEGRATION_INTERNAL_GITHUB_TOKEN_GCP_SECRET_NAME"
+  variable_name = var.dora-integration-internal-github-token-gcp-secret-name-github-organization-variable
   value         = google_secret_manager_secret.dora-integration-internal-github-token.secret_id
 }

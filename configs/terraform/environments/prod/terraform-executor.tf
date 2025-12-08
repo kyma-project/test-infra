@@ -122,19 +122,71 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
 # GitHub Tools SAP (github.tools.sap) Token Configuration
 # ------------------------------------------------------------------------------
 
+variable "github_tools_sap_terraform_executor_secret_name" {
+  description = "Name of the secret manager's secret holding kyma bot token for github.tools.sap terraform executor"
+  type        = string
+  default     = "iac-bot-gh-tools-sap-terraform-executor-token"
+}
+
+variable "github_tools_sap_terraform_planner_secret_name" {
+  description = "Name of the secret manager's secret holding kyma bot token for github.tools.sap terraform planner"
+  type        = string
+  default     = "iac-bot-gh-tools-sap-terraform-planner-token"
+}
+
+variable "github_tools_sap_terraform_executor_variable_name" {
+  description = "Name of the GitHub Actions variable for github.tools.sap terraform executor secret"
+  type        = string
+  default     = "GH_TOOLS_SAP_TERRAFORM_EXECUTOR_SECRET_NAME"
+}
+
+variable "github_tools_sap_terraform_planner_variable_name" {
+  description = "Name of the GitHub Actions variable for github.tools.sap terraform planner secret"
+  type        = string
+  default     = "GH_TOOLS_SAP_TERRAFORM_PLANNER_SECRET_NAME"
+}
+
+import {
+  to = google_secret_manager_secret.github_tools_sap_terraform_executor
+  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.github_tools_sap_terraform_executor_secret_name}"
+}
+
+import {
+  to = google_secret_manager_secret.github_tools_sap_terraform_planner
+  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.github_tools_sap_terraform_planner_secret_name}"
+}
+
+resource "google_secret_manager_secret" "github_tools_sap_terraform_executor" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = var.github_tools_sap_terraform_executor_secret_name
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = var.github_tools_sap_terraform_planner_secret_name
+
+  replication {
+    auto {}
+  }
+}
+
 # Name of the secret manager's secret holding kyma bot token for github.tools.sap
 # This token is used by terraform executor to manage resources in github.tools.sap
 resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = "GH_TOOLS_SAP_TERRAFORM_EXECUTOR_SECRET_NAME"
-  value         = "kyma-bot-github-tools-sap-terraform-executor-token"
+  variable_name = var.github_tools_sap_terraform_executor_variable_name
+  value         = google_secret_manager_secret.github_tools_sap_terraform_executor.secret_id
 }
 
 # Name of the secret manager's secret holding kyma bot token for github.tools.sap planner
 resource "github_actions_variable" "github_tools_sap_terraform_planner_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = "GH_TOOLS_SAP_TERRAFORM_PLANNER_SECRET_NAME"
-  value         = "kyma-bot-github-tools-sap-terraform-planner-token"
+  variable_name = var.github_tools_sap_terraform_planner_variable_name
+  value         = google_secret_manager_secret.github_tools_sap_terraform_planner.secret_id
 }
