@@ -117,3 +117,24 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
   variable_name = "GH_TERRAFORM_PLANNER_SECRET_NAME"
   value         = "kyma-bot-gh-com-terraform-planner-token"
 }
+
+# ------------------------------------------------------------------------------
+# GitHub Tools SAP (github.tools.sap) Token Configuration
+# ------------------------------------------------------------------------------
+
+# Name of the secret manager's secret holding kyma bot token for github.tools.sap
+# This token is used by terraform executor to manage resources in github.tools.sap
+resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TOOLS_SAP_TERRAFORM_EXECUTOR_SECRET_NAME"
+  value         = "kyma-bot-github-tools-sap-terraform-executor-token"
+}
+
+# Name of the secret manager's secret holding kyma bot token for github.tools.sap planner
+resource "github_actions_variable" "github_tools_sap_terraform_planner_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TOOLS_SAP_TERRAFORM_PLANNER_SECRET_NAME"
+  value         = "kyma-bot-github-tools-sap-terraform-planner-token"
+}

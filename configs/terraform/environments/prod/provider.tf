@@ -39,6 +39,15 @@ provider "github" {
   owner = var.kyma-project-github-org
 }
 
+provider "github" {
+  alias = "github.tools.sap"
+  owner = var.github-tools-sap-organization-name
+  token = var.github_tools_sap_token
+  # Token is provided via TF_VAR_GITHUB_TOOLS_SAP_TOKEN environment variable from GitHub Actions workflow
+  # Base URL is set to github.tools.sap API endpoint for GitHub Enterprise
+  base_url = "https://github.tools.sap/api/v3"
+}
+
 # sap-kyma-prow project provider
 provider "google" {
   project = var.gcp_project_id

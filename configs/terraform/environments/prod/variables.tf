@@ -35,3 +35,16 @@ variable "kyma-project-github-org" {
   default     = "kyma-project"
   description = "The GitHub organization where the Kyma project is hosted"
 }
+
+# TODO (dekiel): should be moved to internal-github.tf
+variable "github-tools-sap-organization-name" {
+  type        = string
+  default     = "kyma"
+  description = "The GitHub organization where the tools-sap is hosted"
+}
+
+variable "github_tools_sap_token" {
+  type        = string
+  sensitive   = true
+  description = "GitHub token for github.tools.sap provider. Passed via TF_VAR_GITHUB_TOOLS_SAP_TOKEN environment variable from GitHub Actions workflow."
+}
