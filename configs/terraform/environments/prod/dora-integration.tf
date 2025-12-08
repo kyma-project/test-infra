@@ -116,7 +116,7 @@ resource "github_actions_organization_variable" "dora-integration-public-github-
 # Expose the internal GitHub token secret name as a GitHub Actions organization variable
 # This variable will be available in github.tools.sap organization
 resource "github_actions_organization_variable" "dora-integration-internal-github-token-gcp-secret-name" {
-  provider      = github.github.tools.sap
+  provider      = github.github_tools_sap
   visibility    = "all"
   variable_name = "DORA_INTEGRATION_INTERNAL_GITHUB_TOKEN_GCP_SECRET_NAME"
   value         = google_secret_manager_secret.dora-integration-internal-github-token.secret_id

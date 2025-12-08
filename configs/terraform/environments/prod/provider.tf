@@ -40,7 +40,7 @@ provider "github" {
 }
 
 provider "github" {
-  alias = "github.tools.sap"
+  alias = "github_tools_sap"
   owner = var.github-tools-sap-organization-name
   token = var.github_tools_sap_token
   # Token is provided via TF_VAR_GITHUB_TOOLS_SAP_TOKEN environment variable from GitHub Actions workflow
