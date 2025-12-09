@@ -213,8 +213,37 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
   }
 }
 
+# ------------------------------------------------------------------------------
+# IAM Permissions - Secret Access for Terraform Planner
+# ------------------------------------------------------------------------------
+# Grant the terraform planner service account access to read github.tools.sap tokens.
+# This is required for terraform plan operations that need to read the current
+# state of github.tools.sap resources.
+# ------------------------------------------------------------------------------
+
+# terraform_planner_github_tools_sap_executor_secret_reader grants the terraform planner
+# service account read access to the github.tools.sap executor token secret.
+# IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
+resource "google_secret_manager_secret_iam_member" "terraform_planner_github_tools_sap_executor_secret_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.github_tools_sap_terraform_executor.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+# terraform_planner_github_tools_sap_planner_secret_reader grants the terraform planner
+# service account read access to the github.tools.sap planner token secret.
+# IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
+resource "google_secret_manager_secret_iam_member" "terraform_planner_github_tools_sap_planner_secret_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.github_tools_sap_terraform_planner.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
 # github_tools_sap_terraform_executor_variable_name exposes the GCP secret name with github.tools.sap GitHub token for IaC executor as a GitHub Actions repository variable.
 # The variable has repository scope.
+# IMPORTANT: This should be part of bootstrapp process to let terraform executor read the secret.
 resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
@@ -224,6 +253,7 @@ resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_n
 
 # github_tools_sap_terraform_planner_secret_name Expose the GCP secret name with github.tools.sap github token for IaC planner as a GitHub Actions repository variable.
 # The variable has repository scope.
+# IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
 resource "github_actions_variable" "github_tools_sap_terraform_planner_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
