@@ -189,14 +189,14 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_executor" {
   }
 }
 
-# GCP Secret Manager secret for github.tools.sap terraform planner github token.
-# This token should have read-only permissions and is used during terraform plan.
-# The actual token value must be added manually via GCP Console or CLI.
 import {
   to = google_secret_manager_secret.github_tools_sap_terraform_planner
   id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.github_tools_sap_terraform_planner_secret_name}"
 }
 
+# GCP Secret Manager secret for github.tools.sap terraform planner github token.
+# This token should have read-only permissions and is used during terraform plan.
+# The actual token value must be added manually via GCP Console or CLI.
 resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
   project   = var.terraform_executor_gcp_service_account.project_id
   secret_id = var.github_tools_sap_terraform_planner_secret_name
@@ -213,7 +213,7 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
   }
 }
 
-# github_tools_sap_terraform_executor_variable_name expose the GCP secret name with github.tools.sap github token for IaC executor as a GitHub Actions repository variable.
+# github_tools_sap_terraform_executor_variable_name exposes the GCP secret name with github.tools.sap GitHub token for IaC executor as a GitHub Actions repository variable.
 # The variable has repository scope.
 resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_name" {
   provider      = github.kyma_project
@@ -222,7 +222,7 @@ resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_n
   value         = google_secret_manager_secret.github_tools_sap_terraform_executor.secret_id
 }
 
-# github_tools_sap_terraform_planner_secret_name expose the GCP secret name with github.tools.sap github token for IaC planner as a GitHub Actions repository variable.
+# github_tools_sap_terraform_planner_secret_name Expose the GCP secret name with github.tools.sap github token for IaC planner as a GitHub Actions repository variable.
 # The variable has repository scope.
 resource "github_actions_variable" "github_tools_sap_terraform_planner_secret_name" {
   provider      = github.kyma_project

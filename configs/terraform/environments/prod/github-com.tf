@@ -28,7 +28,7 @@ import {
 }
 
 # kyma-bot-public-github-token is not connected to one particular application.
-# It is used by multiple infrastructure components and applications and therefore it is created here as a variable realted to github.com instance.
+# It is used by multiple infrastructure components and applications and therefore it is created here as a variable related to github.com instance.
 resource "google_secret_manager_secret" "kyma-bot-public-github-token" {
   project   = var.gcp_project_id
   secret_id = var.kyma-bot-gcp-secret-name-public-github-token
