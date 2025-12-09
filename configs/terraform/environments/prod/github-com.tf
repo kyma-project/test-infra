@@ -16,17 +16,19 @@ data "github_organization" "kyma-project" {
   name     = "kyma-project"
 }
 
-# GCP Secret Manager secret name that contains kyma bot github token
 variable "kyma-bot-gcp-secret-name-public-github-token" {
   type        = string
   default     = "kyma-bot-github-public-repo-token"
-  description = "GCP Secret Manager secret name for public GitHub (github.com) token used by kyma bot"
+  description = "GCP Secret Manager secret name for public GitHub token used by kyma bot"
 }
 
 import {
   id = "projects/${var.gcp_project_id}/secrets/${var.kyma-bot-gcp-secret-name-public-github-token}"
   to = google_secret_manager_secret.kyma-bot-public-github-token
 }
+
+# kyma-bot-public-github-token is not connected to one particular application.
+# It is used by multiple infrastructure components and applications and therefore it is created here as a variable realted to github.com instance.
 resource "google_secret_manager_secret" "kyma-bot-public-github-token" {
   project   = var.gcp_project_id
   secret_id = var.kyma-bot-gcp-secret-name-public-github-token

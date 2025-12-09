@@ -27,23 +27,30 @@ terraform {
   }
 }
 
-# data.google_client_config configures Google Cloud client.
-# Google Cloud client provides the access token to authenticate to the k8s cluster.
-# Access token is used to configure the k8s and kubectl providers.
-# data.google_container_cluster gets the k8s cluster details.
-# Cluster details provides the endpoint and cluster certificate to authenticate to the k8s cluster.
-# Cluster details are used to configure the k8s and kubectl providers.
 
+# Provider for public GitHub (github.com) - kyma-project organization
 provider "github" {
   alias = "kyma_project"
   owner = var.kyma-project-github-org
 }
 
+# ------------------------------------------------------------------------------
+# GitHub Enterprise Provider (github.tools.sap)
+# ------------------------------------------------------------------------------
+# This provider configuration enables Terraform to manage resources in SAP's
+# internal GitHub Enterprise instance (github.tools.sap).
+#
+# Authentication:
+# - The token is passed via TF_VAR_github_tools_sap_token environment variable
+# - The token is retrieved from GCP Secret Manager during workflow execution
+# - For terraform plan: uses the planner token (read-only operations)
+# - For terraform apply: uses the executor token (write operations)
+# ------------------------------------------------------------------------------
 provider "github" {
   alias = "github_tools_sap"
   owner = var.github-tools-sap-organization-name
+  # Token is provided via TF_VAR_github_tools_sap_token environment variable from GitHub Actions workflow
   token = var.github_tools_sap_token
-  # Token is provided via TF_VAR_GITHUB_TOOLS_SAP_TOKEN environment variable from GitHub Actions workflow
   # Base URL is set to github.tools.sap API endpoint for GitHub Enterprise
   base_url = "https://github.tools.sap/api/v3"
 }
@@ -65,5 +72,6 @@ provider "google-beta" {
   region  = var.gcp_region
 }
 
+# data.google_client_config configures Google Cloud client.
 data "google_client_config" "gcp" {
 }

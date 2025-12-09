@@ -36,15 +36,22 @@ variable "kyma-project-github-org" {
   description = "The GitHub organization where the Kyma project is hosted"
 }
 
-# TODO (dekiel): should be moved to internal-github.tf
+# ------------------------------------------------------------------------------
+# GitHub Enterprise (github.tools.sap) Configuration
+# ------------------------------------------------------------------------------
+# These variables configure the connection to the internal GitHub Enterprise
+# instance (github.tools.sap) used by SAP for internal repositories.
+# The provider is configured in provider.tf and uses these variables.
+# ------------------------------------------------------------------------------
+
 variable "github-tools-sap-organization-name" {
   type        = string
   default     = "kyma"
-  description = "The GitHub organization where the tools-sap is hosted"
+  description = "The Kyma GitHub organization in internal GitHub Enterprise instance"
 }
 
 variable "github_tools_sap_token" {
   type        = string
   sensitive   = true
-  description = "GitHub token for github.tools.sap provider. Passed via TF_VAR_GITHUB_TOOLS_SAP_TOKEN environment variable from GitHub Actions workflow."
+  description = "GitHub token for github.tools.sap provider. Passed via TF_VAR_github_tools_sap_token environment variable from GitHub Actions workflow."
 }
