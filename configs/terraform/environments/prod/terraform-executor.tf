@@ -163,6 +163,13 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_executor" {
   replication {
     auto {}
   }
+
+  labels = {
+    type        = "github-token"
+    tool        = "iac"
+    github-instance = "internal"
+    owner = "neighbors"
+  }
 }
 
 resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
@@ -171,6 +178,13 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
 
   replication {
     auto {}
+  }
+
+  labels = {
+    type        = "github-token"
+    tool        = "iac"
+    github-instance = "internal"
+    owner = "neighbors"
   }
 }
 
