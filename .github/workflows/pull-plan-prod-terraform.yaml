@@ -37,7 +37,7 @@ jobs:
         with:
           secrets: |-
              gh-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
-             gh-tools-sap-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TOOLS_SAP_TERRAFORM_PLANNER_SECRET_NAME }}
+             internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
 
       - name: Setup Terraform
         id: setup_terraform
@@ -65,7 +65,7 @@ jobs:
       # I do prefer to keep consistent format of identifiers in IaC config rather than env variables in github action workflow. Thats the reason env var name uses mixed caps.
         env:
           GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-planner-token }}
-          TF_VAR_github_tools_sap_token: ${{ steps.secrets.outputs.gh-tools-sap-terraform-planner-token }}
+          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
         id: terraform_plan
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number || 0 }} -sha ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
 
