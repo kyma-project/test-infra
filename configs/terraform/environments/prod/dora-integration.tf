@@ -10,7 +10,7 @@
 # - IAM permissions for accessing secrets from GitHub Actions workflows
 #
 # The configuration supports both public GitHub (github.com) and internal
-# GitHub Enterprise (github.tools.sap) instances.
+# GitHub Enterprise instances.
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 variable "dora_integration_gcp_secret_name_internal_github_token" {
   type        = string
   default     = "dora-integration-gh-tools-serviceuser-token"
-  description = "GCP Secret Manager secret name for internal GitHub (github.tools.sap) token used by DORA integration"
+  description = "GCP Secret Manager secret name for internal GitHub token used by DORA integration"
 }
 
 variable "dora_integration_public_github_token_gcp_secret_name_github_organization_variable" {
@@ -46,7 +46,7 @@ variable "dora_integration_reusable_workflow_ref" {
 # ------------------------------------------------------------------------------
 
 # dora-integration-internal-github-token This secret stores the Personal Access Token for the DORA integration service
-# user on github.tools.sap. The token is used to collect DORA metrics from internal repositories.
+# user on internal GitHub. The token is used to collect DORA metrics from internal repositories.
 # ------------------------------------------------------------------------------
 import {
   id = "projects/${var.gcp_project_id}/secrets/${var.dora_integration_gcp_secret_name_internal_github_token}"
@@ -86,7 +86,7 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_pu
 }
 
 # dora_integration_workflow_internal_token_reader Grant the DORA integration reusable workflow access to read the internal GitHub token.
-# This token is used to collect DORA metrics from internal repositories in the kyma organization on github.tools.sap.
+# This token is used to collect DORA metrics from internal repositories in the kyma organization on internal GitHub.
 # The principalSet uses attribute.reusable_workflow_ref to identify the specific reusable workflow that should have access to these secrets.
 resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_internal_token_reader" {
   project   = var.gcp_project_id
@@ -102,22 +102,22 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_in
 # ------------------------------------------------------------------------------
 
 # dora-integration-public-github-token-gcp-secret-name Expose the GCP secret name with public GitHub token as a GitHub Actions organization variable.
-# This variable will be available to all repositories in the github.tools.sap kyma organization.
+# This variable will be available to all repositories in the internal GitHub kyma organization.
 # The variable is used in internal github workflows to access the public GitHub token from GCP Secret Manager.
 # Note: Even though this is for public GitHub tokens, the variable is created
-# in github.tools.sap organization because that's where the DORA integration workflows run from.
+# in internal GitHub organization because that's where the DORA integration workflows run from.
 resource "github_actions_organization_variable" "dora_integration_public_github_token_gcp_secret_name" {
-  provider      = github.github_tools_sap
+  provider      = github.internal_github
   visibility    = "all"
   variable_name = var.dora_integration_public_github_token_gcp_secret_name_github_organization_variable
   value         = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
 }
 
 # dora-integration-internal-github-token-gcp-secret-name expose the GCP secret name with internal GitHub token as a GitHub Actions organization variable.
-# This variable will be available to all repositories in the github.tools.sap kyma organization.
+# This variable will be available to all repositories in the internal GitHub kyma organization.
 # The variable is used in internal github workflows to access the internal GitHub token from GCP Secret Manager.
 resource "github_actions_organization_variable" "dora_integration_internal_github_token_gcp_secret_name" {
-  provider      = github.github_tools_sap
+  provider      = github.internal_github
   visibility    = "all"
   variable_name = var.dora_integration_internal_github_token_gcp_secret_name_github_organization_variable
   value         = google_secret_manager_secret.dora_integration_internal_github_token.secret_id

@@ -127,9 +127,9 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
 }
 
 # ------------------------------------------------------------------------------
-# GitHub Tools SAP (github.tools.sap) Token Configuration
+# Internal GitHub Token Configuration
 # ------------------------------------------------------------------------------
-# This section manages GCP Secret Manager secrets for github.tools.sap tokens.
+# This section manages GCP Secret Manager secrets for internal GitHub tokens.
 # These tokens are used by Terraform workflows to authenticate to SAP's internal
 # GitHub Enterprise instance when managing resources like organization variables.
 #
@@ -141,41 +141,41 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
 # retrieve the tokens from GCP Secret Manager during execution.
 # ------------------------------------------------------------------------------
 
-variable "github_tools_sap_terraform_executor_secret_name" {
-  description = "Name of the GCP secret manager's secret holding iac service user github token for github.tools.sap terraform executor"
+variable "internal_github_terraform_executor_secret_name" {
+  description = "Name of the GCP secret manager's secret holding iac service user token for internal GitHub terraform executor"
   type        = string
   default     = "iac-bot-gh-tools-sap-terraform-executor-token"
 }
 
-variable "github_tools_sap_terraform_planner_secret_name" {
-  description = "Name of the GCP secret manager's secret holding iac service user github token for github.tools.sap terraform planner"
+variable "internal_github_terraform_planner_secret_name" {
+  description = "Name of the GCP secret manager's secret holding iac service user token for internal GitHub terraform planner"
   type        = string
   default     = "iac-bot-gh-tools-sap-terraform-planner-token"
 }
 
-variable "github_tools_sap_terraform_executor_variable_name" {
-  description = "Name of the GitHub Actions variable for GCP secret name holding github.tools.sap terraform executor token"
+variable "internal_github_terraform_executor_variable_name" {
+  description = "Name of the GitHub Actions variable for GCP secret name holding internal GitHub terraform executor token"
   type        = string
-  default     = "GH_TOOLS_SAP_TERRAFORM_EXECUTOR_SECRET_NAME"
+  default     = "INTERNAL_GITHUB_TERRAFORM_EXECUTOR_SECRET_NAME"
 }
 
-variable "github_tools_sap_terraform_planner_variable_name" {
-  description = "Name of the GitHub Actions variable for GCP secret name holding github.tools.sap terraform planner token"
+variable "internal_github_terraform_planner_variable_name" {
+  description = "Name of the GitHub Actions variable for GCP secret name holding internal GitHub terraform planner token"
   type        = string
-  default     = "GH_TOOLS_SAP_TERRAFORM_PLANNER_SECRET_NAME"
+  default     = "INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME"
 }
 
 import {
-  to = google_secret_manager_secret.github_tools_sap_terraform_executor
-  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.github_tools_sap_terraform_executor_secret_name}"
+  to = google_secret_manager_secret.internal_github_terraform_executor
+  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.internal_github_terraform_executor_secret_name}"
 }
 
-# GCP Secret Manager secret for github.tools.sap terraform executor github token.
+# GCP Secret Manager secret for internal GitHub terraform executor token.
 # This token should have write permissions and is used during terraform apply.
 # The actual token value must be added manually via GCP Console or CLI.
-resource "google_secret_manager_secret" "github_tools_sap_terraform_executor" {
+resource "google_secret_manager_secret" "internal_github_terraform_executor" {
   project   = var.terraform_executor_gcp_service_account.project_id
-  secret_id = var.github_tools_sap_terraform_executor_secret_name
+  secret_id = var.internal_github_terraform_executor_secret_name
 
   replication {
     auto {}
@@ -190,16 +190,16 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_executor" {
 }
 
 import {
-  to = google_secret_manager_secret.github_tools_sap_terraform_planner
-  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.github_tools_sap_terraform_planner_secret_name}"
+  to = google_secret_manager_secret.internal_github_terraform_planner
+  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.internal_github_terraform_planner_secret_name}"
 }
 
-# GCP Secret Manager secret for github.tools.sap terraform planner github token.
+# GCP Secret Manager secret for internal GitHub terraform planner token.
 # This token should have read-only permissions and is used during terraform plan.
 # The actual token value must be added manually via GCP Console or CLI.
-resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
+resource "google_secret_manager_secret" "internal_github_terraform_planner" {
   project   = var.terraform_executor_gcp_service_account.project_id
-  secret_id = var.github_tools_sap_terraform_planner_secret_name
+  secret_id = var.internal_github_terraform_planner_secret_name
 
   replication {
     auto {}
@@ -216,47 +216,47 @@ resource "google_secret_manager_secret" "github_tools_sap_terraform_planner" {
 # ------------------------------------------------------------------------------
 # IAM Permissions - Secret Access for Terraform Planner
 # ------------------------------------------------------------------------------
-# Grant the terraform planner service account access to read github.tools.sap tokens.
+# Grant the terraform planner service account access to read internal GitHub tokens.
 # This is required for terraform plan operations that need to read the current
-# state of github.tools.sap resources.
+# state of internal GitHub resources.
 # ------------------------------------------------------------------------------
 
-# terraform_planner_github_tools_sap_executor_secret_reader grants the terraform planner
-# service account read access to the github.tools.sap executor token secret.
+# terraform_planner_internal_github_executor_secret_reader grants the terraform planner
+# service account read access to the internal GitHub executor token secret.
 # IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
-resource "google_secret_manager_secret_iam_member" "terraform_planner_github_tools_sap_executor_secret_reader" {
+resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_github_executor_secret_reader" {
   project   = var.terraform_executor_gcp_service_account.project_id
-  secret_id = google_secret_manager_secret.github_tools_sap_terraform_executor.secret_id
+  secret_id = google_secret_manager_secret.internal_github_terraform_executor.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
-# terraform_planner_github_tools_sap_planner_secret_reader grants the terraform planner
-# service account read access to the github.tools.sap planner token secret.
+# terraform_planner_internal_github_planner_secret_reader grants the terraform planner
+# service account read access to the internal GitHub planner token secret.
 # IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
-resource "google_secret_manager_secret_iam_member" "terraform_planner_github_tools_sap_planner_secret_reader" {
+resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_github_planner_secret_reader" {
   project   = var.terraform_executor_gcp_service_account.project_id
-  secret_id = google_secret_manager_secret.github_tools_sap_terraform_planner.secret_id
+  secret_id = google_secret_manager_secret.internal_github_terraform_planner.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
-# github_tools_sap_terraform_executor_variable_name exposes the GCP secret name with github.tools.sap GitHub token for IaC executor as a GitHub Actions repository variable.
+# internal_github_terraform_executor_variable_name exposes the GCP secret name with internal GitHub token for IaC executor as a GitHub Actions repository variable.
 # The variable has repository scope.
 # IMPORTANT: This should be part of bootstrapp process to let terraform executor read the secret.
-resource "github_actions_variable" "github_tools_sap_terraform_executor_secret_name" {
+resource "github_actions_variable" "internal_github_terraform_executor_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = var.github_tools_sap_terraform_executor_variable_name
-  value         = google_secret_manager_secret.github_tools_sap_terraform_executor.secret_id
+  variable_name = var.internal_github_terraform_executor_variable_name
+  value         = google_secret_manager_secret.internal_github_terraform_executor.secret_id
 }
 
-# github_tools_sap_terraform_planner_secret_name Expose the GCP secret name with github.tools.sap github token for IaC planner as a GitHub Actions repository variable.
+# internal_github_terraform_planner_secret_name exposes the GCP secret name with internal GitHub token for IaC planner as a GitHub Actions repository variable.
 # The variable has repository scope.
 # IMPORTANT: This should be part of bootstrapp process to let terraform planner read the secret.
-resource "github_actions_variable" "github_tools_sap_terraform_planner_secret_name" {
+resource "github_actions_variable" "internal_github_terraform_planner_secret_name" {
   provider      = github.kyma_project
   repository    = "test-infra"
-  variable_name = var.github_tools_sap_terraform_planner_variable_name
-  value         = google_secret_manager_secret.github_tools_sap_terraform_planner.secret_id
+  variable_name = var.internal_github_terraform_planner_variable_name
+  value         = google_secret_manager_secret.internal_github_terraform_planner.secret_id
 }

@@ -37,21 +37,27 @@ variable "kyma_project_github_org" {
 }
 
 # ------------------------------------------------------------------------------
-# GitHub Enterprise (github.tools.sap) Configuration
+# Internal GitHub Enterprise Configuration
 # ------------------------------------------------------------------------------
 # These variables configure the connection to the internal GitHub Enterprise
-# instance (github.tools.sap) used by SAP for internal repositories.
+# instance used by SAP for internal repositories.
 # The provider is configured in provider.tf and uses these variables.
 # ------------------------------------------------------------------------------
 
-variable "github_tools_sap_organization_name" {
+variable "internal_github_organization_name" {
   type        = string
   default     = "kyma"
   description = "The Kyma GitHub organization in internal GitHub Enterprise instance"
 }
 
-variable "github_tools_sap_token" {
+variable "internal_github_token" {
   type        = string
   sensitive   = true
-  description = "GitHub token for github.tools.sap provider. Passed via TF_VAR_github_tools_sap_token environment variable from GitHub Actions workflow."
+  description = "GitHub token for internal GitHub provider. Passed via TF_VAR_internal_github_token environment variable from GitHub Actions workflow."
+}
+
+variable "internal_github_base_url" {
+  type        = string
+  default     = "https://github.tools.sap/api/v3"
+  description = "Base URL for the internal GitHub Enterprise API endpoint"
 }

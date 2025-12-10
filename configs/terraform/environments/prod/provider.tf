@@ -35,24 +35,23 @@ provider "github" {
 }
 
 # ------------------------------------------------------------------------------
-# GitHub Enterprise Provider (github.tools.sap)
+# Internal GitHub Enterprise Provider
 # ------------------------------------------------------------------------------
 # This provider configuration enables Terraform to manage resources in SAP's
-# internal GitHub Enterprise instance (github.tools.sap).
+# internal GitHub Enterprise instance.
 #
 # Authentication:
-# - The token is passed via TF_VAR_github_tools_sap_token environment variable
+# - The token is passed via TF_VAR_internal_github_token environment variable
 # - The token is retrieved from GCP Secret Manager during workflow execution
 # - For terraform plan: uses the planner token (read-only operations)
 # - For terraform apply: uses the executor token (write operations)
 # ------------------------------------------------------------------------------
 provider "github" {
-  alias = "github_tools_sap"
-  owner = var.github_tools_sap_organization_name
-  # Token is provided via TF_VAR_github_tools_sap_token environment variable from GitHub Actions workflow
-  token = var.github_tools_sap_token
-  # Base URL is set to github.tools.sap API endpoint for GitHub Enterprise
-  base_url = "https://github.tools.sap/api/v3"
+  alias = "internal_github"
+  owner = var.internal_github_organization_name
+  # Token is provided via TF_VAR_internal_github_token environment variable from GitHub Actions workflow
+  token    = var.internal_github_token
+  base_url = var.internal_github_base_url
 }
 
 # sap-kyma-prow project provider
