@@ -30,7 +30,7 @@ variable "kyma_project_gcp_project_id" {
 
 
 
-variable "kyma-project-github-org" {
+variable "kyma_project_github_org" {
   type        = string
   default     = "kyma-project"
   description = "The GitHub organization where the Kyma project is hosted"
@@ -44,7 +44,7 @@ variable "kyma-project-github-org" {
 # The provider is configured in provider.tf and uses these variables.
 # ------------------------------------------------------------------------------
 
-variable "github-tools-sap-organization-name" {
+variable "github_tools_sap_organization_name" {
   type        = string
   default     = "kyma"
   description = "The Kyma GitHub organization in internal GitHub Enterprise instance"

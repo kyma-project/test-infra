@@ -31,7 +31,7 @@ terraform {
 # Provider for public GitHub (github.com) - kyma-project organization
 provider "github" {
   alias = "kyma_project"
-  owner = var.kyma-project-github-org
+  owner = var.kyma_project_github_org
 }
 
 # ------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ provider "github" {
 # ------------------------------------------------------------------------------
 provider "github" {
   alias = "github_tools_sap"
-  owner = var.github-tools-sap-organization-name
+  owner = var.github_tools_sap_organization_name
   # Token is provided via TF_VAR_github_tools_sap_token environment variable from GitHub Actions workflow
   token = var.github_tools_sap_token
   # Base URL is set to github.tools.sap API endpoint for GitHub Enterprise
