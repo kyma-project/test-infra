@@ -35,3 +35,9 @@ variable "kyma-project-github-org" {
   default     = "kyma-project"
   description = "The GitHub organization where the Kyma project is hosted"
 }
+
+variable "gh_tools_kyma_org"{
+  type = string
+  default = "kyma"
+  description = "The Github organization where github tools repos are hosted"
+}
