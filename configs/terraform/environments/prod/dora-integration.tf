@@ -37,7 +37,7 @@ variable "dora_integration_internal_github_token_gcp_secret_name_github_organiza
 
 variable "dora_integration_reusable_workflow_ref" {
   type        = string
-  default     = "kyma-project/test-infra/.github/workflows/dora-integration.yml@refs/heads/main"
+  default     = "${var.internal_github_organization_name}/test-infra/.github/workflows/dora-integration.yml@refs/heads/main"
   description = "Reference to the DORA integration reusable workflow"
 }
 
