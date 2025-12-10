@@ -101,6 +101,11 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_in
 # This section creates organization-level GitHub Actions variables that GitHub action workflows can use.
 # ------------------------------------------------------------------------------
 
+import {
+  to = github_actions_organization_variable.dora_integration_public_github_token_gcp_secret_name
+  id = var.dora_integration_public_github_token_gcp_secret_name_github_organization_variable
+}
+
 # dora-integration-public-github-token-gcp-secret-name Expose the GCP secret name with public GitHub token as a GitHub Actions organization variable.
 # This variable will be available to all repositories in the internal GitHub kyma organization.
 # The variable is used in internal github workflows to access the public GitHub token from GCP Secret Manager.
@@ -111,6 +116,11 @@ resource "github_actions_organization_variable" "dora_integration_public_github_
   visibility    = "all"
   variable_name = var.dora_integration_public_github_token_gcp_secret_name_github_organization_variable
   value         = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
+}
+
+import {
+  to = github_actions_organization_variable.dora_integration_internal_github_token_gcp_secret_name
+  id = var.dora_integration_internal_github_token_gcp_secret_name_github_organization_variable
 }
 
 # dora-integration-internal-github-token-gcp-secret-name expose the GCP secret name with internal GitHub token as a GitHub Actions organization variable.

@@ -58,6 +58,6 @@ variable "internal_github_token" {
 
 variable "internal_github_base_url" {
   type        = string
-  default     = "https://github.tools.sap/api/v3"
-  description = "Base URL for the internal GitHub Enterprise API endpoint"
+  default     = "https://github.tools.sap/"
+  description = "Base URL for the internal GitHub Enterprise instance."
 }
