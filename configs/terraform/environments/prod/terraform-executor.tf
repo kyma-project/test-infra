@@ -241,6 +241,11 @@ resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_g
   member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
+import {
+  to = github_actions_variable.internal_github_terraform_executor_secret_name
+  id = "test-infra:${var.internal_github_terraform_executor_variable_name}"
+}
+
 # internal_github_terraform_executor_variable_name exposes the GCP secret name with internal GitHub token for IaC executor as a GitHub Actions repository variable.
 # The variable has repository scope.
 # IMPORTANT: This should be part of bootstrapp process to let terraform executor read the secret.
@@ -249,6 +254,11 @@ resource "github_actions_variable" "internal_github_terraform_executor_secret_na
   repository    = "test-infra"
   variable_name = var.internal_github_terraform_executor_variable_name
   value         = google_secret_manager_secret.internal_github_terraform_executor.secret_id
+}
+
+import {
+  to = github_actions_variable.internal_github_terraform_planner_secret_name
+  id = "test-infra:${var.internal_github_terraform_planner_variable_name}"
 }
 
 # internal_github_terraform_planner_secret_name exposes the GCP secret name with internal GitHub token for IaC planner as a GitHub Actions repository variable.
