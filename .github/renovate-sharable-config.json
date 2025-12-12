@@ -14,6 +14,16 @@
   "platformAutomerge": true,
   "rebaseWhen": "conflicted",
 
+  "postUpgradeTasks": {
+    "commands": [
+      "go install github.com/marwan-at-work/mod/cmd/mod@latest",
+      "mod upgrade --mod-name={{{depName}}}",
+      "go mod tidy"
+    ],
+    "fileFilters": ["**/*.go", "go.mod", "go.sum"],
+    "executionMode": "update"
+  },
+
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
