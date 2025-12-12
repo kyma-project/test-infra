@@ -1,0 +1,37 @@
+name: CI-BlackDuck-SCA-Basic
+on:
+  push:
+    branches: [main, master, develop, stage, release]
+  pull_request:
+    branches: [main, master, develop, stage, release]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v4
+    - name: Black Duck SCA Scan
+      id: black-duck-sca-scan
+      uses: blackduck-inc/black-duck-security-scan@v2
+
+      ### Configure DETECT environment variables
+      env:
+        BLACKDUCK_URL: ${{ vars.BLACKDUCK_URL }}
+        BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_TOKEN }}
+        # Allow overriding via workflow inputs or environment
+        DETECT_PROJECT_NAME: "${{ github.event.repository.full_name }}"
+        DETECT_PROJECT_VERSION: "main-${{ github.run_id }}"
+        # Map project user groups -> --detect.project.user.groups
+        DETECT_PROJECT_USER_GROUPS: "XF KYMA RUNTIME 2.0"
+        # Run signature scanner in dry-run mode (true/false)
+        DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN: "true"
+        # Source & output paths for Detect
+        DETECT_SOURCE_PATH: "${{ github.workspace }}"
+        DETECT_OUTPUT_PATH: "${{ github.workspace }}/scanning-outputs"
+
+
+      with:
+        ### SCANNING: Required fields
+        blackducksca_url: ${{ vars.BLACKDUCK_URL }}
+        blackducksca_token: ${{ secrets.BLACKDUCK_TOKEN }}
