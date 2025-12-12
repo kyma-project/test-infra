@@ -11,6 +11,15 @@ jobs:
     steps:
     - name: Checkout Source
       uses: actions/checkout@v4
+
+    - name: Print github context
+      run: |
+        echo "${{ toJson(github) }}"
+
+    - name: Print envs
+      run: |
+        printenv
+
     - name: Black Duck SCA Scan
       id: black-duck-sca-scan
       uses: blackduck-inc/black-duck-security-scan@v2
@@ -24,11 +33,8 @@ jobs:
         DETECT_PROJECT_VERSION: "main-${{ github.run_id }}"
         # Map project user groups -> --detect.project.user.groups
         DETECT_PROJECT_USER_GROUPS: "XF KYMA RUNTIME 2.0"
-        # Run signature scanner in dry-run mode (true/false)
-        DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN: "true"
         # Source & output paths for Detect
         DETECT_SOURCE_PATH: "${{ github.workspace }}"
-        DETECT_OUTPUT_PATH: "${{ github.workspace }}/scanning-outputs"
 
 
       with:
