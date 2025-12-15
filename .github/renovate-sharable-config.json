@@ -16,7 +16,7 @@
 
   "allowedCommands": [
     "^go install github\\.com/marwan-at-work/mod/cmd/mod@v\\d+\\.\\d+\\.\\d+$",
-    "^mod upgrade --mod-name=[^\\s]+$",
+    "^mod upgrade --mod-name=[a-zA-Z0-9._/-]+$",
     "^go mod tidy$"
   ],
 
