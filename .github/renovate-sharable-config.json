@@ -14,6 +14,12 @@
   "platformAutomerge": true,
   "rebaseWhen": "conflicted",
 
+  "allowedCommands": [
+    "^go install github\\.com/marwan-at-work/mod/cmd/mod@v\\d+\\.\\d+\\.\\d+$",
+    "^mod upgrade --mod-name=[^\\s]+$",
+    "^go mod tidy$"
+  ],
+
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
