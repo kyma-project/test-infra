@@ -14,12 +14,6 @@
   "platformAutomerge": true,
   "rebaseWhen": "conflicted",
 
-  "allowedCommands": [
-    "^go install github\\.com/marwan-at-work/mod/cmd/mod@v\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.-]+)?(?:\\+[a-zA-Z0-9.-]+)?$",
-    "^mod upgrade --mod-name=[a-zA-Z0-9._/-]+$",
-    "^go mod tidy$"
-  ],
-
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
@@ -33,15 +27,7 @@
       "matchManagers": ["gomod"],
       "groupName": "All Go dependencies",
       "rangeStrategy": "bump",
-      "postUpgradeTasks": {
-        "commands": [
-          "go install github.com/marwan-at-work/mod/cmd/mod@v0.6.0",
-          "mod upgrade --mod-name={{{depName}}}",
-          "go mod tidy"
-        ],
-        "fileFilters": ["**/*.go", "go.mod", "go.sum"],
-        "executionMode": "update"
-      }
+      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
     },
     {
       "matchManagers": ["github-actions"],
