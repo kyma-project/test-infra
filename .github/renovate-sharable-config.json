@@ -15,7 +15,7 @@
   "rebaseWhen": "conflicted",
 
   "allowedCommands": [
-    "^go install github\\.com/marwan-at-work/mod/cmd/mod@v\\d+\\.\\d+\\.\\d+$",
+    "^go install github\\.com/marwan-at-work/mod/cmd/mod@v\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.-]+)?(?:\\+[a-zA-Z0-9.-]+)?$",
     "^mod upgrade --mod-name=[a-zA-Z0-9._/-]+$",
     "^go mod tidy$"
   ],
