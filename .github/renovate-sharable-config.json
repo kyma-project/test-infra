@@ -26,7 +26,16 @@
     {
       "matchManagers": ["gomod"],
       "groupName": "All Go dependencies",
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "postUpgradeTasks": {
+        "commands": [
+          "go install github.com/marwan-at-work/mod/cmd/mod@v0.6.0",
+          "mod upgrade --mod-name={{{depName}}}",
+          "go mod tidy"
+        ],
+        "fileFilters": ["**/*.go", "go.mod", "go.sum"],
+        "executionMode": "update"
+      }
     },
     {
       "matchManagers": ["github-actions"],
