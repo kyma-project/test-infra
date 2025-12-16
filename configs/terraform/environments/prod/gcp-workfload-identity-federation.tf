@@ -3,6 +3,15 @@ data "github_repository" "test_infra" {
   name     = var.github_test_infra_repository_name
 }
 
+data "google_project" "current" {
+  project_id = var.gcp_project_id
+}
+
+locals {
+  # Full resource name of the internal GitHub Enterprise WIF pool.
+  internal_github_wif_pool_name = "projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.internal_github_wif_pool_id}"
+}
+
 module "gh_com_kyma_project_workload_identity_federation" {
   source = "../../modules/gcp-workload-identity-federation"
 
