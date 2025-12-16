@@ -82,7 +82,7 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_pu
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.dora_integration_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.dora_integration_reusable_workflow_ref}"
 }
 
 # dora_integration_workflow_internal_token_reader Grant the DORA integration reusable workflow access to read the internal GitHub token.
@@ -92,7 +92,7 @@ resource "google_secret_manager_secret_iam_member" "dora_integration_workflow_in
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.dora_integration_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.dora_integration_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.dora_integration_reusable_workflow_ref}"
 }
 
 # ------------------------------------------------------------------------------
