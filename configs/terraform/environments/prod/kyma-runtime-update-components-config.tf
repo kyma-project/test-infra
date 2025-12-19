@@ -14,15 +14,15 @@
 # Variables
 # ------------------------------------------------------------------------------
 
-variable "kyma_modules_runtime_internal_github_token_gcp_secret_name" {
+variable "kyma_prow_serviceuser_internal_github_token_gcp_secret_name" {
   type        = string
-  default     = "kyma-neighbors-runtime-serviceuser-internal-github-token"
-  description = "GCP Secret Manager secret name for internal GitHub token used by kyma-modules update-components workflow"
+  default     = "kyma-prow-serviceuser-internal-github-token"
+  description = "GCP Secret Manager secret name for internal GitHub kyma-prow-serviceaccount token used by kyma-modules update-components workflow"
 }
 
-variable "kyma_runtime_user_internal_github_token_gcp_secret_name_github_repository_variable" {
+variable "kyma_prow_serviceuser_internal_github_token_gcp_secret_name_github_repository_variable" {
   type        = string
-  default     = "KYMA_RUNTIME_USER_INTERNAL_GITHUB_TOKEN_GCP_SECRET_NAME"
+  default     = "KYMA_PROW_SERVICEUSER_INTERNAL_GITHUB_TOKEN_GCP_SECRET_NAME"
   description = "GitHub Actions repository variable name that holds the GCP secret name"
 }
 
@@ -46,12 +46,12 @@ data "github_repository" "kyma_modules_internal" {
 # GCP Secret Manager - Internal GitHub Token (kyma-neighbors runtime)
 # ------------------------------------------------------------------------------
 
-# kyma-neighbors-runtime-serviceuser-internal-github-token
-# This secret stores the Personal Access Token for the kyma-neighbors runtime service user
+# kyma-prow-serviceuser-internal-github-token
+# This secret stores the Personal Access Token for the kyma-prow service user
 # on internal GitHub Enterprise. The token is used by the kyma-modules update-components workflow.
 resource "google_secret_manager_secret" "kyma_modules_runtime_internal_github_token" {
   project   = var.gcp_project_id
-  secret_id = var.kyma_modules_runtime_internal_github_token_gcp_secret_name
+  secret_id = var.kyma_prow_serviceuser_internal_github_token_gcp_secret_name
 
   replication {
     auto {}
@@ -62,7 +62,7 @@ resource "google_secret_manager_secret" "kyma_modules_runtime_internal_github_to
     github-instance = "internal"
     owner           = "neighbors"
     component       = "product-kyma-runtime"
-    entity          = "kyma-neighbors-runtime-serviceuser"
+    entity          = "kyma-prow-serviceuser"
   }
 }
 
@@ -86,7 +86,7 @@ resource "google_secret_manager_secret_iam_member" "kyma_modules_update_componen
 resource "github_actions_variable" "kyma_modules_runtime_internal_github_token_gcp_secret_name" {
   provider      = github.internal_github
   repository    = var.internal_github_kyma_modules_repository_name
-  variable_name = var.kyma_runtime_user_internal_github_token_gcp_secret_name_github_repository_variable
+  variable_name = var.kyma_prow_serviceuser_internal_github_token_gcp_secret_name_github_repository_variable
   value         = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
 }
 
