@@ -126,6 +126,27 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	// Supported github events
 	case *github.IssuesEvent:
 		eventType, supported = checkIfEventSupported(allowedEvents, "issuesevent", *event.Action)
+	case *github.WorkflowRunEvent:
+		supported = true
+
+		// Handle Workflow Monitoring
+		// TODO(kacpermalachowski): Implement directly for POC purpose, later refactor
+		if event.GetAction() == "completed" {
+			switch event.GetWorkflowRun().GetConclusion() {
+			case "failure":
+				logger.LogError("[ALERT] workflow_failed Workflow %s in repo %s/%s has failed. More info: %s", event.GetWorkflowRun().GetName(),
+					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
+			case "cannceled":
+				logger.LogWarning("[ALERT] workflow_canceled Workflow %s in repo %s/%s has been canceled. More info: %s", event.GetWorkflowRun().GetName(),
+					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
+			case "timed_out":
+				logger.LogWarning("[ALERT] workflow_timed_out Workflow %s in repo %s/%s has timed out. More info: %s", event.GetWorkflowRun().GetName(),
+					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
+			default:
+				logger.LogInfo("workflow %s in repo %s/%s has finished with conclusion: %s", event.GetWorkflowRun().GetName(),
+					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetConclusion())
+			}
+		}
 	default:
 		supported = false
 	}
