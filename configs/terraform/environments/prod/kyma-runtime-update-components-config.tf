@@ -37,6 +37,10 @@ variable "kyma_modules_update_components_reusable_workflow_ref" {
   default     = "kyma/test-infra/.github/workflows/reusable-update-components.yml@refs/heads/main"
   description = "Reference to the test-infra update-components reusable workflow"
 }
+data "github_repository" "kyma_modules_internal" {
+  provider = github.internal_github
+  name     = "kyma-modules"
+}
 
 # ------------------------------------------------------------------------------
 # GCP Secret Manager - Internal GitHub Token (kyma-neighbors runtime)
@@ -72,7 +76,7 @@ resource "google_secret_manager_secret_iam_member" "kyma_modules_update_componen
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.kyma_modules_update_components_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.repository.id/${data.github_repository.kyma_modules_internal.repo_id}/attribute.reusable_workflow_ref/${var.kyma_modules_update_components_reusable_workflow_ref}"
 }
 
 # ------------------------------------------------------------------------------
