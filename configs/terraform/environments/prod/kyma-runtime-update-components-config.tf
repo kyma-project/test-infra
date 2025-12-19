@@ -80,6 +80,7 @@ resource "google_secret_manager_secret_iam_member" "kyma_modules_update_componen
 # ------------------------------------------------------------------------------
 # Expose the GCP secret name as a repository-level variable for kyma/kyma-modules.
 resource "github_actions_variable" "kyma_modules_runtime_internal_github_token_gcp_secret_name" {
+  provider      = github.internal_github
   repository    = var.internal_github_kyma_modules_repository_name
   variable_name = var.kyma_runtime_user_internal_github_token_gcp_secret_name_github_repository_variable
   value         = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
