@@ -14,7 +14,7 @@ terraform {
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.38.0"
+      version = "3.0.1"
     }
     kubectl = {
       source  = "alekc/kubectl"
@@ -22,21 +22,36 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "~> 6.8.0"
+      version = "~> 6.9.0"
     }
   }
 }
 
-# data.google_client_config configures Google Cloud client.
-# Google Cloud client provides the access token to authenticate to the k8s cluster.
-# Access token is used to configure the k8s and kubectl providers.
-# data.google_container_cluster gets the k8s cluster details.
-# Cluster details provides the endpoint and cluster certificate to authenticate to the k8s cluster.
-# Cluster details are used to configure the k8s and kubectl providers.
 
+# Provider for public GitHub (github.com) - kyma-project organization
 provider "github" {
   alias = "kyma_project"
-  owner = var.kyma-project-github-org
+  owner = var.kyma_project_github_org
+}
+
+# ------------------------------------------------------------------------------
+# Internal GitHub Enterprise Provider
+# ------------------------------------------------------------------------------
+# This provider configuration enables Terraform to manage resources in SAP's
+# internal GitHub Enterprise instance.
+#
+# Authentication:
+# - The token is passed via TF_VAR_internal_github_token environment variable
+# - The token is retrieved from GCP Secret Manager during workflow execution
+# - For terraform plan: uses the planner token (read-only operations)
+# - For terraform apply: uses the executor token (write operations)
+# ------------------------------------------------------------------------------
+provider "github" {
+  alias = "internal_github"
+  owner = var.internal_github_organization_name
+  # Token is provided via TF_VAR_internal_github_token environment variable from GitHub Actions workflow
+  token    = var.internal_github_token
+  base_url = var.internal_github_base_url
 }
 
 # sap-kyma-prow project provider
@@ -56,5 +71,6 @@ provider "google-beta" {
   region  = var.gcp_region
 }
 
+# data.google_client_config configures Google Cloud client.
 data "google_client_config" "gcp" {
 }
