@@ -127,7 +127,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	case *github.IssuesEvent:
 		eventType, supported = checkIfEventSupported(allowedEvents, "issuesevent", *event.Action)
 	case *github.WorkflowRunEvent:
-		supported = true
+		logger.LogInfo("Processing WorkflowRunEvent action: %s workflow: %s", event.GetAction(), event.GetWorkflowRun().GetName())
 
 		// Handle Workflow Monitoring
 		// TODO(kacpermalachowski): Implement directly for POC purpose, later refactor
