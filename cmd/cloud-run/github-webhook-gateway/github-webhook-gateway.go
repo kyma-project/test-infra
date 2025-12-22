@@ -13,6 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	"github.com/kyma-project/test-infra/pkg/githubuser"
 
+	"cloud.google.com/go/errorreporting"
 	"github.com/google/go-github/v75/github"
 )
 
@@ -34,6 +35,7 @@ var (
 	pubsubTopic      string
 	listenPort       string
 	pubsubClient     *pubsub.Client
+	errorClient      *errorreporting.Client
 )
 
 type GithubClient interface {
@@ -58,6 +60,19 @@ func main() {
 	mainLogger.WithComponent(componentName) // search-github-issue
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
+
+	errorClient, err = errorreporting.NewClient(ctx, projectID, errorreporting.Config{
+		ServiceName:    "github_webhook_gateway",
+		ServiceVersion: "0.0.0",
+		OnError: func(err error) {
+			mainLogger.LogCritical("Error reporting client error: %v", err)
+		},
+	})
+	if err != nil {
+		mainLogger.LogCritical("Failed to create error reporting client: %v", err)
+		os.Exit(1)
+	}
+	defer errorClient.Close()
 
 	webhookToken, err = os.ReadFile(webhookTokenPath)
 	if err != nil {
@@ -134,12 +149,24 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		if event.GetAction() == "completed" {
 			switch event.GetWorkflowRun().GetConclusion() {
 			case "failure":
+				errorClient.Report(errorreporting.Entry{
+					Error: fmt.Errorf("workflow_failed Workflow %s in repo %s/%s has failed. More info: %s", event.GetWorkflowRun().GetName(),
+						event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL()),
+				})
 				logger.LogError("[ALERT] workflow_failed Workflow %s in repo %s/%s has failed. More info: %s", event.GetWorkflowRun().GetName(),
 					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
 			case "cannceled":
+				errorClient.Report(errorreporting.Entry{
+					Error: fmt.Errorf("workflow_canceled Workflow %s in repo %s/%s has been canceled. More info: %s", event.GetWorkflowRun().GetName(),
+						event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL()),
+				})
 				logger.LogWarning("[ALERT] workflow_canceled Workflow %s in repo %s/%s has been canceled. More info: %s", event.GetWorkflowRun().GetName(),
 					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
 			case "timed_out":
+				errorClient.Report(errorreporting.Entry{
+					Error: fmt.Errorf("workflow_timed_out Workflow %s in repo %s/%s has timed out. More info: %s", event.GetWorkflowRun().GetName(),
+						event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL()),
+				})
 				logger.LogWarning("[ALERT] workflow_timed_out Workflow %s in repo %s/%s has timed out. More info: %s", event.GetWorkflowRun().GetName(),
 					event.GetRepo().GetOwner().GetLogin(), event.GetRepo().GetName(), event.GetWorkflowRun().GetHTMLURL())
 			default:
