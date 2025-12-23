@@ -1,3 +1,7 @@
+import {
+  to = google_secret_manager_secret_iam_member.kyma_modules_update_components_workflow_internal_token_reader
+  id = "projects/351981214969/secrets/kyma-prow-serviceuser-internal-github-token roles/secretmanager.secretAccessor principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:172960:repository_owner_id:2457:workflow:Update Component Version on Push"
+}
 # ==============================================================================
 # Update Components Configuration
 # ==============================================================================
@@ -32,11 +36,6 @@ variable "internal_github_kyma_modules_repository_name" {
   description = "Repository name in internal GitHub Enterprise where the variable should be created"
 }
 
-variable "kyma_modules_update_components_reusable_workflow_ref" {
-  type        = string
-  default     = "kyma/test-infra/.github/workflows/reusable-update-components.yml@refs/heads/main"
-  description = "Reference to the test-infra update-components reusable workflow"
-}
 data "github_repository" "kyma_modules_internal" {
   provider = github.internal_github
   name     = "kyma-modules"
@@ -67,16 +66,15 @@ resource "google_secret_manager_secret" "kyma_modules_runtime_internal_github_to
 }
 
 # ------------------------------------------------------------------------------
-# IAM Permissions - Secret Access for Reusable Workflow via WIF
+# IAM Permissions - Secret Access for Workflow via WIF
 # ------------------------------------------------------------------------------
 
-# Grant the kyma-modules update-components reusable workflow access to read the internal GitHub token.
-# The principalSet uses attribute.reusable_workflow_ref to identify the specific reusable workflow.
+# Grant the kyma-modules update-components workflow access to read the internal GitHub token.
 resource "google_secret_manager_secret_iam_member" "kyma_modules_update_components_workflow_internal_token_reader" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.repository.id/${data.github_repository.kyma_modules_internal.repo_id}/attribute.reusable_workflow_ref/${var.kyma_modules_update_components_reusable_workflow_ref}"
+  member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:172960:repository_owner_id:2457:workflow:Update Component Version on Push"
 }
 
 # ------------------------------------------------------------------------------
@@ -89,4 +87,5 @@ resource "github_actions_variable" "kyma_modules_runtime_internal_github_token_g
   variable_name = var.kyma_prow_serviceuser_internal_github_token_gcp_secret_name_github_repository_variable
   value         = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
 }
+
 
