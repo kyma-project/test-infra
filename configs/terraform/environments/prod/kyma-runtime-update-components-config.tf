@@ -74,7 +74,7 @@ resource "google_secret_manager_secret_iam_member" "kyma_modules_update_componen
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:172960:repository_owner_id:2457:workflow:Update Component Version on Push"
+  member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:${data.github_repository.kyma_modules_internal.repo_id}:repository_owner_id:2457:workflow:Update Component Version on Push"
 }
 
 # ------------------------------------------------------------------------------
