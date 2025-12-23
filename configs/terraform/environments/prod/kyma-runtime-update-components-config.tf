@@ -1,7 +1,3 @@
-import {
-  to = google_secret_manager_secret_iam_member.kyma_modules_update_components_workflow_internal_token_reader
-  id = "projects/351981214969/secrets/kyma-prow-serviceuser-internal-github-token roles/secretmanager.secretAccessor principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:172960:repository_owner_id:2457:workflow:Update Component Version on Push"
-}
 # ==============================================================================
 # Update Components Configuration
 # ==============================================================================
