@@ -1,0 +1,159 @@
+name: Tofu Drift Detection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'
+
+jobs:
+  drift-detection:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # needed for checkout
+      issues: write # needed to create issue
+      id-token: write # needed for gcp_auth
+
+    defaults:
+      run:
+        working-directory: ./configs/terraform/environments/prod
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Tofu
+        id: setup_tofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_wrapper: false
+
+      # - name: Authenticate in GCP
+      #   id: 'auth'
+      #   uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
+      #   with:
+      #     workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+      #     service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
+
+      # - name: Retrieve Terraform Planner github PAT
+      #   id: secrets
+      #   uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
+      #   with:
+      #     secrets: |-
+      #       public-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
+      #       internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
+
+      - name: Tofu init
+        id: tofu_init
+        run: tofu init -input=false
+
+      - name: Tofu plan
+        id: tofu_plan
+        env:
+          GITHUB_TOKEN: ${{ steps.secrets.outputs.public-github-terraform-planner-token }}
+          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
+        run: |
+          exitcode=0
+          tofu plan -detailed-exitcode -no-color -out plan || exitcode=$?
+
+          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+
+          if [ "$exitcode" -eq 1 ]; then
+            echo "Plan failed (tofu error)."
+            exit 1
+          fi
+
+      - name: Create String Output
+        id: tofu_plan_string
+        run: |
+          delimiter="$(openssl rand -hex 8)"
+          {
+            echo "summary<<${delimiter}"
+            echo "## Plan Output"
+            echo "<details><summary>Click to expand</summary>"
+            echo
+            echo '```terraform'
+            tofu show -no-color plan
+            echo '```'
+            echo "</details>"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish Plan to Task Summary
+        env:
+          SUMMARY: ${{ steps.tofu_plan_string.outputs.summary }}
+        run: echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish Drift Report
+        if: steps.tofu_plan.outputs.exitcode == 2
+        uses: actions/github-script@v8
+        env:
+          SUMMARY: ${{ steps.tofu_plan_string.outputs.summary }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = `${process.env.SUMMARY}`;
+            const title = 'Configuration Drift Detected';
+            const creator = 'github-actions[bot]'
+
+            // Look to see if there is an existing drift issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              creator: creator,
+              title: title
+            })
+
+            if( issues.data.length > 0 ) {
+              // We assume there shouldn't be more than 1 open issue, since we update any issue we find
+              const issue = issues.data[0]
+
+              if ( issue.body == body ) {
+                console.log('Drift Detected: Found matching issue with duplicate content')
+              } else {
+                console.log('Drift Detected: Found matching issue, updating body')
+                github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: body
+                })
+              }
+            } else {
+              console.log('Drift Detected: Creating new issue')
+
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body
+             })
+            }
+# If changes aren't detected, close any open drift issues
+      - name: Publish Drift Report
+        if: steps.tofu_plan.outputs.exitcode == 0
+        uses: actions/github-script@v8
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+              const title = 'Configuration Drift Detected';
+              const creator = 'github-actions[bot]'
+
+              // Look to see if there is an existing drift issue
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                creator: creator,
+                title: title
+              })
+
+              if( issues.data.length > 0 ) {
+                const issue = issues.data[0]
+
+                github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                })
+              }
