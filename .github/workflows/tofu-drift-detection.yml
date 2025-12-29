@@ -18,11 +18,11 @@ jobs:
         working-directory: ./configs/terraform/environments/prod
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Setup Tofu
         id: setup_tofu
-        uses: opentofu/setup-opentofu@v1
+        uses: opentofu/setup-opentofu@000eeb8522f0572907c393e8151076c205fdba1b # v1
         with:
           tofu_wrapper: false
 
@@ -95,7 +95,7 @@ jobs:
 
       - name: Publish Drift Report
         if: steps.tofu_plan.outputs.exitcode == 2
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           SUMMARY: ${{ steps.tofu_plan_string.outputs.summary }}
         with:
@@ -143,7 +143,7 @@ jobs:
         # If changes aren't detected, close any open drift issues
       - name: Close issues when drift is not detected
         if: steps.tofu_plan.outputs.exitcode == 0
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             script: |
