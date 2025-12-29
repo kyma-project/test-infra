@@ -62,6 +62,7 @@ resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access"
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
   members = [
     "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform",
+    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Tofu Drift Detection",
 
     # This is used by the reusable workflow to run the plan prod terraform workflow
     "principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@refs/heads/main",
