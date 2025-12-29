@@ -22,7 +22,7 @@ resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
 # Authentication is done through github oidc provider and google workload identity federation.
 resource "google_service_account_iam_binding" "terraform_workload_identity" {
   members = [
-    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Post Apply Prod Terraform"
+    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:Post Apply Prod Terraform"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name
