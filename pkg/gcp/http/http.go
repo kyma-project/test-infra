@@ -1,4 +1,4 @@
-package gcphttp
+package http
 
 import (
 	"fmt"

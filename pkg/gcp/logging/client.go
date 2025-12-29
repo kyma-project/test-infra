@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/logging"
+	"google.golang.org/api/option"
 )
 
 const (
@@ -23,8 +24,8 @@ const (
 )
 
 // newClient creates google logging client.
-func newClient(ctx context.Context, projectID string) (*logging.Client, error) {
-	c, err := logging.NewClient(ctx, projectID)
+func newClient(ctx context.Context, credentialsFilePath, projectID string) (*logging.Client, error) {
+	c, err := logging.NewClient(ctx, projectID, option.WithCredentialsFile(credentialsFilePath))
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating google cloud logging client, error: %w", err)
 	}
@@ -34,17 +35,26 @@ func newClient(ctx context.Context, projectID string) (*logging.Client, error) {
 // NewClient is a constructor function creating general purpose kyma wrapper of gcp logging client.
 // It requires credentials file path to authenticate in GCP.
 // A constructor can be configured by providing ClientOptions.
-// Constructor provides default logs Google project ID
-func NewClient(ctx context.Context) (*Client, error) {
+// Constructor provides default logs Google project ID and path to credentials file.
+func NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
 	conf := &Config{
-		AppName:   "",
-		LogName:   "",
-		Component: "",
-		ProjectID: ProwLogsProjectID,
+		AppName:             "",
+		LogName:             "",
+		Component:           "",
+		ProjectID:           ProwLogsProjectID,
+		credentialsFilePath: CredentialsFilePath,
+	}
+
+	// Go through provided client options to configure constructor.
+	for _, opt := range options {
+		err := opt(conf)
+		if err != nil {
+			return nil, fmt.Errorf("failed applying functional option: %w", err)
+		}
 	}
 
 	// Get Google client instance.
-	c, err := newClient(ctx, conf.ProjectID)
+	c, err := newClient(ctx, conf.ProjectID, conf.credentialsFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating google cloud logging client, error: %w", err)
 	}
@@ -74,7 +84,7 @@ func WithCredentialsFilePath(credentialsFilePath string) ClientOption {
 // Prow preset with service account credentials for logging to gcp: preset-prowjob-gcp-logging
 // It provides default Google logging log name for logging from prowjobs.
 func NewProwjobClient(ctx context.Context, credentialsFilePath, gcpproject string) (*Client, error) {
-	c, err := newClient(ctx, gcpproject)
+	c, err := newClient(ctx, credentialsFilePath, gcpproject)
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating prowjob gcp logging client, error: %w", err)
 	}
