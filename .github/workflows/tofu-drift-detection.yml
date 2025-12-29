@@ -26,20 +26,20 @@ jobs:
         with:
           tofu_wrapper: false
 
-      # - name: Authenticate in GCP
-      #   id: 'auth'
-      #   uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
-      #   with:
-      #     workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-      #     service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
+      - name: Authenticate in GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
+        with:
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
 
-      # - name: Retrieve Terraform Planner github PAT
-      #   id: secrets
-      #   uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
-      #   with:
-      #     secrets: |-
-      #       public-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
-      #       internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
+      - name: Retrieve Terraform Planner github PAT
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
+        with:
+          secrets: |-
+            public-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
+            internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
 
       - name: Tofu init
         id: tofu_init
@@ -67,17 +67,28 @@ jobs:
           delimiter="$(openssl rand -hex 8)"
           {
             echo "summary<<${delimiter}"
-            echo "## Plan Output"
-            echo "<details><summary>Click to expand</summary>"
-            echo
+            echo "## 🔍 Configuration Drift Detected"
+            echo ""
+            echo ""
+            echo "### 📋 Plan Details"
+            echo "<details><summary>Click to expand plan output</summary>"
+            echo ""
             echo '```terraform'
             tofu show -no-color plan
             echo '```'
+            echo ""
             echo "</details>"
+            echo ""
+            echo "### ⚠️ Action Required"
+            echo "Review the plan output above and either:"
+            echo "- Apply the changes to match the infrastructure code"
+            echo "- Update the infrastructure code to match the actual state"
+            echo ""
+            echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             echo "${delimiter}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Publish Plan to Task Summary
+      - name: Add Plan to Task Summary
         env:
           SUMMARY: ${{ steps.tofu_plan_string.outputs.summary }}
         run: echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
@@ -128,8 +139,9 @@ jobs:
                 body: body
              })
             }
-# If changes aren't detected, close any open drift issues
-      - name: Publish Drift Report
+
+        # If changes aren't detected, close any open drift issues
+      - name: Close issues when drift is not detected
         if: steps.tofu_plan.outputs.exitcode == 0
         uses: actions/github-script@v8
         with:
