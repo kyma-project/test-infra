@@ -21,7 +21,7 @@ resource "google_service_account" "terraform-planner" {
 resource "google_service_account" "terraform-executor" {
   account_id   = "terraform-executor"
   display_name = "terraform-executor"
-  description  = "Identity of terraform executor."
+  description  = "Identity of terraform executor. It's mapped to k8s service account through workload identity."
 
   lifecycle {
     prevent_destroy = true
@@ -75,16 +75,6 @@ resource "google_service_account" "kyma-security-scanners" {
   account_id   = "kyma-security-scanners"
   display_name = "kyma-security-scanners"
   description  = "Service account for retrieving secrets on the security-scanners and orphan-cleaner Azure pipelines."
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "google_service_account" "kyma-compliance-pipeline" {
-  account_id   = "kyma-compliance-pipeline"
-  display_name = "kyma-compliance-pipeline"
-  description  = "Service account for retrieving secrets on the compliance Azure pipeline."
 
   lifecycle {
     prevent_destroy = true

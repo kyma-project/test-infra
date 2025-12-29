@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -9,7 +10,6 @@ import (
 	tioidc "github.com/kyma-project/test-infra/pkg/oidc"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
-	"golang.org/x/net/context"
 )
 
 // Cobra root command for the OIDC claim extractor

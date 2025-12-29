@@ -26,7 +26,8 @@
     {
       "matchManagers": ["gomod"],
       "groupName": "All Go dependencies",
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
     },
     {
       "matchManagers": ["github-actions"],
@@ -51,17 +52,19 @@
       "matchDatasources": ["docker"],
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
       "versioning": "semver",
-      "groupName": "custom docker images (semver)",
-      "commitMessageExtra": "to the newest version",
+      "groupName": "custom docker images (semver) to {{newVersion}}",
+      "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageExtra": "",
       "separateMajorMinor": false
     },
     {
-      "matchManagers": ["regex"],
-      "matchDatasources": ["docker"],
-      "versioning": "loose",
-      "groupName": "custom docker images (loose)",
-      "commitMessageExtra": "to the newest version",
-      "separateMajorMinor": false
+    "matchManagers": ["regex"],
+    "matchDatasources": ["docker"],
+    "versioning": "loose",
+    "groupName": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageExtra": "",
+    "separateMajorMinor": false
     }
   ],
 

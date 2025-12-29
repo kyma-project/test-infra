@@ -2,7 +2,7 @@ ARG BASE_UNIFIED_AGENT_IMAGE
 FROM ${BASE_UNIFIED_AGENT_IMAGE}
 
 # renovate: datasource=golang-version depName=go versioning=semver
-ARG GO_VERSION=1.25.3
+ARG GO_VERSION=1.25.5
 
 # install go
 ENV GOPATH /go
