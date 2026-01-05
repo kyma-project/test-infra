@@ -33,3 +33,10 @@ variable "gh_com_kyma_project_wif_attribute_condition" {
   default     = "attribute.repository_owner_id == \"39153523\""
   description = "Attribute condition for workload identity pool provider"
 }
+
+# Internal GitHub Enterprise (SAP) Workload Identity Federation
+variable "internal_github_wif_pool_id" {
+  type        = string
+  default     = "github-tools-sap"
+  description = "Workload Identity Federation pool id used for internal GitHub Enterprise workflows"
+}

@@ -3,8 +3,9 @@
 package oidcmocks
 
 import (
+	"context"
+
 	mock "github.com/stretchr/testify/mock"
-	context "golang.org/x/net/context"
 
 	oidc "github.com/kyma-project/test-infra/pkg/oidc"
 )

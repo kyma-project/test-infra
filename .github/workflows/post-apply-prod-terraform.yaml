@@ -41,6 +41,7 @@ jobs:
         with:
           secrets: |-
              gh-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
+             internal-github-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_EXECUTOR_SECRET_NAME }}
 
       - name: Setup Terraform
         id: setup_terraform
@@ -55,7 +56,10 @@ jobs:
         id: terraform_init
         run: tofu -chdir=./configs/terraform/environments/prod init -input=false
       - name: Terraform Apply
+      # The IaC variables are lower case. The opentofu will remove TF_VAR prefix from this env var and match the value with variables names in IaC config case sensitive.
+      # I do prefer to keep consistent format of identifiers in IaC config rather than env variables in github action workflow. Thats the reason env var name uses mixed caps.
         env:
           GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-executor-token }}
+          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-executor-token }}
         id: terraform_apply
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -sha ${{ github.sha }} apply -- tofu -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve
