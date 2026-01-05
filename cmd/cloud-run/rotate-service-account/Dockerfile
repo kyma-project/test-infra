@@ -1,11 +1,11 @@
-FROM golang:1.25.4-alpine3.22 as builder
+FROM golang:1.25.5-alpine3.22 as builder
 
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /rotateserviceaccount -ldflags="-s -w" ./cmd/cloud-run/rotate-service-account
 
-FROM alpine:3.22.2
+FROM alpine:3.23.2
 
 COPY --from=builder /rotateserviceaccount /rotateserviceaccount
 RUN apk add --no-cache ca-certificates && \
