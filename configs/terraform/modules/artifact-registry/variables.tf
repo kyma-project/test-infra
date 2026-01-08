@@ -130,3 +130,14 @@ variable "repository_prevent_destroy" {
   type    = bool
   default = true
 }
+
+variable "virtual_repository_config" {
+  type = object({
+    upstream_policies = optional(list(object({
+      id         = string
+      repository = string
+      priority   = number
+    })))
+  })
+  default = null
+}

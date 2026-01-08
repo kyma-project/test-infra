@@ -2,7 +2,8 @@ data "google_client_config" "this" {}
 
 # Get correct location based on multi_region flag.
 locals {
-  remote_repository_config = one([var.remote_repository_config])
+  remote_repository_config  = one([var.remote_repository_config])
+  virtual_repository_config = one([var.virtual_repository_config])
   # This is workaround, as OpenTofu does not support yet the conditional expressions in the resource block
   # https://github.com/opentofu/opentofu/issues/1329
   repository = var.repository_prevent_destroy ? google_artifact_registry_repository.protected_repository[0] : google_artifact_registry_repository.unprotected_repository[0]
@@ -69,6 +70,22 @@ resource "google_artifact_registry_repository" "protected_repository" {
     }
   }
 
+  dynamic "virtual_repository_config" {
+    for_each = local.virtual_repository_config != null ? [local.virtual_repository_config] : []
+    iterator = virtual_config
+    content {
+      dynamic "upstream_policies" {
+        for_each = try(virtual_config.value.upstream_policies, [])
+        iterator = policy
+        content {
+          id         = policy.value.id
+          repository = policy.value.repository
+          priority   = policy.value.priority
+        }
+      }
+    }
+  }
+
   dynamic "cleanup_policies" {
     for_each = coalesce(var.cleanup_policies, [])
     iterator = policy
@@ -127,6 +144,22 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
             username                = remote_config.value.upstream_username
             password_secret_version = remote_config.value.upstream_password_secret
           }
+        }
+      }
+    }
+  }
+
+  dynamic "virtual_repository_config" {
+    for_each = local.virtual_repository_config != null ? [local.virtual_repository_config] : []
+    iterator = virtual_config
+    content {
+      dynamic "upstream_policies" {
+        for_each = try(virtual_config.value.upstream_policies, [])
+        iterator = policy
+        content {
+          id         = policy.value.id
+          repository = policy.value.repository
+          priority   = policy.value.priority
         }
       }
     }

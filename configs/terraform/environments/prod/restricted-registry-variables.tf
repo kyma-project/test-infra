@@ -127,3 +127,91 @@ variable "chainguard_cache" {
     }
   }
 }
+
+variable "restricted_prod" {
+  type = object({
+    name                       = string
+    description                = string
+    repository_prevent_destroy = bool
+    location                   = string
+    format                     = string
+    mode                       = string
+    type                       = string
+    cleanup_policy_dry_run     = bool
+    virtual_repository_config = object({
+      upstream_policies = optional(list(object({
+        id         = string
+        repository = string
+        priority   = number
+      })))
+    })
+  })
+  default = {
+    name                       = "restricted-prod"
+    description                = "Virtual repository for restricted production images"
+    repository_prevent_destroy = true
+    location                   = "europe"
+    format                     = "DOCKER"
+    mode                       = "VIRTUAL_REPOSITORY"
+    type                       = "production"
+    cleanup_policy_dry_run     = false
+    virtual_repository_config = {
+      upstream_policies = [
+        {
+          id         = "kyma-restricted-images-prod"
+          repository = "projects/kyma-project/locations/europe/repositories/kyma-restricted-images-prod"
+          priority   = 100
+        },
+        {
+          id         = "chainguard-cache"
+          repository = "projects/kyma-project/locations/europe/repositories/chainguard-cache"
+          priority   = 50
+        }
+      ]
+    }
+  }
+}
+
+variable "restricted_dev" {
+  type = object({
+    name                       = string
+    description                = string
+    repository_prevent_destroy = bool
+    location                   = string
+    format                     = string
+    mode                       = string
+    type                       = string
+    cleanup_policy_dry_run     = bool
+    virtual_repository_config = object({
+      upstream_policies = optional(list(object({
+        id         = string
+        repository = string
+        priority   = number
+      })))
+    })
+  })
+  default = {
+    name                       = "restricted-dev"
+    description                = "Virtual repository for restricted development images"
+    repository_prevent_destroy = true
+    location                   = "europe"
+    format                     = "DOCKER"
+    mode                       = "VIRTUAL_REPOSITORY"
+    type                       = "development"
+    cleanup_policy_dry_run     = false
+    virtual_repository_config = {
+      upstream_policies = [
+        {
+          id         = "kyma-restricted-images-dev"
+          repository = "projects/kyma-project/locations/europe/repositories/kyma-restricted-images-dev"
+          priority   = 100
+        },
+        {
+          id         = "chainguard-cache"
+          repository = "projects/kyma-project/locations/europe/repositories/chainguard-cache"
+          priority   = 50
+        }
+      ]
+    }
+  }
+}
