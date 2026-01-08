@@ -94,3 +94,36 @@ variable "kyma_restricted_images_dev" {
     ]
   }
 }
+
+variable "chainguard_cache" {
+  type = object({
+    name                       = string
+    description                = string
+    repository_prevent_destroy = bool
+    location                   = string
+    format                     = string
+    mode                       = string
+    type                       = string
+    cleanup_policy_dry_run     = bool
+    remote_repository_config = object({
+      description              = string
+      docker_public_repository = string
+      upstream_username        = optional(string)
+      upstream_password_secret = optional(string)
+    })
+  })
+  default = {
+    name                       = "chainguard-cache"
+    description                = "Remote repository for Chainguard pull-through cache"
+    repository_prevent_destroy = true
+    location                   = "europe"
+    format                     = "DOCKER"
+    mode                       = "REMOTE_REPOSITORY"
+    type                       = "production"
+    cleanup_policy_dry_run     = false
+    remote_repository_config = {
+      description              = "Chainguard upstream repository"
+      docker_public_repository = "CHAINGUARD"
+    }
+  }
+}
