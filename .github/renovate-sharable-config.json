@@ -53,10 +53,9 @@
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
       "versioning": "semver",
       "groupName": "custom docker images (semver) to {{newVersion}}",
-      "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageTopic": "custom docker images (semver) to {{newVersion}}",
       "commitMessageExtra": "",
-      "separateMajorMinor": false,
-      "maxMajorIncrement": 0
+      "separateMajorMinor": false
     },
     {
     "matchManagers": ["regex"],
