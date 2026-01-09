@@ -36,6 +36,12 @@ module "kyma_restricted_images_dev" {
   repository_prevent_destroy = var.kyma_restricted_images_dev.repository_prevent_destroy
 }
 
+data "google_secret_manager_secret_version" "chainguard_pull_token_password" {
+  provider = google.kyma_project
+  project  = "sap-kyma-prow"
+  secret   = var.chainguard_pull_token_secret_name
+}
+
 module "chainguard_cache" {
   source = "../../modules/artifact-registry"
 
@@ -51,7 +57,13 @@ module "chainguard_cache" {
   type                       = var.chainguard_cache.type
   cleanup_policy_dry_run     = var.chainguard_cache.cleanup_policy_dry_run
   repository_prevent_destroy = var.chainguard_cache.repository_prevent_destroy
-  remote_repository_config   = var.chainguard_cache.remote_repository_config
+  
+  remote_repository_config = {
+    description               = var.chainguard_cache.remote_repository_config.description
+    docker_custom_repository  = var.chainguard_cache.remote_repository_config.docker_custom_repository
+    upstream_username         = "HARDCODE_CHAINGUARD_USERNAME"
+    upstream_password_secret  = data.google_secret_manager_secret_version.chainguard_pull_token_password.name
+  }
 }
 
 module "restricted_prod" {

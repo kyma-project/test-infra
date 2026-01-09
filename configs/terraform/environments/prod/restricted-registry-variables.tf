@@ -105,8 +105,9 @@ variable "chainguard_cache" {
     mode                       = string
     type                       = string
     cleanup_policy_dry_run     = bool
-    remote_repository_config = object({
+    docker_public_repository  = optional(string)
       description              = string
+      docker_custom_repository  = optional(string)
       docker_public_repository = string
       upstream_username        = optional(string)
       upstream_password_secret = optional(string)
@@ -123,7 +124,7 @@ variable "chainguard_cache" {
     cleanup_policy_dry_run     = false
     remote_repository_config = {
       description              = "Chainguard upstream repository"
-      docker_public_repository = "CHAINGUARD"
+      docker_custom_repository  = "https://cgr.dev/"
     }
   }
 }
@@ -214,4 +215,10 @@ variable "restricted_dev" {
       ]
     }
   }
+}
+
+variable "chainguard_pull_token_secret_name" {
+  type        = string
+  description = "Name of the Secret Manager secret containing Chainguard pull token password"
+  default     = "docker_sap_org_service_auth_token"
 }
