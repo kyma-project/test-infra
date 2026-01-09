@@ -55,6 +55,12 @@ resource "google_artifact_registry_repository" "protected_repository" {
 
       docker_repository {
         public_repository = remote_config.value.docker_public_repository
+        dynamic "custom_repository" {
+          for_each = remote_config.value.docker_custom_repository != null ? [remote_config.value.docker_custom_repository] : []
+          content {
+            uri = custom_repository.value
+          }
+        }
       }
 
       dynamic "upstream_credentials" {
@@ -134,6 +140,12 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
 
       docker_repository {
         public_repository = remote_config.value.docker_public_repository
+        dynamic "custom_repository" {
+          for_each = remote_config.value.docker_custom_repository != null ? [remote_config.value.docker_custom_repository] : []
+          content {
+            uri = custom_repository.value
+          }
+        }
       }
 
       dynamic "upstream_credentials" {
