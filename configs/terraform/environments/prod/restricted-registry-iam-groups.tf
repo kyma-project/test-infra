@@ -11,7 +11,7 @@ resource "google_cloud_identity_group" "restricted_registry_prod_read" {
     "cloudidentity.googleapis.com/groups.security" = ""
   }
 
-  parent = "customers/${data.google_organization.sap.directory_customer_id}"
+  parent = "customers/${var.cloud_identity_customer_id}"
 }
 
 resource "google_cloud_identity_group" "restricted_registry_prod_write" {
@@ -27,7 +27,7 @@ resource "google_cloud_identity_group" "restricted_registry_prod_write" {
     "cloudidentity.googleapis.com/groups.security" = ""
   }
 
-  parent = "customers/${data.google_organization.sap.directory_customer_id}"
+  parent = "customers/${var.cloud_identity_customer_id}"
 }
 
 resource "google_cloud_identity_group" "restricted_registry_dev_read" {
@@ -43,7 +43,7 @@ resource "google_cloud_identity_group" "restricted_registry_dev_read" {
     "cloudidentity.googleapis.com/groups.security" = ""
   }
 
-  parent = "customers/${data.google_organization.sap.directory_customer_id}"
+  parent = "customers/${var.cloud_identity_customer_id}"
 }
 
 resource "google_cloud_identity_group" "restricted_registry_dev_write" {
@@ -59,5 +59,5 @@ resource "google_cloud_identity_group" "restricted_registry_dev_write" {
     "cloudidentity.googleapis.com/groups.security" = ""
   }
 
-  parent = "customers/${data.google_organization.sap.directory_customer_id}"
+  parent = "customers/${var.cloud_identity_customer_id}"
 }

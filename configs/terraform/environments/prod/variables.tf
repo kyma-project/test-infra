@@ -61,3 +61,8 @@ variable "internal_github_base_url" {
   default     = "https://github.tools.sap/"
   description = "Base URL for the internal GitHub Enterprise instance."
 }
+variable "cloud_identity_customer_id" {
+  type        = string
+  description = "Google Cloud Identity Customer ID for SAP organization"
+  default     = "C00qml9xi"
+}
