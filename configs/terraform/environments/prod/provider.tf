@@ -74,3 +74,8 @@ provider "google-beta" {
 # data.google_client_config configures Google Cloud client.
 data "google_client_config" "gcp" {
 }
+
+# data.google_organization retrieves SAP organization information
+data "google_organization" "sap" {
+  domain = "sap.com"
+}
