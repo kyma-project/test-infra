@@ -118,10 +118,11 @@ variable "cleanup_policies" {
 
 variable "remote_repository_config" {
   type = object({
-    description              = string
-    docker_public_repository = string
-    upstream_username        = optional(string)
-    upstream_password_secret = optional(string)
+    description               = string
+    docker_public_repository  = optional(string)
+    docker_custom_repository  = optional(string)
+    upstream_username         = optional(string)
+    upstream_password_secret  = optional(string)
   })
   default = null
 }
@@ -129,4 +130,15 @@ variable "remote_repository_config" {
 variable "repository_prevent_destroy" {
   type    = bool
   default = true
+}
+
+variable "virtual_repository_config" {
+  type = object({
+    upstream_policies = optional(list(object({
+      id         = string
+      repository = string
+      priority   = number
+    })))
+  })
+  default = null
 }
