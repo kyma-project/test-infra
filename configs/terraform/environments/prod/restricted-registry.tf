@@ -81,6 +81,7 @@ module "restricted_prod" {
   type                       = var.restricted_prod.type
   cleanup_policy_dry_run     = var.restricted_prod.cleanup_policy_dry_run
   repository_prevent_destroy = var.restricted_prod.repository_prevent_destroy
+  reader_groups              = [var.restricted_registry_iam_groups.prod_read]
   virtual_repository_config  = var.restricted_prod.virtual_repository_config
 
   depends_on = [
@@ -104,10 +105,29 @@ module "restricted_dev" {
   type                       = var.restricted_dev.type
   cleanup_policy_dry_run     = var.restricted_dev.cleanup_policy_dry_run
   repository_prevent_destroy = var.restricted_dev.repository_prevent_destroy
+  reader_groups              = [var.restricted_registry_iam_groups.dev_read]
   virtual_repository_config  = var.restricted_dev.virtual_repository_config
 
   depends_on = [
     module.kyma_restricted_images_dev,
     module.chainguard_cache
   ]
+}
+
+resource "google_artifact_registry_repository_iam_member" "restricted_prod_writers" {
+  provider   = google.kyma_project
+  project    = "kyma-project"
+  location   = module.restricted_prod.artifact_registry.location
+  repository = module.restricted_prod.artifact_registry.name
+  role       = "roles/artifactregistry.writer"
+  member     = "group:${var.restricted_registry_iam_groups.prod_write}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "restricted_dev_writers" {
+  provider   = google.kyma_project
+  project    = "kyma-project"
+  location   = module.restricted_dev.artifact_registry.location
+  repository = module.restricted_dev.artifact_registry.name
+  role       = "roles/artifactregistry.writer"
+  member     = "group:${var.restricted_registry_iam_groups.dev_write}"
 }

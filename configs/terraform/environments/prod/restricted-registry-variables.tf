@@ -105,12 +105,12 @@ variable "chainguard_cache" {
     mode                       = string
     type                       = string
     cleanup_policy_dry_run     = bool
-    docker_public_repository  = optional(string)
-      description              = string
+    remote_repository_config = object({
+      description               = string
+      docker_public_repository  = optional(string)
       docker_custom_repository  = optional(string)
-      docker_public_repository = string
-      upstream_username        = optional(string)
-      upstream_password_secret = optional(string)
+      upstream_username         = optional(string)
+      upstream_password_secret  = optional(string)
     })
   })
   default = {
@@ -123,7 +123,7 @@ variable "chainguard_cache" {
     type                       = "production"
     cleanup_policy_dry_run     = false
     remote_repository_config = {
-      description              = "Chainguard upstream repository"
+      description               = "Chainguard upstream repository"
       docker_custom_repository  = "https://cgr.dev/"
     }
   }
