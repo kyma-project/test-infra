@@ -38,9 +38,6 @@ resource "google_artifact_registry_repository" "protected_repository" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes = [
-      update_time,
-    ]
   }
 
   dynamic "docker_config" {
@@ -126,12 +123,6 @@ resource "google_artifact_registry_repository" "unprotected_repository" {
     name  = lower(var.repository_name)
     owner = var.owner
     type  = var.type
-  }
-
-  lifecycle {
-    ignore_changes = [
-      update_time,
-    ]
   }
 
   dynamic "docker_config" {
