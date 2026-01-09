@@ -220,7 +220,7 @@ variable "restricted_dev" {
 variable "chainguard_pull_token_secret_name" {
   type        = string
   description = "Name of the Secret Manager secret containing Chainguard pull token password"
-  default     = "docker_sap_org_service_auth_token"
+  default     = "chainguard_auth_token"
 }
 
 variable "restricted_registry_iam_groups" {

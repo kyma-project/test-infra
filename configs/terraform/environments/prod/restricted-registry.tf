@@ -61,7 +61,7 @@ module "chainguard_cache" {
   remote_repository_config = {
     description               = var.chainguard_cache.remote_repository_config.description
     docker_custom_repository  = var.chainguard_cache.remote_repository_config.docker_custom_repository
-    upstream_username         = "HARDCODE_CHAINGUARD_USERNAME"
+    upstream_username         = "ac2ef7e1fdf69e1bf40cd31e4a868af7cca02037/034e2363347226e7"
     upstream_password_secret  = data.google_secret_manager_secret_version.chainguard_pull_token_password.name
   }
 }
