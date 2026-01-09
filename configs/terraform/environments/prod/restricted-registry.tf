@@ -41,16 +41,37 @@ data "google_project" "kyma_project" {
   project_id = var.kyma_project_gcp_project_id
 }
 
+import {
+  to = google_secret_manager_secret.chainguard_pull_token
+  id = "projects/sap-kyma-prow/secrets/chainguard_auth_token"
+}
+
+resource "google_secret_manager_secret" "chainguard_pull_token" {
+  project   = var.gcp_project_id
+  secret_id = var.chainguard_pull_token_secret_name
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type      = "authentication-token"
+    tool      = "chainguard"
+    owner     = "neighbors"
+    component = "restricted-registry"
+  }
+}
+
 data "google_secret_manager_secret_version" "chainguard_pull_token_password" {
   provider = google.kyma_project
   project  = var.gcp_project_id
-  secret   = var.chainguard_pull_token_secret_name
+  secret   = google_secret_manager_secret.chainguard_pull_token.secret_id
 }
 
 # Grant Terraform planner service account read access to Chainguard auth secret
 resource "google_secret_manager_secret_iam_member" "chainguard_token_terraform_planner_access" {
   project   = var.gcp_project_id
-  secret_id = var.chainguard_pull_token_secret_name
+  secret_id = google_secret_manager_secret.chainguard_pull_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.terraform-planner.email}"
 }
@@ -58,7 +79,7 @@ resource "google_secret_manager_secret_iam_member" "chainguard_token_terraform_p
 # Grant Artifact Registry service account access to the Chainguard auth secret
 resource "google_secret_manager_secret_iam_member" "chainguard_token_artifactregistry_access" {
   project   = var.gcp_project_id
-  secret_id = var.chainguard_pull_token_secret_name
+  secret_id = google_secret_manager_secret.chainguard_pull_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:service-${data.google_project.kyma_project.number}@gcp-sa-artifactregistry.iam.gserviceaccount.com"
 }
