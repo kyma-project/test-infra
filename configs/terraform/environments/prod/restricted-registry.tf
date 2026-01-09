@@ -36,10 +36,31 @@ module "kyma_restricted_images_dev" {
   repository_prevent_destroy = var.kyma_restricted_images_dev.repository_prevent_destroy
 }
 
+data "google_project" "kyma_project" {
+  provider   = google.kyma_project
+  project_id = var.kyma_project_gcp_project_id
+}
+
 data "google_secret_manager_secret_version" "chainguard_pull_token_password" {
   provider = google.kyma_project
-  project = var.gcp_project_id
+  project  = var.gcp_project_id
   secret   = var.chainguard_pull_token_secret_name
+}
+
+# Grant Terraform planner service account read access to Chainguard auth secret
+resource "google_secret_manager_secret_iam_member" "chainguard_token_terraform_planner_access" {
+  project   = var.gcp_project_id
+  secret_id = var.chainguard_pull_token_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform-planner.email}"
+}
+
+# Grant Artifact Registry service account access to the Chainguard auth secret
+resource "google_secret_manager_secret_iam_member" "chainguard_token_artifactregistry_access" {
+  project   = var.gcp_project_id
+  secret_id = var.chainguard_pull_token_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:service-${data.google_project.kyma_project.number}@gcp-sa-artifactregistry.iam.gserviceaccount.com"
 }
 
 module "chainguard_cache" {
