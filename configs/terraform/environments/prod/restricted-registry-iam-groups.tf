@@ -8,7 +8,7 @@ resource "google_cloud_identity_group" "restricted_registry_prod_read" {
   }
 
   labels = {
-    "cloudidentity.googleapis.com/groups.security" = ""
+    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
   }
 
   parent = "customers/${var.cloud_identity_customer_id}"
@@ -24,7 +24,7 @@ resource "google_cloud_identity_group" "restricted_registry_prod_write" {
   }
 
   labels = {
-    "cloudidentity.googleapis.com/groups.security" = ""
+    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
   }
 
   parent = "customers/${var.cloud_identity_customer_id}"
@@ -40,7 +40,7 @@ resource "google_cloud_identity_group" "restricted_registry_dev_read" {
   }
 
   labels = {
-    "cloudidentity.googleapis.com/groups.security" = ""
+    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
   }
 
   parent = "customers/${var.cloud_identity_customer_id}"
@@ -56,7 +56,7 @@ resource "google_cloud_identity_group" "restricted_registry_dev_write" {
   }
 
   labels = {
-    "cloudidentity.googleapis.com/groups.security" = ""
+    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
   }
 
   parent = "customers/${var.cloud_identity_customer_id}"
