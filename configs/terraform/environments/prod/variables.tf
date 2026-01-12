@@ -28,8 +28,6 @@ variable "kyma_project_gcp_project_id" {
   default     = "kyma-project"
 }
 
-
-
 variable "kyma_project_github_org" {
   type        = string
   default     = "kyma-project"
@@ -60,4 +58,9 @@ variable "internal_github_base_url" {
   type        = string
   default     = "https://github.tools.sap/"
   description = "Base URL for the internal GitHub Enterprise instance."
+}
+variable "cloud_identity_customer_id" {
+  type        = string
+  description = "Google Cloud Identity Customer ID for SAP organization"
+  default     = "C00qml9xi"
 }
