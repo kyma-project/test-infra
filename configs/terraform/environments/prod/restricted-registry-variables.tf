@@ -124,7 +124,7 @@ variable "chainguard_cache" {
     cleanup_policy_dry_run     = false
     remote_repository_config = {
       description               = "Chainguard upstream repository"
-      docker_custom_repository  = "https://cgr.dev/"
+      docker_custom_repository  = "https://cgr.dev"
     }
   }
 }
