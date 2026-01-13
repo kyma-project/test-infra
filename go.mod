@@ -14,7 +14,7 @@ require (
 	github.com/google/go-github/v75 v75.0.0
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/onsi/ginkgo/v2 v2.27.4
+	github.com/onsi/ginkgo/v2 v2.27.5
 	github.com/onsi/gomega v1.39.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
