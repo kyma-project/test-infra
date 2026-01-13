@@ -2,13 +2,6 @@
 # Workflows controller are used to manage the execution of jobs in a GitHub Actions workflow.
 # It introduction is required to use the merge queue feature in GitHub Actions.
 # Naming convention of filters: <job_name>-filter
-build-cors-proxy-filter:
-  - "cmd/cloud-run/cors-proxy/*.go"
-  - "cmd/cloud-run/cors-proxy/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
 build-dashboard-token-proxy-filter:
   - "cmd/dashboard-token-proxy/*.go"
   - "cmd/dashboard-token-proxy/Dockerfile"
