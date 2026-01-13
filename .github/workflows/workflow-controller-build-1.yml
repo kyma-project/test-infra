@@ -28,11 +28,6 @@ jobs:
         with:
           filters: .github/controller-filters.yaml
 
-  build-cors-proxy:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-cors-proxy-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-cors-proxy.yml@main
-
   build-dashboard-token-proxy:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
