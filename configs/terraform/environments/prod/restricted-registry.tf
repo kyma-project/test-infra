@@ -158,7 +158,7 @@ module "restricted_dev" {
 
 resource "google_artifact_registry_repository_iam_member" "restricted_prod_writers" {
   provider   = google.kyma_project
-  project    = "kyma-project"
+  project    = var.kyma_project_gcp_project_id
   location   = module.restricted_prod.artifact_registry.location
   repository = module.restricted_prod.artifact_registry.name
   role       = "roles/artifactregistry.writer"
@@ -167,9 +167,19 @@ resource "google_artifact_registry_repository_iam_member" "restricted_prod_write
 
 resource "google_artifact_registry_repository_iam_member" "restricted_dev_writers" {
   provider   = google.kyma_project
-  project    = "kyma-project"
+  project    = var.kyma_project_gcp_project_id
   location   = module.restricted_dev.artifact_registry.location
   repository = module.restricted_dev.artifact_registry.name
   role       = "roles/artifactregistry.writer"
   member     = "group:${var.restricted_registry_iam_groups.dev_write}"
+}
+
+# Grant kyma-security-scanners service account PULL ONLY access to Prod Restricted Registry
+resource "google_artifact_registry_repository_iam_member" "restricted_prod_security_scanners_reader" {
+  provider   = google.kyma_project
+  project    = var.kyma_project_gcp_project_id
+  location   = module.restricted_prod.artifact_registry.location
+  repository = module.restricted_prod.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.kyma-security-scanners.email}"
 }

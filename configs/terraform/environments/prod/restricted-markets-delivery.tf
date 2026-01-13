@@ -18,6 +18,16 @@ resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" 
   member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
 }
 
+# Grant restricted-markets-artifactregistry-reader access to Prod Restricted Registry
+resource "google_artifact_registry_repository_iam_member" "restricted_prod_markets_delivery_reader" {
+  provider   = google.kyma_project
+  project    = var.kyma_project_gcp_project_id
+  location   = module.restricted_prod.artifact_registry.location
+  repository = module.restricted_prod.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
+}
+
 variable "sre-restricted-markets-artifactregistry-reader" {
   type = object({
     registry-reader-sa          = string
