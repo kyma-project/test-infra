@@ -25,7 +25,7 @@ const (
 
 // newClient creates google logging client.
 func newClient(ctx context.Context, credentialsFilePath, projectID string) (*logging.Client, error) {
-	c, err := logging.NewClient(ctx, projectID, option.WithCredentialsFile(credentialsFilePath))
+	c, err := logging.NewClient(ctx, projectID, option.WithAuthCredentialsFile(option.ServiceAccount, credentialsFilePath))
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating google cloud logging client, error: %w", err)
 	}
