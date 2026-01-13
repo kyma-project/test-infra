@@ -225,16 +225,24 @@ variable "chainguard_pull_token_secret_name" {
 
 variable "restricted_registry_iam_groups" {
   type = object({
-    prod_read  = string
-    prod_write = string
-    dev_read   = string
-    dev_write  = string
+    prod_read             = string
+    prod_read_group_name  = string
+    prod_write            = string
+    prod_write_group_name = string
+    dev_read              = string
+    dev_read_group_name   = string
+    dev_write             = string
+    dev_write_group_name  = string
   })
   default = {
-    prod_read  = "kyma-restricted-registry-prod-read@sap.com"
-    prod_write = "kyma-restricted-registry-prod-write@sap.com"
-    dev_read   = "kyma-restricted-registry-dev-read@sap.com"
-    dev_write  = "kyma-restricted-registry-dev-write@sap.com"
+    prod_read             = "kyma-restricted-registry-prod-read@sap.com"
+    prod_read_group_name  = "groups/00xvir7l1dtv8ew"
+    prod_write            = "kyma-restricted-registry-prod-write@sap.com"
+    prod_write_group_name = "groups/01egqt2p1a2johw"
+    dev_read              = "kyma-restricted-registry-dev-read@sap.com"
+    dev_read_group_name   = "groups/0184mhaj2tdduaw"
+    dev_write             = "kyma-restricted-registry-dev-write@sap.com"
+    dev_write_group_name  = "groups/023ckvvd0rmgw6a"
   }
   description = "Google Cloud Identity groups for Restricted Registry access control"
 }
