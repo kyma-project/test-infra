@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
+	"github.com/kyma-project/test-infra/pkg/gcp/gcphttp"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	"github.com/kyma-project/test-infra/pkg/githubuser"
 
@@ -111,14 +111,14 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		}
 		payload, err = github.ValidatePayload(r, webhookToken)
 		if err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed validating Github payload, error: %s", err)
+			gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed validating Github payload, error: %s", err)
 			return
 		}
 	}
 
 	event, err := github.ParseWebHook(github.WebHookType(r), payload)
 	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed parsing Github payload, error: %s", err)
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed parsing Github payload, error: %s", err)
 		return
 	}
 
@@ -142,7 +142,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		// send message to a pubsub topic
 		_, err = pubsubClient.PublishMessage(ctx, payloadInterface, pubsubTopic)
 		if err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed sending, error: %s", err)
+			gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed sending, error: %s", err)
 			return
 		}
 	} else {
