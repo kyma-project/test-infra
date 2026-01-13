@@ -1,11 +1,11 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20260108-da7c89ae
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260108-da7c89ae
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260108-da7c89ae
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260108-da7c89ae
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260108-da7c89ae
+    - europe-docker.pkg.dev/kyma-project/prod/cors-proxy:v20260113-e7266b86
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260113-e7266b86
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260113-e7266b86
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260113-e7266b86
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260113-e7266b86
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20251113-b9e254cf
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260105-81907f6a
 mend:
