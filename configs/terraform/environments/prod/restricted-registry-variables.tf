@@ -246,3 +246,19 @@ variable "restricted_registry_iam_groups" {
   }
   description = "Google Cloud Identity groups for Restricted Registry access control"
 }
+
+variable "restricted_registry_hierarchical_groups" {
+  type = object({
+    security_scanners            = string
+    security_scanners_group_name = string
+    markets_delivery             = string
+    markets_delivery_group_name  = string
+  })
+  default = {
+    security_scanners            = "kyma-restricted-registry-security-scanners@sap.com"
+    security_scanners_group_name = "groups/00meukdy10z0qky"
+    markets_delivery             = "kyma-restricted-registry-markets-delivery@sap.com"
+    markets_delivery_group_name  = "groups/03fwokq04jj0scm"
+  }
+  description = "Hierarchical Cloud Identity groups for organizing service accounts with Restricted Registry access"
+}

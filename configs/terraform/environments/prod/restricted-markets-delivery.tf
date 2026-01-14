@@ -21,11 +21,11 @@ resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" 
 # Add restricted-markets-artifactregistry-reader to Prod Restricted Registry read group
 resource "google_cloud_identity_group_membership" "markets_delivery_prod_read" {
   group = var.restricted_registry_iam_groups.prod_read_group_name
-  
+
   preferred_member_key {
     id = google_service_account.restricted-markets-artifactregistry-reader.email
   }
-  
+
   roles {
     name = "MEMBER"
   }
