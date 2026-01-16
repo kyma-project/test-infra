@@ -530,6 +530,27 @@ var _ = Describe("Image Builder", func() {
 			},
 			false,
 		),
+		Entry("With useRestrictedRegistry flag set",
+			options{
+				gitState: GitStateConfig{
+					JobType: "postsubmit",
+				},
+				useRestrictedRegistry: true,
+			},
+			pipelines.OCIImageBuilderTemplateParams{
+				"Context":               "",
+				"Dockerfile":            "",
+				"ExportTags":            "false",
+				"JobType":               "postsubmit",
+				"Name":                  "",
+				"PullBaseSHA":           "",
+				"RepoName":              "",
+				"RepoOwner":             "",
+				"Platforms":             "linux/amd64,linux/arm64",
+				"useRestrictedRegistry": "true",
+			},
+			false,
+		),
 	)
 })
 
