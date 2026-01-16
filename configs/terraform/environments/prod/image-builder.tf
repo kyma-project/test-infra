@@ -69,3 +69,74 @@ resource "google_service_account" "kyma_project_image_builder" {
   account_id  = var.image_builder_kyma-project_identity.id
   description = var.image_builder_kyma-project_identity.description
 }
+
+# Restricted dev image-builder service account
+resource "google_service_account" "kyma_project_image_builder_restricted_dev" {
+  provider    = google.kyma_project
+  account_id  = var.image_builder_kyma-project_identity_restricted_dev.id
+  description = var.image_builder_kyma-project_identity_restricted_dev.description
+}
+
+# Restricted prod image-builder service account
+resource "google_service_account" "kyma_project_image_builder_restricted_prod" {
+  provider    = google.kyma_project
+  account_id  = var.image_builder_kyma-project_identity_restricted_prod.id
+  description = var.image_builder_kyma-project_identity_restricted_prod.description
+}
+
+# Service account keys
+resource "google_service_account_key" "kyma_project_image_builder_restricted_dev_key" {
+  provider           = google.kyma_project
+  service_account_id = google_service_account.kyma_project_image_builder_restricted_dev.name
+}
+
+resource "google_service_account_key" "kyma_project_image_builder_restricted_prod_key" {
+  provider           = google.kyma_project
+  service_account_id = google_service_account.kyma_project_image_builder_restricted_prod.name
+}
+
+# Secrets in sap-kyma-prow project to store the service account keys
+resource "google_secret_manager_secret" "image_builder_sa_key_restricted_dev" {
+  project   = var.gcp_project_id
+  secret_id = var.image_builder_sa_key_restricted_dev_secret_name
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type        = "service-account-key"
+    tool        = "image-builder"
+    environment = "restricted-dev"
+    owner       = "neighbors"
+    component   = "oci-image-builder"
+  }
+}
+
+resource "google_secret_manager_secret_version" "image_builder_sa_key_restricted_dev" {
+  secret      = google_secret_manager_secret.image_builder_sa_key_restricted_dev.id
+  secret_data = base64decode(google_service_account_key.kyma_project_image_builder_restricted_dev_key.private_key)
+}
+
+resource "google_secret_manager_secret" "image_builder_sa_key_restricted_prod" {
+  project   = var.gcp_project_id
+  secret_id = var.image_builder_sa_key_restricted_prod_secret_name
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type        = "service-account-key"
+    tool        = "image-builder"
+    environment = "restricted-prod"
+    owner       = "neighbors"
+    component   = "oci-image-builder"
+  }
+}
+
+resource "google_secret_manager_secret_version" "image_builder_sa_key_restricted_prod" {
+  secret      = google_secret_manager_secret.image_builder_sa_key_restricted_prod.id
+  secret_data = base64decode(google_service_account_key.kyma_project_image_builder_restricted_prod_key.private_key)
+}
+

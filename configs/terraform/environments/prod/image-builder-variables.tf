@@ -33,6 +33,18 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   default     = "image-builder-ado-pat"
 }
 
+variable "image_builder_sa_key_restricted_dev_secret_name" {
+  description = "Name of the secret in GCP Secret Manager (sap-kyma-prow) that contains the JSON key for the restricted dev image-builder service account."
+  type        = string
+  default     = "image-builder-sa-key-restricted-dev"
+}
+
+variable "image_builder_sa_key_restricted_prod_secret_name" {
+  description = "Name of the secret in GCP Secret Manager (sap-kyma-prow) that contains the JSON key for the restricted prod image-builder service account."
+  type        = string
+  default     = "image-builder-sa-key-restricted-prod"
+}
+
 # Variable for image-builder's artifact registries identity
 variable "image_builder_kyma-project_identity" {
   description = "Configuration for identity of image-builder in main kyma-project GCP project. It's used to access artifact registries."
@@ -44,6 +56,34 @@ variable "image_builder_kyma-project_identity" {
   default = {
     id          = "azure-pipeline-image-builder"
     description = "OCI image builder running in kyma development service azure pipelines"
+  }
+}
+
+# Variable for restricted dev image-builder service account
+variable "image_builder_kyma-project_identity_restricted_dev" {
+  description = "Configuration for restricted dev identity of image-builder in main kyma-project GCP project. It's used to access restricted dev registries."
+  type = object({
+    id          = string
+    description = string
+  })
+
+  default = {
+    id          = "azure-pipeline-image-builder-restricted-dev"
+    description = "OCI image builder service account for restricted development environment in kyma development service azure pipelines"
+  }
+}
+
+# Variable for restricted prod image-builder service account
+variable "image_builder_kyma-project_identity_restricted_prod" {
+  description = "Configuration for restricted prod identity of image-builder in main kyma-project GCP project. It's used to access restricted prod registries."
+  type = object({
+    id          = string
+    description = string
+  })
+
+  default = {
+    id          = "azure-pipeline-image-builder-restricted-prod"
+    description = "OCI image builder service account for restricted production environment in kyma development service azure pipelines"
   }
 }
 
