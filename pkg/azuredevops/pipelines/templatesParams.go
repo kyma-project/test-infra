@@ -159,10 +159,15 @@ func (p OCIImageBuilderTemplateParams) SetPlatforms(platforms string) {
 	p["Platforms"] = platforms
 }
 
+// SetTarget sets Target parameter.
+// This parameter is used to specify the target build stage in a multi-stage Dockerfile.
 func (p OCIImageBuilderTemplateParams) SetTarget(target string) {
 	p["Target"] = target
 }
 
+// SetUseRestrictedRegistry sets useRestrictedRegistry parameter.
+// This parameter enables building images using Chainguard restricted base images.
+// When enabled, the image builder will use restricted registry with Chainguard base images.
 func (p OCIImageBuilderTemplateParams) SetUseRestrictedRegistry() {
 	p["useRestrictedRegistry"] = "true"
 }
