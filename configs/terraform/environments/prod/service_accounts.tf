@@ -81,6 +81,19 @@ resource "google_service_account" "kyma-security-scanners" {
   }
 }
 
+# Add kyma-security-scanners to Prod Restricted Registry read group
+resource "google_cloud_identity_group_membership" "security_scanners_prod_read" {
+  group = var.restricted_registry_iam_groups.prod_read_group_name
+
+  preferred_member_key {
+    id = google_service_account.kyma-security-scanners.email
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+}
+
 resource "google_service_account" "neighbors-conduit-cli-builder" {
   account_id   = "neighbors-conduit-cli-builder"
   display_name = "neighbors-conduit-cli-builder"
