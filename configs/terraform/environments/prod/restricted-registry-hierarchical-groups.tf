@@ -73,9 +73,21 @@ resource "google_cloud_identity_group_membership" "markets_delivery_group_to_pro
     name = "MEMBER"
   }
 }
-
+# Image builder with accesses to restricted registries
 resource "google_cloud_identity_group_membership" "image_builder_group_to_dev_read" {
   group = var.restricted_registry_iam_groups.dev_read_group_name
+
+  preferred_member_key {
+    id = var.restricted_registry_hierarchical_groups.image_builder
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+}
+
+resource "google_cloud_identity_group_membership" "image_builder_group_to_dev_write" {
+  group = var.restricted_registry_iam_groups.dev_write_group_name
 
   preferred_member_key {
     id = var.restricted_registry_hierarchical_groups.image_builder
@@ -95,5 +107,15 @@ resource "google_cloud_identity_group_membership" "image_builder_group_to_prod_r
   roles {
     name = "MEMBER"
   }
+}
 
+resource "google_cloud_identity_group_membership" "image_builder_group_to_prod_write" {
+  group = var.restricted_registry_iam_groups.prod_write_group_name
+
+  preferred_member_key {
+    id = var.restricted_registry_hierarchical_groups.image_builder
+  }
+  roles {
+    name = "MEMBER"
+  }
 }
