@@ -41,7 +41,7 @@ jobs:
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: opentofu/setup-opentofu@000eeb8522f0572907c393e8151076c205fdba1b # v1
+        uses: opentofu/setup-opentofu@9d84900f3238fab8cd84ce47d658d25dd008be2f # v1
 
       - name: Setup GitHub comments
         id: setup-github-comment

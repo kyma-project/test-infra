@@ -53,7 +53,7 @@
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
       "versioning": "semver",
       "groupName": "custom docker images (semver) to {{newVersion}}",
-      "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageTopic": "custom docker images (semver) to {{newVersion}}",
       "commitMessageExtra": "",
       "separateMajorMinor": false
     },
@@ -64,7 +64,8 @@
     "groupName": "custom docker images (loose) to {{newVersion}}",
     "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
     "commitMessageExtra": "",
-    "separateMajorMinor": false
+    "separateMajorMinor": false,
+    "maxMajorIncrement": 0
     }
   ],
 

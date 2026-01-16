@@ -28,8 +28,6 @@ variable "kyma_project_gcp_project_id" {
   default     = "kyma-project"
 }
 
-
-
 variable "kyma_project_github_org" {
   type        = string
   default     = "kyma-project"
