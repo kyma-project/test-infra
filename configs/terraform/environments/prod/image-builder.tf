@@ -78,14 +78,6 @@ resource "google_service_account" "kyma_project_image_builder_restricted_markets
 }
 
 # Secret in sap-kyma-prow project to store the service account key
-# Note: Service account key and secret version are managed manually.
-# To create a key and add it to the secret:
-#   gcloud iam service-accounts keys create key.json \
-#     --iam-account=img-builder-restricted-markets@kyma-project.iam.gserviceaccount.com \
-#     --project=kyma-project
-#   gcloud secrets versions add image-builder-sa-key-restricted-markets \
-#     --project=sap-kyma-prow \
-#     --data-file=key.json
 resource "google_secret_manager_secret" "image_builder_sa_key_restricted_markets" {
   project   = var.gcp_project_id
   secret_id = var.image_builder_sa_key_restricted_markets_secret_name
