@@ -62,7 +62,7 @@ variable "image_builder_kyma-project_identity_restricted_markets" {
   })
 
   default = {
-    id          = "azure-pipeline-image-builder-restricted-markets"
+    id          = "image-builder-restricted-markets"
     description = "OCI image builder service account for restricted markets in kyma development service azure pipelines"
   }
 }
