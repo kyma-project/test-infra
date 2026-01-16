@@ -253,12 +253,16 @@ variable "restricted_registry_hierarchical_groups" {
     security_scanners_group_name = string
     markets_delivery             = string
     markets_delivery_group_name  = string
+    image_builder = string
+    image_builder_group_name = string
   })
   default = {
     security_scanners            = "kyma-restricted-registry-security-scanners@sap.com"
     security_scanners_group_name = "groups/00meukdy10z0qky"
     markets_delivery             = "kyma-restricted-registry-markets-delivery@sap.com"
     markets_delivery_group_name  = "groups/03fwokq04jj0scm"
+    image_builder = "kyma-restricted-registry-image-builder@sap.com"
+    image_builder_group_name = "groups/01fob9te0l19xwg"
   }
   description = "Hierarchical Cloud Identity groups for organizing service accounts with Restricted Registry access"
 }
