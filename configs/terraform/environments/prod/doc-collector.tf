@@ -35,7 +35,7 @@ variable "doc_collector_workflow_name" {
 # Fetch the restricted-markets-docu-hub repository data from internal GitHub
 data "github_repository" "restricted_markets_docu_hub" {
   provider = github.internal_github
-  name     = "restricted-markets-docu-hub"
+  name     = "product-kyma-runtime-fork"
 }
 
 # Fetch the kyma organization data from internal GitHub
@@ -55,8 +55,7 @@ import {
 }
 
 # technical-writers-docsync-workflow-gh-tools-neighbors-token stores the Personal Access Token
-# for the documentation collector workflow on internal GitHub. The token is used to synchronize
-# documentation from internal repositories.
+# for the documentation collector workflow on internal GitHub.
 resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
   project   = var.gcp_project_id
   secret_id = var.doc_collector_gcp_secret_name_internal_github_token
@@ -70,7 +69,7 @@ resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
     tool            = "doc-collector"
     github-instance = "internal"
     owner           = "neighbors"
-    component       = "documentation-collector"
+    component       = "github-workflow"
   }
 }
 
@@ -79,8 +78,7 @@ resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
 # ------------------------------------------------------------------------------
 
 # Grant the documentation collector workflow access to read the internal GitHub token
-# via Workload Identity Federation. Uses repository_id, repository_owner_id, and workflow
-# to identify the specific workflow in kyma/restricted-markets-docu-hub that should have access.
+# via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_internal_token_reader" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
@@ -89,8 +87,7 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_inter
 }
 
 # Grant the documentation collector workflow access to read the public GitHub token
-# (kyma-bot-github-public-repo-token) via Workload Identity Federation. This secret is shared
-# by multiple automations and is defined in github-com.tf.
+# (kyma-bot-github-public-repo-token) via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_public_token_reader" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
