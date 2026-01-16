@@ -163,6 +163,10 @@ func (p OCIImageBuilderTemplateParams) SetTarget(target string) {
 	p["Target"] = target
 }
 
+func (p OCIImageBuilderTemplateParams) SetUseRestrictedRegistry() {
+	p["useRestrictedRegistry"] = "true"
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set.
 // Returns ErrRequiredParamNotSet error if any required parameter is not set.
 func (p OCIImageBuilderTemplateParams) Validate() error {
