@@ -1,0 +1,112 @@
+<mxfile host="65bd71144e">
+    <diagram id="XR4XFrg-lgkOZXqAhfpg" name="Hierarchical Groups Structure">
+        <mxGraphModel dx="1643" dy="1065" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Restricted Registry - Hierarchical Group Structure" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="400" y="20" width="600" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="layer1_bg" value="Layer 1: Service Accounts" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=left;verticalAlign=top;fontSize=14;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="50" y="80" width="1300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="sa1" value="kyma-security-scanners@&#xa;sap-kyma-prow.iam.gserviceaccount.com" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="120" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sa2" value="restricted-markets-reg-reader@&#xa;sap-kyma-prow.iam.gserviceaccount.com" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="120" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="layer2_bg" value="Layer 2: Hierarchical Groups (Organize SAs)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;align=left;verticalAlign=top;fontSize=14;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="50" y="240" width="1300" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="hgroup1" value="kyma-restricted-registry-&#xa;security-scanners@sap.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="120" y="290" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="hgroup2" value="kyma-restricted-registry-&#xa;markets-delivery@sap.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="770" y="290" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="sa1" target="hgroup1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1_label" value="MEMBER" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d79b00;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="240" y="200" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="sa2" target="hgroup2" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2_label" value="MEMBER" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d79b00;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="890" y="200" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="layer3_bg" value="Layer 3: Registry Access Groups (Grant permissions)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;align=left;verticalAlign=top;fontSize=14;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="50" y="420" width="1300" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="agroup1" value="kyma-restricted-registry-&#xa;prod-read@sap.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="200" y="480" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="agroup2" value="kyma-restricted-registry-&#xa;dev-read@sap.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="850" y="480" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow3" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="hgroup1" target="agroup1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow4" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" parent="1" source="hgroup1" target="agroup2" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow5" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" parent="1" source="hgroup2" target="agroup1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow3_label" value="MEMBER" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="220" y="390" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow4_label" value="MEMBER" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="560" y="390" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow5_label" value="MEMBER" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="690" y="390" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="layer4_bg" value="Layer 4: Artifact Registries (Resources)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333333;align=left;verticalAlign=top;fontSize=14;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="50" y="640" width="1300" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="registry1" value="restricted-prod&#xa;Artifact Registry" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="240" y="700" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="registry2" value="restricted-dev&#xa;Artifact Registry" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="890" y="700" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow6" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="agroup1" target="registry1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow7" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="agroup2" target="registry2" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow6_label" value="roles/artifactregistry.reader" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#9673a6;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="220" y="600" width="160" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow7_label" value="roles/artifactregistry.reader" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#9673a6;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="870" y="600" width="160" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_bg" value="Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#333333;align=left;verticalAlign=top;fontSize=12;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="50" y="850" width="400" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend1" value="Membership in group (inherits permissions)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" parent="1" vertex="1">
+                    <mxGeometry x="90" y="880" width="280" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend1_arrow" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="60" y="890" as="sourcePoint"/>
+                        <mxPoint x="80" y="890" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="legend2" value="IAM role binding (grants permissions)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" parent="1" vertex="1">
+                    <mxGeometry x="90" y="910" width="280" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend2_arrow" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="60" y="920" as="sourcePoint"/>
+                        <mxPoint x="80" y="920" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

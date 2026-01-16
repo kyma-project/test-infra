@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
-	crhttp "github.com/kyma-project/test-infra/pkg/gcp/http"
+	"github.com/kyma-project/test-infra/pkg/gcp/gcphttp"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	"github.com/kyma-project/test-infra/pkg/gcp/secretmanager"
 
@@ -122,7 +122,7 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	var pubsubMessage pubsub.Message
 	if err := json.NewDecoder(r.Body).Decode(&pubsubMessage); err != nil {
 		logger.LogDebug("Received HTTP request: %s", string(request))
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed decode message body")
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed decode message body")
 		return
 	}
 
@@ -142,7 +142,7 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(message.Data, &secretRotateMessage)
 	if err != nil {
 		logger.LogDebug("Received HTTP request: %s", string(request))
-		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to unmarshal message data field, error: %s", err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to unmarshal message data field, error: %s", err.Error())
 		return
 	}
 
@@ -157,7 +157,7 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	logger.LogInfo("Retrieving latest version of secret: %s", secretRotateMessage.Name)
 	secretDataString, err := secretManagerService.GetLatestSecretVersionData(secretRotateMessage.Name)
 	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error())
 		return
 	}
 
