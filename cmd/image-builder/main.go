@@ -534,7 +534,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")
 	flagSet.BoolVar(&o.adoStateOutput, "ado-state-output", false, "Set output variables with result of image-buidler exececution")
 	flagSet.StringVar(&o.target, "target", "", "Specify which build stage in the Dockerfile to use as the target")
-	flagSet.BoolVar(&o.useRestrictedRegistry, "useRestrictedRegistry", false, "Enable building images using Chainguard-restricted base images")
+	flagSet.BoolVar(&o.useRestrictedRegistry, "use-restricted-registry", false, "Enable building images using Chainguard-restricted base images")
 
 	return flagSet
 }
