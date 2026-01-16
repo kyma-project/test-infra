@@ -101,8 +101,3 @@ resource "google_secret_manager_secret" "image_builder_sa_key_restricted_markets
   }
 }
 
-resource "google_secret_manager_secret_version" "image_builder_sa_key_restricted_markets" {
-  secret      = google_secret_manager_secret.image_builder_sa_key_restricted_markets.id
-  secret_data = base64decode(google_service_account_key.kyma_project_image_builder_restricted_markets_key.private_key)
-}
-
