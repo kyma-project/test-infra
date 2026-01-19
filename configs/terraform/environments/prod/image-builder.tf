@@ -77,13 +77,7 @@ resource "google_service_account" "kyma_project_image_builder_restricted_markets
   description = var.image_builder_kyma-project_identity_restricted_markets.description
 }
 
-# Service account key for restricted markets
-resource "google_service_account_key" "kyma_project_image_builder_restricted_markets_key" {
-  provider           = google.kyma_project
-  service_account_id = google_service_account.kyma_project_image_builder_restricted_markets.name
-}
-
-# Secret in sap-kyma-prow project to store the service account key
+# Secret in sap-kyma-prow project to store the service account key (to be added manually)
 resource "google_secret_manager_secret" "image_builder_sa_key_restricted_markets" {
   project   = var.gcp_project_id
   secret_id = var.image_builder_sa_key_restricted_markets_secret_name
@@ -99,10 +93,5 @@ resource "google_secret_manager_secret" "image_builder_sa_key_restricted_markets
     owner       = "neighbors"
     component   = "oci-image-builder"
   }
-}
-
-resource "google_secret_manager_secret_version" "image_builder_sa_key_restricted_markets" {
-  secret      = google_secret_manager_secret.image_builder_sa_key_restricted_markets.id
-  secret_data = base64decode(google_service_account_key.kyma_project_image_builder_restricted_markets_key.private_key)
 }
 

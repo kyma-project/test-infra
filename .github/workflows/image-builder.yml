@@ -52,6 +52,11 @@ on:
         required: false
         type: string
         default: ""
+      use-restricted-registry:
+        description: Enable building images using Chainguard restricted base images
+        required: false
+        type: boolean
+        default: false
 
     outputs:
       images:
@@ -129,6 +134,7 @@ jobs:
           use-go-internal-sap-modules: ${{ inputs.use-go-internal-sap-modules }}
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.target }}
+          use-restricted-registry: ${{ inputs.use-restricted-registry }}
 
       - name: Print built images
         run: |
