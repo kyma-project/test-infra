@@ -159,8 +159,8 @@ module "restricted_dev" {
 resource "google_artifact_registry_repository_iam_member" "restricted_prod_writers" {
   provider   = google.kyma_project
   project    = "kyma-project"
-  location   = module.restricted_prod.artifact_registry.location
-  repository = module.restricted_prod.artifact_registry.name
+  location   = module.kyma_restricted_images_prod.artifact_registry.location
+  repository = module.kyma_restricted_images_prod.artifact_registry.name
   role       = "roles/artifactregistry.writer"
   member     = "group:${var.restricted_registry_iam_groups.prod_write}"
 }
@@ -168,8 +168,8 @@ resource "google_artifact_registry_repository_iam_member" "restricted_prod_write
 resource "google_artifact_registry_repository_iam_member" "restricted_dev_writers" {
   provider   = google.kyma_project
   project    = "kyma-project"
-  location   = module.restricted_dev.artifact_registry.location
-  repository = module.restricted_dev.artifact_registry.name
+  location   = module.kyma_restricted_images_dev.artifact_registry.location
+  repository = module.kyma_restricted_images_dev.artifact_registry.name
   role       = "roles/artifactregistry.writer"
   member     = "group:${var.restricted_registry_iam_groups.dev_write}"
 }

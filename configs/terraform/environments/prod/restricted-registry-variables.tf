@@ -86,7 +86,7 @@ variable "kyma_restricted_images_dev" {
         id     = "delete-old-pr-images"
         action = "DELETE"
         condition = {
-          tag_state = "TAGGED"
+          tag_state    = "TAGGED"
           older_than   = "2592000s"
           tag_prefixes = ["PR-"]
         }
@@ -106,11 +106,11 @@ variable "chainguard_cache" {
     type                       = string
     cleanup_policy_dry_run     = bool
     remote_repository_config = object({
-      description               = string
-      docker_public_repository  = optional(string)
-      docker_custom_repository  = optional(string)
-      upstream_username         = optional(string)
-      upstream_password_secret  = optional(string)
+      description              = string
+      docker_public_repository = optional(string)
+      docker_custom_repository = optional(string)
+      upstream_username        = optional(string)
+      upstream_password_secret = optional(string)
     })
   })
   default = {
@@ -123,8 +123,8 @@ variable "chainguard_cache" {
     type                       = "production"
     cleanup_policy_dry_run     = false
     remote_repository_config = {
-      description               = "Chainguard upstream repository"
-      docker_custom_repository  = "https://cgr.dev"
+      description              = "Chainguard upstream repository"
+      docker_custom_repository = "https://cgr.dev"
     }
   }
 }
@@ -225,16 +225,44 @@ variable "chainguard_pull_token_secret_name" {
 
 variable "restricted_registry_iam_groups" {
   type = object({
-    prod_read  = string
-    prod_write = string
-    dev_read   = string
-    dev_write  = string
+    prod_read             = string
+    prod_read_group_name  = string
+    prod_write            = string
+    prod_write_group_name = string
+    dev_read              = string
+    dev_read_group_name   = string
+    dev_write             = string
+    dev_write_group_name  = string
   })
   default = {
-    prod_read  = "kyma-restricted-registry-prod-read@sap.com"
-    prod_write = "kyma-restricted-registry-prod-write@sap.com"
-    dev_read   = "kyma-restricted-registry-dev-read@sap.com"
-    dev_write  = "kyma-restricted-registry-dev-write@sap.com"
+    prod_read             = "kyma-restricted-registry-prod-read@sap.com"
+    prod_read_group_name  = "groups/00xvir7l1dtv8ew"
+    prod_write            = "kyma-restricted-registry-prod-write@sap.com"
+    prod_write_group_name = "groups/01egqt2p1a2johw"
+    dev_read              = "kyma-restricted-registry-dev-read@sap.com"
+    dev_read_group_name   = "groups/0184mhaj2tdduaw"
+    dev_write             = "kyma-restricted-registry-dev-write@sap.com"
+    dev_write_group_name  = "groups/023ckvvd0rmgw6a"
   }
   description = "Google Cloud Identity groups for Restricted Registry access control"
+}
+
+variable "restricted_registry_hierarchical_groups" {
+  type = object({
+    security_scanners            = string
+    security_scanners_group_name = string
+    markets_delivery             = string
+    markets_delivery_group_name  = string
+    image_builder                = string
+    image_builder_group_name     = string
+  })
+  default = {
+    security_scanners            = "kyma-restricted-registry-security-scanners@sap.com"
+    security_scanners_group_name = "groups/00meukdy10z0qky"
+    markets_delivery             = "kyma-restricted-registry-markets-delivery@sap.com"
+    markets_delivery_group_name  = "groups/03fwokq04jj0scm"
+    image_builder                = "kyma-restricted-registry-image-builder@sap.com"
+    image_builder_group_name     = "groups/01fob9te0l19xwg"
+  }
+  description = "Hierarchical Cloud Identity groups for organizing service accounts with Restricted Registry access"
 }

@@ -107,6 +107,11 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 		Expect(params["Target"]).To(Equal("build"))
 	})
 
+	It("sets the correct UseRestrictedRegistry", func() {
+		params.SetUseRestrictedRegistry()
+		Expect(params["useRestrictedRegistry"]).To(Equal("true"))
+	})
+
 	// TODO: Improve assertions with more specific matchers and values.
 	It("validates the params correctly", func() {
 		// Set all required parameters
