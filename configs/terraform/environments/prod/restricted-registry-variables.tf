@@ -86,7 +86,7 @@ variable "kyma_restricted_images_dev" {
         id     = "delete-old-pr-images"
         action = "DELETE"
         condition = {
-          tag_state = "TAGGED"
+          tag_state    = "TAGGED"
           older_than   = "2592000s"
           tag_prefixes = ["PR-"]
         }
@@ -106,11 +106,11 @@ variable "chainguard_cache" {
     type                       = string
     cleanup_policy_dry_run     = bool
     remote_repository_config = object({
-      description               = string
-      docker_public_repository  = optional(string)
-      docker_custom_repository  = optional(string)
-      upstream_username         = optional(string)
-      upstream_password_secret  = optional(string)
+      description              = string
+      docker_public_repository = optional(string)
+      docker_custom_repository = optional(string)
+      upstream_username        = optional(string)
+      upstream_password_secret = optional(string)
     })
   })
   default = {
@@ -123,8 +123,8 @@ variable "chainguard_cache" {
     type                       = "production"
     cleanup_policy_dry_run     = false
     remote_repository_config = {
-      description               = "Chainguard upstream repository"
-      docker_custom_repository  = "https://cgr.dev"
+      description              = "Chainguard upstream repository"
+      docker_custom_repository = "https://cgr.dev"
     }
   }
 }
@@ -253,12 +253,16 @@ variable "restricted_registry_hierarchical_groups" {
     security_scanners_group_name = string
     markets_delivery             = string
     markets_delivery_group_name  = string
+    image_builder                = string
+    image_builder_group_name     = string
   })
   default = {
     security_scanners            = "kyma-restricted-registry-security-scanners@sap.com"
     security_scanners_group_name = "groups/00meukdy10z0qky"
     markets_delivery             = "kyma-restricted-registry-markets-delivery@sap.com"
     markets_delivery_group_name  = "groups/03fwokq04jj0scm"
+    image_builder                = "kyma-restricted-registry-image-builder@sap.com"
+    image_builder_group_name     = "groups/01fob9te0l19xwg"
   }
   description = "Hierarchical Cloud Identity groups for organizing service accounts with Restricted Registry access"
 }

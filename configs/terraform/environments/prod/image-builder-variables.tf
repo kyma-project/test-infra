@@ -33,6 +33,12 @@ variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   default     = "image-builder-ado-pat"
 }
 
+variable "image_builder_sa_key_restricted_markets_secret_name" {
+  description = "Name of the secret in GCP Secret Manager (sap-kyma-prow) that contains the JSON key for the restricted markets image-builder service account."
+  type        = string
+  default     = "image-builder-sa-key-restricted-markets"
+}
+
 # Variable for image-builder's artifact registries identity
 variable "image_builder_kyma-project_identity" {
   description = "Configuration for identity of image-builder in main kyma-project GCP project. It's used to access artifact registries."
@@ -44,6 +50,20 @@ variable "image_builder_kyma-project_identity" {
   default = {
     id          = "azure-pipeline-image-builder"
     description = "OCI image builder running in kyma development service azure pipelines"
+  }
+}
+
+# Variable for restricted markets image-builder service account
+variable "image_builder_kyma-project_identity_restricted_markets" {
+  description = "Configuration for restricted markets identity of image-builder in main kyma-project GCP project. It's used to access restricted artifact registries."
+  type = object({
+    id          = string
+    description = string
+  })
+
+  default = {
+    id          = "img-builder-restricted-markets"
+    description = "OCI image builder service account for restricted markets in kyma development service azure pipelines"
   }
 }
 
