@@ -10,7 +10,7 @@ resource "google_secret_manager_secret_iam_member" "autobump_security_config_wor
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.workflow_ref/${data.github_organization.kyma_project.name}/${data.github_repository.test_infra.name}/.github/workflows/autobump-security-config.yaml@refs/heads/main"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.workflow_ref/${data.github_organization.kyma_project.orgname}/${data.github_repository.test_infra.name}/.github/workflows/autobump-security-config.yaml@refs/heads/main"
 }
 
 resource "github_actions_variable" "kyma_autobump_bot_github_token_secret_name" {
