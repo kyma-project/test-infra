@@ -44,7 +44,6 @@ jobs:
           git config user.name $GIT_USERNAME
           git config user.email $GIT_EMAIL
 
-          git config --unset-all http.https://github.com/.extraheader
       - name: Authenticate in GCP
         id: 'auth'
         uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
