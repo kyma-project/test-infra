@@ -3,6 +3,7 @@ name: build-slack-message-sender.yml
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
+  workflow_dispatch: # This allows manual triggering of the workflow from the Actions tab
 
 permissions:
   id-token: write # This is required for requesting the JWT token
