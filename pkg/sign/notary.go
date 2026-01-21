@@ -13,8 +13,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/google/go-containerregistry/pkg/v1/google"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
@@ -57,6 +59,24 @@ type ManifestInterface interface {
 // ImageService provides methods to parse image references and fetch images.
 type ImageService struct{}
 
+// NewImageService creates a new ImageService.
+func NewImageService() *ImageService {
+	return &ImageService{}
+}
+
+// getRemoteOptions returns the appropriate remote options for authentication.
+// It will use Google Cloud credentials if GOOGLE_APPLICATION_CREDENTIALS is set,
+// otherwise it will fall back to the default keychain.
+func getRemoteOptions() []remote.Option {
+	// Check if GOOGLE_APPLICATION_CREDENTIALS is set
+	if gcpCredsPath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"); gcpCredsPath != "" {
+		// Use Google Cloud keychain which supports service account authentication
+		return []remote.Option{remote.WithAuthFromKeychain(google.Keychain)}
+	}
+	// Fall back to default keychain (Docker config, etc.)
+	return []remote.Option{remote.WithAuthFromKeychain(authn.DefaultKeychain)}
+}
+
 // ParseReference parses the image string into a ReferenceInterface.
 func (is *ImageService) ParseReference(image string) (name.Reference, error) {
 	ref, err := name.ParseReference(image)
@@ -68,7 +88,7 @@ func (is *ImageService) ParseReference(image string) (name.Reference, error) {
 
 // GetImage fetches the image from the remote registry using the provided reference.
 func (is *ImageService) GetImage(ref name.Reference) (ImageInterface, error) {
-	img, err := remote.Image(ref)
+	img, err := remote.Image(ref, getRemoteOptions()...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch image: %w", err)
 	}
@@ -77,7 +97,7 @@ func (is *ImageService) GetImage(ref name.Reference) (ImageInterface, error) {
 
 // IsManifestList checks if the reference points to a manifest list.
 func (is *ImageService) IsManifestList(ref name.Reference) (bool, error) {
-	desc, err := remote.Get(ref)
+	desc, err := remote.Get(ref, getRemoteOptions()...)
 	if err != nil {
 		return false, fmt.Errorf("failed to fetch descriptor: %w", err)
 	}
@@ -94,7 +114,7 @@ func (is *ImageService) GetManifestList(ref name.Reference) (ManifestListInterfa
 		return nil, fmt.Errorf("reference does not point to a manifest list")
 	}
 
-	idx, err := remote.Index(ref)
+	idx, err := remote.Index(ref, getRemoteOptions()...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch manifest list: %w", err)
 	}
@@ -448,12 +468,9 @@ func (nc *NotaryConfig) NewSigner() (Signer, error) {
 		return nil, fmt.Errorf("invalid TLS credentials: %w", err)
 	}
 
-	// Initialize the image service.
-	imageService := &ImageService{}
-
-	// Initialize the payload builder.
+	// Initialize the payload builder with image service.
 	payloadBuilder := &PayloadBuilder{
-		ImageService: imageService,
+		ImageService: NewImageService(),
 	}
 
 	// Initialize the HTTP client with a timeout.
