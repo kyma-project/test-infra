@@ -57,12 +57,6 @@ data "github_repository" "restricted_markets_docu_hub" {
   name     = "product-kyma-runtime-fork"
 }
 
-# Fetch the test-infra repository data from internal GitHub
-data "github_repository" "test_infra" {
-  provider = github.internal_github
-  name     = "test-infra"
-}
-
 # Fetch the kyma organization data from internal GitHub
 data "github_organization" "kyma_internal" {
   provider = github.internal_github
