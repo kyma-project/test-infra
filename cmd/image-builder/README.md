@@ -178,27 +178,9 @@ To pull images from the restricted registries, use the corresponding virtual (re
 - Pull-request images: `europe-docker.pkg.dev/kyma-project/restricted-dev`
 - Push images: `europe-docker.pkg.dev/kyma-project/restricted-prod`
 
-Obtaining the image pull URL
+### Obtaining the image pull URL
 
-After a successful build the published image URI appears in the build output and in the job summary. Use that URI to pull the image. Example pull URI:
-
-```
-europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
-```
-
-* Images built on **push** events are pushed to the restricted production repository, `europe-docker.pkg.dev/kyma-project/kyma-restricted-registry-prod`.
-
-However, restricted registries provided above are only available for pushes from Image Builder
-
-To obtain pull url link, please follow build proccess and see the link to repositry that You can pyll the image from.
-
-The virtual repositories to pulled from are:
-* Images built on pull requests can be pulled from restricted dev virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-dev`
-* Images built on **push** events can be pulled form restricted prod virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-prod`
-
-### Image URI
-
-The URI of the image built by Image Builder by default (not for restricted markets) is constructed as follows:
+After a successful build the final image URI is printed in the build output and job summary. Use that URI to pull the image. The general URI format is:
 
 ```
 europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
@@ -206,9 +188,27 @@ europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
 
 Where:
 
-* `<repository>` is the repository where the image is pushed. It can be either `dev` or `prod`, based on the event that triggered the build.
-* `<image-name>` is the name of the image provided in the `name` input.
-* `<tag>` is the tag of the image provided in the `tags` input or the default tag value.
+- `<repository>` is `dev` for pull-request builds or `prod` for push builds (unless restricted mode is enabled).
+- `<image-name>` is the `name` input passed to the reusable workflow.
+- `<tag>` is the tag provided via the `tags` input or the default tag computed by Image Builder.
+
+Restricted registries
+
+When `use-restricted-registry` is enabled, Image Builder pushes to internal (restricted) push repositories and exposes virtual (read) repositories for consumers. Example mapping:
+
+- Pull (PR builds): `europe-docker.pkg.dev/kyma-project/restricted-dev`
+- Pull (push builds): `europe-docker.pkg.dev/kyma-project/restricted-prod`
+
+Example pull URI for a PR build in restricted mode:
+
+```
+europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
+```
+
+Notes:
+
+- Restricted push repositories are writable only by the Image Builder pipeline.
+- Consumers must have the appropriate IAM permissions to pull from restricted virtual repositories.
 
 ## Image Signing
 
