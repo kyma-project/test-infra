@@ -43,11 +43,6 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@main
 
-  build-image-detector:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-detector-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-detector.yml@main
-
   build-image-syncer:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-syncer-filter') }}
@@ -57,9 +52,3 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@main
-
-  build-markdown-index:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-markdown-index-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-markdown-index.yml@main
-  
