@@ -104,7 +104,7 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
 
 # Grant the documentation collector workflow access to read the public GitHub token
@@ -122,6 +122,6 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
 
