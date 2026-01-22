@@ -154,16 +154,17 @@ By default, Image Builder passes the following build arguments to the Docker bui
 
 - **BUILD_COMMIT_SHA**: The commit SHA that the image is built from.
 
-## Supported Image Repositories
+## Supported Image Repositories for pushes
 
 Image Builder pushes images to Google Cloud Artifact Registry.
 
-Default repositories
+**Default repositories**
 
 - Images built on pull requests are pushed to the development repository: `europe-docker.pkg.dev/kyma-project/dev`.
 - Images built on **push** event are pushed to the production repository: `europe-docker.pkg.dev/kyma-project/prod`.
 
-Restricted registries
+**Restricted registries**
+
 Image Builder supports pushing images to internal (restricted) registries.
 When `use-restricted-registry` is enabled, Image Builder pushes to the following repositories:
 
