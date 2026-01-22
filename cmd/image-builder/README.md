@@ -11,7 +11,7 @@ Key features:
 * Supports signing images with the Signify service
 * Supports pushing images to the Google Cloud Artifact Registry
 * Supports building images for multiple architectures
-* Supports building images for restricted markets that are not publicly available
+* Supports building images for the Chainguard images, which are used on restricted markets that are not publicly available
 
 ## Quickstart Guide
 
@@ -162,8 +162,8 @@ Default repositories
 
 - Images built on pull requests are pushed to the development repository: `europe-docker.pkg.dev/kyma-project/dev`.
 - Images built on **push** event are pushed to the production repository: `europe-docker.pkg.dev/kyma-project/prod`.
-Restricted registries
 
+Restricted registries
 Image Builder supports pushing images to internal (restricted) registries.
 When `use-restricted-registry` is enabled, Image Builder pushes to the following repositories:
 
@@ -172,11 +172,6 @@ When `use-restricted-registry` is enabled, Image Builder pushes to the following
 
 - Pull-request builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-dev`
 - Push builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-prod`
-
-To pull images from the restricted registries, use the corresponding virtual (read) repositories:
-
-- Pull-request images: `europe-docker.pkg.dev/kyma-project/restricted-dev`
-- Push images: `europe-docker.pkg.dev/kyma-project/restricted-prod`
 
 ### Obtaining the image pull URL
 
@@ -192,9 +187,9 @@ Where:
 - `<image-name>` is the `name` input passed to the reusable workflow.
 - `<tag>` is the tag provided via the `tags` input or the default tag computed by Image Builder.
 
-Restricted registries
+**Restricted registries**
 
-When `use-restricted-registry` is enabled, Image Builder pushes to internal (restricted) push repositories and exposes virtual (read) repositories for consumers. Example mapping:
+When `use-restricted-registry` is enabled, Image Builder pushes to internal (restricted) push repositories and exposes virtual (read) repositories for consumers:
 
 - Pull (PR builds): `europe-docker.pkg.dev/kyma-project/restricted-dev`
 - Pull (push builds): `europe-docker.pkg.dev/kyma-project/restricted-prod`
@@ -207,7 +202,6 @@ europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
 
 Notes:
 
-- Restricted push repositories are writable only by the Image Builder pipeline.
 - Consumers must have the appropriate IAM permissions to pull from restricted virtual repositories.
 
 ## Image Signing
