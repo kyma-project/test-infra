@@ -294,7 +294,7 @@ ENTRYPOINT ["/image-builder"]
 ### Example Dockerfile to build restricted images
 
 ```dockerfile
-FROM cgr.dev/sap.com/python-fips:latest
+FROM europe-docker.pkg.dev/kyma-project/restricted-dev/sap.com/python-fips:latest
 WORKDIR /app
 
 COPY requirements.txt ./
