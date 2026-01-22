@@ -11,6 +11,7 @@ Key features:
 * Supports signing images with the Signify service
 * Supports pushing images to the Google Cloud Artifact Registry
 * Supports building images for multiple architectures
+* Supports building images for restricted markets that are not publicly available
 
 ## Quickstart Guide
 
@@ -157,12 +158,30 @@ By default, Image Builder passes the following build arguments to the Docker bui
 
 Image Builder supports pushing images to the Google Cloud Artifact Registries.
 
+By default Image Builder pushes to the repositories:
 * Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
 * Images built on **push** events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
 
+However, Image Builder supports also building for restricted chaingauard images.
+> [!NOTE]
+> For more information please see [restricted registry documentation](https://github.tools.sap/kyma/documentation/blob/main/docs/kyma-internal/how-to-guides/80-kyma-restricted-registry.md)
+
+When `use-restricted-registry` flag is provided, Image Builder pushes to the repositories:
+* Images built on pull requests are pushed to the restricted dev repository, `europe-docker.pkg.dev/kyma-project/kyma-restricted-registry-dev`.
+* Images built on **push** events are pushed to the restricted production repository, `europe-docker.pkg.dev/kyma-project/kyma-restricted-registry-prod`.
+
+However, restricted registries provided above are only available for pushes from Image Builder
+
+To obtain pull url link, please follow build proccess and see the link to repositry that You can pyll the image from.
+
+The virtual repositories to pulled from are:
+* Images built on pull requests can be pulled from restricted dev virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-dev`
+* Images built on **push** events can be pulled form restricted prod virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-prod`
+
+
 ### Image URI
 
-The URI of the image built by Image Builder is constructed as follows:
+The URI of the image built by Image Builder by default (not for restricted markets) is constructed as follows:
 
 ```
 europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
@@ -235,7 +254,7 @@ Testing has shown that cross-compilation can speed up the build process by **10x
   ineffective.
   Use mounts a cache type for Go package downloads. The binary compilation cache did not increase speed during tests.
 
-### Example Dockerfile
+### Example Dockerfile to build publicly available images
 
 ```dockerfile
 FROM --platform=$BUILDPLATFORM golang:1.24.2-alpine3.21 AS builder
@@ -253,4 +272,12 @@ FROM scratch
 COPY --from=builder /image-builder /image-builder
 
 ENTRYPOINT ["/image-builder"]
+```
+
+### Example Dockerfile to build restricted images
+
+```dockerfile
+FROM cgr.dev/sap.com/python-fips:latest
+
+
 ```
