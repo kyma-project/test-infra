@@ -156,18 +156,36 @@ By default, Image Builder passes the following build arguments to the Docker bui
 
 ## Supported Image Repositories
 
-Image Builder supports pushing images to the Google Cloud Artifact Registries.
+Image Builder pushes images to Google Cloud Artifact Registry.
 
-By default Image Builder pushes to the repositories:
-* Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
-* Images built on **push** events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
+Default repositories
 
-However, Image Builder supports also building for restricted chaingauard images.
+- Images built on pull requests are pushed to the development repository: `europe-docker.pkg.dev/kyma-project/dev`.
+- Images built on **push** event are pushed to the production repository: `europe-docker.pkg.dev/kyma-project/prod`.
+Restricted registries
+
+Image Builder supports pushing images to internal (restricted) registries.
+When `use-restricted-registry` is enabled, Image Builder pushes to the following repositories:
+
 > [!NOTE]
-> For more information please see [restricted registry documentation](https://github.tools.sap/kyma/documentation/blob/main/docs/kyma-internal/how-to-guides/80-kyma-restricted-registry.md)
+> The restricted *push* repositories below are writable only by the Image Builder pipeline.
 
-When `use-restricted-registry` flag is provided, Image Builder pushes to the repositories:
-* Images built on pull requests are pushed to the restricted dev repository, `europe-docker.pkg.dev/kyma-project/kyma-restricted-registry-dev`.
+- Pull-request builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-dev`
+- Push builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-prod`
+
+To pull images from the restricted registries, use the corresponding virtual (read) repositories:
+
+- Pull-request images: `europe-docker.pkg.dev/kyma-project/restricted-dev`
+- Push images: `europe-docker.pkg.dev/kyma-project/restricted-prod`
+
+Obtaining the image pull URL
+
+After a successful build the published image URI appears in the build output and in the job summary. Use that URI to pull the image. Example pull URI:
+
+```
+europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
+```
+
 * Images built on **push** events are pushed to the restricted production repository, `europe-docker.pkg.dev/kyma-project/kyma-restricted-registry-prod`.
 
 However, restricted registries provided above are only available for pushes from Image Builder
@@ -177,7 +195,6 @@ To obtain pull url link, please follow build proccess and see the link to reposi
 The virtual repositories to pulled from are:
 * Images built on pull requests can be pulled from restricted dev virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-dev`
 * Images built on **push** events can be pulled form restricted prod virtual repository, `europe-docker.pkg.dev/kyma-project/restricted-prod`
-
 
 ### Image URI
 
@@ -278,6 +295,12 @@ ENTRYPOINT ["/image-builder"]
 
 ```dockerfile
 FROM cgr.dev/sap.com/python-fips:latest
+WORKDIR /app
 
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . .
+
+CMD ["python", "-m", "your_module"]
 ```
