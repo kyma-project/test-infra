@@ -154,7 +154,7 @@ By default, Image Builder passes the following build arguments to the Docker bui
 
 - **BUILD_COMMIT_SHA**: The commit SHA that the image is built from.
 
-## Supported Image Repositories for pushes
+## Image Repositories Supported for Pushes
 
 Image Builder pushes images to Google Cloud Artifact Registry.
 
@@ -168,15 +168,15 @@ Image Builder pushes images to Google Cloud Artifact Registry.
 Image Builder supports pushing images to internal (restricted) registries.
 When `use-restricted-registry` is enabled, Image Builder pushes to the following repositories:
 
-> [!NOTE]
-> The restricted *push* repositories below are writable only by the Image Builder pipeline.
-
 - Pull-request builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-dev`
 - Push builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-prod`
 
-### Obtaining the image pull URL
+> [!NOTE]
+> These restricted *push* repositories are writable only by the Image Builder pipeline.
 
-After a successful build the final image URI is printed in the build output and job summary. Use that URI to pull the image. The general URI format is:
+### Obtaining the Image Pull URL
+
+After a successful build, the final image URI is printed in the build output and job summary. Use that URI to pull the image. The general URI format is the following:
 
 ```
 europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
@@ -195,7 +195,7 @@ When `use-restricted-registry` is enabled, Image Builder pushes to internal (res
 - Pull (pull request builds): `europe-docker.pkg.dev/kyma-project/restricted-dev`
 - Pull (push builds): `europe-docker.pkg.dev/kyma-project/restricted-prod`
 
-Example pull URI for a pull request build in restricted mode:
+See an example pull URI for a pull request build in restricted mode:
 
 ```
 europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
@@ -266,7 +266,7 @@ Testing has shown that cross-compilation can speed up the build process by **10x
   ineffective.
   Use mounts a cache type for Go package downloads. The binary compilation cache did not increase speed during tests.
 
-### Example Dockerfile to build publicly available images
+### Example Dockerfile to Build Publicly Available Images
 
 ```dockerfile
 FROM --platform=$BUILDPLATFORM golang:1.24.2-alpine3.21 AS builder
@@ -286,7 +286,7 @@ COPY --from=builder /image-builder /image-builder
 ENTRYPOINT ["/image-builder"]
 ```
 
-### Example Dockerfile to build restricted images
+### Example Dockerfile to Build Restricted Images
 
 ```dockerfile
 FROM europe-docker.pkg.dev/kyma-project/restricted-dev/sap.com/python-fips:latest
