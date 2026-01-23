@@ -6,4 +6,4 @@ service_account_key_latest_version_min_age           = 24
 service_account_keys_cleaner_scheduler_cron_schedule = "0 0 * * 1-5"
 
 signify_secret_rotator_service_name = "signify-secret-rotator"
-signify_secret_rotator_image        = "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260122-941786ff" #gitleaks:allow
+signify_secret_rotator_image        = "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260123-c1fcfeb0" #gitleaks:allow
