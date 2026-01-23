@@ -158,7 +158,7 @@ The flag value is base64-encoded to avoid issues with special characters in the 
 ## Access Golang SAP Internal Modules
 
 You can use Image Builder to build images that require access to Go SAP internal modules. To use this feature, set the `--use-go-internal-sap-modules=true` flag.
-The feature is only available for the ADO backend. 
+The feature is only available for the ADO backend.
 
 This feature utilizes the `go` vendor mechanism by downloading all the dependencies into the `vendor` directory. There is no option to pass custom credentials for fetching the dependencies; the tool handles it internally.
 

@@ -11,6 +11,7 @@ Key features:
 * Supports signing images with the Signify service
 * Supports pushing images to the Google Cloud Artifact Registry
 * Supports building images for multiple architectures
+* Supports building images for the Chainguard images, which are used on restricted markets that are not publicly available
 
 ## Quickstart Guide
 
@@ -153,16 +154,29 @@ By default, Image Builder passes the following build arguments to the Docker bui
 
 - **BUILD_COMMIT_SHA**: The commit SHA that the image is built from.
 
-## Supported Image Repositories
+## Image Repositories Supported for Pushes
 
-Image Builder supports pushing images to the Google Cloud Artifact Registries.
+Image Builder pushes images to Google Cloud Artifact Registry.
 
-* Images built on pull requests are pushed to the dev repository, `europe-docker.pkg.dev/kyma-project/dev`.
-* Images built on **push** events are pushed to the production repository, `europe-docker.pkg.dev/kyma-project/prod`.
+**Default repositories**
 
-### Image URI
+- Images built on pull requests are pushed to the development repository: `europe-docker.pkg.dev/kyma-project/dev`.
+- Images built on **push** event are pushed to the production repository: `europe-docker.pkg.dev/kyma-project/prod`.
 
-The URI of the image built by Image Builder is constructed as follows:
+**Restricted registries**
+
+Image Builder supports pushing images to internal (restricted) registries.
+When `use-restricted-registry` is enabled, Image Builder pushes to the following repositories:
+
+- Pull-request builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-dev`
+- Push builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-prod`
+
+> [!NOTE]
+> These restricted *push* repositories are writable only by the Image Builder pipeline.
+
+### Obtaining the Image Pull URL
+
+After a successful build, the final image URI is printed in the build output and job summary. Use that URI to pull the image. The general URI format is the following:
 
 ```
 europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
@@ -170,9 +184,26 @@ europe-docker.pkg.dev/kyma-project/<repository>/<image-name>:<tag>
 
 Where:
 
-* `<repository>` is the repository where the image is pushed. It can be either `dev` or `prod`, based on the event that triggered the build.
-* `<image-name>` is the name of the image provided in the `name` input.
-* `<tag>` is the tag of the image provided in the `tags` input or the default tag value.
+- `<repository>` is `dev` for pull-request builds or `prod` for push builds. If restricted mode is enabled, Image Builder pushes to internal restricted push repositories and consumers should pull from the corresponding virtual (read) repositories (see 'Restricted registries' below).
+- `<image-name>` is the `name` input passed to the reusable workflow.
+- `<tag>` is the tag provided via the `tags` input or the default tag computed by Image Builder.
+
+**Restricted registries**
+
+When `use-restricted-registry` is enabled, Image Builder pushes to internal (restricted) push repositories and exposes virtual (read) repositories for consumers:
+
+- Pull (pull request builds): `europe-docker.pkg.dev/kyma-project/restricted-dev`
+- Pull (push builds): `europe-docker.pkg.dev/kyma-project/restricted-prod`
+
+See an example pull URI for a pull request build in restricted mode:
+
+```
+europe-docker.pkg.dev/kyma-project/restricted-dev/<image-name>:<tag>
+```
+
+Notes:
+
+- Consumers must have the appropriate IAM permissions to pull from restricted virtual repositories.
 
 ## Image Signing
 
@@ -235,7 +266,7 @@ Testing has shown that cross-compilation can speed up the build process by **10x
   ineffective.
   Use mounts a cache type for Go package downloads. The binary compilation cache did not increase speed during tests.
 
-### Example Dockerfile
+### Example Dockerfile to Build Publicly Available Images
 
 ```dockerfile
 FROM --platform=$BUILDPLATFORM golang:1.24.2-alpine3.21 AS builder
@@ -253,4 +284,18 @@ FROM scratch
 COPY --from=builder /image-builder /image-builder
 
 ENTRYPOINT ["/image-builder"]
+```
+
+### Example Dockerfile to Build Restricted Images
+
+```dockerfile
+FROM europe-docker.pkg.dev/kyma-project/restricted-dev/sap.com/python-fips:latest
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python", "-m", "your_module"]
 ```
