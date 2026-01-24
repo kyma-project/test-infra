@@ -1,5 +1,5 @@
 flask==3.1.2
-gunicorn==24.0.0
+gunicorn==24.1.0
 google-cloud-secret-manager==2.26.0
 cryptography==46.0.3
 urllib3>=2.6.3
