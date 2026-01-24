@@ -1,6 +1,6 @@
 slack_bolt==1.27.0
 slack_sdk==3.39.0
 flask>=2.3.2
-gunicorn==24.1.0
+gunicorn==24.1.1
 werkzeug>=3.0.6
 urllib3>=2.6.3
