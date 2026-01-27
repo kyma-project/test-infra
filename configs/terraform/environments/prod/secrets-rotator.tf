@@ -74,13 +74,15 @@ module "signify_secret_rotator" {
 }
 
 
-// ### dead letter monitoring ###
+### dead letter monitoring ###
 
 resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
   name  = format("%s-dead-letter", var.secrets_rotator_name)
   topic = google_pubsub_topic.secrets_rotator_dead_letter.id
 
   expiration_policy {
+    # Disable expiration
+    # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription#expiration_policy-1
     ttl = ""
   }
   message_retention_duration = "864000s" // 10 days
@@ -94,8 +96,6 @@ resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
     bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
   }
 }
-
-// bucket
 
 resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
   name          = format("%s-dead-letters", var.secrets_rotator_name)
@@ -111,8 +111,6 @@ resource "google_storage_bucket_iam_member" "dead-letter-bucket-access" {
   role   = each.value
   member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
-
-// alert
 
 resource "google_monitoring_alert_policy" "dead-letter-alert" {
   display_name = format("%s dead letter monitoring", var.secrets_rotator_name)
