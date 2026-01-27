@@ -99,6 +99,18 @@ resource "google_cloud_identity_group_membership" "developers_group_to_dev_read"
   }
 }
 
+resource "google_cloud_identity_group_membership" "developers_group_to_dev_write" {
+  group = var.restricted_registry_iam_groups.dev_write_group_name
+
+  preferred_member_key {
+    id = var.restricted_registry_hierarchical_groups.developers
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+}
+
 resource "google_cloud_identity_group_membership" "markets_delivery_group_to_prod_read" {
   group = var.restricted_registry_iam_groups.prod_read_group_name
 
