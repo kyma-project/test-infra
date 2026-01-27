@@ -77,7 +77,7 @@ module "signify_secret_rotator" {
 // ### dead letter monitoring ###
 
 resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
-  name  = "secrets-rotator-dead-letter"
+  name  = format("%s-dead-letter", var.secrets_rotator_name)
   topic = google_pubsub_topic.secrets_rotator_dead_letter.id
 
   expiration_policy {
@@ -98,7 +98,7 @@ resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
 // bucket
 
 resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
-  name          = "secret-rotator-dead-letters"
+  name          = format("%s-dead-letters", var.secrets_rotator_name)
   location      = "EU"
   force_destroy = true
 
@@ -115,7 +115,7 @@ resource "google_storage_bucket_iam_member" "dead-letter-bucket-access" {
 // alert
 
 resource "google_monitoring_alert_policy" "dead-letter-alert" {
-  display_name = "secrets-rotator-dead-letter"
+  display_name = format("%s dead letter monitoring", var.secrets_rotator_name)
   combiner     = "OR"
   severity = "ERROR"
   notification_channels = [
@@ -123,7 +123,7 @@ resource "google_monitoring_alert_policy" "dead-letter-alert" {
     "projects/${var.gcp_project_id}/notificationChannels/17517114611086313455"
   ]
   conditions {
-    display_name = "Cloud Pub/Sub Subscription - Dead letter message count"
+    display_name = format("%s dead letter message count", var.secrets_rotator_name)
     condition_threshold {
       filter     = "resource.type = \"pubsub_subscription\" AND (resource.labels.subscription_id = \"secrets-rotator-service-account-keys-rotator\" AND resource.labels.project_id = \"sap-kyma-prow\") AND metric.type = \"pubsub.googleapis.com/subscription/dead_letter_message_count\""
       duration   = "60s"
