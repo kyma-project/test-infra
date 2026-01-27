@@ -172,7 +172,8 @@ When `use-restricted-registry` is enabled, Image Builder pushes to the following
 - Push builds: `europe-docker.pkg.dev/kyma-project/kyma-restricted-images-prod`
 
 > [!NOTE]
-> These restricted *push* repositories are writable only by the Image Builder pipeline.
+> The production restricted *push* repository is writable only by the Image Builder.
+> The development restricted *push* repository is writable by the Image Builder, developers and CI/CD systems.
 
 ### Obtaining the Image Pull URL
 
