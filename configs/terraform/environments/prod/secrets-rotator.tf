@@ -72,3 +72,66 @@ module "signify_secret_rotator" {
   secret_manager_notifications_topic           = var.secret_manager_notifications_topic
   secrets_rotator_sa_email                     = google_service_account.secrets-rotator.email
 }
+
+
+// ### dead letter monitoring ###
+
+resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
+  name  = "secrets-rotator-dead-letter"
+  topic = google_pubsub_topic.secrets_rotator_dead_letter.id
+
+  expiration_policy = ""
+  message_retention_duration = "864000s" // 10 days
+
+  retry_policy {
+    minimum_backoff = "1s" // fast start, so the incident is closable ASAP
+    maximum_backoff = "600s"
+  }
+
+  cloud_storage_config {
+    bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
+  }
+}
+
+// bucket
+
+resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
+  name          = "secret-rotator-dead-letters"
+  location      = "EU"
+  force_destroy = true
+
+  uniform_bucket_level_access = true
+}
+
+resource "google_storage_bucket_iam_member" "dead-letter-bucket-access" {
+  bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
+
+  // FIXME: This is not correct, should be "Storage Legacy Bucket Reader + Storage Object Creator"
+  role   = "roles/storage.admin"
+  // FIXME: This is not correct, should be: service-351981214969@gcp-sa-pubsub.iam.gserviceaccount.com
+  member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+}
+
+// alert
+
+resource "google_monitoring_alert_policy" "dead-letter-alert" {
+  display_name = "secrets-rotator-dead-letter"
+  combiner     = "OR"
+  severity = "ERROR"
+  notification_channels = [
+    "projects/${var.gcp_project_id}/notificationChannels/1439001756543663676",
+    "projects/${var.gcp_project_id}/notificationChannels/17517114611086313455"
+  ]
+  conditions {
+    display_name = "Cloud Pub/Sub Subscription - Dead letter message count"
+    condition_threshold {
+      filter     = "resource.type = \"pubsub_subscription\" AND (resource.labels.subscription_id = \"secrets-rotator-service-account-keys-rotator\" AND resource.labels.project_id = \"sap-kyma-prow\") AND metric.type = \"pubsub.googleapis.com/subscription/dead_letter_message_count\""
+      duration   = "60s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period   = "60s"
+        per_series_aligner = "ALIGN_COUNT"
+      }
+    }
+  }
+}
