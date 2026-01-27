@@ -107,10 +107,8 @@ resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
 
 resource "google_storage_bucket_iam_member" "dead-letter-bucket-access" {
   bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
-
-  // FIXME: This is not correct, should be "Storage Legacy Bucket Reader + Storage Object Creator"
-  role   = "roles/storage.admin"
-  // FIXME: This is not correct, should be: service-351981214969@gcp-sa-pubsub.iam.gserviceaccount.com
+  for_each = toset(["roles/storage.legacyBucketReader", "roles/storage.objectCreator"])
+  role   = each.value
   member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
