@@ -117,8 +117,7 @@ resource "google_monitoring_alert_policy" "dead-letter-alert" {
   combiner     = "OR"
   severity = "ERROR"
   notification_channels = [
-    "projects/${var.gcp_project_id}/notificationChannels/1439001756543663676",
-    "projects/${var.gcp_project_id}/notificationChannels/17517114611086313455"
+    data.google_monitoring_notification_channel.kyma_tooling.name,
   ]
   conditions {
     display_name = format("%s dead letter message count", var.secrets_rotator_name)
@@ -132,4 +131,9 @@ resource "google_monitoring_alert_policy" "dead-letter-alert" {
       }
     }
   }
+}
+
+# Reference to an existing notification channel
+data "google_monitoring_notification_channel" "kyma_tooling" {
+  display_name = "Alerting channel for Kyma tooling components."
 }
