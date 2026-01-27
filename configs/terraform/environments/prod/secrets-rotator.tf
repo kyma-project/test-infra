@@ -80,7 +80,9 @@ resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
   name  = "secrets-rotator-dead-letter"
   topic = google_pubsub_topic.secrets_rotator_dead_letter.id
 
-  expiration_policy = ""
+  expiration_policy {
+    ttl = ""
+  }
   message_retention_duration = "864000s" // 10 days
 
   retry_policy {
