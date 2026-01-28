@@ -7,7 +7,7 @@ Our Terraform service accounts have project-level permissions, which are insuffi
 
 You can create a new group using either the Google Cloud Console or the `gcloud` command-line tool.
 
-### Using The Google Cloud Console
+### Using the Google Cloud Console
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Make sure you are in the `sap.com` organization.
@@ -48,7 +48,7 @@ While this is a straightforward, one-step process in the Google Cloud Console, t
 
 1.  Add the service accounts with the **MEMBER** role.
 
-   Replace `GROUP_EMAIL` with the email address of the group you created, and run the following command. The command adds the service accounts with the **MEMBER** role:
+1.  To add the service accounts with the **MEMBER** role,  replace `GROUP_EMAIL` with the email address of the group you created, and run the following command.
 
     ```bash
     gcloud identity groups memberships add \
