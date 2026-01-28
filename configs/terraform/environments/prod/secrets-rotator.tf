@@ -95,6 +95,7 @@ resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
   cloud_storage_config {
     bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
   }
+  depends_on = [google_storage_bucket_iam_member.dead-letter-bucket-access]
 }
 
 resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
@@ -122,7 +123,7 @@ resource "google_monitoring_alert_policy" "dead-letter-alert" {
   conditions {
     display_name = format("%s dead letter message count", var.secrets_rotator_name)
     condition_threshold {
-      filter     = "resource.type = \"pubsub_subscription\" AND (resource.labels.subscription_id = \"secrets-rotator-service-account-keys-rotator\" AND resource.labels.project_id = \"sap-kyma-prow\") AND metric.type = \"pubsub.googleapis.com/subscription/dead_letter_message_count\""
+        filter     = "resource.type = \"pubsub_subscription\" AND (resource.labels.subscription_id = \"${google_pubsub_subscription.secrets-rotator-dead-letter.name}\" AND resource.labels.project_id = \"${var.gcp_project_id}\") AND metric.type = \"pubsub.googleapis.com/subscription/dead_letter_message_count\""
       duration   = "60s"
       comparison = "COMPARISON_GT"
       aggregations {
