@@ -9,5 +9,5 @@ runs:
     - run: |
         cd .github/actions/expose-jwt-action
         npm init -y
-        npm install @actions/core
+        npm install @actions/core@2.0.0
       shell: bash
