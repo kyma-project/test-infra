@@ -236,6 +236,18 @@ locals {
   }
 }
 
+# This user was already added as OWNER before Terraform management
+import {
+  id = "${var.restricted_registry_hierarchical_groups.developers_group_name}/memberships/patryk.dobrowolski@sap.com"
+  to = google_cloud_identity_group_membership.neighbors_team_members_as_developers_group_owners["I583797"]
+}
+
+# This user was already added as OWNER before Terraform management
+import {
+  id = "${var.restricted_registry_hierarchical_groups.developers_group_name}/memberships/dawid.gala@sap.com"
+  to = google_cloud_identity_group_membership.neighbors_team_members_as_developers_group_owners["I767604"]
+}
+
 # Grant each member of the neighbors team OWNER role on the developers hierarchical group
 # Only users with a valid email address in their GitHub profile are included
 resource "google_cloud_identity_group_membership" "neighbors_team_members_as_developers_group_owners" {
