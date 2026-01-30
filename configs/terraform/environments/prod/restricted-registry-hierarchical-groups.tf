@@ -238,13 +238,13 @@ locals {
 
 # This user was already added as OWNER before Terraform management
 import {
-  id = "${var.restricted_registry_hierarchical_groups.developers_group_name}/memberships/patryk.dobrowolski@sap.com"
+  id = "groups/02koq65619rujz4/memberships/112136898182381695874"
   to = google_cloud_identity_group_membership.neighbors_team_members_as_developers_group_owners["I583797"]
 }
 
 # This user was already added as OWNER before Terraform management
 import {
-  id = "${var.restricted_registry_hierarchical_groups.developers_group_name}/memberships/dawid.gala@sap.com"
+  id = "groups/02koq65619rujz4/memberships/109124557762702936382"
   to = google_cloud_identity_group_membership.neighbors_team_members_as_developers_group_owners["I767604"]
 }
 
