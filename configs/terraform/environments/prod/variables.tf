@@ -59,3 +59,9 @@ variable "internal_github_base_url" {
   default     = "https://github.tools.sap/"
   description = "Base URL for the internal GitHub Enterprise instance."
 }
+
+variable "internal_github_neighbors_team_slug" {
+  type        = string
+  default     = "Neighbors"
+  description = "The slug of the neighbors team in the internal GitHub Enterprise instance. Members of this team will be granted OWNER role on the restricted registry developers hierarchical group."
+}
