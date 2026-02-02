@@ -182,18 +182,6 @@ resource "google_cloud_identity_group_membership" "image_builder_group_to_prod_w
   }
 }
 
-# Manager group for kyma-restricted-registry-developers to enable management through the CLI or web console.
-resource "google_cloud_identity_group_membership" "kyma_developer_admin_as_developers_group_manager" {
-  group = var.restricted_registry_hierarchical_groups.developers_group_name
-
-  preferred_member_key {
-    id = var.kyma_developer_admin_email
-  }
-
-  roles {
-    name = "MANAGER"
-  }
-}
 
 # ------------------------------------------------------------------------------
 # Internal GitHub Team Members as Developers Group Owners
@@ -209,6 +197,12 @@ resource "google_cloud_identity_group_membership" "kyma_developer_admin_as_devel
 # Service accounts are skipped - only users with usernames starting with I or D
 # (I-numbers and D-numbers) are included.
 # ------------------------------------------------------------------------------
+
+variable "internal_github_neighbors_team_slug" {
+  type        = string
+  default     = "Neighbors"
+  description = "The slug of the neighbors team in the internal GitHub Enterprise instance."
+}
 
 # Data source to fetch the neighbors team from internal GitHub
 data "github_team" "neighbors" {
