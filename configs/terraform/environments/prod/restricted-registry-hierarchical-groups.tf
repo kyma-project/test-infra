@@ -253,6 +253,11 @@ resource "google_cloud_identity_group_membership" "neighbors_team_members_as_dev
     id = each.value.email
   }
 
+  # The MEMBER role is required to assign the OWNER role. See example in provider documentation https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_identity_group_membership#example-usage---cloud-identity-group-membership-user
+  roles {
+    name = "MEMBER"
+  }
+
   roles {
     name = "OWNER"
   }
