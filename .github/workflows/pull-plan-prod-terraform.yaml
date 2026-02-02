@@ -1,7 +1,7 @@
 name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: terraform-${{ github.base_ref || github.ref }}
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
@@ -19,10 +19,6 @@ jobs:
     steps:
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
-
-      - name: Wait for other terraform executions
-        id: wait_for_terraform
-        uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac # v1.2.0
 
       - name: Authenticate to GCP
         id: gcp_auth
