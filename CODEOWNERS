@@ -9,7 +9,7 @@
 
 # IMPORTANT: Each path must have @neighbors-dev-bot @kyma-project/neighbors added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
 
-* @kyma-project/neighbors @neighbors-dev-bot
+* @kyma-project/neighbors
 
 /docs @kyma-project/neighbors @kyma-project/technical-writers
 
