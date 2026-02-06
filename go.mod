@@ -4,8 +4,8 @@ go 1.25.7
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
-	cloud.google.com/go/logging v1.13.1
-	cloud.google.com/go/pubsub/v2 v2.3.0
+	cloud.google.com/go/logging v1.13.2
+	cloud.google.com/go/pubsub/v2 v2.4.0
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/cloudevents/sdk-go/v2 v2.16.2
 	github.com/coreos/go-oidc/v3 v3.17.0
@@ -34,7 +34,7 @@ require (
 	cloud.google.com/go/auth v0.18.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/iam v1.5.3 // indirect
-	cloud.google.com/go/longrunning v0.7.0 // indirect
+	cloud.google.com/go/longrunning v0.8.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/BobuSumisu/aho-corasick v1.0.3 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
@@ -156,7 +156,7 @@ require (
 	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/tools v0.41.0 // indirect
 	google.golang.org/genproto v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20251202230838-ff82c1b0f217 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20251222181119-0a764e51fe1b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260128011058-8636f8732409 // indirect
 	google.golang.org/grpc v1.78.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
