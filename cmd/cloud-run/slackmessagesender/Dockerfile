@@ -1,5 +1,5 @@
 # Stage 1: Build with dependencies inside venv
-FROM python:3.14.2-alpine3.23 AS builder
+FROM python:3.14.3-alpine3.23 AS builder
 
 ENV PYTHONUNBUFFERED=1
 
@@ -16,7 +16,7 @@ COPY ./cmd/cloud-run/slackmessagesender/requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Production image
-FROM python:3.14.2-alpine3.23
+FROM python:3.14.3-alpine3.23
 
 WORKDIR /app
 

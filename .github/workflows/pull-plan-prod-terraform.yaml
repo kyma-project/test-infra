@@ -1,7 +1,9 @@
 name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
@@ -67,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-planner-token }}
           TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
         id: terraform_plan
-        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number || 0 }} -sha ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number || 0 }} -sha ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=400s
 
       - name: Hide GitHub comment
         env:
