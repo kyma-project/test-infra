@@ -1,4 +1,4 @@
-FROM golang:1.25.7-alpine3.22 as builder
+FROM golang:1.26.0-alpine3.22 as builder
 
 # Add certificate authorities certificates.
 # This let oidctokenverifier to use tls connection to the OIDC provider.
