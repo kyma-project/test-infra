@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/avast/retry-go/v4"
+	"github.com/avast/retry-go/v5"
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
@@ -144,7 +144,10 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 		time.Sleep(adoConfig.ADORefreshInterval)
 		// Get the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 		// We get the pipeline run status over network, so we need to handle network errors.
-		pipelineRun, err := retry.DoWithData[*pipelines.Run](
+		pipelineRun, err := retry.NewWithData[*pipelines.Run](
+			retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+			retry.Delay(adoConfig.ADORetryStrategy.Delay),
+		).Do(
 			func() (*pipelines.Run, error) {
 				pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
 					Project:    &adoConfig.ADOProjectName,
@@ -153,8 +156,6 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 				})
 				return pipelineRun, err
 			},
-			retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
-			retry.Delay(adoConfig.ADORetryStrategy.Delay),
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
@@ -186,7 +187,10 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
 	// Fetch the build logs metadata for the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 	// We get the pipeline run status over network, so we need to handle network errors.
-	buildLogs, err := retry.DoWithData(
+	buildLogs, err := retry.NewWithData[*[]build.BuildLog](
+		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+		retry.Delay(adoConfig.ADORetryStrategy.Delay),
+	).Do(
 		func() (*[]build.BuildLog, error) {
 			buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 				Project: &adoConfig.ADOProjectName,
@@ -194,8 +198,6 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 			})
 			return buildLogs, err
 		},
-		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
-		retry.Delay(adoConfig.ADORetryStrategy.Delay),
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
@@ -212,12 +214,13 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	// Make the HTTP request to get the actual logs content. If an error occurs, retry three times with a delay of 5 seconds between each retry.
 	// We get the pipeline run status over network, so we need to handle network errors.
 	// TODO: implement checking http response status code, if it's not 2xx, return error
-	resp, err := retry.DoWithData[*http.Response](
+	resp, err := retry.NewWithData[*http.Response](
+		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
+		retry.Delay(adoConfig.ADORetryStrategy.Delay),
+	).Do(
 		func() (*http.Response, error) {
 			return httpClient.Do(req)
 		},
-		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
-		retry.Delay(adoConfig.ADORetryStrategy.Delay),
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
@@ -257,11 +260,13 @@ func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, retryStra
 		BuildId: buildID,
 	}
 
-	buildTimeline, err := retry.DoWithData[*build.Timeline](func() (*build.Timeline, error) {
-		return buildClient.GetBuildTimeline(ctx, buildArgs)
-	},
+	buildTimeline, err := retry.NewWithData[*build.Timeline](
 		retry.Attempts(retryStrategy.Attempts),
 		retry.Delay(retryStrategy.Delay),
+	).Do(
+		func() (*build.Timeline, error) {
+			return buildClient.GetBuildTimeline(ctx, buildArgs)
+		},
 	)
 	if err != nil {
 		return false, fmt.Errorf("error getting build timeline: %w", err)
@@ -291,11 +296,13 @@ func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, retry
 		Project:     &projectName,
 		Definitions: &[]int{pipelineID},
 	}
-	buildsResponse, err := retry.DoWithData[*build.GetBuildsResponseValue](func() (*build.GetBuildsResponseValue, error) {
-		return buildClient.GetBuilds(ctx, buildArgs)
-	},
+	buildsResponse, err := retry.NewWithData[*build.GetBuildsResponseValue](
 		retry.Attempts(retryStrategy.Attempts),
 		retry.Delay(retryStrategy.Delay),
+	).Do(
+		func() (*build.GetBuildsResponseValue, error) {
+			return buildClient.GetBuilds(ctx, buildArgs)
+		},
 	)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
@@ -305,18 +312,20 @@ func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, retry
 		return false, fmt.Errorf("no builds found for pipeline %s", pipelineName)
 	}
 
-	logs, err := retry.DoWithData[*[]build.BuildLog](func() (*[]build.BuildLog, error) {
-		return buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-			Project: &projectName,
-			BuildId: buildID,
+	logs, err := retry.NewWithData[*[]build.BuildLog]().Do(
+		func() (*[]build.BuildLog, error) {
+			return buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
+				Project: &projectName,
+				BuildId: buildID,
+			},
+			)
 		})
-	})
 	if err != nil {
 		return false, fmt.Errorf("error getting build logs: %w", err)
 	}
 
 	for _, buildLog := range *logs {
-		logContent, err := retry.DoWithData[*[]string](func() (*[]string, error) {
+		logContent, err := retry.NewWithData[*[]string]().Do(func() (*[]string, error) {
 			return buildClient.GetBuildLogLines(ctx, build.GetBuildLogLinesArgs{
 				Project: &projectName,
 				BuildId: buildID,
