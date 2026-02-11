@@ -12,7 +12,7 @@ jobs:
         uses: kyma-project/test-infra/.github/actions/checkout@main
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
-          go-version: '1.25.7'
+          go-version: '1.26.0'
       # https://github.com/golang/go/issues/75031
       - name: Set toolchain version
         run: go env -w GOTOOLCHAIN=go1.25.1+auto
