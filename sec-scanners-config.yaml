@@ -3,8 +3,8 @@ kind: kyma
 bdba:
     - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260211-71e24fbd
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260211-71e24fbd
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260210-3236b3ca
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260210-3236b3ca
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260211-b5a4a973
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260211-b5a4a973
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260211-d483a5c4
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260205-37382cc9
 mend:
