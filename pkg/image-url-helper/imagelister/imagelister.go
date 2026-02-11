@@ -1,4 +1,4 @@
-package list
+package imagelister
 
 import (
 	"os"

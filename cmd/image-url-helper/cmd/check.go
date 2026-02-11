@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/check"
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/imagelister"
 	imgs "github.com/kyma-project/test-infra/pkg/image-url-helper/images"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/spf13/cobra"
@@ -55,7 +55,7 @@ func CheckCmd() *cobra.Command {
 
 			images := make(imgs.ComponentImageMap)
 			testImages := make(imgs.ComponentImageMap)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
+			err = filepath.Walk(ResourcesDirectory, imagelister.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)

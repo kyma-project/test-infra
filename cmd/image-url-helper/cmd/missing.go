@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/kyma-project/test-infra/pkg/image-url-helper/imagelister"
 	imgs "github.com/kyma-project/test-infra/pkg/image-url-helper/images"
-	"github.com/kyma-project/test-infra/pkg/image-url-helper/list"
 	"github.com/kyma-project/test-infra/pkg/image-url-helper/missing"
 
 	"github.com/jamiealquiza/envy"
@@ -35,7 +35,7 @@ func MissingCmd() *cobra.Command {
 			images := make(imgs.ComponentImageMap)
 			testImages := make(imgs.ComponentImageMap)
 
-			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
+			err := filepath.Walk(ResourcesDirectory, imagelister.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				imgs.PrintAndFail(1, "Cannot traverse directory: %s\n", err)
 			}
