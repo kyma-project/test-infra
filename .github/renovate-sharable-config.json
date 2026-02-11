@@ -27,7 +27,7 @@
       "matchManagers": ["gomod"],
       "groupName": "All Go dependencies",
       "rangeStrategy": "bump",
-      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
+      "postUpdateOptions": ["gomodUpdateImportPaths"]
     },
     {
       "matchManagers": ["github-actions"],
