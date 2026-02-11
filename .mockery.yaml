@@ -16,10 +16,3 @@ packages:
       outpkg: "{{.PackageName}}mocks"
     interfaces:
       TrustedIssuerProvider:
-  github.com/kyma-project/test-infra/pkg/github/bumper:
-    config:
-      dir: "{{.InterfaceDir}}/mocks"
-      outpkg: "{{.PackageName}}mocks"
-      with-expecter: true
-    interfaces:
-      GitHubClientAdapterInterface: {}

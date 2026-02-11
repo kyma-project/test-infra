@@ -1,12 +1,12 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260116-e70d97b9
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260116-e70d97b9
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260116-e70d97b9
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260116-e70d97b9
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20251113-b9e254cf
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260105-81907f6a
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260210-3236b3ca
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260210-3236b3ca
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260210-3236b3ca
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260210-3236b3ca
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260211-d483a5c4
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260205-37382cc9
 mend:
     language: golang-mod
     exclude:

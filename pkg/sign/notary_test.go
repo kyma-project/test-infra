@@ -70,7 +70,7 @@ func generateTestCert() (string, string, error) {
 
 // TestImageService_ParseReference_Valid checks the correct parsing of an image reference.
 func TestImageService_ParseReference_Valid(t *testing.T) {
-	imageService := ImageService{}
+	imageService := NewImageService()
 
 	// Use a valid image reference
 	ref, err := imageService.ParseReference("docker.io/library/alpine:latest")
@@ -84,7 +84,7 @@ func TestImageService_ParseReference_Valid(t *testing.T) {
 
 // TestImageService_ParseReference_Invalid checks the incorrect parsing of an image reference.
 func TestImageService_ParseReference_Invalid(t *testing.T) {
-	imageService := ImageService{}
+	imageService := NewImageService()
 
 	invalidReferences := []string{
 		":::",

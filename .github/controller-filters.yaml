@@ -23,13 +23,6 @@ build-image-builder-filter:
   - "go.mod"
   - "go.sum"
 
-build-image-detector-filter:
-  - "cmd/image-detector/*.go"
-  - "cmd/image-detector/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
 build-image-syncer-filter:
   - "cmd/image-syncer/*.go"
   - "cmd/image-syncer/Dockerfile"
@@ -40,13 +33,6 @@ build-image-syncer-filter:
 build-image-url-helper-filter:
   - "cmd/image-url-helper/*.go"
   - "cmd/image-url-helper/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
-build-markdown-index-filter:
-  - "cmd/markdown-index/*.go"
-  - "cmd/markdown-index/Dockerfile"
   - "pkg/**"
   - "go.mod"
   - "go.sum"

@@ -163,7 +163,8 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal([]byte(secretDataString), &secretData)
 	if err != nil {
-		logger.LogCritical("failed to unmarshal secret JSON field, error: %s", err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to unmarshal secret JSON field, error: %s", err.Error())
+		return
 	}
 
 	// get client_email
@@ -173,20 +174,23 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	newKeyCall := serviceAccountService.Projects.ServiceAccounts.Keys.Create(serviceAccountPath, &createKeyRequest)
 	newKey, err := newKeyCall.Do()
 	if err != nil {
-		logger.LogCritical("failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
+		return
 	}
 
 	logger.LogInfo("Decoding new key data for %s", serviceAccountPath)
 	newKeyBytes, err := base64.StdEncoding.DecodeString(newKey.PrivateKeyData)
 	if err != nil {
-		logger.LogCritical("failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
+		return
 	}
 
 	// update secret
 	logger.LogInfo("Adding new secret version to secret %s", secretRotateMessage.Name)
 	_, err = secretManagerService.AddSecretVersion(secretRotateMessage.Name, newKeyBytes)
 	if err != nil {
-		logger.LogCritical("failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error())
+		gcphttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error())
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

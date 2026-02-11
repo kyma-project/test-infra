@@ -55,7 +55,10 @@ module "docker_cache" {
   repository_prevent_destroy = var.docker_cache_repository.repository_prevent_destroy
   repository_name            = var.docker_cache_repository.name
   description                = var.docker_cache_repository.description
-  repoAdmin_serviceaccounts  = [google_service_account.kyma_project_image_builder.email]
+  repoAdmin_serviceaccounts  = [
+    google_service_account.kyma_project_image_builder.email,
+    google_service_account.kyma_project_image_builder_restricted_markets.email
+  ]
   location                   = var.docker_cache_repository.location
   format                     = var.docker_cache_repository.format
   immutable_tags             = var.docker_cache_repository.immutable_tags
