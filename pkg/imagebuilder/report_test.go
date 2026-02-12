@@ -60,6 +60,15 @@ var _ = Describe("Report", func() {
 			Expect(actual).To(Equal(expectedReport))
 		})
 
+		It("correctly parses digest as a string", func() {
+			actual, err := NewBuildReportFromLogs(logs)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(actual.Digest).To(BeAssignableToTypeOf(""))
+			Expect(actual.Digest).To(Equal("sha256:3197820c25f93113f22a6d90d6dbcf70e1d71ae528c3c0b1542e9604bdfa9d83"))
+			Expect(actual.Digest).To(HavePrefix("sha256:"))
+		})
+
 		It("returns an error if the log does not contain the image build report", func() {
 			logs := `2025-01-31T08:32:23.5327056Z ##[section]Starting: prepare_image_build_report`
 
