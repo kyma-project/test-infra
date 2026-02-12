@@ -294,7 +294,7 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot marshal list of architectures: %w", err)
 		}
 
-		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architectures", string(architecturesJSON), "adoResult", string(*pipelineRunResult))
+		o.logger.Debugw("Set GitHub outputs", "images", string(imagesJSON), "architectures", string(architecturesJSON), "digest", buildReport.Digest, "adoResult", string(*pipelineRunResult))
 
 		err = actions.SetOutput("images", string(imagesJSON))
 		if err != nil {
@@ -303,6 +303,10 @@ func buildInADO(o options) error {
 
 		if err := actions.SetOutput("architectures", string(architecturesJSON)); err != nil {
 			return fmt.Errorf("cannot set architectures GitHub output: %w", err)
+		}
+
+		if err := actions.SetOutput("digest", buildReport.Digest); err != nil {
+			return fmt.Errorf("cannot set digest GitHub output: %w", err)
 		}
 
 		err = actions.SetOutput("adoResult", string(*pipelineRunResult))

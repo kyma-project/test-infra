@@ -67,6 +67,9 @@ outputs:
   architectures:
     description: JSON array of the image architectures built in ADO (eg. linux/arm64)
     value: ${{ steps.build.outputs.architectures }}
+  digest:
+    description: The digest of the built image (e.g. sha256:abc123...)
+    value: ${{ steps.build.outputs.digest }}
 
 runs:
   using: "composite"
