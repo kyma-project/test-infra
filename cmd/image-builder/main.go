@@ -309,6 +309,16 @@ func buildInADO(o options) error {
 			return fmt.Errorf("cannot set digest GitHub output: %w", err)
 		}
 
+		// Output full build report as JSON
+		buildReportJSON, err := json.Marshal(buildReport)
+		if err != nil {
+			return fmt.Errorf("cannot marshal build report: %w", err)
+		}
+
+		if err := actions.SetOutput("build-report", string(buildReportJSON)); err != nil {
+			return fmt.Errorf("cannot set build-report GitHub output: %w", err)
+		}
+
 		err = actions.SetOutput("adoResult", string(*pipelineRunResult))
 		if err != nil {
 			return fmt.Errorf("cannot set adoResult GitHub output: %w", err)

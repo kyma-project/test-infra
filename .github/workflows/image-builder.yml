@@ -68,6 +68,9 @@ on:
       digest:
         description: The digest of the built image (e.g. sha256:abc123...)
         value: ${{ jobs.build-image.outputs.digest }}
+      build-report:
+        description: Full build report as JSON containing status, images, digest, tags, architectures, etc.
+        value: ${{ jobs.build-image.outputs.build-report }}
 
 jobs:
   build-image:
@@ -80,6 +83,7 @@ jobs:
       images: ${{ steps.build.outputs.images }}
       result: ${{ steps.build.outputs.adoResult }}
       digest: ${{ steps.build.outputs.digest }}
+      build-report: ${{ steps.build.outputs.build-report }}
     steps:
       - name: Verify caller workflow_ref
         run: |

@@ -39,7 +39,7 @@ var _ = Describe("Report", func() {
 2025-04-27T10:41:56.4359362Z   ]
 2025-04-27T10:41:56.4359560Z }
 2025-04-27T10:41:56.4359897Z ---END OF IMAGE BUILD REPORT---
-2025-04-27T10:41:56.4361039Z 
+2025-04-27T10:41:56.4361039Z
 2025-04-27T10:41:56.4431442Z ##[section]Finishing: print_image_build_report`
 		expectedReport := &BuildReport{
 			Status:        "Succeeded",
