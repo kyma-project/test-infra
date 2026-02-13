@@ -1,6 +1,8 @@
 package imagebuilder
 
 import (
+	"encoding/json"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -74,6 +76,82 @@ var _ = Describe("Report", func() {
 
 			_, err := NewBuildReportFromLogs(logs)
 			Expect(err).To(HaveOccurred())
+		})
+	})
+
+	Describe("BuildReport JSON marshaling", func() {
+		report := &BuildReport{
+			Status:        "Succeeded",
+			IsPushed:      true,
+			IsSigned:      false,
+			Name:          "my-image",
+			Images:        []string{"europe-docker.pkg.dev/kyma-project/prod/my-image:v20260213-abc12345"},
+			Digest:        "sha256:d3e4b9ad13d47bb5ee85804cce30f8f2fca16cbd4c0717b0c5db35299ef8ccef",
+			Tags:          []string{"v20260213-abc12345", "latest"},
+			RegistryURL:   "europe-docker.pkg.dev/kyma-project/prod",
+			Architectures: []string{"linux/arm64", "linux/amd64"},
+		}
+
+		It("marshals build report to valid JSON", func() {
+			jsonBytes, err := json.Marshal(report)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(jsonBytes).ToNot(BeEmpty())
+
+			// Verify it's valid JSON by unmarshaling back
+			var unmarshaled BuildReport
+			err = json.Unmarshal(jsonBytes, &unmarshaled)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(unmarshaled).To(Equal(*report))
+		})
+
+		It("contains all expected fields in JSON output", func() {
+			jsonBytes, err := json.Marshal(report)
+			Expect(err).ToNot(HaveOccurred())
+
+			var jsonMap map[string]interface{}
+			err = json.Unmarshal(jsonBytes, &jsonMap)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Verify all fields are present
+			Expect(jsonMap).To(HaveKey("status"))
+			Expect(jsonMap).To(HaveKey("pushed"))
+			Expect(jsonMap).To(HaveKey("signed"))
+			Expect(jsonMap).To(HaveKey("image_name"))
+			Expect(jsonMap).To(HaveKey("images_list"))
+			Expect(jsonMap).To(HaveKey("digest"))
+			Expect(jsonMap).To(HaveKey("tags"))
+			Expect(jsonMap).To(HaveKey("repository_path"))
+			Expect(jsonMap).To(HaveKey("architectures"))
+
+			// Verify field values
+			Expect(jsonMap["status"]).To(Equal("Succeeded"))
+			Expect(jsonMap["pushed"]).To(BeTrue())
+			Expect(jsonMap["signed"]).To(BeFalse())
+			Expect(jsonMap["image_name"]).To(Equal("my-image"))
+			Expect(jsonMap["digest"]).To(Equal("sha256:d3e4b9ad13d47bb5ee85804cce30f8f2fca16cbd4c0717b0c5db35299ef8ccef"))
+			Expect(jsonMap["repository_path"]).To(Equal("europe-docker.pkg.dev/kyma-project/prod"))
+		})
+
+		It("marshals arrays correctly", func() {
+			jsonBytes, err := json.Marshal(report)
+			Expect(err).ToNot(HaveOccurred())
+
+			var jsonMap map[string]interface{}
+			err = json.Unmarshal(jsonBytes, &jsonMap)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Verify arrays
+			images := jsonMap["images_list"].([]interface{})
+			Expect(images).To(HaveLen(1))
+			Expect(images[0]).To(Equal("europe-docker.pkg.dev/kyma-project/prod/my-image:v20260213-abc12345"))
+
+			tags := jsonMap["tags"].([]interface{})
+			Expect(tags).To(HaveLen(2))
+			Expect(tags).To(ContainElements("v20260213-abc12345", "latest"))
+
+			architectures := jsonMap["architectures"].([]interface{})
+			Expect(architectures).To(HaveLen(2))
+			Expect(architectures).To(ContainElements("linux/arm64", "linux/amd64"))
 		})
 	})
 
