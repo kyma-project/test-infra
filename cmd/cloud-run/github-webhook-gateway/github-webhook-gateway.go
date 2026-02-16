@@ -13,7 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
 	"github.com/kyma-project/test-infra/pkg/githubuser"
 
-	"github.com/google/go-github/v82/github"
+	"github.com/google/go-github/v83/github"
 )
 
 var (
