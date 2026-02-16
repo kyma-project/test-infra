@@ -45,6 +45,13 @@ jobs:
         id: tofu_init
         run: tofu init -input=false
 
+      - name: Tofu refresh
+        id: tofu_refresh
+        env:
+          GITHUB_TOKEN: ${{ steps.secrets.outputs.public-github-terraform-planner-token }}
+          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
+        run: tofu apply -refresh-only -auto-approve -input=false
+
       - name: Tofu plan
         id: tofu_plan
         env:

@@ -62,6 +62,13 @@ jobs:
         id: terraform_init
         run: tofu -chdir=./configs/terraform/environments/prod init -input=false
 
+      - name: Terraform Refresh
+        id: terraform_refresh
+        env:
+          GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-planner-token }}
+          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
+        run: tofu -chdir=./configs/terraform/environments/prod apply -refresh-only -auto-approve -input=false
+
       - name: Terraform Plan
       # The IaC variables are lower case. The opentofu will remove TF_VAR prefix from this env var and match the value with variables names in IaC config case sensitive.
       # I do prefer to keep consistent format of identifiers in IaC config rather than env variables in github action workflow. Thats the reason env var name uses mixed caps.
