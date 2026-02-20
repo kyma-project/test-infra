@@ -1,13 +1,13 @@
 name: workflow-controller-build-1
 
 on:
-  pull_request_target: 
+  pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
    branches-ignore:
      - gh-readonly-*/**
      - dependabot/**
-  merge_group: 
+  merge_group:
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -42,11 +42,6 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@main
-
-  build-image-syncer:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-syncer-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-syncer.yml@main
 
   build-image-url-helper:
     needs: detect-changed-files
