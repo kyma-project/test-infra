@@ -8,8 +8,6 @@
 
 [Image Builder: Maintenance Guide](/cmd/image-builder/image-builder.md) - Image Builder is a tool for building OCI-compliant images using the Azure DevOps (ADO) pipeline backend.
 
-[image-syncer](/cmd/image-syncer/README.md) - Contents:
-
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
 [OIDC Token Verifier](/cmd/oidc-token-verifier/README.md) - The OIDC Token Verifier is a command-line tool designed to validate the OIDC token and its claim values. It is primarily used in the
