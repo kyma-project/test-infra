@@ -6,14 +6,14 @@ resource "google_service_account" "image_syncer_reader" {
 resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user_public_github" {
   service_account_id = google_service_account.image_syncer_reader.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_public_github}"
 }
 
 # Grant access to image_syncer_reader from internal GitHub workflows
 resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user_internal_github" {
   service_account_id = google_service_account.image_syncer_reader.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_internal_github}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_writer" {
@@ -32,14 +32,14 @@ resource "google_service_account" "image_syncer_writer" {
 resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user_public_github" {
   service_account_id = google_service_account.image_syncer_writer.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_public_github}"
 }
 
 # Grant access to image_syncer_writer from internal GitHub workflows
 resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user_internal_github" {
   service_account_id = google_service_account.image_syncer_writer.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_internal_github}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_reader" {
