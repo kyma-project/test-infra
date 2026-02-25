@@ -6,7 +6,7 @@ variable "image_syncer_reusable_workflow_ref_public_github" {
 
 variable "image_syncer_reusable_workflow_ref_internal_github" {
   type        = string
-  description = "The value of GitHub OIDC token job_workflow_ref claim of the image-syncer reusable workflow in the internal test-infra repository. This is used to identify token exchange requests for image-syncer reusable workflow."
+  description = "The value of GitHub OIDC token job_workflow_ref claim of the image-syncer reusable workflow in the internal image-syncer repository. This is used to identify token exchange requests for image-syncer reusable workflow."
   default     = "kyma/image-syncer/.github/workflows/image-syncer.yml@refs/heads/main"
 }
 variable "image_syncer_reader_service_account_name" {
