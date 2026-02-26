@@ -3,10 +3,17 @@ resource "google_service_account" "image_syncer_reader" {
   description = "Service account for image-syncer github reusable workflow called on pull request event. This service account is used to pull images from the prod Docker repository. It must not have the ability to push images to the prod Docker repository."
 }
 
-resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user" {
+resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user_public_github" {
   service_account_id = google_service_account.image_syncer_reader.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_public_github}"
+}
+
+# Grant access to image_syncer_reader from internal GitHub workflows
+resource "google_service_account_iam_member" "image_syncer_reader_workflow_sa_user_internal_github" {
+  service_account_id = google_service_account.image_syncer_reader.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_internal_github}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_writer" {
@@ -22,10 +29,17 @@ resource "google_service_account" "image_syncer_writer" {
   description = "Service account for image-syncer github reusable workflow called on push event. This service account is used to push images to the prod Docker repository."
 }
 
-resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user" {
+resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user_public_github" {
   service_account_id = google_service_account.image_syncer_writer.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref}"
+  member             = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_public_github}"
+}
+
+# Grant access to image_syncer_writer from internal GitHub workflows
+resource "google_service_account_iam_member" "image_syncer_writer_workflow_sa_user_internal_github" {
+  service_account_id = google_service_account.image_syncer_writer.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:push:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.image_syncer_reusable_workflow_ref_internal_github}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_repo_reader" {
@@ -36,16 +50,32 @@ resource "google_artifact_registry_repository_iam_member" "image_syncer_prod_rep
   member     = "serviceAccount:${google_service_account.image_syncer_reader.email}"
 }
 
-resource "github_actions_organization_variable" "image_syncer_reader_service_account_email" {
+resource "github_actions_organization_variable" "image_syncer_reader_service_account_email_public_github" {
   provider      = github.kyma_project
   visibility    = "all"
   variable_name = "IMAGE_SYNCER_READER_SERVICE_ACCOUNT_EMAIL"
   value         = google_service_account.image_syncer_reader.email
 }
 
-resource "github_actions_organization_variable" "image_syncer_writer_service_account_email" {
+resource "github_actions_organization_variable" "image_syncer_reader_service_account_email_internal_github" {
+  provider      = github.internal_github
+  visibility    = "all"
+  variable_name = "IMAGE_SYNCER_READER_SERVICE_ACCOUNT_EMAIL"
+  value         = google_service_account.image_syncer_reader.email
+
+}
+
+resource "github_actions_organization_variable" "image_syncer_writer_service_account_email_public_github" {
   provider      = github.kyma_project
   visibility    = "all"
   variable_name = "IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL"
   value         = google_service_account.image_syncer_writer.email
+}
+
+resource "github_actions_organization_variable" "image_syncer_writer_service_account_email_internal_github" {
+  provider      = github.internal_github
+  visibility    = "all"
+  variable_name = "IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL"
+  value         = google_service_account.image_syncer_writer.email
+
 }
