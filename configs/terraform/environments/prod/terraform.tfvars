@@ -1,7 +1,7 @@
 service_account_keys_rotator_service_name            = "service-account-keys-rotator"
-service_account_keys_rotator_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260225-19585399" #gitleaks:allow
+service_account_keys_rotator_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260301-a22a908f" #gitleaks:allow
 service_account_keys_cleaner_service_name            = "service-account-keys-cleaner"
-service_account_keys_cleaner_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260225-19585399" #gitleaks:allow
+service_account_keys_cleaner_image                   = "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260301-a22a908f" #gitleaks:allow
 service_account_key_latest_version_min_age           = 24
 service_account_keys_cleaner_scheduler_cron_schedule = "0 0 * * 1-5"
 
