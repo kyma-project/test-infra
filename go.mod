@@ -10,7 +10,7 @@ require (
 	github.com/cloudevents/sdk-go/v2 v2.16.2
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/go-jose/go-jose/v4 v4.1.3
-	github.com/google/go-containerregistry v0.21.1
+	github.com/google/go-containerregistry v0.21.2
 	github.com/google/go-github/v83 v83.0.0
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
@@ -24,7 +24,7 @@ require (
 	go.uber.org/zap v1.27.1
 	google.golang.org/api v0.269.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.35.1
+	k8s.io/apimachinery v0.35.2
 	k8s.io/utils v0.0.0-20251222233032-718f0e51e6d2
 	sigs.k8s.io/prow v0.0.0-20251223160831-f0341d7b5660
 )
