@@ -30,15 +30,6 @@ variable "prod_docker_repository" {
     mode                   = "STANDARD_REPOSITORY"
     type                   = "production"
     cleanup_policy_dry_run = false
-    cleanup_policies = [
-      {
-        id     = "delete-untagged"
-        action = "DELETE"
-        condition = {
-          tag_state = "UNTAGGED"
-        }
-      }
-    ]
   }
 }
 
