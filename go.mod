@@ -20,7 +20,7 @@ require (
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
-	github.com/zricethezav/gitleaks/v8 v8.30.0
+	github.com/zricethezav/gitleaks/v8 v8.30.1
 	go.uber.org/zap v1.27.1
 	google.golang.org/api v0.271.0
 	gopkg.in/yaml.v3 v3.0.1
