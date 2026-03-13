@@ -8,7 +8,11 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
+  generate-timestamp-tag:
+    uses: kyma-project/test-infra/.github/workflows/reusable-generate-timestamp-tag.yml@main
+
   build-image:
+    needs: generate-timestamp-tag
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: image-url-helper
@@ -16,3 +20,5 @@ jobs:
       context: .
       platforms: |
         linux/amd64
+      tags: |
+        ${{ needs.generate-timestamp-tag.outputs.tag }}
