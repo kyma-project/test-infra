@@ -1,4 +1,4 @@
-name: reusable-generate-timestamp-tag.yml
+name: reusable-generate-timestamp-tag
 # description: "Reusable workflow that generates a timestamp-based image tag using docker/metadata-action.
 #   The tag format is vYYYYMMDDHHmmss (e.g. v20251006105312), which allows Renovate to correctly
 #   identify and bump newer images built on the same day."
