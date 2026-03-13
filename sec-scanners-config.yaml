@@ -6,7 +6,7 @@ bdba:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260311-e8f8d0e0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260311-e8f8d0e0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260219-ab11dcfa
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260219-ab11dcfa
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260312-e557b980
 mend:
     language: golang-mod
     exclude:
