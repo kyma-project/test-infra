@@ -47,12 +47,6 @@ variable "doc_collector_reusable_workflow_ref" {
   description = "GitHub reference for the reusable workflow used by the documentation collector"
 }
 
-variable "doc_collector_fork_workflow_name" {
-  type        = string
-  default     = "doc-collector-fork"
-  description = "Name of the documentation collector workflow fork used for e2e tests"
-}
-
 variable "doc_collector_fork_reusable_workflow_ref" {
   type = string
   default = "kyma/test-infra/.github/workflows/reusable-doc-collector-fork.yml@refs/heads/main"
