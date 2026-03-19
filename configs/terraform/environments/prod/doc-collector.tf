@@ -47,6 +47,11 @@ variable "doc_collector_reusable_workflow_ref" {
   description = "GitHub reference for the reusable workflow used by the documentation collector"
 }
 
+variable "doc_collector_fork_reusable_workflow_ref" {
+  type = string
+  default = "kyma/test-infra/.github/workflows/reusable-doc-collector-fork.yml@refs/heads/main"
+  description = "GitHub reference for the reusable workflow used by the documentation collector - version for e2e tests"
+}
 # ------------------------------------------------------------------------------
 # GitHub Data Sources
 # ------------------------------------------------------------------------------
@@ -107,6 +112,13 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
 
+resource "google_secret_manager_secret_iam_member" "doc_collector_fork_reusable_workflow_internal_token_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:workflow_dispatch:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_fork_reusable_workflow_ref}"
+}
+
 # Grant the documentation collector workflow access to read the public GitHub token
 # (kyma-bot-github-public-repo-token) via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_public_token_reader" {
@@ -125,3 +137,9 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
 
+resource "google_secret_manager_secret_iam_member" "doc_collector_fork_reusable_workflow_public_token_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:workflow_dispatch:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_fork_reusable_workflow_ref}"
+}
