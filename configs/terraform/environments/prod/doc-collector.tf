@@ -104,11 +104,10 @@ resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
 # Grant the documentation collector workflow access to read the internal GitHub token
 # via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_internal_token_reader" {
-  for_each = toset([var.doc_collector_workflow_name, var.doc_collector_fork_workflow_name])
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${each.key}"
+  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${var.doc_collector_workflow_name}"
 }
 
 resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_internal_token_reader" {
@@ -130,11 +129,10 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_fork_reusable_
 # Grant the documentation collector workflow access to read the public GitHub token
 # (kyma-bot-github-public-repo-token) via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_public_token_reader" {
-  for_each = toset([var.doc_collector_workflow_name, var.doc_collector_fork_workflow_name])
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${each.key}"
+  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${var.doc_collector_workflow_name}"
 }
 
 
