@@ -271,3 +271,43 @@ resource "github_actions_variable" "internal_github_terraform_planner_secret_nam
   variable_name = var.internal_github_terraform_planner_variable_name
   value         = google_secret_manager_secret.internal_github_terraform_planner.secret_id
 }
+
+# ==============================================================================
+# Internal GitHub Enterprise WIF Bindings for Terraform Service Accounts
+# ==============================================================================
+# These bindings allow terraform planner and executor workflows running on
+# internal GitHub Enterprise to authenticate to GCP via
+# the github-tools-sap Workload Identity Federation pool.
+#
+# The github-tools-sap WIF pool is externally managed. The bindings use:
+# - reusable_workflow_ref attribute (mapped from job_workflow_ref OIDC claim)
+#   for the planner — identifies the actual workflow being executed.
+# - deploy_identity attribute for the executor — derived from job_workflow_ref
+#   but only populated when the caller ref is refs/heads/main or a v-tag,
+#   ensuring terraform apply only runs for merge-to-main events.
+#
+# PREREQUISITE: The github-tools-sap WIF provider must have the deploy_identity
+# attribute mapping configured:
+#   attribute.deploy_identity = assertion.ref=='refs/heads/main' ? assertion.job_workflow_ref.extract('{path}@')+':main' : assertion.ref.startsWith('refs/tags/v') ? assertion.job_workflow_ref.extract('{path}@')+':vtag' : ''
+# ==============================================================================
+
+# Grant internal GitHub plan workflow the ability to impersonate the terraform planner SA.
+# Uses reusable_workflow_ref attribute (mapped from job_workflow_ref OIDC claim)
+# which identifies the actual workflow being executed, working correctly for both
+# direct triggers and controller-triggered (reusable workflow) scenarios.
+resource "google_service_account_iam_member" "terraform_planner_workload_identity_internal_github" {
+  service_account_id = google_service_account.terraform_planner.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_terraform_plan_reusable_workflow_ref}"
+}
+
+# Grant internal GitHub deploy workflow the ability to impersonate the terraform executor SA.
+# Uses deploy_identity attribute which is derived from job_workflow_ref and
+# only populated when the caller ref is refs/heads/main or a v-tag.
+# This ensures terraform apply only runs for merge-to-main events.
+resource "google_service_account_iam_member" "terraform_executor_workload_identity_internal_github" {
+  service_account_id = google_service_account.terraform_executor.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_terraform_deploy_identity}"
+}
+

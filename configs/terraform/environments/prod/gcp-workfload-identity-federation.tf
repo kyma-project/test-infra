@@ -10,6 +10,8 @@ data "google_project" "current" {
 locals {
   # Full resource name of the internal GitHub Enterprise WIF pool.
   internal_github_wif_pool_name = "projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.internal_github_wif_pool_id}"
+  # Full resource name of the internal GitHub Enterprise WIF provider.
+  internal_github_wif_provider_name = "${local.internal_github_wif_pool_name}/providers/${var.internal_github_wif_provider_id}"
 }
 
 module "gh_com_kyma_project_workload_identity_federation" {
