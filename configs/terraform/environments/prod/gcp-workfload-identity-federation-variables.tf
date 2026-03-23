@@ -40,9 +40,3 @@ variable "internal_github_wif_pool_id" {
   default     = "github-tools-sap"
   description = "Workload Identity Federation pool id used for internal GitHub Enterprise workflows"
 }
-
-variable "internal_github_wif_provider_id" {
-  type        = string
-  default     = "github-tools-sap"
-  description = "Workload Identity Federation provider id within the github-tools-sap pool for internal GitHub Enterprise"
-}
