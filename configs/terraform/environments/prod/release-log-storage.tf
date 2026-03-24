@@ -1,23 +1,26 @@
 # Release Test Log Storage Configuration
 # This bucket stores logs from release tests.
+# Used by: https://github.com/kyma-project/compliancy/blob/main/docs/upload-release-report.md
 
 import {
   to = google_storage_bucket.release_test_logs
   id = "kyma_release_test_logs"
 }
 
-# Manage the existing release test logs bucket.
 resource "google_storage_bucket" "release_test_logs" {
-  name          = "kyma_release_test_logs"
-  location      = "europe-central2"
-  force_destroy = false
+  name = "kyma_release_test_logs"
 
   uniform_bucket_level_access = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-# Grant the release-log-uploader service account permission to create and delete objects in the bucket.
+# Grant the release-log-uploader service account permission to create AND delete objects in the bucket.
 resource "google_storage_bucket_iam_member" "release_log_uploader_access" {
   bucket = google_storage_bucket.release_test_logs.name
-  role   = "roles/storage.objectCreator"
+  role   = "roles/storage.objectAdmin"
+
   member = "serviceAccount:release-log-uploader@sap-kyma-prow.iam.gserviceaccount.com"
 }
