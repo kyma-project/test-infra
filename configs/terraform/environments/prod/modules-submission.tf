@@ -17,6 +17,26 @@ module "dev_kyma_modules" {
   repoAdmin_serviceaccounts  = [google_service_account.kyma-submission-pipeline.email]
 }
 
+import {
+  id = "projects/kyma-project/serviceAccounts/kyma-modules-reader@kyma-project.iam.gserviceaccount.com"
+  to = google_service_account.kyma_modules_reader
+}
+
+resource "google_service_account" "kyma_modules_reader" {
+  provider     = google.kyma_project
+  account_id   = "kyma-modules-reader"
+  display_name = "kyma-modules-reader"
+  description  = "Service account with read-only access to the kyma-modules Artifact Registry."
+}
+
+resource "google_artifact_registry_repository_iam_member" "kyma_modules_registry_reader" {
+  project    = module.kyma_modules.artifact_registry.project
+  repository = module.kyma_modules.artifact_registry.name
+  location   = module.kyma_modules.artifact_registry.location
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.kyma_modules_reader.email}"
+}
+
 module "kyma_modules" {
   source = "../../modules/artifact-registry"
 
