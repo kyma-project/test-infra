@@ -9,7 +9,7 @@ import {
 
 resource "google_storage_bucket" "release_test_logs" {
   name = "kyma_release_test_logs"
-
+  location = "europe-central2"
   uniform_bucket_level_access = true
 
   lifecycle {
