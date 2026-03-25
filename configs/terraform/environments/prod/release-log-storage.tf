@@ -24,3 +24,11 @@ resource "google_storage_bucket_iam_member" "release_log_uploader_access" {
 
   member = "serviceAccount:release-log-uploader@sap-kyma-prow.iam.gserviceaccount.com"
 }
+
+# Grant Kyma developers read-only access to objects in the bucket
+resource "google_storage_bucket_iam_member" "kyma_developers_read_access" {
+  bucket = google_storage_bucket.release_test_logs.name
+  role   = "roles/storage.objectViewer"
+
+  member = "group:kyma_developers@sap.com"
+}
