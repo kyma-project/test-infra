@@ -6,6 +6,10 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   merge_group: 
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   detect-changed-files:
     runs-on: ubuntu-latest
