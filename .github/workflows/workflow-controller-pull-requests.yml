@@ -23,17 +23,17 @@ jobs:
 
 
   pull-go-lint:
-    uses: kyma-project/test-infra/.github/workflows/pull-go-lint.yaml@main
+    uses: kyma-project/test-infra/.github/workflows/pull-go-lint.yaml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
 
   pull-gitleaks:
-    uses: kyma-project/test-infra/.github/workflows/pull-gitleaks.yml@main
+    uses: kyma-project/test-infra/.github/workflows/pull-gitleaks.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
 
   pull-plan-prod-terraform:
-    uses: kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@main
+    uses: kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     permissions:
       contents: "read" # needed for gcp_auth
       id-token: "write" # needed for gcp_auth to create id token
@@ -43,26 +43,26 @@ jobs:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
 
   pull-unit-test-go:
-    uses: kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@main
+    uses: kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
 
   pull-validate-dockerfiles:
-    uses: kyma-project/test-infra/.github/workflows/pull-validate-dockerfiles.yaml@main
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-dockerfiles.yaml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
 
   tf-lint:
-    uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@main
+    uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'tf-lint-filter') }}
 
   code-checks-python:
-    uses: kyma-project/test-infra/.github/workflows/code-checks-python.yml@main
+    uses: kyma-project/test-infra/.github/workflows/code-checks-python.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}
 
   lint-markdown-links-pr:
-    uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@main
+    uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'lint-markdown-links-pr-filter') }}

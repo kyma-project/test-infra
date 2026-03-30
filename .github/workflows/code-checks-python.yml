@@ -11,7 +11,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Generate matrix
         id: set-matrix
@@ -54,7 +54,7 @@ jobs:
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
@@ -91,7 +91,7 @@ jobs:
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6

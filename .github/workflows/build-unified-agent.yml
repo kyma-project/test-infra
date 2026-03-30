@@ -10,12 +10,12 @@ permissions:
 
 jobs:
   generate-timestamp-tag:
-    uses: kyma-project/test-infra/.github/workflows/reusable-generate-timestamp-tag.yml@main
+    uses: kyma-project/test-infra/.github/workflows/reusable-generate-timestamp-tag.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
   # Build unified-agent base image
   build-unified-agent:
     needs: generate-timestamp-tag
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     with:
       name: unified-agent
       dockerfile: images/unified-agent/Dockerfile
@@ -41,7 +41,7 @@ jobs:
   # Build unified-agent/go image that depends on build-unified-agent
   build-unified-agent-go:
     needs: [generate-timestamp-tag, build-unified-agent, unpack-unified-agent]
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     with:
       name: unified-agent-go
       dockerfile: images/unified-agent/go/Dockerfile
@@ -55,7 +55,7 @@ jobs:
   # Build unified-agent/nodejs image that depends on build-unified-agent
   build-unified-agent-nodejs:
     needs: [generate-timestamp-tag, build-unified-agent, unpack-unified-agent]
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     with:
       name: unified-agent-nodejs
       dockerfile: images/unified-agent/nodejs/Dockerfile
@@ -69,7 +69,7 @@ jobs:
   # Build unified-agent/python image that depends on build-unified-agent
   build-unified-agent-python:
     needs: [generate-timestamp-tag, build-unified-agent, unpack-unified-agent]
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     with:
       name: unified-agent-python
       dockerfile: images/unified-agent/python/Dockerfile

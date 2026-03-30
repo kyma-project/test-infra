@@ -31,19 +31,19 @@ jobs:
   build-dashboard-token-proxy:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-dashboard-token-proxy.yml@main
+    uses: kyma-project/test-infra/.github/workflows/build-dashboard-token-proxy.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
   build-github-webhook-gateway:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-github-webhook-gateway.yml@main
+    uses: kyma-project/test-infra/.github/workflows/build-github-webhook-gateway.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
   build-image-builder:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
   build-image-url-helper:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@main
+    uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
