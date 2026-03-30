@@ -9,5 +9,5 @@ outputs:
   jwt: # id of output
     description: 'The signed JWT ID Token'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'index.js'
