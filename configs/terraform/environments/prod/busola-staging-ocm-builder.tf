@@ -13,11 +13,11 @@ resource "google_artifact_registry_repository_iam_member" "busola_staging_ocm_bu
   member     = "serviceAccount:${google_service_account.busola_staging_ocm_builder.email}"
 }
 
-# Grant read access to kyma-restricted-images-prod Artifact Registry
+# Grant read access to restricted-prod Artifact Registry
 resource "google_artifact_registry_repository_iam_member" "busola_staging_ocm_builder_restricted_prod_reader" {
   provider   = google.kyma_project
-  location   = module.kyma_restricted_images_prod.artifact_registry.location
-  repository = module.kyma_restricted_images_prod.artifact_registry.name
+  location   = module.restricted_prod.artifact_registry.location
+  repository = module.restricted_prod.artifact_registry.name
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.busola_staging_ocm_builder.email}"
 }
