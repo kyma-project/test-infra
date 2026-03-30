@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR code
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Install node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6

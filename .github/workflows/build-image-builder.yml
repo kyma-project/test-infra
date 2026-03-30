@@ -10,11 +10,11 @@ permissions:
 
 jobs:
   generate-timestamp-tag:
-    uses: kyma-project/test-infra/.github/workflows/reusable-generate-timestamp-tag.yml@main
+    uses: kyma-project/test-infra/.github/workflows/reusable-generate-timestamp-tag.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
   build-image:
     needs: generate-timestamp-tag
-    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@dbefa5f119885ba93fe619ba03268d78435bb957 # main
     with:
       name: image-builder
       dockerfile: cmd/image-builder/Dockerfile

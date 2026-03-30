@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout PR code
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Wait for other terraform executions
         id: wait_for_terraform

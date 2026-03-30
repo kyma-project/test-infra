@@ -34,7 +34,7 @@ jobs:
           exit 1
 
       - name: Checkout
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       # Set the dry-run flag based on the event type.
       # Dry-run flag is enforced for workflow runs triggered by pull requests.

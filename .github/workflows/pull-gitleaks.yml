@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR code
-        uses: kyma-project/test-infra/.github/actions/checkout@main
+        uses: kyma-project/test-infra/.github/actions/checkout@dbefa5f119885ba93fe619ba03268d78435bb957 # main
 
       - name: Fetch gitleaks ${{ env.GITLEAKS_VERSION }}
         run: curl -Lso gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v${{ env.GITLEAKS_VERSION }}/gitleaks_${{ env.GITLEAKS_VERSION }}_linux_x64.tar.gz && tar -xvzf ./gitleaks.tar.gz
