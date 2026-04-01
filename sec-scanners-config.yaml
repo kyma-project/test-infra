@@ -4,7 +4,7 @@ bdba:
     - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260326004947
     - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260326004948
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260326004951
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260326004949
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260401021245
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260330121616
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260330121615
 mend:
