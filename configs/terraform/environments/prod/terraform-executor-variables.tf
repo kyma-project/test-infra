@@ -71,6 +71,12 @@ variable "internal_github_tooling_infra_terraform_plan_reusable_workflow_ref" {
   description = "Value of the GitHub OIDC job_workflow_ref claim for the terraform plan workflow in the tooling-infra repo on internal GitHub. Used to match the reusable_workflow_ref attribute in the github-tools-sap WIF pool."
 }
 
+variable "internal_github_tooling_infra_terraform_validate_reusable_workflow_ref" {
+  type        = string
+  default     = "kyma/tooling-infra/.github/workflows/iac-validate.yml@refs/heads/main"
+  description = "Value of the GitHub OIDC job_workflow_ref claim for the terraform validate workflow in the tooling-infra repo on internal GitHub. Used to match the reusable_workflow_ref attribute in the github-tools-sap WIF pool. This workflow is called as a reusable workflow by both iac-plan.yml and iac-staging.yml."
+}
+
 variable "internal_github_tooling_infra_terraform_deploy_identity_prod" {
   type        = string
   default     = "kyma/tooling-infra/.github/workflows/iac-deploy.yml:vtag"
