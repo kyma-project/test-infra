@@ -311,3 +311,26 @@ resource "google_service_account_iam_member" "terraform_executor_workload_identi
   member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_terraform_deploy_identity}"
 }
 
+# ==============================================================================
+# Tooling-Infra Internal GitHub Enterprise WIF Bindings
+# ==============================================================================
+# These bindings allow tooling-infra workflows on internal GitHub Enterprise
+# to authenticate to GCP via the github-tools-sap WIF pool.
+# ==============================================================================
+
+# Grant tooling-infra internal GitHub plan workflow the ability to impersonate the terraform planner SA.
+# Uses reusable_workflow_ref attribute (mapped from job_workflow_ref OIDC claim).
+resource "google_service_account_iam_member" "terraform_planner_workload_identity_internal_github_tooling_infra" {
+  service_account_id = google_service_account.terraform_planner.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}"
+}
+
+# Grant tooling-infra internal GitHub deploy workflow the ability to impersonate the terraform executor SA for prod.
+# Uses deploy_identity attribute with :vtag suffix, ensuring terraform apply only runs for v-tag push events.
+resource "google_service_account_iam_member" "terraform_executor_workload_identity_internal_github_tooling_infra_prod" {
+  service_account_id = google_service_account.terraform_executor.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_prod}"
+}
+
