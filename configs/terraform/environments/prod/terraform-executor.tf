@@ -326,6 +326,15 @@ resource "google_service_account_iam_member" "terraform_planner_workload_identit
   member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}"
 }
 
+# Grant tooling-infra internal GitHub validate workflow the ability to impersonate the terraform planner SA.
+# iac-validate.yml is a separate reusable workflow called by both iac-plan.yml and iac-staging.yml,
+# so it has its own job_workflow_ref and needs its own WIF binding.
+resource "google_service_account_iam_member" "terraform_planner_workload_identity_internal_github_tooling_infra_validate" {
+  service_account_id = google_service_account.terraform_planner.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_validate_reusable_workflow_ref}"
+}
+
 # Grant tooling-infra internal GitHub deploy workflow the ability to impersonate the terraform executor SA for prod.
 # Uses deploy_identity attribute with :vtag suffix, ensuring terraform apply only runs for v-tag push events.
 resource "google_service_account_iam_member" "terraform_executor_workload_identity_internal_github_tooling_infra_prod" {
