@@ -37,7 +37,7 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchPackageNames": ["kyma-project/test-infra"],
+      "matchPackageNames": ["/^kyma-project\\//", "/^kyma\\//"],
       "pinDigests": false
     },
     {
