@@ -1,8 +1,8 @@
 module-name: test-infra
 kind: kyma
 bdba:
-    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260407165650
-    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260406215418
+    - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260408042631
+    - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260408042631
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260406215418
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260406215418
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260408021540
