@@ -35,12 +35,6 @@ variable "doc_collector_gcp_secret_name_internal_github_token" {
   description = "GCP Secret Manager secret name for internal GitHub token used by documentation collector"
 }
 
-variable "doc_collector_workflow_name" {
-  type        = string
-  default     = "doc-collector"
-  description = "Name of the documentation collector workflow"
-}
-
 variable "doc_collector_reusable_workflow_ref" {
   type = string
   default = "kyma/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
@@ -52,15 +46,10 @@ variable "doc_collector_fork_reusable_workflow_ref" {
   default = "kyma/test-infra/.github/workflows/reusable-doc-collector-fork.yml@refs/heads/main"
   description = "GitHub reference for the reusable workflow used by the documentation collector - version for e2e tests"
 }
+
 # ------------------------------------------------------------------------------
 # GitHub Data Sources
 # ------------------------------------------------------------------------------
-
-# Fetch the restricted-markets-docu-hub repository data from internal GitHub
-data "github_repository" "restricted_markets_docu_hub" {
-  provider = github.internal_github
-  name     = "restricted-markets-docu-hub"
-}
 
 # Fetch the kyma organization data from internal GitHub
 data "github_organization" "kyma_internal" {
@@ -97,13 +86,6 @@ resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
 
 # Grant the documentation collector workflow access to read the internal GitHub token
 # via Workload Identity Federation.
-resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_internal_token_reader" {
-  project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${var.doc_collector_workflow_name}"
-}
-
 resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_internal_token_reader" {
   for_each = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
@@ -121,14 +103,6 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_fork_reusable_
 
 # Grant the documentation collector workflow access to read the public GitHub token
 # (kyma-bot-github-public-repo-token) via Workload Identity Federation.
-resource "google_secret_manager_secret_iam_member" "doc_collector_workflow_public_token_reader" {
-  project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.restricted_markets_docu_hub.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${var.doc_collector_workflow_name}"
-}
-
-
 resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_public_token_reader" {
   for_each = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
