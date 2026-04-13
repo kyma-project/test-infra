@@ -37,7 +37,7 @@ const (
 //	    panic(err)
 //	}
 //	defer logger.Sync()
-func New() (LoggerInterface, error) {
+func New() (Logger, error) {
 	level, err := parseLogLevel()
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func New() (LoggerInterface, error) {
 }
 
 // newAPILogger creates a GCP API-only logger from env vars.
-func newAPILogger(level zapcore.Level) (LoggerInterface, error) {
+func newAPILogger(level zapcore.Level) (Logger, error) {
 	projectID := os.Getenv(EnvGCPProjectID)
 	if projectID == "" {
 		return nil, fmt.Errorf("%s is required when %s is %q", EnvGCPProjectID, EnvLogDestination, "api")
@@ -87,7 +87,7 @@ func newAPILogger(level zapcore.Level) (LoggerInterface, error) {
 
 // newCombinedLogger creates a logger that writes to both console and GCP API
 // simultaneously. Each log entry goes to stdout/stderr AND to Cloud Logging.
-func newCombinedLogger(level zapcore.Level) (LoggerInterface, error) {
+func newCombinedLogger(level zapcore.Level) (Logger, error) {
 	projectID := os.Getenv(EnvGCPProjectID)
 	if projectID == "" {
 		return nil, fmt.Errorf("%s is required when %s is %q", EnvGCPProjectID, EnvLogDestination, "console-and-api")

@@ -17,13 +17,13 @@ type BufferLogger struct {
 	Buffer *bytes.Buffer
 }
 
-// Compile-time check: BufferLogger must implement LoggerInterface.
-var _ LoggerInterface = (*BufferLogger)(nil)
+// Compile-time check: BufferLogger must implement Logger.
+var _ Logger = (*BufferLogger)(nil)
 
 // With creates a child logger with additional context fields.
 // Same override as ConsoleLogger — wraps the returned SugaredLogger
 // back into BufferLogger so it still writes to the same buffer.
-func (l *BufferLogger) With(args ...interface{}) LoggerInterface {
+func (l *BufferLogger) With(args ...interface{}) Logger {
 	return &BufferLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 		Buffer:        l.Buffer,

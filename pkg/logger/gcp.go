@@ -19,11 +19,11 @@ type GCPLogger struct {
 	client *logging.Client
 }
 
-// Compile-time check: GCPLogger must implement LoggerInterface.
-var _ LoggerInterface = (*GCPLogger)(nil)
+// Compile-time check: GCPLogger must implement Logger.
+var _ Logger = (*GCPLogger)(nil)
 
 // With creates a child logger with additional context fields.
-func (l *GCPLogger) With(args ...interface{}) LoggerInterface {
+func (l *GCPLogger) With(args ...interface{}) Logger {
 	return &GCPLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 		client:        l.client,

@@ -83,10 +83,10 @@ var _ = Describe("BufferLogger", func() {
 			Expect(entry).To(HaveKeyWithValue("message", "handling request"))
 		})
 
-		It("should return a LoggerInterface, not a concrete type", func() {
+		It("should return a Logger, not a concrete type", func() {
 			// This is the key difference from the old package.
-			// With() must return LoggerInterface so we maintain abstraction.
-			var child LoggerInterface = buf.With("key", "val")
+			// With() must return Logger so we maintain abstraction.
+			var child Logger = buf.With("key", "val")
 			Expect(child).NotTo(BeNil())
 		})
 

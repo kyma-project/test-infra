@@ -11,17 +11,17 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// ConsoleLogger wraps zap.SugaredLogger to implement LoggerInterface.
+// ConsoleLogger wraps zap.SugaredLogger to implement Logger.
 // It outputs GCP-compatible JSON to stdout (info and below) and stderr (errors).
 type ConsoleLogger struct {
 	*zap.SugaredLogger
 }
 
-// Compile-time check: ConsoleLogger must implement LoggerInterface.
-var _ LoggerInterface = (*ConsoleLogger)(nil)
+// Compile-time check: ConsoleLogger must implement Logger.
+var _ Logger = (*ConsoleLogger)(nil)
 
 // With creates a child logger with additional context fields.
-func (l *ConsoleLogger) With(args ...interface{}) LoggerInterface {
+func (l *ConsoleLogger) With(args ...interface{}) Logger {
 	return &ConsoleLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 	}
