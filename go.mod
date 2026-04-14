@@ -4,7 +4,7 @@ go 1.26.2
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
-	cloud.google.com/go/logging v1.15.0
+	cloud.google.com/go/logging v1.16.0
 	cloud.google.com/go/pubsub/v2 v2.5.1
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/cloudevents/sdk-go/v2 v2.16.2
