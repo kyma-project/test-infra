@@ -6,14 +6,13 @@ import (
 	"os"
 	"strings"
 
-	"cloud.google.com/go/compute/metadata"
 	"go.uber.org/zap/zapcore"
 )
 
 // Environment variable names used to configure the logger.
 const (
 	// EnvLogDestination controls where logs are sent.
-	// Values: "console", "api", "console-and-api", "auto" (default: "auto").
+	// Values: "console" (default), "api", "console-and-api".
 	EnvLogDestination = "LOG_DESTINATION"
 
 	// EnvLogLevel controls the minimum log severity.
@@ -21,7 +20,7 @@ const (
 	EnvLogLevel = "LOG_LEVEL"
 
 	// EnvGCPProjectID is the GCP project to send logs to.
-	// Required when LOG_DESTINATION is "api".
+	// Required when LOG_DESTINATION is "api" or "console-and-api".
 	EnvGCPProjectID = "GCP_PROJECT_ID"
 
 	// EnvGCPLogName is the log name in Cloud Logging.
@@ -103,30 +102,21 @@ func newCombinedLogger(level zapcore.Level) (Logger, error) {
 	return NewCombinedLogger(context.Background(), projectID, logName, taskID, level)
 }
 
-// parseDestination reads LOG_DESTINATION and resolves "auto" to a concrete value.
-//
-// "auto" logic:
-//   - Calls metadata.OnGCE() which makes an HTTP request to 169.254.169.254
-//   - If reachable → we're inside GCP → use "console" (agent collects stdout)
-//   - If not reachable → we're outside GCP → use "console-and-api" (console + API simultaneously)
+// parseDestination reads LOG_DESTINATION.
+// Defaults to "console" when not set.
 func parseDestination() (string, error) {
 	dest := strings.ToLower(strings.TrimSpace(os.Getenv(EnvLogDestination)))
 
 	switch dest {
-	case "console":
+	case "console", "":
 		return "console", nil
 	case "api":
 		return "api", nil
 	case "console-and-api":
 		return "console-and-api", nil
-	case "auto", "":
-		if metadata.OnGCE() {
-			return "console", nil
-		}
-		return "console-and-api", nil
 	default:
 		return "", fmt.Errorf(
-			"invalid %s value: %q (valid: console, api, console-and-api, auto)",
+			"invalid %s value: %q (valid: console, api, console-and-api)",
 			EnvLogDestination, dest,
 		)
 	}
