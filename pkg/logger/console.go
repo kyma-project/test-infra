@@ -97,8 +97,12 @@ func (c *consoleCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 
 	// Separate labels from regular fields.
 	labels := make(map[string]interface{})
+	severity, err := consoleSeverityString(entry.Level)
+	if err != nil {
+		return err
+	}
 	payload := map[string]interface{}{
-		"severity":  consoleSeverityString(entry.Level),
+		"severity":  severity,
 		"timestamp": entry.Time.Format(time.RFC3339Nano),
 		"message":   entry.Message,
 	}
@@ -153,19 +157,20 @@ func (c *consoleCore) Sync() error {
 }
 
 // consoleSeverityString maps zap levels to Cloud Logging severity strings.
-func consoleSeverityString(level zapcore.Level) string {
+// Returns an error if the level is not supported.
+func consoleSeverityString(level zapcore.Level) (string, error) {
 	switch level {
 	case zapcore.DebugLevel:
-		return "DEBUG"
+		return "DEBUG", nil
 	case zapcore.InfoLevel:
-		return "INFO"
+		return "INFO", nil
 	case zapcore.WarnLevel:
-		return "WARNING"
+		return "WARNING", nil
 	case zapcore.ErrorLevel:
-		return "ERROR"
+		return "ERROR", nil
 	case zapcore.DPanicLevel, zapcore.PanicLevel, zapcore.FatalLevel:
-		return "CRITICAL"
+		return "CRITICAL", nil
 	default:
-		return "DEFAULT"
+		return "", fmt.Errorf("unsupported log level: %v", level)
 	}
 }

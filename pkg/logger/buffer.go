@@ -35,10 +35,17 @@ func (l *BufferLogger) Logs() string {
 	return l.Buffer.String()
 }
 
-// NewBufferLogger creates a logger that captures output in memory.
-// Uses the same JSON encoder config as ConsoleLogger (zapdriver)
-// so the format matches production output.
+// NewBufferLogger creates a logger that captures all output in memory.
+// Defaults to DebugLevel — captures every severity. Suitable for most tests.
+// Use NewBufferLoggerWithLevel when testing level-specific behavior such as audit logs.
 func NewBufferLogger() *BufferLogger {
+	return NewBufferLoggerWithLevel(zapcore.DebugLevel)
+}
+
+// NewBufferLoggerWithLevel creates a logger that captures output in memory at the given minimum level.
+// Use this when testing level-specific behavior — for example, to verify that only
+// WARNING and above entries are captured, or to simulate an audit log collector.
+func NewBufferLoggerWithLevel(level zapcore.Level) *BufferLogger {
 	var buf bytes.Buffer
 
 	// Same encoder as production — tests validate real output format.
@@ -54,8 +61,7 @@ func NewBufferLogger() *BufferLogger {
 	// so AddSync adds a no-op Sync() method.
 	writer := zapcore.AddSync(&buf)
 
-	// DebugLevel — capture everything in tests, don't filter.
-	core := zapcore.NewCore(encoder, writer, zapcore.DebugLevel)
+	core := zapcore.NewCore(encoder, writer, level)
 
 	zapLogger := zap.New(core)
 
