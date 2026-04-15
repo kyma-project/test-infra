@@ -17,7 +17,7 @@ const (
 	EnvLogDestination = "LOG_DESTINATION"
 
 	// EnvLogLevel controls the minimum log severity.
-	// Values: "debug", "info" (default: "info").
+	// Values: "debug", "info", "warn", "error", "dpanic", "panic", "fatal" (default: "info").
 	EnvLogLevel = "LOG_LEVEL"
 
 	// EnvGCPProjectID is the GCP project to send logs to.
@@ -133,6 +133,7 @@ func parseDestination() (string, error) {
 }
 
 // parseLogLevel reads LOG_LEVEL and converts it to a zapcore.Level.
+// Defaults to info when LOG_LEVEL is not set.
 func parseLogLevel() (zapcore.Level, error) {
 	lvl := strings.ToLower(strings.TrimSpace(os.Getenv(EnvLogLevel)))
 
@@ -141,9 +142,19 @@ func parseLogLevel() (zapcore.Level, error) {
 		return zapcore.DebugLevel, nil
 	case "info", "":
 		return zapcore.InfoLevel, nil
+	case "warn":
+		return zapcore.WarnLevel, nil
+	case "error":
+		return zapcore.ErrorLevel, nil
+	case "dpanic":
+		return zapcore.DPanicLevel, nil
+	case "panic":
+		return zapcore.PanicLevel, nil
+	case "fatal":
+		return zapcore.FatalLevel, nil
 	default:
 		return zapcore.InfoLevel, fmt.Errorf(
-			"invalid %s value: %q (valid: debug, info)",
+			"invalid %s value: %q (valid: debug, info, warn, error, dpanic, panic, fatal)",
 			EnvLogLevel, lvl,
 		)
 	}

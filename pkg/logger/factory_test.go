@@ -47,6 +47,20 @@ var _ = Describe("Factory", func() {
 			Expect(level.String()).To(Equal("debug"))
 		})
 
+		DescribeTable("should return correct level",
+			func(input string, expected string) {
+				os.Setenv(EnvLogLevel, input)
+				level, err := parseLogLevel()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(level.String()).To(Equal(expected))
+			},
+			Entry("warn", "warn", "warn"),
+			Entry("error", "error", "error"),
+			Entry("dpanic", "dpanic", "dpanic"),
+			Entry("panic", "panic", "panic"),
+			Entry("fatal", "fatal", "fatal"),
+		)
+
 		It("should return error for invalid values", func() {
 			os.Setenv(EnvLogLevel, "trace")
 			_, err := parseLogLevel()
