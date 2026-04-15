@@ -4,7 +4,7 @@
 
 `pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that automatically routes log entries based on the runtime environment — to console (stdout/stderr) when running on GCP, or directly to the Cloud Logging API when running outside GCP.
 
-The package was created to satisfy [ADR-006](https://github.tools.sap/kyma/test-infra-fork/blob/main/ADR/decisions/ADR-006-Logging_Standard.md) and replaces direct usage of `go.uber.org/zap` across the codebase. The existing `pkg/logging` and `pkg/gcp/logging` packages remain available for backward compatibility.
+The package was created to satisfy [ADR-006](https://github.tools.sap/kyma/test-infra-fork/blob/main/ADR/decisions/ADR-006-Logging_Standard.md) and replaces direct usage of `go.uber.org/zap` across the codebase.
 
 ## Prerequisites
 
@@ -150,5 +150,6 @@ All destinations produce the same JSON structure compatible with Cloud Logging s
 ## Related Links
 
 - [ADR-006 Logging Standard](https://github.tools.sap/kyma/test-infra-fork/blob/main/ADR/decisions/ADR-006-Logging_Standard.md)
+- [uber-go/zap](https://github.com/uber-go/zap)
 - [pkg/logging](../logging/) — general-purpose logger (deprecated, use `pkg/logger` for new workloads)
 - [pkg/gcp/logging](../gcp/logging/) — GCP API logging wrapper (deprecated, use `pkg/logger` for new workloads)
