@@ -2,6 +2,7 @@ package logger
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -150,10 +151,13 @@ func (c *consoleCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 func (c *consoleCore) Sync() error {
 	outErr := c.out.Sync()
 	errOutErr := c.errOut.Sync()
-	if outErr != nil {
+	if outErr != nil && !errors.Is(outErr, os.ErrInvalid) {
 		return outErr
 	}
-	return errOutErr
+	if errOutErr != nil && !errors.Is(errOutErr, os.ErrInvalid) {
+		return errOutErr
+	}
+	return nil
 }
 
 // consoleSeverityString maps zap levels to Cloud Logging severity strings.

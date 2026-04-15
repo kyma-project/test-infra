@@ -77,6 +77,13 @@ var _ = Describe("Factory", func() {
 			os.Unsetenv(EnvLogDestination)
 		})
 
+		It("should default to console when LOG_DESTINATION is not set", func() {
+			os.Unsetenv(EnvLogDestination)
+			dest, err := parseDestination()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dest).To(Equal("console"))
+		})
+
 		It("should return console for LOG_DESTINATION=console", func() {
 			os.Setenv(EnvLogDestination, "console")
 			dest, err := parseDestination()
