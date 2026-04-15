@@ -74,7 +74,7 @@ requestLog.Infow("request completed", "status", 200)
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `LOG_DESTINATION` | No | `auto` | Where to send logs. See [Log Destinations](#log-destinations). |
-| `LOG_LEVEL` | No | `info` | Minimum severity: `debug` or `info`. |
+| `LOG_LEVEL` | No | `info` | Minimum severity: `debug`, `info`, `warn`, `error`, `dpanic`, `panic`, `fatal`. |
 | `GCP_PROJECT_ID` | Conditional | — | GCP project ID. Required when `LOG_DESTINATION` is `api` or `console-and-api`. |
 | `GCP_LOG_NAME` | No | `application` | Log name in Cloud Logging. |
 
