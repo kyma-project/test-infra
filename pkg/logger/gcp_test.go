@@ -88,5 +88,14 @@ var _ = Describe("GCP Logger", func() {
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("GCP_PROJECT_ID"))
 		})
+
+		It("should return error when project does not exist or is not accessible", func() {
+			os.Setenv(EnvLogDestination, "api")
+			os.Setenv(EnvGCPProjectID, "this-project-does-not-exist-abc123")
+
+			_, err := New()
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("GCP logging client has no access to project"))
+		})
 	})
 })
