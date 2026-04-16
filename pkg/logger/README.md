@@ -4,7 +4,7 @@
 
 `pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that writes GCP-compatible structured JSON to console (stdout/stderr), directly to the Cloud Logging API, or both — controlled by the `LOG_DESTINATION` environment variable.
 
-The package atisfies ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
+The package satisfies ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
 
 ## Prerequisites
 
