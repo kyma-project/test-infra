@@ -94,6 +94,11 @@ func newGCPCore(ctx context.Context, projectID, logName, taskID string, level za
 		return nil, nil, fmt.Errorf("failed to create GCP logging client: %w", err)
 	}
 
+	if err := client.Ping(ctx); err != nil {
+		_ = client.Close()
+		return nil, nil, fmt.Errorf("GCP logging client has no access to project %q: %w", projectID, err)
+	}
+
 	gcpLogger := client.Logger(logName, logging.CommonResource(&monitoredres.MonitoredResource{
 		Type: "generic_task",
 		Labels: map[string]string{
