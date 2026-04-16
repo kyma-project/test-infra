@@ -4,7 +4,7 @@
 
 `pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that automatically routes log entries based on the runtime environment — to console (stdout/stderr) when running on GCP, or directly to the Cloud Logging API when running outside GCP.
 
-The package was created to satisfy ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
+The package atisfies ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
 
 ## Prerequisites
 
@@ -51,7 +51,7 @@ log.Infow("handling request", "request_id", "abc-123")
 ```
 
 > [!NOTE]
-> ADR-006 requires the following labels on all log entries: `app`, `version`, `environment`. Add them via `logger.LogLabel()` during logger initialization.
+> ADR-006 requires the following labels on all log entries: `app`, `version`, `environment`. Add them using `logger.LogLabel()` during logger initialization.
 
 ### Child Loggers
 
