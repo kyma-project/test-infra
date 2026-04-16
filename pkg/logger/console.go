@@ -151,6 +151,8 @@ func (c *consoleCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 func (c *consoleCore) Sync() error {
 	outErr := c.out.Sync()
 	errOutErr := c.errOut.Sync()
+	// Ignore ErrInvalid: on Linux, fsync on a pipe (e.g. stdout in CI) returns
+	// EINVAL/EBADF which maps to os.ErrInvalid — not a real error worth surfacing.
 	if outErr != nil && !errors.Is(outErr, os.ErrInvalid) {
 		return outErr
 	}
