@@ -2,7 +2,7 @@
 
 ## Overview
 
-`pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that automatically routes log entries based on the runtime environment — to console (stdout/stderr) when running on GCP, or directly to the Cloud Logging API when running outside GCP.
+`pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that writes GCP-compatible structured JSON to console (stdout/stderr), directly to the Cloud Logging API, or both — controlled by the `LOG_DESTINATION` environment variable.
 
 The package atisfies ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
 
@@ -89,7 +89,7 @@ requestLog.Infow("request completed", "status", 200)
 
 ## Authentication Outside GCP
 
-When **LOG_DESTINATION** is `api` or `console-and-api`, the logger requires GCP credentials.
+When **LOG_DESTINATION** is `api` or `console-and-api`, the logger requires GCP credentials. Credentials and project access are validated at startup — if the project does not exist or the credentials lack the **roles/logging.logWriter** role, `New()` returns an error immediately.
 
 
 **Local development:**
