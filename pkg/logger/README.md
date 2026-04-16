@@ -4,7 +4,7 @@
 
 `pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that automatically routes log entries based on the runtime environment — to console (stdout/stderr) when running on GCP, or directly to the Cloud Logging API when running outside GCP.
 
-The package was created to satisfy [ADR-006](https://github.tools.sap/kyma/test-infra-fork/blob/main/ADR/decisions/ADR-006-Logging_Standard.md) and replaces direct usage of `go.uber.org/zap` across the codebase.
+The package was created to satisfy ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
 
 ## Prerequisites
 
@@ -73,33 +73,31 @@ requestLog.Infow("request completed", "status", 200)
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `LOG_DESTINATION` | No | `auto` | Where to send logs. See [Log Destinations](#log-destinations). |
-| `LOG_LEVEL` | No | `info` | Minimum severity: `debug`, `info`, `warn`, `error`, `dpanic`, `panic`, `fatal`. |
-| `GCP_PROJECT_ID` | Conditional | — | GCP project ID. Required when `LOG_DESTINATION` is `api` or `console-and-api`. |
-| `GCP_LOG_NAME` | No | `application` | Log name in Cloud Logging. |
+| **LOG_DESTINATION** | No | `console` | Where to send logs. See [Log Destinations](#log-destinations). |
+| **LOG_LEVEL** | No | `info` | Minimum severity: `debug`, `info`, `warn`, `error`, `dpanic`, `panic`, `fatal`. |
+| **GCP_PROJECT_ID** | Conditional | — | GCP project ID. Required when **LOG_DESTINATION** is `api` or `console-and-api`. |
+| **GCP_LOG_NAME** | No | `application` | Log name in Cloud Logging. |
+
 
 ### Log Destinations
 
 | Value | Behavior |
 |---|---|
-| `auto` | Detects the runtime environment. On GCP → `console`. Outside GCP → `console-and-api`. |
 | `console` | Writes structured JSON to stdout/stderr. Use on Cloud Run and GKE — the agent collects stdout automatically. |
 | `api` | Sends logs directly to the Cloud Logging API. |
 | `console-and-api` | Writes to both stdout/stderr and Cloud Logging API simultaneously. |
 
-> [!TIP]
-> Use `auto` in production. The package detects the runtime environment automatically using the GCP metadata server — no manual configuration needed when deploying to Cloud Run or GKE. The `auto` setting detects the environment by contacting the GCP metadata server on the first run, which may introduce a brief startup delay. To avoid this, you can set `LOG_DESTINATION` to a specific value like `console-and-api`.
-
 ## Authentication Outside GCP
 
-When `LOG_DESTINATION` is `api` or `console-and-api`, the logger requires GCP credentials.
+When **LOG_DESTINATION** is `api` or `console-and-api`, the logger requires GCP credentials.
+
 
 **Local development:**
 ```bash
 gcloud auth application-default login
 ```
 
-**Container outside GCP:** Mount a service account key with the `roles/logging.logWriter` role:
+**Container outside GCP:** Mount a service account key with the **roles/logging.logWriter** role:
 ```bash
 docker run \
   -v /path/to/sa-key.json:/tmp/sa-key.json \
@@ -149,7 +147,6 @@ All destinations produce the same JSON structure compatible with Cloud Logging s
 
 ## Related Links
 
-- [ADR-006 Logging Standard](https://github.tools.sap/kyma/test-infra-fork/blob/main/ADR/decisions/ADR-006-Logging_Standard.md)
 - [uber-go/zap](https://github.com/uber-go/zap)
 - [pkg/logging](../logging/) — general-purpose logger (deprecated, use `pkg/logger` for new workloads)
 - [pkg/gcp/logging](../gcp/logging/) — GCP API logging wrapper (deprecated, use `pkg/logger` for new workloads)
