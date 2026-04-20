@@ -42,8 +42,3 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-builder-filter') }}
     uses: kyma-project/test-infra/.github/workflows/build-image-builder.yml@main
-
-  build-image-url-helper:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-image-url-helper-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-image-url-helper.yml@main
