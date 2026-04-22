@@ -77,17 +77,17 @@ func New(ctx context.Context, cfg Config) (logging.LoggerInterface, error) {
 
 	switch cfg.Destination {
 	case "console", "":
-		return NewConsoleLogger(cfg.Level), nil
+		return newConsoleLogger(cfg.Level), nil
 	case "api":
 		if cfg.ProjectID == "" {
 			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
 		}
-		return NewGCPLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
+		return newGCPLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
 	case "console-and-api":
 		if cfg.ProjectID == "" {
 			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
 		}
-		return NewCombinedLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
+		return newCombinedLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
 	default:
 		return nil, fmt.Errorf("invalid Destination %q (valid: console, api, console-and-api)", cfg.Destination)
 	}

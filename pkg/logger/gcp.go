@@ -44,7 +44,7 @@ func (l *GCPLogger) Close() error {
 	return nil
 }
 
-// NewGCPLogger creates a logger that sends logs to Google Cloud Logging API.
+// newGCPLogger creates a logger that sends logs to Google Cloud Logging API.
 //
 // Parameters:
 //   - ctx: context for creating the GCP client
@@ -53,7 +53,7 @@ func (l *GCPLogger) Close() error {
 //     grouped in Cloud Logging UI.
 //   - namespace: logical grouping for the workload (e.g. "neighbors-team")
 //   - level: minimum log severity
-func NewGCPLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
+func newGCPLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
 	client, gcpCore, err := newGCPCore(ctx, projectID, logName, taskID, level)
 	if err != nil {
 		return nil, err
@@ -67,10 +67,10 @@ func NewGCPLogger(ctx context.Context, projectID, logName, taskID string, level 
 	}, nil
 }
 
-// NewCombinedLogger creates a logger that writes to both console (stdout/stderr)
+// newCombinedLogger creates a logger that writes to both console (stdout/stderr)
 // and GCP Cloud Logging API simultaneously. Used for workloads outside GCP
 // that need both local visibility and centralized logging.
-func NewCombinedLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
+func newCombinedLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
 	client, gcpAPICore, err := newGCPCore(ctx, projectID, logName, taskID, level)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func NewCombinedLogger(ctx context.Context, projectID, logName, taskID string, l
 }
 
 // newGCPCore creates the Cloud Logging client and a gcpCore.
-// Shared by NewGCPLogger and NewCombinedLogger.
+// Shared by newGCPLogger and newCombinedLogger.
 func newGCPCore(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*gcplogging.Client, *gcpCore, error) {
 	client, err := gcplogging.NewClient(ctx, projectID)
 	if err != nil {

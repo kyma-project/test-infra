@@ -29,13 +29,13 @@ func (l *ConsoleLogger) With(args ...interface{}) logging.LoggerInterface {
 	}
 }
 
-// NewConsoleLogger creates a GCP-compatible console logger.
+// newConsoleLogger creates a GCP-compatible console logger.
 // level sets the minimum log severity (e.g. zapcore.InfoLevel, zapcore.DebugLevel).
 //
 // Log routing:
 //   - severity >= Error → stderr
 //   - severity < Error  → stdout
-func NewConsoleLogger(level zapcore.Level) *ConsoleLogger {
+func newConsoleLogger(level zapcore.Level) *ConsoleLogger {
 	core := newConsoleCore(level)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 	return &ConsoleLogger{
