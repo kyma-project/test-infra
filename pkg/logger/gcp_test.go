@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"os"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -81,12 +82,14 @@ var _ = Describe("GCP Logger", func() {
 		})
 
 		It("should return error when GCP_PROJECT_ID is missing", func() {
-			os.Setenv(EnvLogDestination, "api")
-			os.Unsetenv(EnvGCPProjectID)
-
-			_, err := New()
+			cfg := Config{
+				Level:       zapcore.InfoLevel,
+				Destination: "api",
+				ProjectID:   "",
+			}
+			_, err := New(context.Background(), cfg)
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("GCP_PROJECT_ID"))
+			Expect(err.Error()).To(ContainSubstring("ProjectID"))
 		})
 	})
 })
