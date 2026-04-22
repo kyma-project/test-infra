@@ -6,6 +6,8 @@ import (
 	"github.com/blendle/zapdriver"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	logging "github.com/kyma-project/test-infra/pkg/logging/v2"
 )
 
 // BufferLogger writes logs to an in-memory buffer for testing.
@@ -17,13 +19,13 @@ type BufferLogger struct {
 	Buffer *bytes.Buffer
 }
 
-// Compile-time check: BufferLogger must implement Logger.
-var _ Logger = (*BufferLogger)(nil)
+// Compile-time check: BufferLogger must implement LoggerInterface.
+var _ logging.LoggerInterface = (*BufferLogger)(nil)
 
 // With creates a child logger with additional context fields.
 // Same override as ConsoleLogger — wraps the returned SugaredLogger
 // back into BufferLogger so it still writes to the same buffer.
-func (l *BufferLogger) With(args ...interface{}) Logger {
+func (l *BufferLogger) With(args ...interface{}) logging.LoggerInterface {
 	return &BufferLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 		Buffer:        l.Buffer,

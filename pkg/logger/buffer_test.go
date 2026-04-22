@@ -3,6 +3,7 @@ package logger
 import (
 	"encoding/json"
 
+	logging "github.com/kyma-project/test-infra/pkg/logging/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -85,8 +86,8 @@ var _ = Describe("BufferLogger", func() {
 
 		It("should return a Logger, not a concrete type", func() {
 			// This is the key difference from the old package.
-			// With() must return Logger so we maintain abstraction.
-			var child Logger = buf.With("key", "val")
+			// With() must return LoggerInterface so we maintain abstraction.
+			var child logging.LoggerInterface = buf.With("key", "val")
 			Expect(child).NotTo(BeNil())
 		})
 

@@ -3,13 +3,15 @@ package logger
 import (
 	"context"
 	"fmt"
-	"os"
-	"strings"
 
+	"github.com/blendle/zapdriver"
+	logging "github.com/kyma-project/test-infra/pkg/logging/v2"
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 // Environment variable names used to configure the logger.
+// The caller is responsible for reading these and passing values via Config.
 const (
 	// EnvLogDestination controls where logs are sent.
 	// Values: "console" (default), "api", "console-and-api".
@@ -28,124 +30,81 @@ const (
 	EnvGCPLogName = "GCP_LOG_NAME"
 )
 
-// New creates a logger based on environment variables.
-// This is the main entry point — use this in your applications:
+// Config holds all configuration needed to create a logger.
+// The caller is responsible for populating this — typically by reading
+// environment variables or flags in main().
+type Config struct {
+	// Level is the minimum log severity. Defaults to Info.
+	Level zapcore.Level
+
+	// Destination controls where logs are sent.
+	// Valid values: "console", "api", "console-and-api". Defaults to "console".
+	Destination string
+
+	// ProjectID is the GCP project to send logs to.
+	// Required when Destination is "api" or "console-and-api".
+	ProjectID string
+
+	// LogName is the log name in Cloud Logging.
+	// Optional, defaults to "application".
+	LogName string
+
+	// TaskID is a unique identifier for this workload instance (e.g. hostname).
+	TaskID string
+}
+
+// New creates a logger based on the provided Config.
 //
-//	logger, err := logger.New()
+// Example usage in main():
+//
+//	cfg := logger.Config{
+//	    Level:       zapcore.InfoLevel,
+//	    Destination: os.Getenv(logger.EnvLogDestination),
+//	    ProjectID:   os.Getenv(logger.EnvGCPProjectID),
+//	    LogName:     os.Getenv(logger.EnvGCPLogName),
+//	    TaskID:      hostname,
+//	}
+//	l, err := logger.New(ctx, cfg)
 //	if err != nil {
 //	    panic(err)
 //	}
-//	defer logger.Sync()
-func New() (Logger, error) {
-	level, err := parseLogLevel()
-	if err != nil {
-		return nil, err
-	}
-
-	destination, err := parseDestination()
-	if err != nil {
-		return nil, err
-	}
-
-	switch destination {
-	case "console":
-		return NewConsoleLogger(level).With(LogLabel("team", "neighbors-team")), nil
-	case "api":
-		l, err := newAPILogger(level)
-		if err != nil {
-			return nil, err
-		}
-		return l.With(LogLabel("team", "neighbors-team")), nil
-	case "console-and-api":
-		l, err := newCombinedLogger(level)
-		if err != nil {
-			return nil, err
-		}
-		return l.With(LogLabel("team", "neighbors-team")), nil
-	default:
-		return nil, fmt.Errorf("unknown log destination: %s", destination)
-	}
-}
-
-// newAPILogger creates a GCP API-only logger from env vars.
-func newAPILogger(level zapcore.Level) (Logger, error) {
-	projectID := os.Getenv(EnvGCPProjectID)
-	if projectID == "" {
-		return nil, fmt.Errorf("%s is required when %s is %q", EnvGCPProjectID, EnvLogDestination, "api")
-	}
-	logName := os.Getenv(EnvGCPLogName)
+//	defer l.Sync()
+func New(ctx context.Context, cfg Config) (logging.LoggerInterface, error) {
+	logName := cfg.LogName
 	if logName == "" {
 		logName = "application"
 	}
-	taskID, _ := os.Hostname()
-	if taskID == "" {
-		taskID = "unknown"
-	}
-	return NewGCPLogger(context.Background(), projectID, logName, taskID, level)
-}
 
-// newCombinedLogger creates a logger that writes to both console and GCP API
-// simultaneously. Each log entry goes to stdout/stderr AND to Cloud Logging.
-func newCombinedLogger(level zapcore.Level) (Logger, error) {
-	projectID := os.Getenv(EnvGCPProjectID)
-	if projectID == "" {
-		return nil, fmt.Errorf("%s is required when %s is %q", EnvGCPProjectID, EnvLogDestination, "console-and-api")
-	}
-	logName := os.Getenv(EnvGCPLogName)
-	if logName == "" {
-		logName = "application"
-	}
-	taskID, _ := os.Hostname()
-	if taskID == "" {
-		taskID = "unknown"
-	}
-	return NewCombinedLogger(context.Background(), projectID, logName, taskID, level)
-}
-
-// parseDestination reads LOG_DESTINATION.
-// Defaults to "console" when not set.
-func parseDestination() (string, error) {
-	dest := strings.ToLower(strings.TrimSpace(os.Getenv(EnvLogDestination)))
-
-	switch dest {
+	switch cfg.Destination {
 	case "console", "":
-		return "console", nil
+		return NewConsoleLogger(cfg.Level), nil
 	case "api":
-		return "api", nil
+		if cfg.ProjectID == "" {
+			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
+		}
+		return NewGCPLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
 	case "console-and-api":
-		return "console-and-api", nil
+		if cfg.ProjectID == "" {
+			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
+		}
+		return NewCombinedLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
 	default:
-		return "", fmt.Errorf(
-			"invalid %s value: %q (valid: console, api, console-and-api)",
-			EnvLogDestination, dest,
-		)
+		return nil, fmt.Errorf("invalid Destination %q (valid: console, api, console-and-api)", cfg.Destination)
 	}
 }
 
-// parseLogLevel reads LOG_LEVEL and converts it to a zapcore.Level.
-// Defaults to info when LOG_LEVEL is not set.
-func parseLogLevel() (zapcore.Level, error) {
-	lvl := strings.ToLower(strings.TrimSpace(os.Getenv(EnvLogLevel)))
-
-	switch lvl {
-	case "debug":
-		return zapcore.DebugLevel, nil
-	case "info", "":
-		return zapcore.InfoLevel, nil
-	case "warn":
-		return zapcore.WarnLevel, nil
-	case "error":
-		return zapcore.ErrorLevel, nil
-	case "dpanic":
-		return zapcore.DPanicLevel, nil
-	case "panic":
-		return zapcore.PanicLevel, nil
-	case "fatal":
-		return zapcore.FatalLevel, nil
-	default:
-		return zapcore.InfoLevel, fmt.Errorf(
-			"invalid %s value: %q (valid: debug, info, warn, error, dpanic, panic, fatal)",
-			EnvLogLevel, lvl,
-		)
-	}
+// LogLabel creates a GCP Cloud Logging label field.
+//
+// Labels are special — in GCP they land in a separate "labels" field,
+// not in the JSON payload. This makes them indexed and filterable
+// in Cloud Logging console.
+//
+// Use LogLabel for metadata like app name, version, environment.
+// Use regular key-value pairs for dynamic data like request_id, user_id.
+//
+// Example:
+//
+//	appLogger := logger.With(logger.LogLabel("app", "image-builder"), logger.LogLabel("version", "1.0.0"))
+func LogLabel(key, value string) zap.Field {
+	return zapdriver.Label(key, value)
 }
