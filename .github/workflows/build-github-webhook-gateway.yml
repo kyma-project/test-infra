@@ -18,6 +18,7 @@ jobs:
       name: github-webhook-gateway
       dockerfile: cmd/cloud-run/github-webhook-gateway/Dockerfile
       context: .
+      use-go-internal-sap-modules: true
       platforms: |
         linux/amd64
       tags: |
