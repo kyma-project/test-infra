@@ -21,6 +21,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/zricethezav/gitleaks/v8 v8.30.1
+	github.tools.sap/kyma/neighbors-contracts v0.0.0-20260423060355-772d2d4813ec
 	go.uber.org/zap v1.27.1
 	google.golang.org/api v0.276.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260401024825-9d38bb4040a9

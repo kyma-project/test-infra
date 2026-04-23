@@ -3,7 +3,7 @@ package logger
 import (
 	"encoding/json"
 
-	logging "github.com/kyma-project/test-infra/pkg/logging/v2"
+	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
