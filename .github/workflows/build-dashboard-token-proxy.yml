@@ -18,6 +18,7 @@ jobs:
       name: dashboard-token-proxy
       dockerfile: cmd/dashboard-token-proxy/Dockerfile
       context: .
+      use-go-internal-sap-modules: true
       platforms: |
         linux/amd64
       tags: |
