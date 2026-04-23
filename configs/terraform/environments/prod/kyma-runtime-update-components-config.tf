@@ -32,6 +32,18 @@ variable "internal_github_kyma_modules_repository_name" {
   description = "Repository name in internal GitHub Enterprise where the variable should be created"
 }
 
+variable "pull_go_lint_reusable_workflow_ref" {
+  type        = string
+  default     = "kyma-project/test-infra/.github/workflows/pull-go-lint.yaml@refs/heads/main"
+  description = "Value of the GitHub OIDC token job_workflow_ref claim for the pull-go-lint reusable workflow in the public test-infra repository"
+}
+
+variable "pull_unit_test_go_reusable_workflow_ref" {
+  type        = string
+  default     = "kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@refs/heads/main"
+  description = "Value of the GitHub OIDC token job_workflow_ref claim for the pull-unit-test-go reusable workflow in the public test-infra repository"
+}
+
 data "github_repository" "kyma_modules_internal" {
   provider = github.internal_github
   name     = "kyma-modules"
@@ -65,12 +77,28 @@ resource "google_secret_manager_secret" "kyma_modules_runtime_internal_github_to
 # IAM Permissions - Secret Access for Workflow via WIF
 # ------------------------------------------------------------------------------
 
-# Grant the kyma-modules update-components workflow access to read the internal GitHub token.
+# Grant the kyma-modules update-components workflow (internal GitHub) access to read the internal GitHub token.
 resource "google_secret_manager_secret_iam_member" "kyma_modules_update_components_workflow_internal_token_reader" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:${data.github_repository.kyma_modules_internal.repo_id}:repository_owner_id:2457:workflow:Update Component Version on Push"
+}
+
+# Grant the pull-go-lint reusable workflow (public test-infra) access to read the internal GitHub token.
+resource "google_secret_manager_secret_iam_member" "pull_go_lint_workflow_internal_token_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_go_lint_reusable_workflow_ref}"
+}
+
+# Grant the pull-unit-test-go reusable workflow (public test-infra) access to read the internal GitHub token.
+resource "google_secret_manager_secret_iam_member" "pull_unit_test_go_workflow_internal_token_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_unit_test_go_reusable_workflow_ref}"
 }
 
 # ------------------------------------------------------------------------------
