@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	logging "github.com/kyma-project/test-infra/pkg/logging/v2"
+	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
 )
 
 // BufferLogger writes logs to an in-memory buffer for testing.
