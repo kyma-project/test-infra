@@ -3,7 +3,7 @@ name: pull-go-lint
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
-
+    
 
 jobs:
   lint:
@@ -16,26 +16,5 @@ jobs:
         uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version: '1.26.2'
-
-      - name: Authenticate in GCP
-        id: 'auth'
-        uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
-        with:
-          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
-          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-
-      - name: Get GitHub Tokens from Secret Manager
-        id: 'secrets'
-        uses: 'google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262' # v3
-        with:
-          secrets: |-
-            internal-github-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TOOLS_KYMA_PROW_BOT_TOKEN_SECRET_NAME }}
-
-      - name: Setup authentication for private Go modules
-        run: |
-          echo "machine github.tools.sap" >> ~/.netrc
-          echo "login $GITHUB_ACTOR" >> ~/.netrc
-          echo "password ${{ steps.secrets.outputs.internal-github-token }}" >> ~/.netrc
-          chmod 600 ~/.netrc
 
       - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9.2.0
