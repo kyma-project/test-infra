@@ -2,9 +2,6 @@ FROM golang:1.26.2-alpine3.22 AS builder
 
 WORKDIR /app
 
-COPY vendor/ ./vendor/
-
-RUN go mod download
 
 # Copy the source to the Working Directory inside the container
 COPY . .
