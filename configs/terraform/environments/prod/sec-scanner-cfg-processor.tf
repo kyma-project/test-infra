@@ -15,12 +15,9 @@ resource "google_service_account" "sec-scanner-cfg-processor" {
   description  = var.sec-scanner-cfg-processor-service-account.service-account-description
 }
 
-resource "google_artifact_registry_repository_iam_member" "sec_scanner_cfg_processor_kyma_modules_reader" {
-  project    = module.kyma_modules.artifact_registry.project
-  repository = module.kyma_modules.artifact_registry.name
-  location   = module.kyma_modules.artifact_registry.location
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.sec-scanner-cfg-processor.email}"
+removed {
+  from = google_artifact_registry_repository_iam_member.sec_scanner_cfg_processor_kyma_modules_reader
+  lifecycle { destroy = false }
 }
 
 resource "google_secret_manager_secret" "sec-scanner-cfg-processor-gcp-sa-key" {
@@ -33,7 +30,7 @@ resource "google_secret_manager_secret" "sec-scanner-cfg-processor-gcp-sa-key" {
 
   # Configure rotation to occur every 85 days (85 * 24 * 3600 = 7,344,000 seconds).
   rotation {
-    rotation_period    = "7344000s"
+    rotation_period = "7344000s"
     # Next rotation time must be set when rotation period is specified.
     # Set it to now + rotation period. We ignore future drifts via lifecycle below.
     next_rotation_time = timeadd(timestamp(), "7344000s")
