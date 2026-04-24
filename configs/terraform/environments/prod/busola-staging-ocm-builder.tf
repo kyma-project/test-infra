@@ -4,13 +4,9 @@ resource "google_service_account" "busola_staging_ocm_builder" {
   description  = "Service account for building Busola Staging OCM components."
 }
 
-# Grant write access to dev-kyma-modules Artifact Registry
-resource "google_artifact_registry_repository_iam_member" "busola_staging_ocm_builder_dev_kyma_modules_writer" {
-  provider   = google.kyma_project
-  location   = module.dev_kyma_modules.artifact_registry.location
-  repository = module.dev_kyma_modules.artifact_registry.name
-  role       = "roles/artifactregistry.createOnPushWriter"
-  member     = "serviceAccount:${google_service_account.busola_staging_ocm_builder.email}"
+removed {
+  from = google_artifact_registry_repository_iam_member.busola_staging_ocm_builder_dev_kyma_modules_writer
+  lifecycle { destroy = false }
 }
 
 # Grant read access to restricted-prod Artifact Registry
