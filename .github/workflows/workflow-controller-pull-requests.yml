@@ -28,6 +28,10 @@ jobs:
 
   pull-go-lint:
     uses: kyma-project/test-infra/.github/workflows/pull-go-lint.yaml@main
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
 
@@ -48,6 +52,10 @@ jobs:
 
   pull-unit-test-go:
     uses: kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@main
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
 
