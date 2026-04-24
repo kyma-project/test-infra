@@ -8,6 +8,11 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read # This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT token
+      
     steps:
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
