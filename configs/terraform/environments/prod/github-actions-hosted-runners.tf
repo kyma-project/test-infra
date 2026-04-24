@@ -34,14 +34,14 @@ resource "github_actions_runner_group" "telemetry_manager" {
 resource "github_actions_hosted_runner" "telemetry_manager" {
   provider = github.kyma_project
 
-  name = var.telemetry_manager_hosted_runner_name
+  name = var.telemetry_manager_hosted_runner.name
 
   image {
-    id     = var.telemetry_manager_hosted_runner_image_id
-    source = var.telemetry_manager_hosted_runner_image_source
+    id     = var.telemetry_manager_hosted_runner.image_id
+    source = var.telemetry_manager_hosted_runner.image_source
   }
 
-  size            = var.telemetry_manager_hosted_runner_size
+  size            = var.telemetry_manager_hosted_runner.size
   runner_group_id = github_actions_runner_group.telemetry_manager.id
-  maximum_runners = var.telemetry_manager_hosted_runner_max_runners
+  maximum_runners = var.telemetry_manager_hosted_runner.max_runners
 }
