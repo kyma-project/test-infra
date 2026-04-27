@@ -24,11 +24,6 @@ resource "github_actions_runner_group" "telemetry_manager" {
   selected_repository_ids = [
     data.github_repository.telemetry_manager.repo_id,
   ]
-
-  restricted_to_workflows = true
-  selected_workflows = [
-    "kyma-project/telemetry-manager/.github/workflows/pr-integration.yml@refs/heads/main",
-  ]
 }
 
 resource "github_actions_hosted_runner" "telemetry_manager" {
