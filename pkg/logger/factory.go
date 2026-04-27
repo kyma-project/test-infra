@@ -55,8 +55,6 @@ type Config struct {
 
 // New creates a logger based on the provided Config.
 //
-// Example usage in main():
-//
 //	cfg := logger.Config{
 //	    Level:       zapcore.InfoLevel,
 //	    Destination: os.Getenv(logger.EnvLogDestination),
@@ -94,10 +92,6 @@ func New(ctx context.Context, cfg Config) (logging.LoggerInterface, error) {
 }
 
 // LogLabel creates a GCP Cloud Logging label field.
-//
-// Labels are special — in GCP they land in a separate "labels" field,
-// not in the JSON payload. This makes them indexed and filterable
-// in Cloud Logging console.
 //
 // Use LogLabel for metadata like app name, version, environment.
 // Use regular key-value pairs for dynamic data like request_id, user_id.
