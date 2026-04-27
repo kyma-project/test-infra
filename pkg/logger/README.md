@@ -2,7 +2,7 @@
 
 ## Overview
 
-`pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that writes GCP-compatible structured JSON to console (stdout/stderr), directly to the Cloud Logging API, or both — controlled by the **LOG_DESTINATION** environment variable.
+`pkg/logger` is a structured logging library for GCP-based workloads. It provides a unified logging interface that writes GCP-compatible structured JSON to the console (stdout/stderr), directly to the Cloud Logging API, or both — controlled by the `Config` struct passed to the factory function.
 
 The package satisfies ADR-006 and replaces direct usage of `go.uber.org/zap` across the codebase.
 
@@ -16,12 +16,25 @@ The package satisfies ADR-006 and replaces direct usage of `go.uber.org/zap` acr
 
 ### Basic Setup
 
-Initialize the logger using the `New()` factory function. Configure it using environment variables — no code changes are required between environments.
+Initialize the logger using the `New()` factory function. Read environment variables in `main()` and pass them as a `Config` struct — the library never reads environment variables internally.
 
 ```go
-import "github.com/kyma-project/test-infra/pkg/logger"
+import (
+    "context"
+    "os"
 
-log, err := logger.New()
+    "github.com/kyma-project/test-infra/pkg/logger"
+    "go.uber.org/zap/zapcore"
+)
+
+cfg := logger.Config{
+    Level:       zapcore.InfoLevel,
+    Destination: os.Getenv(logger.EnvLogDestination),
+    ProjectID:   os.Getenv(logger.EnvGCPProjectID),
+    LogName:     os.Getenv(logger.EnvGCPLogName),
+}
+
+log, err := logger.New(context.Background(), cfg)
 if err != nil {
     panic(err)
 }
@@ -30,17 +43,11 @@ defer log.Sync()
 log.Infow("server started", "port", 8080)
 ```
 
-### Adding Labels
+### Add Labels
 
 Labels are indexed and filterable in Cloud Logging. Use them for static metadata such as application name, version, and environment. Use regular key-value pairs for dynamic, per-request data.
 
 ```go
-log, err := logger.New()
-if err != nil {
-    panic(err)
-}
-defer log.Sync()
-
 log = log.With(
     logger.LogLabel("app", "image-builder"),
     logger.LogLabel("version", "1.2.0"),
@@ -53,17 +60,11 @@ log.Infow("handling request", "request_id", "abc-123")
 > [!NOTE]
 > ADR-006 requires the following labels on all log entries: `app`, `version`, `environment`. Add them using `logger.LogLabel()` during logger initialization.
 
-### Child Loggers
+### Create Child Loggers
 
 Use `With()` to create a child logger that includes additional fields in every subsequent log entry.
 
 ```go
-log, err := logger.New()
-if err != nil {
-    panic(err)
-}
-defer log.Sync()
-
 requestLog := log.With("request_id", "abc-123", "user_id", "42")
 requestLog.Infow("processing request")
 requestLog.Infow("request completed", "status", 200)
@@ -78,19 +79,17 @@ requestLog.Infow("request completed", "status", 200)
 | **GCP_PROJECT_ID** | Conditional | — | GCP project ID. Required when **LOG_DESTINATION** is `api` or `console-and-api`. |
 | **GCP_LOG_NAME** | No | `application` | Log name in Cloud Logging. |
 
-
 ### Log Destinations
 
 | Value | Behavior |
 |---|---|
 | `console` | Writes structured JSON to stdout/stderr. Use on Cloud Run and GKE — the agent collects stdout automatically. |
 | `api` | Sends logs directly to the Cloud Logging API. |
-| `console-and-api` | Writes to both stdout/stderr and Cloud Logging API simultaneously. |
+| `console-and-api` | Writes to both stdout/stderr and the Cloud Logging API simultaneously. |
 
-## Authentication Outside GCP
+## Authenticate Outside GCP
 
 When **LOG_DESTINATION** is `api` or `console-and-api`, the logger requires GCP credentials. Credentials and project access are validated at startup — if the project does not exist or the credentials lack the **roles/logging.logWriter** role, `New()` returns an error immediately.
-
 
 **Local development:**
 ```bash
@@ -110,7 +109,7 @@ docker run \
 > [!NOTE]
 > The GCP client library refreshes credentials automatically. Long-running containers do not require a restart when using Workload Identity Federation with a stable credential source such as AWS or Azure instance metadata.
 
-## Testing
+## Test with BufferLogger
 
 Use `BufferLogger` in unit tests to capture log output without real I/O:
 
@@ -118,8 +117,8 @@ Use `BufferLogger` in unit tests to capture log output without real I/O:
 buf := logger.NewBufferLogger()
 buf.Infow("something happened", "key", "value")
 
-entries := buf.Entries()
-// entries[0].Message == "something happened"
+logs := buf.Logs()
+// logs contains the JSON output
 ```
 
 ## Log Format
