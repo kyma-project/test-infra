@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"cloud.google.com/go/logging"
+	gcplogging "cloud.google.com/go/logging"
+	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/genproto/googleapis/api/monitoredres"
@@ -16,14 +18,14 @@ import (
 // logs to the centralized logging system.
 type GCPLogger struct {
 	*zap.SugaredLogger
-	client *logging.Client
+	client *gcplogging.Client
 }
 
-// Compile-time check: GCPLogger must implement Logger.
-var _ Logger = (*GCPLogger)(nil)
+// Compile-time check: GCPLogger must implement LoggerInterface.
+var _ logging.LoggerInterface = (*GCPLogger)(nil)
 
 // With creates a child logger with additional context fields.
-func (l *GCPLogger) With(args ...interface{}) Logger {
+func (l *GCPLogger) With(args ...interface{}) logging.LoggerInterface {
 	return &GCPLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 		client:        l.client,
@@ -42,7 +44,7 @@ func (l *GCPLogger) Close() error {
 	return nil
 }
 
-// NewGCPLogger creates a logger that sends logs to Google Cloud Logging API.
+// newGCPLogger creates a logger that sends logs to Google Cloud Logging API.
 //
 // Parameters:
 //   - ctx: context for creating the GCP client
@@ -51,7 +53,7 @@ func (l *GCPLogger) Close() error {
 //     grouped in Cloud Logging UI.
 //   - namespace: logical grouping for the workload (e.g. "neighbors-team")
 //   - level: minimum log severity
-func NewGCPLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
+func newGCPLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
 	client, gcpCore, err := newGCPCore(ctx, projectID, logName, taskID, level)
 	if err != nil {
 		return nil, err
@@ -65,10 +67,10 @@ func NewGCPLogger(ctx context.Context, projectID, logName, taskID string, level 
 	}, nil
 }
 
-// NewCombinedLogger creates a logger that writes to both console (stdout/stderr)
+// newCombinedLogger creates a logger that writes to both console (stdout/stderr)
 // and GCP Cloud Logging API simultaneously. Used for workloads outside GCP
 // that need both local visibility and centralized logging.
-func NewCombinedLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
+func newCombinedLogger(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*GCPLogger, error) {
 	client, gcpAPICore, err := newGCPCore(ctx, projectID, logName, taskID, level)
 	if err != nil {
 		return nil, err
@@ -87,14 +89,19 @@ func NewCombinedLogger(ctx context.Context, projectID, logName, taskID string, l
 }
 
 // newGCPCore creates the Cloud Logging client and a gcpCore.
-// Shared by NewGCPLogger and NewCombinedLogger.
-func newGCPCore(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*logging.Client, *gcpCore, error) {
-	client, err := logging.NewClient(ctx, projectID)
+// Shared by newGCPLogger and newCombinedLogger.
+func newGCPCore(ctx context.Context, projectID, logName, taskID string, level zapcore.Level) (*gcplogging.Client, *gcpCore, error) {
+	client, err := gcplogging.NewClient(ctx, projectID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create GCP logging client: %w", err)
 	}
 
-	gcpLogger := client.Logger(logName, logging.CommonResource(&monitoredres.MonitoredResource{
+	if err := client.Ping(ctx); err != nil {
+		_ = client.Close()
+		return nil, nil, fmt.Errorf("GCP logging client has no access to project %q: %w", projectID, err)
+	}
+
+	gcpLogger := client.Logger(logName, gcplogging.CommonResource(&monitoredres.MonitoredResource{
 		Type: "generic_task",
 		Labels: map[string]string{
 			"project_id": projectID,
@@ -125,7 +132,7 @@ func newGCPCore(ctx context.Context, projectID, logName, taskID string, level za
 //  6. Build a logging.Entry and send it via the GCP client
 type gcpCore struct {
 	level     zapcore.Level
-	gcpLogger *logging.Logger
+	gcpLogger *gcplogging.Logger
 	fields    []zapcore.Field // fields accumulated via With()
 }
 
@@ -206,7 +213,7 @@ func (c *gcpCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 	}
 
 	// Build and send the Cloud Logging entry.
-	logEntry := logging.Entry{
+	logEntry := gcplogging.Entry{
 		Timestamp: entry.Time,
 		Severity:  severity,
 		Payload:   payload,
@@ -230,19 +237,19 @@ func (c *gcpCore) Sync() error {
 }
 
 // mapSeverity converts a zap log level to a Cloud Logging severity.
-func mapSeverity(level zapcore.Level) logging.Severity {
+func mapSeverity(level zapcore.Level) gcplogging.Severity {
 	switch level {
 	case zapcore.DebugLevel:
-		return logging.Debug
+		return gcplogging.Debug
 	case zapcore.InfoLevel:
-		return logging.Info
+		return gcplogging.Info
 	case zapcore.WarnLevel:
-		return logging.Warning
+		return gcplogging.Warning
 	case zapcore.ErrorLevel:
-		return logging.Error
+		return gcplogging.Error
 	case zapcore.DPanicLevel, zapcore.PanicLevel, zapcore.FatalLevel:
-		return logging.Critical
+		return gcplogging.Critical
 	default:
-		return logging.Default
+		return gcplogging.Default
 	}
 }

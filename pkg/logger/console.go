@@ -2,11 +2,13 @@ package logger
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
+	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -17,23 +19,23 @@ type ConsoleLogger struct {
 	*zap.SugaredLogger
 }
 
-// Compile-time check: ConsoleLogger must implement Logger.
-var _ Logger = (*ConsoleLogger)(nil)
+// Compile-time check: ConsoleLogger must implement LoggerInterface.
+var _ logging.LoggerInterface = (*ConsoleLogger)(nil)
 
 // With creates a child logger with additional context fields.
-func (l *ConsoleLogger) With(args ...interface{}) Logger {
+func (l *ConsoleLogger) With(args ...interface{}) logging.LoggerInterface {
 	return &ConsoleLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 	}
 }
 
-// NewConsoleLogger creates a GCP-compatible console logger.
+// newConsoleLogger creates a GCP-compatible console logger.
 // level sets the minimum log severity (e.g. zapcore.InfoLevel, zapcore.DebugLevel).
 //
 // Log routing:
 //   - severity >= Error → stderr
 //   - severity < Error  → stdout
-func NewConsoleLogger(level zapcore.Level) *ConsoleLogger {
+func newConsoleLogger(level zapcore.Level) *ConsoleLogger {
 	core := newConsoleCore(level)
 	zapLogger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 	return &ConsoleLogger{
@@ -150,10 +152,15 @@ func (c *consoleCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 func (c *consoleCore) Sync() error {
 	outErr := c.out.Sync()
 	errOutErr := c.errOut.Sync()
-	if outErr != nil {
+	// Ignore ErrInvalid: on Linux, fsync on a pipe (e.g. stdout in CI) returns
+	// EINVAL/EBADF which maps to os.ErrInvalid — not a real error worth surfacing.
+	if outErr != nil && !errors.Is(outErr, os.ErrInvalid) {
 		return outErr
 	}
-	return errOutErr
+	if errOutErr != nil && !errors.Is(errOutErr, os.ErrInvalid) {
+		return errOutErr
+	}
+	return nil
 }
 
 // consoleSeverityString maps zap levels to Cloud Logging severity strings.
