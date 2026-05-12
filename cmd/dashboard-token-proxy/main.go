@@ -128,6 +128,7 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 		w.Header().Add("content-type", "application/json")
 		w.Header().Add("Access-Control-Allow-Origin", fmt.Sprintf("https://pages.%s", ghURL))
 		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+		w.Header().Add("Content-Security-Policy", "default-src 'none'")
 		w.Write(b)
 	}
 }
