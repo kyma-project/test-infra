@@ -37,11 +37,6 @@ data "github_repository" "kyma_modules_internal" {
   name     = "kyma-modules"
 }
 
-data "github_repository" "modg_internal" {
-  provider = github.internal_github
-  name     = "modg"
-}
-
 # ------------------------------------------------------------------------------
 # GCP Secret Manager - Internal GitHub Token (kyma-neighbors runtime)
 # ------------------------------------------------------------------------------
@@ -76,14 +71,6 @@ resource "google_secret_manager_secret_iam_member" "kyma_modules_update_componen
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:${data.github_repository.kyma_modules_internal.repo_id}:repository_owner_id:2457:workflow:Update Component Version on Push"
-}
-
-# Grant the modg monitor workflow (internal GitHub) access to read the internal GitHub token.
-resource "google_secret_manager_secret_iam_member" "modg_monitor_workflow_internal_token_reader" {
-  project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/subject/repository_id:${data.github_repository.modg_internal.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:Monitor mODG Scans"
 }
 
 # ------------------------------------------------------------------------------
