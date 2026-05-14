@@ -14,3 +14,10 @@ resource "google_service_account_iam_member" "release_log_uploader_wif_internal_
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${data.github_organization.kyma_internal.login}/${var.release_log_uploader_compliancy_workflow_ref_internal_github}"
 }
+
+resource "google_storage_bucket_iam_member" "release_log_uploader_logs_bucket_access" {
+  for_each = toset(["roles/storage.legacyBucketReader", "roles/storage.objectAdmin"])
+  bucket   = var.release_log_uploader_logs_bucket_name
+  role     = each.value
+  member   = "serviceAccount:${google_service_account.release_log_uploader.email}"
+}
