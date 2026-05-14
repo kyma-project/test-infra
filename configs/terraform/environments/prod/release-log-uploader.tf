@@ -16,8 +16,7 @@ resource "google_service_account_iam_member" "release_log_uploader_wif_internal_
 }
 
 resource "google_storage_bucket_iam_member" "release_log_uploader_logs_bucket_access" {
-  for_each = toset(["roles/storage.objectViewer", "roles/storage.objectCreator"])
-  bucket   = var.release_log_uploader_logs_bucket_name
-  role     = each.value
-  member   = "serviceAccount:${google_service_account.release_log_uploader.email}"
+  bucket = var.release_log_uploader_logs_bucket_name
+  role   = "roles/storage.objectUser"
+  member = "serviceAccount:${google_service_account.release_log_uploader.email}"
 }
