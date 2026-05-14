@@ -4,16 +4,10 @@ variable "release_log_uploader_service_account_name" {
   default     = "release-log-uploader"
 }
 
-variable "release_log_uploader_compliancy_workflow_ref_public_github" {
+variable "release_log_uploader_workflow_name" {
   type        = string
-  description = "The value of GitHub OIDC token job_workflow_ref claim of the release log upload workflow in kyma-project/compliancy repository on github.com."
-  default     = "compliancy/.github/workflows/release-log-upload.yaml@refs/heads/main"
-}
-
-variable "release_log_uploader_compliancy_workflow_ref_internal_github" {
-  type        = string
-  description = "The value of GitHub OIDC token job_workflow_ref claim of the release log upload workflow in kyma/compliancy repository on github.tools.sap."
-  default     = "compliancy/.github/workflows/release-log-upload.yaml@refs/heads/main"
+  description = "The name of the GitHub Actions workflow (as defined in the 'name:' field) that uploads release logs."
+  default     = "Release report"
 }
 
 variable "release_log_uploader_logs_bucket_name" {
