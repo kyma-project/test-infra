@@ -83,7 +83,7 @@ var _ = Describe("GCP Logger", func() {
 
 		It("should return error when GCP_PROJECT_ID is missing", func() {
 			cfg := Config{
-				Level:       zapcore.InfoLevel,
+				Level:       "info",
 				Destination: "api",
 				ProjectID:   "",
 			}
