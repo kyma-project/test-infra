@@ -34,8 +34,10 @@ const (
 // The caller is responsible for populating this — typically by reading
 // environment variables or flags in main().
 type Config struct {
-	// Level is the minimum log severity. Defaults to Info.
-	Level zapcore.Level
+	// Level is the minimum log severity.
+	// Accepted values (case-insensitive): "debug", "info", "warn", "error", "dpanic", "panic", "fatal".
+	// Defaults to "info".
+	Level string
 
 	// Destination controls where logs are sent.
 	// Valid values: "console", "api", "console-and-api". Defaults to "console".
@@ -56,7 +58,7 @@ type Config struct {
 // New creates a logger based on the provided Config.
 //
 //	cfg := logger.Config{
-//	    Level:       zapcore.InfoLevel,
+//	    Level:       os.Getenv(logger.EnvLogLevel),
 //	    Destination: os.Getenv(logger.EnvLogDestination),
 //	    ProjectID:   os.Getenv(logger.EnvGCPProjectID),
 //	    LogName:     os.Getenv(logger.EnvGCPLogName),
@@ -68,6 +70,11 @@ type Config struct {
 //	}
 //	defer l.Sync()
 func New(ctx context.Context, cfg Config) (logging.LoggerInterface, error) {
+	level, err := parseLevel(cfg.Level)
+	if err != nil {
+		return nil, err
+	}
+
 	logName := cfg.LogName
 	if logName == "" {
 		logName = "application"
@@ -75,20 +82,33 @@ func New(ctx context.Context, cfg Config) (logging.LoggerInterface, error) {
 
 	switch cfg.Destination {
 	case "console", "":
-		return newConsoleLogger(cfg.Level), nil
+		return newConsoleLogger(level), nil
 	case "api":
 		if cfg.ProjectID == "" {
 			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
 		}
-		return newGCPLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
+		return newGCPLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, level)
 	case "console-and-api":
 		if cfg.ProjectID == "" {
 			return nil, fmt.Errorf("ProjectID is required when Destination is %q", cfg.Destination)
 		}
-		return newCombinedLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, cfg.Level)
+		return newCombinedLogger(ctx, cfg.ProjectID, logName, cfg.TaskID, level)
 	default:
 		return nil, fmt.Errorf("invalid Destination %q (valid: console, api, console-and-api)", cfg.Destination)
 	}
+}
+
+// parseLevel converts a string log level to zapcore.Level.
+// An empty string defaults to InfoLevel.
+func parseLevel(s string) (zapcore.Level, error) {
+	if s == "" {
+		return zapcore.InfoLevel, nil
+	}
+	var lvl zapcore.Level
+	if err := lvl.UnmarshalText([]byte(s)); err != nil {
+		return zapcore.InfoLevel, fmt.Errorf("unknown log level %q: %w", s, err)
+	}
+	return lvl, nil
 }
 
 // LogLabel creates a GCP Cloud Logging label field.
