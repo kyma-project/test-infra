@@ -1,0 +1,53 @@
+# This workflow controller contains jobs that require no elevated permissions and run safely
+# in the context of the PR branch via pull_request event.
+name: workflow-controller-pull-requests-unprivileged
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  detect-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.pathFilters.outputs.changes }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          repository: kyma-project/test-infra
+          ref: main
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
+        id: pathFilters
+        with:
+          filters: .github/controller-filters.yaml
+
+
+  pull-gitleaks:
+    uses: kyma-project/test-infra/.github/workflows/pull-gitleaks.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
+
+  pull-validate-dockerfiles:
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-dockerfiles.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-dockerfiles-filter') }}
+
+  tf-lint:
+    uses: kyma-project/test-infra/.github/workflows/tf-lint.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'tf-lint-filter') }}
+
+  code-checks-python:
+    uses: kyma-project/test-infra/.github/workflows/code-checks-python.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}
+
+  lint-markdown-links-pr:
+    uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'lint-markdown-links-pr-filter') }}
