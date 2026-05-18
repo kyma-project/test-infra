@@ -1,32 +1,32 @@
 module github.com/kyma-project/test-infra
 
-go 1.26.2
+go 1.26.3
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
-	cloud.google.com/go/logging v1.16.0
+	cloud.google.com/go/logging v1.18.0
 	cloud.google.com/go/pubsub/v2 v2.6.0
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/cloudevents/sdk-go/v2 v2.16.2
 	github.com/coreos/go-oidc/v3 v3.18.0
 	github.com/go-jose/go-jose/v4 v4.1.4
-	github.com/google/go-containerregistry v0.21.5
+	github.com/google/go-containerregistry v0.21.6
 	github.com/google/go-github/v85 v85.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/onsi/ginkgo/v2 v2.28.2
-	github.com/onsi/gomega v1.39.1
+	github.com/onsi/ginkgo/v2 v2.29.0
+	github.com/onsi/gomega v1.41.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/zricethezav/gitleaks/v8 v8.30.1
 	github.tools.sap/kyma/neighbors-contracts v0.0.0-20260423060355-772d2d4813ec
-	go.uber.org/zap v1.27.1
-	google.golang.org/api v0.276.0
+	go.uber.org/zap v1.28.0
+	google.golang.org/api v0.279.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260401024825-9d38bb4040a9
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.36.0
+	k8s.io/apimachinery v0.36.1
 	k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
 	sigs.k8s.io/prow v0.0.0-20251223160831-f0341d7b5660
 )
