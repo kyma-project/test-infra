@@ -14,8 +14,6 @@
 
 [IaC Configuration Guideline](/docs/guidelines_iac.md) - This document outlines the standard Terraform configuration and provides guidelines.
 
-[Guidelines for Managing Follow-Up Issues](/docs/how-to/how-to-manage-follow-up-issues.md) - This document provides clear guidelines on how to effectively handle follow-up issues identified during events such as Technical Sprint Reviews.
-
 [Name a Secret](/docs/how-to/how-to-name-secret.md) - This tutorial describes how to name a secret in Google Secret Manager.
 
 [Manage Workflow Controllers](/docs/how-to/how-to_manage_workflow_controller.md) - This guide explains how to manage Workflow Controllers. Workflow Controllers are responsible for orchestrating and triggering jobs in GitHub Actions workflows, especially for advanced scenarios like merge queues.
