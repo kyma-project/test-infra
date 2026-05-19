@@ -38,9 +38,6 @@ jobs:
       pull-requests: read
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-go-lint-filter') }}
-    environment:
-      name: prod
-      deployment: false
 
   pull-plan-prod-terraform:
     uses: kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@main
@@ -51,9 +48,6 @@ jobs:
       pull-requests: "write" # needed for tfcmt to post comments
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-plan-prod-terraform-filter') }}
-    environment:
-      name: prod
-      deployment: false
 
   pull-unit-test-go:
     uses: kyma-project/test-infra/.github/workflows/pull-unit-test-go.yaml@main
@@ -63,6 +57,3 @@ jobs:
       pull-requests: read
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
-    environment:
-      name: prod
-      deployment: false
