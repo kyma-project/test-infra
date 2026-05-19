@@ -1,1 +1,0 @@
-User documentation for the image-builder was moved to the Kyma internal documentation site.
