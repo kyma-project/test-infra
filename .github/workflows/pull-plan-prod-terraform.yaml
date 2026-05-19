@@ -15,6 +15,9 @@ jobs:
       id-token: "write" # needed for gcp_auth to create id token
       issues: "write" # needed for tfcmt to post comments
       pull-requests: "write" # needed for tfcmt to post comments
+    environment:
+      name: prod
+      deployment: false
 
     runs-on: ubuntu-latest
 

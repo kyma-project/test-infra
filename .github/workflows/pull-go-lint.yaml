@@ -8,6 +8,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    environment:
+      name: prod
+      deployment: false
 
     permissions:
       contents: read # This is required for actions/checkout
