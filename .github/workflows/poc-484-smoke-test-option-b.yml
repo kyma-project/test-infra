@@ -35,6 +35,7 @@ jobs:
         run: |
           az login \
             --service-principal \
+            --allow-no-subscriptions \
             --tenant "${{ secrets.AZURE_SP_TENANT_ID }}" \
             --username "${{ secrets.AZURE_SP_CLIENT_ID }}" \
             --password "${{ secrets.AZURE_SP_CLIENT_SECRET }}" \
