@@ -3,9 +3,9 @@ package logger
 import (
 	"encoding/json"
 
-	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging"
 )
 
 var _ = Describe("BufferLogger", func() {

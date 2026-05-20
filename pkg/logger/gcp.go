@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	gcplogging "cloud.google.com/go/logging"
-	logging "github.tools.sap/kyma/neighbors-contracts/pkg/logging"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
