@@ -1,0 +1,64 @@
+name: poc-484-smoke-test-option-b
+# Smoke test for PoC #484 option-b: the workflow acquires an Azure AD Bearer
+# token via the Azure CLI (az login + az account get-access-token), then passes
+# it to the poc-484 tool as --azure-access-token with --azure-access-token-type=bearer.
+# The tool itself has no token acquisition logic — it only consumes the token.
+#
+# Secrets required on the fork:
+#   AZURE_SP_TENANT_ID      — Azure AD tenant ID
+#   AZURE_SP_CLIENT_ID      — Service Principal application (client) ID
+#   AZURE_SP_CLIENT_SECRET  — Service Principal client secret
+#   ADO_PIPELINE_ID         — ID of the dummy ADO pipeline to trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: poc/484-option-b
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Install Azure CLI
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Acquire Azure AD Bearer token via az CLI
+        id: ado-token
+        run: |
+          az login \
+            --service-principal \
+            --tenant "${{ secrets.AZURE_SP_TENANT_ID }}" \
+            --username "${{ secrets.AZURE_SP_CLIENT_ID }}" \
+            --password "${{ secrets.AZURE_SP_CLIENT_SECRET }}" \
+            --output none
+
+          TOKEN=$(az account get-access-token \
+            --resource "499b84ac-1321-427f-aa17-267ca6975798" \
+            --tenant "${{ secrets.AZURE_SP_TENANT_ID }}" \
+            --query accessToken \
+            --output tsv)
+
+          az logout
+
+          if [[ -z "$TOKEN" ]]; then
+            echo "Failed to acquire Azure AD token."
+            exit 1
+          fi
+
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger dummy ADO pipeline (Option B)
+        run: |
+          go run ./cmd/poc-484 \
+            --ado-pipeline-id="${{ secrets.ADO_PIPELINE_ID }}" \
+            --azure-access-token="${{ steps.ado-token.outputs.token }}" \
+            --azure-access-token-type="bearer"

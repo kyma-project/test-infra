@@ -1,0 +1,40 @@
+name: poc-484-smoke-test-option-a
+# Smoke test for PoC #484 option-a: the poc-484 tool acquires an Azure AD
+# Bearer token internally via the adoauth library (client-credentials flow)
+# using SP credentials passed as --azure-sp-* flags. No az CLI involved.
+#
+# Secrets required on the fork:
+#   AZURE_SP_TENANT_ID      — Azure AD tenant ID
+#   AZURE_SP_CLIENT_ID      — Service Principal application (client) ID
+#   AZURE_SP_CLIENT_SECRET  — Service Principal client secret
+#   ADO_PIPELINE_ID         — ID of the dummy ADO pipeline to trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: poc/484-option-a
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Trigger dummy ADO pipeline (Option A)
+        env:
+          AZURE_SP_TENANT_ID: ${{ secrets.AZURE_SP_TENANT_ID }}
+          AZURE_SP_CLIENT_ID: ${{ secrets.AZURE_SP_CLIENT_ID }}
+          AZURE_SP_CLIENT_SECRET: ${{ secrets.AZURE_SP_CLIENT_SECRET }}
+          ADO_PIPELINE_ID: ${{ secrets.ADO_PIPELINE_ID }}
+        run: |
+          go run ./cmd/poc-484 \
+            --ado-pipeline-id="${ADO_PIPELINE_ID}" \
+            --azure-sp-tenant-id="${AZURE_SP_TENANT_ID}" \
+            --azure-sp-client-id="${AZURE_SP_CLIENT_ID}" \
+            --azure-sp-client-secret="${AZURE_SP_CLIENT_SECRET}"
