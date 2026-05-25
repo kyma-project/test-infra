@@ -1,7 +1,7 @@
 name: kyma-project.io/module/test-infra
 team: kyma/Neighbors
 images:
-  - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260520075358
+  - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260521182533
   - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260521182531
   - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260521182530
   - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260521182530
