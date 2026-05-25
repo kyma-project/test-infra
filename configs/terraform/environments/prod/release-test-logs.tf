@@ -8,7 +8,7 @@
 # - GCS bucket for release test logs
 # - Service account for uploading logs
 # - Workload Identity Federation binding for GitHub Actions authentication
-# - Bucket IAM permissions (uploader + developer read access)
+# - Bucket IAM permissions (full object admin for SA + developer read access)
 #
 # The workflow runs in kyma/compliancy repository on github.tools.sap and uses
 # WIF to authenticate and upload logs to GCS.
