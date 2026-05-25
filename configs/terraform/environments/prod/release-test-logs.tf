@@ -1,10 +1,21 @@
-# Release Test Logs
-# Manages GCS bucket and service account for storing release test logs.
+# ==============================================================================
+# Release Test Logs Configuration
+# ==============================================================================
+# This configuration manages resources for storing release test logs
+# in a GCS bucket.
+#
+# Resources managed:
+# - GCS bucket for release test logs
+# - Service account for uploading logs
+# - Workload Identity Federation binding for GitHub Actions authentication
+# - Bucket IAM permissions (uploader + developer read access)
+#
+# The workflow runs in kyma/compliancy repository on github.tools.sap and uses
+# WIF to authenticate and upload logs to GCS.
 # Tool source: https://github.com/kyma-project/compliancy/blob/main/docs/upload-release-report.md
+# ==============================================================================
 
-# --------------------------------------------------------------------------
 # Variables
-# --------------------------------------------------------------------------
 
 variable "release_report_workflow_name" {
   type        = string
@@ -12,18 +23,14 @@ variable "release_report_workflow_name" {
   description = "Name of the release report workflow in kyma/compliancy that uploads logs"
 }
 
-# --------------------------------------------------------------------------
 # Data Sources
-# --------------------------------------------------------------------------
 
 data "github_repository" "compliancy" {
   provider = github.internal_github
   name     = "compliancy"
 }
 
-# --------------------------------------------------------------------------
 # GCS Bucket
-# --------------------------------------------------------------------------
 
 import {
   to = google_storage_bucket.release_test_logs
@@ -42,9 +49,7 @@ resource "google_storage_bucket" "release_test_logs" {
   }
 }
 
-# --------------------------------------------------------------------------
 # Service Account
-# --------------------------------------------------------------------------
 
 import {
   to = google_service_account.release_log_uploader
@@ -58,9 +63,7 @@ resource "google_service_account" "release_log_uploader" {
   description  = "Uploads release test logs to GCS bucket kyma_release_test_logs"
 }
 
-# --------------------------------------------------------------------------
-# Workload Identity Federation - allow GitHub Actions to authenticate as SA
-# --------------------------------------------------------------------------
+# Workload Identity Federation
 
 resource "google_service_account_iam_member" "release_log_uploader_wif_internal" {
   service_account_id = google_service_account.release_log_uploader.name
@@ -68,9 +71,7 @@ resource "google_service_account_iam_member" "release_log_uploader_wif_internal"
   member             = "principal://iam.googleapis.com/${local.internal_github_wif_pool_name}/subject/repository_id:${data.github_repository.compliancy.repo_id}:repository_owner_id:${data.github_organization.kyma_internal.id}:workflow:${var.release_report_workflow_name}"
 }
 
-# --------------------------------------------------------------------------
 # Bucket IAM
-# --------------------------------------------------------------------------
 
 resource "google_storage_bucket_iam_member" "release_log_uploader_access" {
   bucket = google_storage_bucket.release_test_logs.name
