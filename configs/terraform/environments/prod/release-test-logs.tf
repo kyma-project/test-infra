@@ -20,7 +20,7 @@ import {
 resource "google_storage_bucket" "release_test_logs" {
   name                        = "kyma_release_test_logs"
   project                     = "sap-kyma-prow"
-  location                    = "EUROPE-CENTRAL2"
+  location                    = "EU"
   storage_class               = "STANDARD"
   uniform_bucket_level_access = true
 
