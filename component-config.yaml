@@ -3,7 +3,7 @@ team: kyma/Neighbors
 images:
   - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260527064310
   - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260527064311
-  - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260521182530
+  - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260527073527
   - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260521182530
   - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260512044756
   - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260518234933
