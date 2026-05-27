@@ -25,12 +25,32 @@ variable "image_builder_reusable_workflow_ref" {
   default     = "kyma-project/test-infra/.github/workflows/image-builder.yml@refs/heads/main"
 }
 
+variable "image_builder_internal_github_reusable_workflow_ref" {
+  type        = string
+  description = "The value of GitHub OIDC token job_workflow_ref claim of the image-builder workflow in the oci-image-builder repository on internal GitHub. Used to identify token exchange requests from the ADO pipeline."
+  default     = "kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main"
+}
+
 # GCP resources
 
 variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
   description = "Name of the secret in GCP Secret Manager that contains the ADO PAT for image-builder to trigger ADO pipeline."
   type        = string
   default     = "image-builder-ado-pat"
+}
+
+variable "image_builder_azure_sp_gcp_secret_names" {
+  description = "Names of GCP Secret Manager secrets for the Kyma-ImageBuilder-OIDC Azure Service Principal."
+  type = object({
+    tenant_id     = string
+    client_id     = string
+    client_secret = string
+  })
+  default = {
+    tenant_id     = "image-builder-kyma-imagebuilder-oidc-tenant-id"
+    client_id     = "image-builder-kyma-imagebuilder-oidc-client-id"
+    client_secret = "image-builder-kyma-imagebuilder-oidc-client-secret"
+  }
 }
 
 variable "image_builder_sa_key_restricted_markets_secret_name" {
