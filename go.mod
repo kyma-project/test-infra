@@ -23,7 +23,7 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.30.1
 	github.tools.sap/kyma/neighbors-contracts/go/logging v1.0.0
 	go.uber.org/zap v1.28.0
-	google.golang.org/api v0.281.0
+	google.golang.org/api v0.282.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260401024825-9d38bb4040a9
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.36.1
