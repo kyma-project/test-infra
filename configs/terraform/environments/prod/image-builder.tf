@@ -26,7 +26,7 @@ import {
 resource "google_secret_manager_secret_iam_member" "image_builder_public_github_reusable_workflow_principal_azure_sp_secret_reader" {
   for_each  = local.image_builder_azure_sp_gcp_secrets
   project   = var.gcp_project_id
-  secret_id = each.value
+  secret_id = google_secret_manager_secret.image_builder_azure_sp[each.key].secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
 }
@@ -34,7 +34,7 @@ resource "google_secret_manager_secret_iam_member" "image_builder_public_github_
 resource "google_secret_manager_secret_iam_member" "image_builder_internal_github_reusable_workflow_principal_azure_sp_secret_reader" {
   for_each  = local.image_builder_azure_sp_gcp_secrets
   project   = var.gcp_project_id
-  secret_id = each.value
+  secret_id = google_secret_manager_secret.image_builder_azure_sp[each.key].secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.image_builder_internal_github_reusable_workflow_ref}"
 }
