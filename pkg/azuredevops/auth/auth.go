@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 )
@@ -39,23 +40,28 @@ func (c ServicePrincipalConfig) Validate() error {
 
 // ServicePrincipalProvider implements TokenProvider using Azure AD Service Principal credentials.
 type ServicePrincipalProvider struct {
-	cfg ServicePrincipalConfig
+	cred azcore.TokenCredential
 }
 
-// NewServicePrincipalProvider creates a ServicePrincipalProvider after validating the config.
+// NewServicePrincipalProvider validates the config, creates an Azure AD credential and returns a provider.
 func NewServicePrincipalProvider(cfg ServicePrincipalConfig) (*ServicePrincipalProvider, error) {
 	if err := cfg.Validate(); err != nil {
 		return nil, fmt.Errorf("invalid service principal config: %w", err)
 	}
-	return &ServicePrincipalProvider{cfg: cfg}, nil
+	cred, err := azidentity.NewClientSecretCredential(cfg.TenantID, cfg.ClientID, cfg.ClientSecret, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating service principal credential: %w", err)
+	}
+	return &ServicePrincipalProvider{cred: cred}, nil
 }
 
-// GetToken acquires a Bearer token for Azure DevOps using the Service Principal credentials.
+// GetToken acquires a Bearer token for Azure DevOps.
 func (p *ServicePrincipalProvider) GetToken(ctx context.Context) (string, error) {
-	cred, err := azidentity.NewClientSecretCredential(p.cfg.TenantID, p.cfg.ClientID, p.cfg.ClientSecret, nil)
-	if err != nil {
-		return "", fmt.Errorf("failed creating service principal credential: %w", err)
-	}
+	return getToken(ctx, p.cred)
+}
+
+// getToken requests a token from the provided credential. Separated for testability.
+func getToken(ctx context.Context, cred azcore.TokenCredential) (string, error) {
 	token, err := cred.GetToken(ctx, policy.TokenRequestOptions{Scopes: []string{adoScope}})
 	if err != nil {
 		return "", fmt.Errorf("failed acquiring service principal token: %w", err)
