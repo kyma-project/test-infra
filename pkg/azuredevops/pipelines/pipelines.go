@@ -19,10 +19,14 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 
-	"github.com/kyma-project/test-infra/pkg/azuredevops/auth"
 	"gopkg.in/yaml.v3"
 	"k8s.io/utils/ptr"
 )
+
+// TokenProvider acquires a Bearer token for use with Azure DevOps.
+type TokenProvider interface {
+	GetToken(ctx context.Context) (string, error)
+}
 
 type Client interface {
 	RunPipeline(ctx context.Context, args pipelines.RunPipelineArgs) (*pipelines.Run, error)
@@ -126,7 +130,7 @@ func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 }
 
 // NewClientWithSP creates a new ADO pipelines client authenticated via Azure AD Service Principal.
-func NewClientWithSP(ctx context.Context, organizationURL string, provider auth.TokenProvider) (Client, error) {
+func NewClientWithSP(ctx context.Context, organizationURL string, provider TokenProvider) (Client, error) {
 	token, err := provider.GetToken(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting service principal token: %w", err)
@@ -139,7 +143,7 @@ func NewClientWithSP(ctx context.Context, organizationURL string, provider auth.
 }
 
 // NewBuildClientWithSP creates a new ADO build client authenticated via Azure AD Service Principal.
-func NewBuildClientWithSP(ctx context.Context, organizationURL string, provider auth.TokenProvider) (BuildClient, error) {
+func NewBuildClientWithSP(ctx context.Context, organizationURL string, provider TokenProvider) (BuildClient, error) {
 	token, err := provider.GetToken(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting service principal token: %w", err)

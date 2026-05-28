@@ -12,11 +12,6 @@ import (
 // adoScope is the Azure DevOps resource ID used when requesting a token.
 const adoScope = "499b84ac-1321-427f-aa17-267ca6975798/.default"
 
-// TokenProvider acquires a Bearer token for use with Azure DevOps.
-type TokenProvider interface {
-	GetToken(ctx context.Context) (string, error)
-}
-
 // ServicePrincipalConfig holds Azure AD App Registration credentials.
 type ServicePrincipalConfig struct {
 	TenantID     string
@@ -43,8 +38,8 @@ type ServicePrincipalProvider struct {
 	cred azcore.TokenCredential
 }
 
-// NewServicePrincipalProvider validates the config, creates an Azure AD credential and returns a provider.
-func NewServicePrincipalProvider(cfg ServicePrincipalConfig) (*ServicePrincipalProvider, error) {
+// NewServicePrincipalCredential creates an Azure AD ClientSecretCredential from the provided config.
+func NewServicePrincipalCredential(cfg ServicePrincipalConfig) (azcore.TokenCredential, error) {
 	if err := cfg.Validate(); err != nil {
 		return nil, fmt.Errorf("invalid service principal config: %w", err)
 	}
@@ -52,17 +47,17 @@ func NewServicePrincipalProvider(cfg ServicePrincipalConfig) (*ServicePrincipalP
 	if err != nil {
 		return nil, fmt.Errorf("failed creating service principal credential: %w", err)
 	}
-	return &ServicePrincipalProvider{cred: cred}, nil
+	return cred, nil
+}
+
+// NewServicePrincipalProvider creates a ServicePrincipalProvider with the provided credential.
+func NewServicePrincipalProvider(cred azcore.TokenCredential) *ServicePrincipalProvider {
+	return &ServicePrincipalProvider{cred: cred}
 }
 
 // GetToken acquires a Bearer token for Azure DevOps.
 func (p *ServicePrincipalProvider) GetToken(ctx context.Context) (string, error) {
-	return getToken(ctx, p.cred)
-}
-
-// getToken requests a token from the provided credential. Separated for testability.
-func getToken(ctx context.Context, cred azcore.TokenCredential) (string, error) {
-	token, err := cred.GetToken(ctx, policy.TokenRequestOptions{Scopes: []string{adoScope}})
+	token, err := p.cred.GetToken(ctx, policy.TokenRequestOptions{Scopes: []string{adoScope}})
 	if err != nil {
 		return "", fmt.Errorf("failed acquiring service principal token: %w", err)
 	}

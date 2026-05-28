@@ -222,14 +222,16 @@ func buildInADO(o options) error {
 	// Creating a new ADO pipelines client.
 	var adoClient adopipelines.Client
 	if spConfigured {
-		provider, err := adoauth.NewServicePrincipalProvider(adoauth.ServicePrincipalConfig{
+		spCfg := adoauth.ServicePrincipalConfig{
 			TenantID:     o.azureTenantID,
 			ClientID:     o.azureClientID,
 			ClientSecret: o.azureClientSecret,
-		})
-		if err != nil {
-			return fmt.Errorf("build in ADO failed, failed creating service principal provider: %w", err)
 		}
+		cred, err := adoauth.NewServicePrincipalCredential(spCfg)
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed creating service principal credential: %w", err)
+		}
+		provider := adoauth.NewServicePrincipalProvider(cred)
 		adoClient, err = adopipelines.NewClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed creating ADO client with service principal: %w", err)
@@ -290,14 +292,16 @@ func buildInADO(o options) error {
 		// Fetch the ADO pipeline run logs.
 		fmt.Println("Getting ADO pipeline run logs.")
 		if spConfigured {
-			provider, err := adoauth.NewServicePrincipalProvider(adoauth.ServicePrincipalConfig{
+			spCfg := adoauth.ServicePrincipalConfig{
 				TenantID:     o.azureTenantID,
 				ClientID:     o.azureClientID,
 				ClientSecret: o.azureClientSecret,
-			})
+			}
+			cred, err := adoauth.NewServicePrincipalCredential(spCfg)
 			if err != nil {
-				fmt.Printf("Can't read ADO pipeline run logs, failed creating service principal provider, err: %s", err)
+				fmt.Printf("Can't read ADO pipeline run logs, failed creating service principal credential, err: %s", err)
 			} else {
+				provider := adoauth.NewServicePrincipalProvider(cred)
 				adoBuildClient, err := adopipelines.NewBuildClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
 				if err != nil {
 					fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
