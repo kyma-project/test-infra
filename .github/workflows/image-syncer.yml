@@ -13,10 +13,6 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      env_file:
-        description: ".env file content for registry authentication"
-        required: false
 
 jobs:
   sync-images:
@@ -77,27 +73,13 @@ jobs:
           # service_account is required for the token_format "access_token"
           service_account: ${{ steps.get_image_syncer_gcp_service_account.outputs.IMAGE_SYNCER_SA_EMAIL }}
 
-      - name: Create .env file
-        run: |
-          if [ -n "$ENV_FILE_CONTENT" ]; then
-            echo "$ENV_FILE_CONTENT" > .env
-          fi
-        env:
-          ENV_FILE_CONTENT: ${{ secrets.env_file }}
-
       - name: Sync Images
         id: sync_images
         run: |
-          ENV_FILE_ARG=""
-          if [ -f .env ]; then
-            ENV_FILE_ARG="--env-file .env"
-          fi
-
           docker run \
           --workdir /github/workspace \
           --rm \
           --volume "$GITHUB_WORKSPACE:/github/workspace" \
-          $ENV_FILE_ARG \
           europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260519002120 \
           --images-file=/github/workspace/external-images.yaml \
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }} \
