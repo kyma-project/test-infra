@@ -24,23 +24,3 @@ jobs:
       - name: Verify links
         run: |
           md-check-link -q -n 8 -c https://raw.githubusercontent.com/kyma-project/md-check-link/main/.mlc.config.json ./
-      - name: Send Notification to Slack
-        if: ${{ failure() }}
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
-        with:
-            payload: |
-              {
-                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "blocks": [
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  }
-                ]
-              }
-        env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
