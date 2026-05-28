@@ -36,6 +36,11 @@
       "prPriority": 5
     },
     {
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["kyma*/**"],
+      "pinDigests": false
+    },
+    {
       "matchManagers": ["pip_requirements"],
       "groupName": "python dependencies"
     },

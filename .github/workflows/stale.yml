@@ -5,6 +5,10 @@ on:
     - cron: '0 0 * * *'  # Runs daily at midnight
   workflow_dispatch: # Allows manual triggering of the workflow
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   stale:
     uses: kyma-project/test-infra/.github/workflows/reusable-stale.yml@main

@@ -7,7 +7,13 @@ output "service_account_keys_rotator_service_account_iam" {
 }
 
 output "service_account_keys_rotator_cloud_run_service" {
-  value = google_cloud_run_service.service_account_keys_rotator
+  value = {
+    id       = google_cloud_run_service.service_account_keys_rotator.id
+    name     = google_cloud_run_service.service_account_keys_rotator.name
+    location = google_cloud_run_service.service_account_keys_rotator.location
+    project  = google_cloud_run_service.service_account_keys_rotator.project
+    status   = google_cloud_run_service.service_account_keys_rotator.status
+  }
 }
 
 output "service_account_keys_rotator_subscription" {

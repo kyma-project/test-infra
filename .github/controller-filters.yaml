@@ -23,13 +23,6 @@ build-image-builder-filter:
   - "go.mod"
   - "go.sum"
 
-build-image-url-helper-filter:
-  - "cmd/image-url-helper/*.go"
-  - "cmd/image-url-helper/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
 build-oidc-token-verifier-filter:
   - "cmd/oidc-token-verifier/**"
   - "pkg/**"
@@ -97,7 +90,3 @@ code-checks-python-filter:
 
 lint-markdown-links-pr-filter:
   - "**/*"
-
-build-unified-agent-filter:
-  - "images/unified-agent/**"
-  - ".github/workflows/image-builder.yml"

@@ -1,11 +1,6 @@
-FROM golang:1.26.0-alpine3.22 as builder
+FROM golang:1.26.3-alpine3.22 as builder
 
 WORKDIR /app
-
-COPY go.mod go.sum ./
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
 
 # Copy the source to the Working Directory inside the container
 COPY . .

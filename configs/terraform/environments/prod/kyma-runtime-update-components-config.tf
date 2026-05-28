@@ -65,7 +65,7 @@ resource "google_secret_manager_secret" "kyma_modules_runtime_internal_github_to
 # IAM Permissions - Secret Access for Workflow via WIF
 # ------------------------------------------------------------------------------
 
-# Grant the kyma-modules update-components workflow access to read the internal GitHub token.
+# Grant the kyma-modules update-components workflow (internal GitHub) access to read the internal GitHub token.
 resource "google_secret_manager_secret_iam_member" "kyma_modules_update_components_workflow_internal_token_reader" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id

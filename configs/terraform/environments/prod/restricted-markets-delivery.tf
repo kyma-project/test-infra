@@ -10,12 +10,9 @@ resource "google_service_account_iam_member" "restricted_markets_artifactregistr
   member             = "serviceAccount:${var.sre-restricted-markets-artifactregistry-reader.sre-registry-reader-sa-fqdn}"
 }
 
-resource "google_artifact_registry_repository_iam_member" "kyma_modules_reader" {
-  project    = module.kyma_modules.artifact_registry.project
-  repository = module.kyma_modules.artifact_registry.name
-  location   = module.kyma_modules.artifact_registry.location
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.restricted-markets-artifactregistry-reader.email}"
+removed {
+  from = google_artifact_registry_repository_iam_member.kyma_modules_reader
+  lifecycle { destroy = false }
 }
 
 variable "sre-restricted-markets-artifactregistry-reader" {

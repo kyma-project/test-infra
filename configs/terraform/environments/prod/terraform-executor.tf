@@ -17,12 +17,23 @@ resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
-# Grant pull-plan-prod-terraform and post-apply-prod-terraform workflows the workload identity user role in the terraform executor service account.
-# This is required to let the workflow impersonate the terraform executor service account.
-# Authentication is done through github oidc provider and google workload identity federation.
+# Grant workflows the workload identity user role on the terraform executor service account.
+# This is required to let workflows impersonate the terraform executor service account.
+# Authentication is done through OIDC providers and Google Workload Identity Federation.
+#
+# IMPORTANT: This is an authoritative binding for roles/iam.workloadIdentityUser.
+# All principals that need this role MUST be listed here. Do NOT use
+# google_service_account_iam_member for the same role — it will be overwritten.
 resource "google_service_account_iam_binding" "terraform_workload_identity" {
   members = [
-    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:Post Apply Prod Terraform"
+    # github.com (kyma-project) — post-apply-prod-terraform workflow
+    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}",
+
+    # Internal GitHub Enterprise (github-tools-sap) — test-infra deploy workflow
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_terraform_deploy_identity}",
+
+    # Internal GitHub Enterprise (github-tools-sap) — tooling-infra deploy workflow (prod, v-tag)
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_prod}",
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name
@@ -59,34 +70,38 @@ resource "google_storage_bucket_iam_binding" "planner_state_bucket_write_access"
   role = "roles/storage.objectUser"
 }
 
+# Grant workflows the workload identity user role on the terraform planner service account.
+#
+# IMPORTANT: This is an authoritative binding for roles/iam.workloadIdentityUser.
+# All principals that need this role MUST be listed here. Do NOT use
+# google_service_account_iam_member for the same role — it will be overwritten.
 resource "google_service_account_iam_binding" "terraform_planner_workload_identity" {
   members = [
-    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:Pull Plan Prod Terraform",
+    # github.com (kyma-project) — direct workflow triggers
+    "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_plan_workflow_name}",
     "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:Tofu Drift Detection",
 
-    # This is used by the reusable workflow to run the plan prod terraform workflow
+    # github.com (kyma-project) — reusable workflow triggers for plan prod terraform
     "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@refs/heads/main",
     "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-plan-prod-terraform.yaml@refs/heads/main",
 
-    # This is used by the reusable workflow to run the pull-validate-service-accounts workflow
+    # github.com (kyma-project) — reusable workflow triggers for validate service accounts
     "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main",
-    "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main"
+    "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main",
+
+    # Internal GitHub Enterprise (github-tools-sap) — test-infra plan workflow
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_terraform_plan_reusable_workflow_ref}",
+
+    # Internal GitHub Enterprise (github-tools-sap) — tooling-infra plan workflow
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}",
+
+    # Internal GitHub Enterprise (github-tools-sap) — tooling-infra validate workflow
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_validate_reusable_workflow_ref}",
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
 }
 
-resource "google_service_account_iam_member" "terraform_executor_workload_identity_user" {
-  member             = "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}"
-  role               = "roles/iam.workloadIdentityUser"
-  service_account_id = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_executor.email}"
-}
-
-resource "google_service_account_iam_member" "terraform_planner_workload_identity_user" {
-  member             = "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_plan_workflow_name}"
-  role               = "roles/iam.workloadIdentityUser"
-  service_account_id = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_planner.email}"
-}
 
 resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
   provider      = github.kyma_project
@@ -271,3 +286,74 @@ resource "github_actions_variable" "internal_github_terraform_planner_secret_nam
   variable_name = var.internal_github_terraform_planner_variable_name
   value         = google_secret_manager_secret.internal_github_terraform_planner.secret_id
 }
+
+# ==============================================================================
+# Removed resources — migrated to iam_binding blocks above
+# ==============================================================================
+# The following iam_member resources were removed because they conflicted with
+# the authoritative iam_binding resources for the same role
+# (roles/iam.workloadIdentityUser) on the same service accounts.
+#
+# google_service_account_iam_binding is authoritative for a given role and
+# overwrites any members added by google_service_account_iam_member for the
+# same role. All principals are now consolidated in the iam_binding blocks.
+#
+# See: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam
+# ==============================================================================
+
+removed {
+  from = google_service_account_iam_member.terraform_executor_workload_identity_user
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_planner_workload_identity_user
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_executor_workload_identity_internal_github
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github_tooling_infra
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github_tooling_infra_validate
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_service_account_iam_member.terraform_executor_workload_identity_internal_github_tooling_infra_prod
+
+  lifecycle {
+    destroy = false
+  }
+}
+
