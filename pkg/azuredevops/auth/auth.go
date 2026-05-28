@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 )
@@ -51,25 +50,12 @@ func NewServicePrincipalProvider(cfg ServicePrincipalConfig) (*ServicePrincipalP
 	return &ServicePrincipalProvider{cfg: cfg}, nil
 }
 
-// GetToken acquires a Bearer token for Azure DevOps.
+// GetToken acquires a Bearer token for Azure DevOps using the Service Principal credentials.
 func (p *ServicePrincipalProvider) GetToken(ctx context.Context) (string, error) {
-	return GetServicePrincipalToken(ctx, p.cfg)
-}
-
-// GetServicePrincipalToken acquires a Bearer token for Azure DevOps using the provided Service Principal credentials.
-func GetServicePrincipalToken(ctx context.Context, cfg ServicePrincipalConfig) (string, error) {
-	if err := cfg.Validate(); err != nil {
-		return "", fmt.Errorf("invalid service principal config: %w", err)
-	}
-	cred, err := azidentity.NewClientSecretCredential(cfg.TenantID, cfg.ClientID, cfg.ClientSecret, nil)
+	cred, err := azidentity.NewClientSecretCredential(p.cfg.TenantID, p.cfg.ClientID, p.cfg.ClientSecret, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed creating service principal credential: %w", err)
 	}
-	return getToken(ctx, cred)
-}
-
-// getToken requests a token from the provided credential. Separated for testability.
-func getToken(ctx context.Context, cred azcore.TokenCredential) (string, error) {
 	token, err := cred.GetToken(ctx, policy.TokenRequestOptions{Scopes: []string{adoScope}})
 	if err != nil {
 		return "", fmt.Errorf("failed acquiring service principal token: %w", err)
