@@ -256,7 +256,11 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 }
 
 // GetRunLogsWithBearerToken retrieves the logs of a specific ADO pipeline run using Bearer token authentication.
-func GetRunLogsWithBearerToken(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, bearerToken string) (string, error) {
+func GetRunLogsWithBearerToken(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, provider TokenProvider) (string, error) {
+	token, err := provider.GetToken(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed getting bearer token for build logs: %w", err)
+	}
 	buildLogs, err := retry.NewWithData[*[]build.BuildLog](
 		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
 		retry.Delay(adoConfig.ADORetryStrategy.Delay),
@@ -277,7 +281,7 @@ func GetRunLogsWithBearerToken(ctx context.Context, buildClient BuildClient, htt
 	if err != nil {
 		return "", fmt.Errorf("failed creating http request getting build log, err: %w", err)
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", bearerToken))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	// TODO: implement checking http response status code, if it's not 2xx, return error
 	resp, err := retry.NewWithData[*http.Response](
 		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),

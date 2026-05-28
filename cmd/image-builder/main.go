@@ -220,6 +220,7 @@ func buildInADO(o options) error {
 	spConfigured := o.azureClientID != "" && o.azureClientSecret != "" && o.azureTenantID != ""
 
 	// Creating a new ADO pipelines client.
+	var provider adopipelines.TokenProvider
 	var adoClient adopipelines.Client
 	if spConfigured {
 		spCfg := adoauth.ServicePrincipalConfig{
@@ -231,7 +232,7 @@ func buildInADO(o options) error {
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed creating service principal credential: %w", err)
 		}
-		provider := adoauth.NewServicePrincipalProvider(cred)
+		provider = adoauth.NewServicePrincipalProvider(cred)
 		adoClient, err = adopipelines.NewClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
 		if err != nil {
 			return fmt.Errorf("build in ADO failed, failed creating ADO client with service principal: %w", err)
@@ -292,31 +293,15 @@ func buildInADO(o options) error {
 		// Fetch the ADO pipeline run logs.
 		fmt.Println("Getting ADO pipeline run logs.")
 		if spConfigured {
-			spCfg := adoauth.ServicePrincipalConfig{
-				TenantID:     o.azureTenantID,
-				ClientID:     o.azureClientID,
-				ClientSecret: o.azureClientSecret,
-			}
-			cred, err := adoauth.NewServicePrincipalCredential(spCfg)
+			adoBuildClient, err := adopipelines.NewBuildClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
 			if err != nil {
-				fmt.Printf("Can't read ADO pipeline run logs, failed creating service principal credential, err: %s", err)
+				fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 			} else {
-				provider := adoauth.NewServicePrincipalProvider(cred)
-				adoBuildClient, err := adopipelines.NewBuildClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
+				logs, err = adopipelines.GetRunLogsWithBearerToken(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, provider)
 				if err != nil {
-					fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
+					fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 				} else {
-					token, err := provider.GetToken(ctx)
-					if err != nil {
-						fmt.Printf("Can't read ADO pipeline run logs, failed getting token, err: %s", err)
-					} else {
-						logs, err = adopipelines.GetRunLogsWithBearerToken(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, token)
-						if err != nil {
-							fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
-						} else {
-							fmt.Printf("ADO pipeline image build logs:\n%s", logs)
-						}
-					}
+					fmt.Printf("ADO pipeline image build logs:\n%s", logs)
 				}
 			}
 		} else {

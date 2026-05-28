@@ -107,7 +107,8 @@ var _ = Describe("Pipelines SP auth", func() {
 				Body:       io.NopCloser(strings.NewReader("log content")),
 			}, nil)
 
-			logs, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "test-token")
+			provider := &mockTokenProvider{token: "test-token"}
+			logs, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), provider)
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(logs).To(Equal("log content"))
@@ -121,7 +122,8 @@ var _ = Describe("Pipelines SP auth", func() {
 				BuildId: ptr.To(42),
 			}).Return(nil, fmt.Errorf("build client error"))
 
-			_, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "test-token")
+			provider := &mockTokenProvider{token: "test-token"}
+			_, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), provider)
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("failed getting build logs metadata"))
@@ -137,7 +139,8 @@ var _ = Describe("Pipelines SP auth", func() {
 			mockHTTPClient.On("Do", mock.AnythingOfType("*http.Request")).
 				Return(nil, fmt.Errorf("HTTP request error"))
 
-			_, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "test-token")
+			provider := &mockTokenProvider{token: "test-token"}
+			_, err := pipelines.GetRunLogsWithBearerToken(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), provider)
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("failed http request getting build log"))
