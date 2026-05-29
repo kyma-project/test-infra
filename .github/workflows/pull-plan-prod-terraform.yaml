@@ -25,6 +25,8 @@ jobs:
       - name: Wait for other terraform executions
         id: wait_for_terraform
         uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac # v1.2.0
+        with:
+          timeout: 1800000 # 30 minutes in milliseconds
 
       - name: Authenticate to GCP
         id: gcp_auth
