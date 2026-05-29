@@ -20,3 +20,4 @@ COPY --from=builder /app/cmd/cloud-run/github-webhook-gateway/main /github-webho
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 ENTRYPOINT ["/github-webhook-gateway"]
+
