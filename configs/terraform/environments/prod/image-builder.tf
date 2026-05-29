@@ -59,6 +59,13 @@ resource "github_actions_organization_variable" "image_builder_azure_sp_tenant_i
   value         = var.image_builder_azure_sp_gcp_secret_names.tenant_id
 }
 
+resource "github_actions_organization_variable" "image_builder_azure_sp_tenant_id_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_TENANT_ID_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.tenant_id
+}
+
 resource "github_actions_organization_variable" "image_builder_azure_sp_client_id_gcp_secret_name" {
   provider      = github.kyma_project
   visibility    = "all"
@@ -66,8 +73,22 @@ resource "github_actions_organization_variable" "image_builder_azure_sp_client_i
   value         = var.image_builder_azure_sp_gcp_secret_names.client_id
 }
 
+resource "github_actions_organization_variable" "image_builder_azure_sp_client_id_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_ID_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.client_id
+}
+
 resource "github_actions_organization_variable" "image_builder_azure_sp_client_secret_gcp_secret_name" {
   provider      = github.kyma_project
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_SECRET_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.client_secret
+}
+
+resource "github_actions_organization_variable" "image_builder_azure_sp_client_secret_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
   visibility    = "all"
   variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_SECRET_GCP_SECRET_NAME"
   value         = var.image_builder_azure_sp_gcp_secret_names.client_secret
