@@ -4,18 +4,15 @@ inputs:
   oidc-token:
     description: The JWT token to authenticate against Azure DevOps image builder backend
     required: true
-  ado-token:
-    description: The personal access token to authenticate against Azure DevOps API
-    required: false
   azure-client-id:
     description: Azure AD Application (client) ID to authenticate against Azure DevOps API
-    required: false
+    required: true
   azure-client-secret:
     description: Azure AD Application client secret to authenticate against Azure DevOps API
-    required: false
+    required: true
   azure-tenant-id:
     description: Azure AD Tenant ID to authenticate against Azure DevOps API
-    required: false
+    required: true
   image-name:
     description: Name of the build image
     required: true
