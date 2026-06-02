@@ -1,24 +1,18 @@
 package pipelines_test
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"context"
-	"fmt"
-	"io"
-	"net/http"
-	"strings"
-
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	pipelinesMocks "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines/mocks"
 
-	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	adoPipelines "github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
-	"github.com/stretchr/testify/mock"
 	"k8s.io/utils/ptr"
 )
 
@@ -107,77 +101,6 @@ var _ = Describe("Pipelines", func() {
 			mockADOClient.AssertCalled(t, "GetRun", ctx, runArgs)
 			mockADOClient.AssertNumberOfCalls(t, "GetRun", 3)
 			mockADOClient.AssertExpectations(GinkgoT())
-		})
-	})
-
-	Describe("GetRunLogs", func() {
-		var (
-			mockBuildClient  *pipelinesMocks.MockBuildClient
-			mockHTTPClient   *pipelinesMocks.MockHTTPClient
-			getBuildLogsArgs build.GetBuildLogsArgs
-			mockBuildLogs    *[]build.BuildLog
-		)
-
-		BeforeEach(func() {
-			mockBuildClient = pipelinesMocks.NewMockBuildClient(t)
-			mockHTTPClient = pipelinesMocks.NewMockHTTPClient(t)
-			getBuildLogsArgs = build.GetBuildLogsArgs{
-				Project: &adoConfig.ADOProjectName,
-				BuildId: ptr.To(42),
-			}
-			mockBuildLogs = &[]build.BuildLog{{Url: ptr.To("https://example.com/log")}}
-		})
-
-		// TODO: Need a test for HTTP response status code != 2xx
-		// TODO: Need a tests for other errors returned by GetBuildLogs.
-		It("should return build logs", func() {
-			mockBuildClient.On("GetBuildLogs", ctx, getBuildLogsArgs).Return(mockBuildLogs, nil)
-			mockHTTPClient.On("Do", mock.AnythingOfType("*http.Request")).Return(&http.Response{
-				StatusCode: http.StatusOK,
-				Body:       io.NopCloser(strings.NewReader("log content")),
-			}, nil)
-
-			logs, err := pipelines.GetRunLogs(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "somePAT")
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(logs).To(Equal("log content"))
-			mockBuildClient.AssertCalled(t, "GetBuildLogs", ctx, getBuildLogsArgs)
-			mockBuildClient.AssertNumberOfCalls(t, "GetBuildLogs", 1)
-			mockBuildClient.AssertExpectations(GinkgoT())
-			mockHTTPClient.AssertCalled(t, "Do", mock.AnythingOfType("*http.Request"))
-			mockHTTPClient.AssertNumberOfCalls(t, "Do", 1)
-			mockHTTPClient.AssertExpectations(GinkgoT())
-		})
-
-		It("should handle build client error", func() {
-			mockBuildClient.On("GetBuildLogs", ctx, getBuildLogsArgs).Return(nil, fmt.Errorf("build client error"))
-
-			_, err := pipelines.GetRunLogs(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "somePAT")
-
-			Expect(err).To(HaveOccurred())
-			Expect(err).To(MatchError("failed getting build logs metadata, err: All attempts fail:\n#1: build client error\n#2: build client error\n#3: build client error"))
-			mockBuildClient.AssertCalled(t, "GetBuildLogs", ctx, getBuildLogsArgs)
-			mockBuildClient.AssertNumberOfCalls(t, "GetBuildLogs", 3)
-			mockBuildClient.AssertExpectations(GinkgoT())
-			mockHTTPClient.AssertNotCalled(t, "Do", mock.AnythingOfType("*http.Request"))
-			mockHTTPClient.AssertNumberOfCalls(t, "Do", 0)
-			mockHTTPClient.AssertExpectations(GinkgoT())
-		})
-
-		It("should handle HTTP request error", func() {
-			mockBuildClient.On("GetBuildLogs", ctx, getBuildLogsArgs).Return(mockBuildLogs, nil)
-			mockHTTPClient.On("Do", mock.AnythingOfType("*http.Request")).Return(nil, fmt.Errorf("HTTP request error"))
-
-			_, err := pipelines.GetRunLogs(ctx, mockBuildClient, mockHTTPClient, adoConfig, ptr.To(42), "somePAT")
-
-			Expect(err).To(HaveOccurred())
-			Expect(err).To(MatchError("failed http request getting build log, err: All attempts fail:\n#1: HTTP request error\n#2: HTTP request error\n#3: HTTP request error"))
-			mockBuildClient.AssertCalled(t, "GetBuildLogs", ctx, getBuildLogsArgs)
-			mockBuildClient.AssertNumberOfCalls(t, "GetBuildLogs", 1)
-			mockBuildClient.AssertExpectations(GinkgoT())
-			mockHTTPClient.AssertCalled(t, "Do", mock.AnythingOfType("*http.Request"))
-			mockHTTPClient.AssertNumberOfCalls(t, "Do", 3)
-			mockHTTPClient.AssertExpectations(GinkgoT())
 		})
 	})
 
