@@ -4,18 +4,15 @@ inputs:
   oidc-token:
     description: The JWT token to authenticate against Azure DevOps image builder backend
     required: true
-  ado-token:
-    description: The personal access token to authenticate against Azure DevOps API
-    required: false
   azure-client-id:
     description: Azure AD Application (client) ID to authenticate against Azure DevOps API
-    required: false
+    required: true
   azure-client-secret:
     description: Azure AD Application client secret to authenticate against Azure DevOps API
-    required: false
+    required: true
   azure-tenant-id:
     description: Azure AD Tenant ID to authenticate against Azure DevOps API
-    required: false
+    required: true
   image-name:
     description: Name of the build image
     required: true
@@ -122,7 +119,7 @@ runs:
       id: prepare-platforms
       shell: bash
 
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260529051515
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260602061023
       id: build
       with:
         args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --target=${{ inputs.target }} --oidc-token=${{ inputs.oidc-token }} --azure-client-id=${{ inputs.azure-client-id }} --azure-client-secret=${{ inputs.azure-client-secret }} --azure-tenant-id=${{ inputs.azure-tenant-id }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }} --use-restricted-registry=${{ inputs.use-restricted-registry }}
