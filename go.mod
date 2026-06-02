@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.9.0
 	cloud.google.com/go/logging v1.18.0
 	cloud.google.com/go/pubsub/v2 v2.6.0
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.20.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.21.1
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/blendle/zapdriver v1.3.1
@@ -40,7 +40,7 @@ require (
 	cloud.google.com/go/iam v1.7.0 // indirect
 	cloud.google.com/go/longrunning v0.9.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.11.2 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.6.0 // indirect
 	github.com/BobuSumisu/aho-corasick v1.0.3 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
