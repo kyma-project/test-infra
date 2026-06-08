@@ -8,12 +8,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/google/go-github/v88/github"
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
 	"github.com/kyma-project/test-infra/pkg/gcp/gcphttp"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
-	"github.com/kyma-project/test-infra/pkg/githubuser"
-
-	"github.com/google/go-github/v88/github"
 )
 
 var (
@@ -35,13 +33,6 @@ var (
 	listenPort       string
 	pubsubClient     *pubsub.Client
 )
-
-type GithubClient interface {
-	MuRLock()
-	MuRUnlock()
-	GetUsersMap(ctx context.Context) ([]githubuser.User, error)
-	Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, githubToken []byte) (bool, error)
-}
 
 func main() {
 	var err error
