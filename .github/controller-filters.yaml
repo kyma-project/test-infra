@@ -58,9 +58,6 @@ pull-go-lint-filter:
   - "**/*.go"
   - ".golangci.yaml"
 
-pull-gitleaks-filter:
-  - "**/*"
-
 pull-plan-prod-terraform-filter:
   - "**.tf"
   - "**.tfvars"

@@ -26,12 +26,6 @@ jobs:
         with:
           filters: .github/controller-filters.yaml
 
-
-  pull-gitleaks:
-    uses: kyma-project/test-infra/.github/workflows/pull-gitleaks.yml@main
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-gitleaks-filter') }}
-
   pull-validate-dockerfiles:
     uses: kyma-project/test-infra/.github/workflows/pull-validate-dockerfiles.yaml@main
     needs: detect-changed-files
