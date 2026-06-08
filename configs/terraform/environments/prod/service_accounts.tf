@@ -38,12 +38,6 @@ resource "google_service_account" "sa-kyma-project" {
   }
 }
 
-resource "google_service_account" "gitleaks-secret-accesor" {
-  account_id   = "gitleaks-secret-accesor"
-  display_name = "gitleaks-secret-accesor"
-  description  = "Identity of gitleaks. It's used to retrieve secrets from secret manager"
-}
-
 resource "google_service_account" "sa-secret-update" {
   account_id   = "sa-secret-update"
   display_name = "sa-secret-update"
