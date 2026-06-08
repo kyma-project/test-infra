@@ -1,9 +1,6 @@
 name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-
 on:
   # This workflow is triggered by workflow controller.
   workflow_call:
