@@ -32,6 +32,12 @@ jobs:
       - name: Checkout
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
+      - name: Verify supported event
+        if: ${{ github.event_name != 'push' && github.event_name != 'pull_request_target' }}
+        run: |
+          echo "::error title=Unsupported event::Unsupported event: ${{ github.event_name }}. Supported events are: push, pull_request_target"
+          exit 1
+
       # Set the dry-run flag based on the event type.
       # Dry-run flag is enforced for workflow runs triggered by pull requests.
       - name: Set dry-run flag
@@ -39,7 +45,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == 'push' ]; then
             echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ]; then
             echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
             echo "DRY_RUN=true" >> $GITHUB_OUTPUT
           fi
@@ -55,9 +61,6 @@ jobs:
             echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event_name }}" == 'pull_request_target' ]; then
             echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_READER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
-          else
-            echo "::error title=Unsupported event::Unsupported event: ${{ github.event_name }}"
-            exit 1
           fi
 
       # Using access-token as it can be used directly as a bearer token.
