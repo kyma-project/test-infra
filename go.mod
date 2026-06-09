@@ -1,12 +1,12 @@
 module github.com/kyma-project/test-infra
 
-go 1.26.3
+go 1.26.4
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
 	cloud.google.com/go/logging v1.18.0
 	cloud.google.com/go/pubsub/v2 v2.6.0
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.21.1
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/blendle/zapdriver v1.3.1
