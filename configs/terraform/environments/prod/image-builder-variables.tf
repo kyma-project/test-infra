@@ -33,12 +33,6 @@ variable "image_builder_internal_github_reusable_workflow_ref" {
 
 # GCP resources
 
-variable "image_builder_ado_pat_gcp_secret_manager_secret_name" {
-  description = "Name of the secret in GCP Secret Manager that contains the ADO PAT for image-builder to trigger ADO pipeline."
-  type        = string
-  default     = "image-builder-ado-pat"
-}
-
 variable "image_builder_azure_sp_gcp_secret_names" {
   description = "Names of GCP Secret Manager secrets for the Kyma-ImageBuilder-OIDC Azure Service Principal."
   type = object({
