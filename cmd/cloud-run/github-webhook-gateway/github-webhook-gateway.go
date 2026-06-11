@@ -98,7 +98,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		// check if wehbook token has beer rotated
 		webhookToken, err := os.ReadFile(webhookTokenPath)
 		if err != nil {
-			logger.LogCritical("failed read github token from file, error2234: %s", err)
+			logger.LogCritical("failed read github token from file, error2334: %s", err)
 		}
 		payload, err = github.ValidatePayload(r, webhookToken)
 		if err != nil {
