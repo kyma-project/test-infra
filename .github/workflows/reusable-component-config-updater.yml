@@ -64,15 +64,13 @@ jobs:
           GCP_KYMA_PROJECT_PROJECT_ID: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
           GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           GH_COM_KYMA_PROW_BOT_TOKEN_SECRET_NAME: ${{ vars.GH_COM_KYMA_PROW_BOT_TOKEN_SECRET_NAME }}
-          GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME: ${{ vars.GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME }}
         shell: bash
         run: |
           set -euo pipefail
           missing=0
           for var in GCP_KYMA_PROJECT_PROJECT_ID \
                      GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER \
-                     GH_COM_KYMA_PROW_BOT_TOKEN_SECRET_NAME \
-                     GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME; do
+                     GH_COM_KYMA_PROW_BOT_TOKEN_SECRET_NAME; do
             if [ -z "${!var:-}" ]; then
               echo "::error title=Missing variable::Required variable '$var' is not set on this repository (or not inherited from the org)."
               missing=1
@@ -99,7 +97,6 @@ jobs:
         with:
           secrets: |-
             service-user-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_COM_KYMA_PROW_BOT_TOKEN_SECRET_NAME }}
-            auto-approver-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME }}
 
       - name: Checkout caller repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -169,10 +166,8 @@ jobs:
             [`malachowski-labs/oci-image-detector`](https://github.com/marketplace/actions/oci-image-detector)
             and is consumed by `ocm-artifact-builder` for security scanning.
 
-            This PR will be auto-approved by the auto-approver bot and
-            merged by GitHub's native auto-merge once required checks
-            pass. The component-config.yaml file is fully owned by
-            automation — see ADR-001 for the contract.
+            The component-config.yaml file is fully owned by automation — see
+            ADR-001 for the contract.
 
             ```release-note
             NONE
@@ -180,15 +175,6 @@ jobs:
           labels: |
             kind/chore
             area/security
-            auto-approved
-
-      - name: Auto-approve PR
-        if: ${{ (steps.create-pr.outputs.pull-request-operation == 'created' || steps.create-pr.outputs.pull-request-operation == 'updated') && steps.create-pr.outputs.pull-request-number != '' }}
-        uses: hmarr/auto-approve-action@8f929096a962e83ccdfa8afcf855f39f12d4dac7 # v4
-        with:
-          review-message: 'Auto-approved by component-config-updater workflow.'
-          github-token: ${{ steps.secrets.outputs.auto-approver-token }}
-          pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
 
       - name: Enable native auto-merge on PR
         if: ${{ (steps.create-pr.outputs.pull-request-operation == 'created' || steps.create-pr.outputs.pull-request-operation == 'updated') && steps.create-pr.outputs.pull-request-number != '' }}
