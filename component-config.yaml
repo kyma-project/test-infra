@@ -2,18 +2,7 @@ name: kyma-project.io/tooling/test-infra-public
 team: kyma/neighbors
 images:
   - "alpine:3.24.0"
-  - "docker.io/library/alpine:latest"
-  - "docker.io/library/multiarch:latest"
-  - "europe-docker.pkg.dev/kyma-project/dev/cors-proxy:PR-12975"
-  - "europe-docker.pkg.dev/kyma-project/dev/github-tools-sap/conduit-cli:PR-477"
-  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260610063021"
-  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260610063020"
   - "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260611235739"
-  - "europe-docker.pkg.dev/kyma-project/prod/my-image:v20260213-abc12345"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260610064020"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260610064017"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260611052035"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260611052036"
   - "gcr.io/distroless/static:latest"
   - "golang:1.26.4-alpine3.22"
   - "python:3.14.6-alpine3.23"
