@@ -1,9 +1,3 @@
-name: kyma-project.io/module/test-infra
-team: kyma/Neighbors
-images:
-  - europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260610063021
-  - europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260610063020
-  - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260610064020
-  - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260610064017
-  - europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260611052035
-  - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260611052036
+name: kyma-project.io/tooling/test-infra-public
+team: kyma/neighbors
+images: []
