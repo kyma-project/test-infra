@@ -32,3 +32,4 @@ jobs:
         **/mocks/**
         **/testdata/**
         configs/terraform/**
+        component-config.yaml
