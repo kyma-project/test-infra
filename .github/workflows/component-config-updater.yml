@@ -24,3 +24,11 @@ jobs:
     uses: ./.github/workflows/reusable-component-config-updater.yml
     with:
       component_name: kyma-project.io/tooling/test-infra-public
+      exclude: |
+        node_modules/**
+        vendor/**
+        **/*.md
+        **/*_test.go
+        **/mocks/**
+        **/testdata/**
+        configs/terraform/**
