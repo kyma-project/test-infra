@@ -2,13 +2,10 @@
 # component-config-updater workflow — Secret Manager access via WIF (github.com)
 # ==============================================================================
 # Grants the kyma-project/test-infra reusable-component-config-updater.yml
-# workflow (running on github.com) read access to two PAT secrets via the
-# external github.com Workload Identity Federation pool:
+# workflow (running on github.com) read access to the bumper PAT secret via
+# the external github.com Workload Identity Federation pool:
 #
-#   - kyma-prow bot PAT (opens PRs)            → GH_TOOLS_KYMA_PROW_BOT_TOKEN_SECRET_NAME
-#   - kyma bot auto-approver PAT (approves PRs) → GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME
-#
-# Two distinct identities are required because GitHub forbids self-approval.
+#   - neighbors auto-bumper PAT (opens PRs) → GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME
 #
 # The principal is scoped to the reusable_workflow_ref of the workflow living
 # in kyma-project/test-infra@main on github.com, using the existing
@@ -17,13 +14,7 @@
 # ==============================================================================
 
 variable "com_component_config_updater_bumper_token_secret_id" {
-  description = "GCP Secret Manager secret ID for the kyma-prow bot PAT used by the github.com reusable-component-config-updater workflow to open PRs. Must match the kyma-project org variable GH_TOOLS_KYMA_PROW_BOT_TOKEN_SECRET_NAME on github.com. Empty disables the IAM binding."
-  type        = string
-  default     = ""
-}
-
-variable "com_component_config_updater_approver_token_secret_id" {
-  description = "GCP Secret Manager secret ID for the kyma bot auto-approver PAT used by the github.com reusable-component-config-updater workflow to auto-approve PRs. Must match the kyma-project org variable GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME on github.com. Empty disables the IAM binding."
+  description = "GCP Secret Manager secret ID for the neighbors auto-bumper PAT used by the github.com reusable-component-config-updater workflow to open PRs. Must match the kyma-project org variable GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME on github.com. Empty disables the IAM binding."
   type        = string
   default     = ""
 }
@@ -55,15 +46,6 @@ resource "google_secret_manager_secret_iam_member" "com_component_config_updater
 
   project   = data.google_project.current.project_id
   secret_id = var.com_component_config_updater_bumper_token_secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = local.com_component_config_updater_principals[each.value]
-}
-
-resource "google_secret_manager_secret_iam_member" "com_component_config_updater_approver_token_reader" {
-  for_each = var.com_component_config_updater_approver_token_secret_id != "" ? toset(local.com_component_config_updater_supported_events) : toset([])
-
-  project   = data.google_project.current.project_id
-  secret_id = var.com_component_config_updater_approver_token_secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = local.com_component_config_updater_principals[each.value]
 }
