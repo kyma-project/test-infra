@@ -31,5 +31,4 @@ jobs:
         **/*_test.go
         **/mocks/**
         **/testdata/**
-        configs/terraform/**
         component-config.yaml
