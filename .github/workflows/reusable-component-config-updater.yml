@@ -5,13 +5,6 @@ name: update-component-config
 # Mirrors kyma/test-infra:.github/workflows/reusable-component-config-updater.yml
 # from github.tools.sap. GitHub Actions does not support cross-instance reusable
 # workflow calls, so this copy lives here to serve callers on github.com.
-#
-# Differences from the internal (github.tools.sap) copy:
-#   - runs-on: ubuntu-latest  (no self-hosted solinas available on github.com)
-#   - WIF provider var: GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER
-#   - Bumper token var:   GH_TOOLS_KYMA_PROW_BOT_TOKEN_SECRET_NAME
-#   - Approver token var: GH_COM_KYMA_BOT_AUTO_APPROVER_TOKEN_SECRET_NAME
-#   - Auto-merge step uses GH_TOKEN (standard gh CLI, no GH_HOST override)
 
 on:
   workflow_call:
