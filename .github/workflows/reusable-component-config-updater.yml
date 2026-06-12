@@ -105,7 +105,7 @@ jobs:
 
       - name: Detect images
         id: detect
-        uses: malachowski-labs/oci-image-detector@ae8e0e2137b58dd20b6e65eeaa42dc2ecedf49b3 # v1.1.1
+        uses: malachowski-labs/oci-image-detector@14fcea5ccf6980c2de4974b5188a247fa5daeaef # v1.1.3
         with:
           directory: ${{ inputs.directory }}
           exclude: ${{ inputs.exclude }}
