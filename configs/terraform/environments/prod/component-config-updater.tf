@@ -16,7 +16,7 @@
 variable "com_component_config_updater_bumper_token_secret_id" {
   description = "GCP Secret Manager secret ID for the neighbors auto-bumper PAT used by the github.com reusable-component-config-updater workflow to open PRs. Must match the kyma-project org variable GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME on github.com. Empty disables the IAM binding."
   type        = string
-  default     = ""
+  default     = "auto-bumper-github-com-user-token"
 }
 
 variable "com_component_config_updater_reusable_workflow_ref" {
