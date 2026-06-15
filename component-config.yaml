@@ -7,7 +7,7 @@ images:
   - "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260611235739"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260610064020"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260610064017"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260611052035"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260615052020"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260611052036"
   - "gcr.io/distroless/static:latest"
   - "golang:1.26.4-alpine3.22"
