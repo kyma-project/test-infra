@@ -26,6 +26,9 @@ on:
 
 jobs:
   sync-images:
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/image-syncer.yml
     with:
       dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || false }}
