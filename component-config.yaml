@@ -2,11 +2,11 @@ name: kyma-project.io/tooling/test-infra-public
 team: kyma/neighbors
 images:
   - "alpine:3.24.0"
-  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260610063021"
+  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260615052026"
   - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260615052019"
   - "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260616174255"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260610064020"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260610064017"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260615052026"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260615052026"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260615052020"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260611052036"
   - "gcr.io/distroless/static:latest"
