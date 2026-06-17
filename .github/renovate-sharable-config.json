@@ -33,7 +33,7 @@
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": true,
-      "prPriority": 5,
+      "prPriority": 5
     },
     {
       "matchManagers": ["github-actions"],
