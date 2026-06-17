@@ -1,0 +1,32 @@
+name: Sync External Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "external-images.yaml"
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - "external-images.yaml"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry run mode"
+        required: false
+        type: boolean
+        default: false
+      debug:
+        description: "Debug mode"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sync-images:
+    uses: ./.github/workflows/image-syncer.yml
+    with:
+      dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || false }}
+      debug: ${{ github.event_name == 'workflow_dispatch' && inputs.debug || false }}
