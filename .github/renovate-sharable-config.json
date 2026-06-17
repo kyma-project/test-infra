@@ -33,11 +33,7 @@
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": true,
-      "prPriority": 5
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["kyma*/**"],
+      "prPriority": 5,
       "pinDigests": false
     },
     {
