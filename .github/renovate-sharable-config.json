@@ -37,7 +37,7 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchPackageNames": ["kyma*/**"],
+      "matchPackageNames": ["kyma*/**", "github/codeql-action/**"],
       "pinDigests": false
     },
     {
