@@ -34,6 +34,10 @@
       "groupName": "github actions",
       "separateMajorMinor": true,
       "prPriority": 5,
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["kyma*/**", "github/codeql-action/**"],
       "pinDigests": false
     },
     {
