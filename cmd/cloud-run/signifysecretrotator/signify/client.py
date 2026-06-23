@@ -83,7 +83,6 @@ class SignifyClient:
             )
 
             if access_token_response.status_code != 200:
-                print(access_token_response.json(), OAuthGrantTypes.CLIENT_CREDENTIALS)
                 raise requests.HTTPError(
                     f"Got non-success status code {access_token_response.status_code}",
                     response=access_token_response,
