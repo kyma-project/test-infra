@@ -6,7 +6,7 @@ images:
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.4-alpine3.22"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/python:3.14.6-alpine3.23"
   - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260617065614"
-  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260617065613"
+  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260622081042"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260622081040"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260622081041"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260622080018"
