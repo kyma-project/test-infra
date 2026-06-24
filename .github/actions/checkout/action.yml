@@ -7,6 +7,15 @@ inputs:
     description: The number of commits to fetch. Defaults to 5, which means only the 5 latest commits are fetched. It must be greater than 4 for the sanity check to pass.
     required: false
     default: "5"
+  allow-unsafe-pr-checkout:
+    description: |
+      Forwarded to actions/checkout. Set to "true" ONLY in workflows triggered by
+      pull_request_target (or workflow_run) that intentionally check out fork PR code.
+      Caller MUST gate the workflow behind a protected environment with required reviewers,
+      or otherwise constrain the privileges available to the checked-out code.
+      See: https://gh.io/securely-using-pull_request_target
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -18,6 +27,7 @@ runs:
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: ${{ inputs.fetch-depth }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow-unsafe-pr-checkout }}
         if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'pull_request' }}
 
       # Checkout code from the merge group branch
