@@ -140,7 +140,7 @@ type gcpLogSink interface {
 //  1. zap calls Write() with a log entry and fields
 //  2. We collect all fields into a map
 //  3. Extract labels (fields with "labels." prefix from zapdriver)
-//  4. Extract trace ID if present
+//  4. Extract trace correlation fields (trace, spanId, trace_sampled) into dedicated Entry fields
 //  5. Map zap severity to GCP severity
 //  6. Build a logging.Entry and send it via the GCP client
 type gcpCore struct {
