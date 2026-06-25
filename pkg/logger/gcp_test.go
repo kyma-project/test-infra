@@ -145,12 +145,13 @@ var _ = Describe("GCP Logger", func() {
 				zap.String("logging.googleapis.com/trace", "projects/my-project/traces/abc123"),
 			}).(*gcpCore)
 
-			writeEntry(coreWithTrace, "test")
+			writeEntry(coreWithTrace, "trace-extraction-test")
 			e := sink.lastEntry()
 
+			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "trace-extraction-test"), "verifying correct log entry")
 			Expect(e.Trace).To(Equal("projects/my-project/traces/abc123"))
 			// Should be removed from payload.
-			payload := e.Payload.(map[string]interface{})
 			Expect(payload).NotTo(HaveKey("logging.googleapis.com/trace"))
 		})
 
@@ -159,11 +160,12 @@ var _ = Describe("GCP Logger", func() {
 				zap.String("logging.googleapis.com/spanId", "00f067aa0ba902b7"),
 			}).(*gcpCore)
 
-			writeEntry(coreWithSpan, "test")
+			writeEntry(coreWithSpan, "spanid-extraction-test")
 			e := sink.lastEntry()
 
-			Expect(e.SpanID).To(Equal("00f067aa0ba902b7"))
 			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "spanid-extraction-test"), "verifying correct log entry")
+			Expect(e.SpanID).To(Equal("00f067aa0ba902b7"))
 			Expect(payload).NotTo(HaveKey("logging.googleapis.com/spanId"))
 		})
 
@@ -172,11 +174,12 @@ var _ = Describe("GCP Logger", func() {
 				zap.Bool("logging.googleapis.com/trace_sampled", true),
 			}).(*gcpCore)
 
-			writeEntry(coreWithSampled, "test")
+			writeEntry(coreWithSampled, "trace-sampled-true-test")
 			e := sink.lastEntry()
 
-			Expect(e.TraceSampled).To(BeTrue())
 			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "trace-sampled-true-test"), "verifying correct log entry")
+			Expect(e.TraceSampled).To(BeTrue())
 			Expect(payload).NotTo(HaveKey("logging.googleapis.com/trace_sampled"))
 		})
 
@@ -185,9 +188,11 @@ var _ = Describe("GCP Logger", func() {
 				zap.Bool("logging.googleapis.com/trace_sampled", false),
 			}).(*gcpCore)
 
-			writeEntry(coreWithNotSampled, "test")
+			writeEntry(coreWithNotSampled, "trace-sampled-false-test")
 			e := sink.lastEntry()
 
+			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "trace-sampled-false-test"), "verifying correct log entry")
 			Expect(e.TraceSampled).To(BeFalse())
 		})
 
@@ -213,18 +218,20 @@ var _ = Describe("GCP Logger", func() {
 		})
 
 		It("should keep regular fields in payload", func() {
-			writeEntry(core, "hello", zap.String("user_id", "u1"), zap.Int("status", 200))
+			writeEntry(core, "regular-fields-test", zap.String("user_id", "u1"), zap.Int("status", 200))
 			e := sink.lastEntry()
 
 			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "regular-fields-test"), "verifying correct log entry")
 			Expect(payload).To(HaveKeyWithValue("user_id", "u1"))
-			Expect(payload).To(HaveKeyWithValue("message", "hello"))
 		})
 
 		It("should leave Entry.Trace empty when field is not present", func() {
-			writeEntry(core, "no trace")
+			writeEntry(core, "no-trace-fields-test")
 			e := sink.lastEntry()
 
+			payload := e.Payload.(map[string]interface{})
+			Expect(payload).To(HaveKeyWithValue("message", "no-trace-fields-test"), "verifying correct log entry")
 			Expect(e.Trace).To(BeEmpty())
 			Expect(e.SpanID).To(BeEmpty())
 			Expect(e.TraceSampled).To(BeFalse())
