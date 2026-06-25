@@ -29,9 +29,6 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
     # github.com (kyma-project) — post-apply-prod-terraform workflow
     "principal://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/subject/repository_id:${data.github_repository.test_infra.repo_id}:repository_owner_id:${var.github_kyma_project_organization_id}:workflow:${var.github_terraform_apply_workflow_name}",
 
-    # Internal GitHub Enterprise (github-tools-sap) — test-infra deploy workflow
-    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_terraform_deploy_identity}",
-
     # Internal GitHub Enterprise (github-tools-sap) — tooling-infra deploy workflow (prod, v-tag)
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_prod}",
   ]
@@ -88,9 +85,6 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
     # github.com (kyma-project) — reusable workflow triggers for validate service accounts
     "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:pull_request_target:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main",
     "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:merge_group:repository_owner_id:${var.github_kyma_project_organization_id}:reusable_workflow_ref:kyma-project/test-infra/.github/workflows/pull-validate-service-accounts.yaml@refs/heads/main",
-
-    # Internal GitHub Enterprise (github-tools-sap) — test-infra plan workflow
-    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_terraform_plan_reusable_workflow_ref}",
 
     # Internal GitHub Enterprise (github-tools-sap) — tooling-infra plan workflow
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}",

@@ -19,8 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Triggered via workflow-controller-pull-requests on pull_request_target.
+      # Fork PR checkout is gated by the `prod` environment's required reviewers
+      # and the composite action's sanity check on the merge commit's parent.
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
+        with:
+          allow-unsafe-pr-checkout: "true"
 
       - name: Wait for other terraform executions
         id: wait_for_terraform

@@ -29,8 +29,15 @@ jobs:
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
 
+      # Reached via pull_request_target on fork PRs. The workflow has no
+      # environment-level approval gate, but mitigates risk by forcing
+      # --dry-run and using a read-only GCP service account on PRT runs
+      # (see the "Set dry-run flag" and SA-selection steps below).
+      # TODO: add a protected `prod-readonly` environment with reviewers as a stronger gate.
       - name: Checkout
         uses: kyma-project/test-infra/.github/actions/checkout@main
+        with:
+          allow-unsafe-pr-checkout: "true"
 
       - name: Verify supported event
         if: ${{ github.event_name != 'push' && github.event_name != 'pull_request_target' }}
@@ -83,7 +90,7 @@ jobs:
           --workdir /github/workspace \
           --rm \
           --volume "$GITHUB_WORKSPACE:/github/workspace" \
-          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260617235753 \
+          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260623235507 \
           --images-file=/github/workspace/external-images.yaml \
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }} \
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }} \
