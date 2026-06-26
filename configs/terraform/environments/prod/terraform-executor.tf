@@ -175,11 +175,6 @@ variable "internal_github_terraform_planner_variable_name" {
   default     = "INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME"
 }
 
-import {
-  to = google_secret_manager_secret.internal_github_terraform_executor
-  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.internal_github_terraform_executor_secret_name}"
-}
-
 # GCP Secret Manager secret for internal GitHub terraform executor token.
 # This token should have write permissions and is used during terraform apply.
 # The actual token value must be added manually via GCP Console or CLI.
@@ -251,11 +246,6 @@ resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_g
   member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
-import {
-  to = github_actions_variable.internal_github_terraform_executor_secret_name
-  id = "test-infra:${var.internal_github_terraform_executor_variable_name}"
-}
-
 # internal_github_terraform_executor_variable_name exposes the GCP secret name with internal GitHub token for IaC executor as a GitHub Actions repository variable.
 # The variable has repository scope.
 # IMPORTANT: This should be part of bootstrapp process to let terraform executor read the secret.
@@ -264,11 +254,6 @@ resource "github_actions_variable" "internal_github_terraform_executor_secret_na
   repository    = "test-infra"
   variable_name = var.internal_github_terraform_executor_variable_name
   value         = google_secret_manager_secret.internal_github_terraform_executor.secret_id
-}
-
-import {
-  to = github_actions_variable.internal_github_terraform_planner_secret_name
-  id = "test-infra:${var.internal_github_terraform_planner_variable_name}"
 }
 
 # internal_github_terraform_planner_secret_name exposes the GCP secret name with internal GitHub token for IaC planner as a GitHub Actions repository variable.
@@ -282,72 +267,109 @@ resource "github_actions_variable" "internal_github_terraform_planner_secret_nam
 }
 
 # ==============================================================================
-# Removed resources — migrated to iam_binding blocks above
+# GitHub App Authentication - kyma-project-terraform-executor
 # ==============================================================================
-# The following iam_member resources were removed because they conflicted with
-# the authoritative iam_binding resources for the same role
-# (roles/iam.workloadIdentityUser) on the same service accounts.
-#
-# google_service_account_iam_binding is authoritative for a given role and
-# overwrites any members added by google_service_account_iam_member for the
-# same role. All principals are now consolidated in the iam_binding blocks.
-#
-# See: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam
+# The app has write permissions for org/repo
+# variables and organization administration (hosted runners).
+# Secret values must be added manually via GCP Console or CLI after creation.
 # ==============================================================================
 
-removed {
-  from = google_service_account_iam_member.terraform_executor_workload_identity_user
+resource "google_secret_manager_secret" "terraform_executor_github_app_id" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "kyma-project-terraform-executor-app-id"
 
-  lifecycle {
-    destroy = false
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-id"
+    tool            = "iac"
+    github-instance = "public"
+    owner           = "neighbors"
   }
 }
 
-removed {
-  from = google_service_account_iam_member.terraform_planner_workload_identity_user
+resource "google_secret_manager_secret" "terraform_executor_github_app_private_key" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "kyma-project-terraform-executor-app-private-key"
 
-  lifecycle {
-    destroy = false
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-private-key"
+    tool            = "iac"
+    github-instance = "public"
+    owner           = "neighbors"
   }
 }
 
-removed {
-  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github
+resource "google_secret_manager_secret_iam_member" "terraform_executor_github_app_id_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_executor_github_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_executor.email}"
+}
 
-  lifecycle {
-    destroy = false
+resource "google_secret_manager_secret_iam_member" "terraform_executor_github_app_private_key_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_executor_github_app_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_executor.email}"
+}
+
+# ==============================================================================
+# GitHub App Authentication - kyma-project-terraform-planner
+# ==============================================================================
+# The app has read-only permissions for org/repo
+# variables and organization administration (hosted runners).
+# Secret values must be added manually via GCP Console or CLI after creation.
+# ==============================================================================
+
+resource "google_secret_manager_secret" "terraform_planner_github_app_id" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "kyma-project-terraform-planner-app-id"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-id"
+    tool            = "iac"
+    github-instance = "public"
+    owner           = "neighbors"
   }
 }
 
-removed {
-  from = google_service_account_iam_member.terraform_executor_workload_identity_internal_github
+resource "google_secret_manager_secret" "terraform_planner_github_app_private_key" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "kyma-project-terraform-planner-app-private-key"
 
-  lifecycle {
-    destroy = false
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-private-key"
+    tool            = "iac"
+    github-instance = "public"
+    owner           = "neighbors"
   }
 }
 
-removed {
-  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github_tooling_infra
-
-  lifecycle {
-    destroy = false
-  }
+resource "google_secret_manager_secret_iam_member" "terraform_planner_github_app_id_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_planner_github_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
 
-removed {
-  from = google_service_account_iam_member.terraform_planner_workload_identity_internal_github_tooling_infra_validate
-
-  lifecycle {
-    destroy = false
-  }
+resource "google_secret_manager_secret_iam_member" "terraform_planner_github_app_private_key_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_planner_github_app_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
-
-removed {
-  from = google_service_account_iam_member.terraform_executor_workload_identity_internal_github_tooling_infra_prod
-
-  lifecycle {
-    destroy = false
-  }
-}
-
