@@ -136,6 +136,36 @@ resource "github_actions_variable" "github_terraform_planner_secret_name" {
   value         = "kyma-bot-gh-com-terraform-planner-token"
 }
 
+# GitHub App credentials for kyma-project-terraform-planner
+resource "github_actions_variable" "terraform_planner_github_app_id_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_PLANNER_APP_ID_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_planner_github_app_id.secret_id
+}
+
+resource "github_actions_variable" "terraform_planner_github_app_private_key_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_PLANNER_APP_PRIVATE_KEY_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_planner_github_app_private_key.secret_id
+}
+
+# GitHub App credentials for kyma-project-terraform-executor
+resource "github_actions_variable" "terraform_executor_github_app_id_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_EXECUTOR_APP_ID_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_executor_github_app_id.secret_id
+}
+
+resource "github_actions_variable" "terraform_executor_github_app_private_key_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_EXECUTOR_APP_PRIVATE_KEY_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_executor_github_app_private_key.secret_id
+}
+
 # ------------------------------------------------------------------------------
 # Internal GitHub Token Configuration
 # ------------------------------------------------------------------------------
@@ -192,11 +222,6 @@ resource "google_secret_manager_secret" "internal_github_terraform_executor" {
     github-instance = "internal"
     owner           = "neighbors"
   }
-}
-
-import {
-  to = google_secret_manager_secret.internal_github_terraform_planner
-  id = "projects/${var.terraform_executor_gcp_service_account.project_id}/secrets/${var.internal_github_terraform_planner_secret_name}"
 }
 
 # GCP Secret Manager secret for internal GitHub terraform planner token.
