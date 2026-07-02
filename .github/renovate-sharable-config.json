@@ -19,7 +19,7 @@
     "**/bower_components/**",
     "**/test*/**",
     "**/cypress/**",
-    "component-config.{yaml,yml}"
+    "component-config.yaml"
   ],
 
   "packageRules": [
