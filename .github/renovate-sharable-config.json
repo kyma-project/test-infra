@@ -18,8 +18,8 @@
     "**/node_modules/**",
     "**/bower_components/**",
     "**/test*/**",
-    "**/cypress/**"
-
+    "**/cypress/**",
+    "component-config.{yaml,yml}"
   ],
 
   "packageRules": [
