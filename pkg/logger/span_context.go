@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.tools.sap/kyma/neighbors-contracts/go/logging"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging/v2"
 	"go.opentelemetry.io/otel/trace"
 )
 

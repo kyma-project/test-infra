@@ -5,7 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.tools.sap/kyma/neighbors-contracts/go/logging"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging/v2"
 )
 
 var _ = Describe("BufferLogger", func() {
