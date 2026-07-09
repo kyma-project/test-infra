@@ -22,7 +22,7 @@ require (
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
-	github.tools.sap/kyma/neighbors-contracts/go/logging v1.0.0
+	github.tools.sap/kyma/neighbors-contracts/go/logging/v2 v2.0.0
 	go.opentelemetry.io/otel/trace v1.44.0
 	go.uber.org/zap v1.28.0
 	google.golang.org/api v0.287.0
