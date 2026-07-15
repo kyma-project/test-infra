@@ -1,0 +1,209 @@
+name: update-component-config
+
+# Reusable workflow — github.com edition.
+#
+# Mirrors kyma/test-infra:.github/workflows/reusable-component-config-updater.yml
+# from github.tools.sap. GitHub Actions does not support cross-instance reusable
+# workflow calls, so this copy lives here to serve callers on github.com.
+
+on:
+  workflow_call:
+    inputs:
+      component_name:
+        description: |
+          Component name written to component-config.yaml.
+          Must follow the convention "kyma-project.io/tooling/<repo-name>".
+        required: true
+        type: string
+      team:
+        description: |
+          Team owning the component, in "<org>/<team-slug>" format
+          (e.g. "kyma/neighbors"). Written to component-config.yaml.
+        required: false
+        type: string
+        default: 'kyma/neighbors'
+      directory:
+        description: 'Directory to scan for image references (relative to repo root).'
+        required: false
+        type: string
+        default: '.'
+      config_path:
+        description: |
+          Path to component-config.yaml inside the caller repo.
+          Must be a relative path with no '..' segments.
+        required: false
+        type: string
+        default: 'component-config.yaml'
+      exclude:
+        description: |
+          Newline-separated doublestar glob patterns to exclude from detection.
+          The scanner already excludes .git/** and go.sum unconditionally.
+        required: false
+        type: string
+        default: |
+          node_modules/**
+          vendor/**
+          **/*.md
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: component-config-update-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  detect-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs and required organization variables
+        env:
+          CONFIG_PATH_INPUT: ${{ inputs.config_path }}
+          GCP_KYMA_PROJECT_PROJECT_ID: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME: ${{ vars.GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for var in GCP_KYMA_PROJECT_PROJECT_ID \
+                     GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER \
+                     GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME; do
+            if [ -z "${!var:-}" ]; then
+              echo "::error title=Missing variable::Required variable '$var' is not set on this repository (or not inherited from the org)."
+              missing=1
+            fi
+          done
+          case "$CONFIG_PATH_INPUT" in
+            /* | *..* )
+              echo "::error title=Invalid config_path::config_path must be a relative path with no '..' segments (got: '$CONFIG_PATH_INPUT')."
+              missing=1
+              ;;
+          esac
+          exit "$missing"
+
+      - name: Authenticate in GCP
+        id: auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+
+      - name: Get GitHub Tokens from Secret Manager
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
+        with:
+          secrets: |-
+            service-user-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_COM_NEIGHBORS_BOT_AUTO_BUMPER_TOKEN_SECRET_NAME }}
+
+      - name: Checkout caller repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Detect images
+        id: detect
+        uses: malachowski-labs/oci-image-detector@342126cd1fcea3585991f3436d43d169257cc10a # v1.3.0
+        with:
+          directory: ${{ inputs.directory }}
+          exclude: ${{ inputs.exclude }}
+          allow-empty: 'true'
+
+      - name: Regenerate component-config.yaml
+        env:
+          COMPONENT_NAME: ${{ inputs.component_name }}
+          TEAM: ${{ inputs.team }}
+          CONFIG_PATH: ${{ inputs.config_path }}
+          FINDINGS_FILE: ${{ steps.detect.outputs.output-file }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          images=$(jq -r '
+            [.findings // [] | .[].ref.raw]
+            | unique
+            | .[]
+            | "  - \"" + . + "\""
+          ' "$FINDINGS_FILE")
+          {
+            printf 'name: %s\n' "${COMPONENT_NAME}"
+            printf 'team: %s\n' "${TEAM}"
+            if [ -z "${images}" ]; then
+              printf 'images: []\n'
+            else
+              printf 'images:\n'
+              printf '%s\n' "${images}"
+            fi
+          } > "${CONFIG_PATH}"
+          echo "=== Generated ${CONFIG_PATH} ==="
+          cat "${CONFIG_PATH}"
+
+      - name: Create Pull Request
+        id: create-pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          token: ${{ steps.secrets.outputs.service-user-token }}
+          commit-message: |
+            chore: update component-config.yaml
+
+            Automated update by component-config-updater workflow.
+          branch: automation/component-config-update
+          delete-branch: true
+          title: 'chore: update component-config.yaml'
+          body: |
+            ## Component Config Update
+
+            Automated update of `${{ inputs.config_path }}` produced by the
+            `reusable-component-config-updater` workflow.
+
+            **Component**: `${{ inputs.component_name }}`
+            **Team**: `${{ inputs.team }}`
+            **Scanned directory**: `${{ inputs.directory }}`
+            **Findings count**: `${{ steps.detect.outputs.findings-count }}`
+
+            The list of images was generated by
+            [`malachowski-labs/oci-image-detector`](https://github.com/marketplace/actions/oci-image-detector)
+            and is consumed by `ocm-artifact-builder` for security scanning.
+
+            The component-config.yaml file is fully owned by automation — see
+            ADR-001 for the contract.
+
+            ```release-note
+            NONE
+            ```
+          labels: |
+            kind/chore
+            area/security
+
+      - name: Enable native auto-merge on PR
+        if: ${{ (steps.create-pr.outputs.pull-request-operation == 'created' || steps.create-pr.outputs.pull-request-operation == 'updated') && steps.create-pr.outputs.pull-request-number != '' }}
+        env:
+          GH_TOKEN: ${{ steps.secrets.outputs.service-user-token }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! gh pr merge -R "$REPO" --auto --squash "$PR_NUMBER"; then
+            echo "::warning title=auto-merge::Failed to enable auto-merge for PR #${PR_NUMBER} in ${REPO}. Verify 'Allow auto-merge' is enabled in repo Settings → General → Pull Requests. The PR is approved and can be merged manually."
+            exit 0
+          fi
+
+      - name: Summary
+        env:
+          COMPONENT_NAME: ${{ inputs.component_name }}
+          CONFIG_PATH: ${{ inputs.config_path }}
+          FINDINGS_COUNT: ${{ steps.detect.outputs.findings-count }}
+          PR_OP: ${{ steps.create-pr.outputs.pull-request-operation }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
+          PR_URL: ${{ steps.create-pr.outputs.pull-request-url }}
+        shell: bash
+        run: |
+          echo "=== Component Config Update Summary ==="
+          echo "Component:      ${COMPONENT_NAME}"
+          echo "Config path:    ${CONFIG_PATH}"
+          echo "Findings count: ${FINDINGS_COUNT}"
+          echo "PR operation:   ${PR_OP}"
+          echo "PR number:      ${PR_NUMBER}"
+          echo "PR URL:         ${PR_URL}"

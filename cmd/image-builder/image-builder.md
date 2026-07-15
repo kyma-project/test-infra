@@ -38,7 +38,9 @@ They provide details about the context in which the tool is running.
 
 Image Builder uses several environment variables, which can be grouped by their use cases as follows:
 
-- **ADO_PAT**: Personal Access Token used to authenticate with the ADO API.
+- **AZURE_CLIENT_ID**: The client ID of the Azure AD Service Principal used to authenticate with Azure DevOps.
+- **AZURE_TENANT_ID**: The tenant ID of the Azure AD directory in which the Service Principal is registered.
+- **AZURE_CLIENT_SECRET**: The client secret of the Azure AD Service Principal used to authenticate with Azure DevOps.
 - **REPO_OWNER**: Used to extract the repository owner for the ADO pipeline.
 - **REPO_NAME**: Used to extract the repository name for the ADO pipeline.
 - **JOB_TYPE**: Determines the type of the job (presubmit or postsubmit).

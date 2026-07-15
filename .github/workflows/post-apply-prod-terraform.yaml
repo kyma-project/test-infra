@@ -25,11 +25,13 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Wait for other terraform executions
         id: wait_for_terraform
         uses: ahmadnassri/action-workflow-queue@542658b3a8270cac81ae15d401b0d974732808ac # v1.2.0
+        with:
+          timeout: 1800000 # 30 minutes in milliseconds
 
       - name: Authenticate to GCP
         id: gcp-auth
@@ -38,17 +40,26 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }}
 
-      - name: Retrieve Terraform Executor github PAT
+      - name: Retrieve Terraform Executor GitHub App credentials
         id: secrets
         uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
         with:
           secrets: |-
-             gh-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_SECRET_NAME }}
+             terraform-executor-app-id:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_APP_ID_SECRET_NAME }}
+             terraform-executor-app-private-key:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_EXECUTOR_APP_PRIVATE_KEY_SECRET_NAME }}
              internal-github-terraform-executor-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_EXECUTOR_SECRET_NAME }}
+
+      - name: Generate GitHub App token for Terraform Executor
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ steps.secrets.outputs.terraform-executor-app-id }}
+          private-key: ${{ steps.secrets.outputs.terraform-executor-app-private-key }}
+          owner: ${{ github.repository_owner }}
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: opentofu/setup-opentofu@847eaa4afeb791b06daa46e8eafa8b1b68d7cfb4 # v2
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2
 
       - name: setup tfcmt
         id: setup-tfcmt
@@ -62,7 +73,7 @@ jobs:
       # The IaC variables are lower case. The opentofu will remove TF_VAR prefix from this env var and match the value with variables names in IaC config case sensitive.
       # I do prefer to keep consistent format of identifiers in IaC config rather than env variables in github action workflow. Thats the reason env var name uses mixed caps.
         env:
-          GITHUB_TOKEN: ${{ steps.secrets.outputs.gh-terraform-executor-token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-executor-token }}
         id: terraform_apply
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -sha ${{ github.sha }} apply -- tofu -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve -lock-timeout=400s

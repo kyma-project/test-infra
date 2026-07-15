@@ -18,11 +18,11 @@ jobs:
         working-directory: ./configs/terraform/environments/prod
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup Tofu
         id: setup_tofu
-        uses: opentofu/setup-opentofu@847eaa4afeb791b06daa46e8eafa8b1b68d7cfb4 # v2
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2
         with:
           tofu_wrapper: false
 
@@ -33,13 +33,22 @@ jobs:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
           service_account: ${{ vars.GCP_TERRAFORM_PLANNER_SERVICE_ACCOUNT_EMAIL }}
 
-      - name: Retrieve Terraform Planner github PAT
+      - name: Retrieve Terraform Planner GitHub App credentials
         id: secrets
         uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
         with:
           secrets: |-
-            public-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_SECRET_NAME }}
+            terraform-planner-app-id:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_APP_ID_SECRET_NAME }}
+            terraform-planner-app-private-key:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_APP_PRIVATE_KEY_SECRET_NAME }}
             internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
+
+      - name: Generate GitHub App token for Terraform Planner
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ steps.secrets.outputs.terraform-planner-app-id }}
+          private-key: ${{ steps.secrets.outputs.terraform-planner-app-private-key }}
+          owner: ${{ github.repository_owner }}
 
       - name: Tofu init
         id: tofu_init
@@ -48,7 +57,7 @@ jobs:
       - name: Tofu plan
         id: tofu_plan
         env:
-          GITHUB_TOKEN: ${{ steps.secrets.outputs.public-github-terraform-planner-token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
         run: |
           exitcode=0

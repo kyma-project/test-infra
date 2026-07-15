@@ -4,25 +4,6 @@ locals {
   image_builder_azure_sp_gcp_secrets = toset(values(var.image_builder_azure_sp_gcp_secret_names))
 }
 
-resource "google_secret_manager_secret_iam_member" "image_builder_reusable_workflow_principal_ado_pat_reader" {
-  project   = var.gcp_project_id
-  secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.image_builder_reusable_workflow_ref}"
-}
-
-resource "google_secret_manager_secret_iam_member" "image_builder_internal_github_reusable_workflow_principal_ado_pat_reader" {
-  project   = var.gcp_project_id
-  secret_id = var.image_builder_ado_pat_gcp_secret_manager_secret_name
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.image_builder_internal_github_reusable_workflow_ref}"
-}
-
-import {
-  to = google_secret_manager_secret_iam_member.image_builder_internal_github_reusable_workflow_principal_ado_pat_reader
-  id = "projects/sap-kyma-prow/secrets/image-builder-ado-pat roles/secretmanager.secretAccessor principalSet://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-tools-sap/attribute.reusable_workflow_ref/kyma/oci-image-builder/.github/workflows/image-builder.yml@refs/heads/main"
-}
-
 resource "google_secret_manager_secret_iam_member" "image_builder_public_github_reusable_workflow_principal_azure_sp_secret_reader" {
   for_each  = local.image_builder_azure_sp_gcp_secrets
   project   = var.gcp_project_id
@@ -39,21 +20,20 @@ resource "google_secret_manager_secret_iam_member" "image_builder_internal_githu
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.image_builder_internal_github_reusable_workflow_ref}"
 }
 
-
 # GitHub resources
 
 # Define GitHub Actions secrets for the image-builder reusable workflow.
-# These secret contains the values of the GCP secret manager secret name with ado pat
+# These secrets contain the values of the GCP secret manager secret names with Azure SP credentials.
 # It's used by the image-builder reusable workflow to authenticate with Azure DevOps API and trigger ADO pipeline.
-resource "github_actions_organization_variable" "image_builder_ado_pat_gcp_secret_name" {
-  provider      = github.kyma_project
-  visibility    = "all"
-  variable_name = "IMAGE_BUILDER_ADO_PAT_GCP_SECRET_NAME"
-  value         = var.image_builder_ado_pat_gcp_secret_manager_secret_name
-}
-
 resource "github_actions_organization_variable" "image_builder_azure_sp_tenant_id_gcp_secret_name" {
   provider      = github.kyma_project
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_TENANT_ID_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.tenant_id
+}
+
+resource "github_actions_organization_variable" "image_builder_azure_sp_tenant_id_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
   visibility    = "all"
   variable_name = "IMAGE_BUILDER_AZURE_SP_TENANT_ID_GCP_SECRET_NAME"
   value         = var.image_builder_azure_sp_gcp_secret_names.tenant_id
@@ -66,8 +46,22 @@ resource "github_actions_organization_variable" "image_builder_azure_sp_client_i
   value         = var.image_builder_azure_sp_gcp_secret_names.client_id
 }
 
+resource "github_actions_organization_variable" "image_builder_azure_sp_client_id_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_ID_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.client_id
+}
+
 resource "github_actions_organization_variable" "image_builder_azure_sp_client_secret_gcp_secret_name" {
   provider      = github.kyma_project
+  visibility    = "all"
+  variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_SECRET_GCP_SECRET_NAME"
+  value         = var.image_builder_azure_sp_gcp_secret_names.client_secret
+}
+
+resource "github_actions_organization_variable" "image_builder_azure_sp_client_secret_gcp_secret_name_internal_github" {
+  provider      = github.internal_github
   visibility    = "all"
   variable_name = "IMAGE_BUILDER_AZURE_SP_CLIENT_SECRET_GCP_SECRET_NAME"
   value         = var.image_builder_azure_sp_gcp_secret_names.client_secret

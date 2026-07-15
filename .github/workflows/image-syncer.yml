@@ -13,10 +13,6 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      env_file:
-        description: ".env file content for registry authentication"
-        required: false
 
 jobs:
   sync-images:
@@ -33,8 +29,21 @@ jobs:
           echo "Using image-syncer workflow outside of kyma-project organisation is not supported."
           exit 1
 
+      # Reached via pull_request_target on fork PRs. The workflow has no
+      # environment-level approval gate, but mitigates risk by forcing
+      # --dry-run and using a read-only GCP service account on PRT runs
+      # (see the "Set dry-run flag" and SA-selection steps below).
+      # TODO: add a protected `prod-readonly` environment with reviewers as a stronger gate.
       - name: Checkout
         uses: kyma-project/test-infra/.github/actions/checkout@main
+        with:
+          allow-unsafe-pr-checkout: "true"
+
+      - name: Verify supported event
+        if: ${{ github.event_name != 'push' && github.event_name != 'pull_request_target' }}
+        run: |
+          echo "::error title=Unsupported event::Unsupported event: ${{ github.event_name }}. Supported events are: push, pull_request_target"
+          exit 1
 
       # Set the dry-run flag based on the event type.
       # Dry-run flag is enforced for workflow runs triggered by pull requests.
@@ -43,7 +52,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == 'push' ]; then
             echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == 'pull_request_target' ] || [ "${{ github.event_name }}" == 'pull_request' ]; then
+          elif [ "${{ github.event_name }}" == 'pull_request_target' ]; then
             echo "::notice title=Force dry-run::Forcing dry-run mode for pull requests"
             echo "DRY_RUN=true" >> $GITHUB_OUTPUT
           fi
@@ -59,9 +68,6 @@ jobs:
             echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_WRITER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event_name }}" == 'pull_request_target' ]; then
             echo "IMAGE_SYNCER_SA_EMAIL=${{ vars.IMAGE_SYNCER_READER_SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_OUTPUT
-          else
-            echo "::error title=Unsupported event::Unsupported event: ${{ github.event_name }}"
-            exit 1
           fi
 
       # Using access-token as it can be used directly as a bearer token.
@@ -77,28 +83,14 @@ jobs:
           # service_account is required for the token_format "access_token"
           service_account: ${{ steps.get_image_syncer_gcp_service_account.outputs.IMAGE_SYNCER_SA_EMAIL }}
 
-      - name: Create .env file
-        run: |
-          if [ -n "$ENV_FILE_CONTENT" ]; then
-            echo "$ENV_FILE_CONTENT" > .env
-          fi
-        env:
-          ENV_FILE_CONTENT: ${{ secrets.env_file }}
-
       - name: Sync Images
         id: sync_images
         run: |
-          ENV_FILE_ARG=""
-          if [ -f .env ]; then
-            ENV_FILE_ARG="--env-file .env"
-          fi
-
           docker run \
           --workdir /github/workspace \
           --rm \
           --volume "$GITHUB_WORKSPACE:/github/workspace" \
-          $ENV_FILE_ARG \
-          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260519002120 \
+          europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20260623235507 \
           --images-file=/github/workspace/external-images.yaml \
           --access-token=${{ steps.authenticate_in_gcp.outputs.access_token }} \
           --dry-run=${{ steps.set_dry_run_flag.outputs.DRY_RUN }} \

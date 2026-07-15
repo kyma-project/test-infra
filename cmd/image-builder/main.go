@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 
+	adoauth "github.com/kyma-project/test-infra/pkg/azuredevops/auth"
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/github/actions"
 	"github.com/kyma-project/test-infra/pkg/imagebuilder"
@@ -48,7 +49,9 @@ type options struct {
 	adoPreviewRunYamlPath   string
 	parseTagsOnly           bool
 	oidcToken               string
-	azureAccessToken        string
+	azureClientID           string
+	azureClientSecret       string
+	azureTenantID           string
 	ciSystem                CISystem
 	gitState                GitStateConfig
 	debug                   bool
@@ -163,10 +166,9 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 
 // buildInADO is a function that triggers the Azure DevOps (ADO) pipeline to build an image.
 // It takes an options struct as an argument and returns an error.
-// The function fetches the ADO_PAT environment variable and validates it's present.
-// ADO_PAT holds personal access token and is used to authenticate with the ADO API.
+// The function fetches Azure AD Service Principal credentials from environment variables and validates they are present.
 // The function prepares the ADO pipeline parameters by calling the prepareADOTemplateParameters function.
-// It creates a new ADO client and prepares the ADO pipeline run arguments.
+// It creates a new ADO client authenticated via Service Principal and prepares the ADO pipeline run arguments.
 // The function triggers the ADO build pipeline and waits for the pipeline run to finish.
 // It fetches the ADO pipeline run logs and prints them.
 // The function can trigger the ADO pipeline in preview mode if the adoPreviewRun flag is set to true.
@@ -179,15 +181,23 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 
-	// Getting Azure DevOps Personal Access Token (ADO_PAT) from environment variable for authentication with ADO API when it's not set via flag.
-	if o.azureAccessToken == "" && !o.dryRun {
-		adoPAT, present := os.LookupEnv("ADO_PAT")
-		if !present {
-			return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+	// Getting Azure AD Service Principal credentials from environment variables when not set via flags.
+	if o.azureClientID == "" {
+		o.azureClientID = os.Getenv("AZURE_CLIENT_ID")
+	}
+	if o.azureClientSecret == "" {
+		o.azureClientSecret = os.Getenv("AZURE_CLIENT_SECRET")
+	}
+	if o.azureTenantID == "" {
+		o.azureTenantID = os.Getenv("AZURE_TENANT_ID")
+	}
+
+	if !o.dryRun {
+		if o.azureClientID == "" || o.azureClientSecret == "" || o.azureTenantID == "" {
+			return fmt.Errorf("build in ADO failed, no authentication method configured: provide --azure-client-id, --azure-client-secret and --azure-tenant-id")
 		}
-		o.azureAccessToken = adoPAT
-	} else if o.dryRun {
-		fmt.Println("Running in dry-run mode. Skipping getting ADO PAT.")
+	} else {
+		fmt.Println("Running in dry-run mode. Skipping authentication check.")
 	}
 
 	fmt.Println("Preparing ADO template parameters.")
@@ -198,8 +208,7 @@ func buildInADO(o options) error {
 	}
 	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
 
-	// Creating a new ADO pipelines client.
-	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
+	ctx := context.Background()
 
 	var opts []adopipelines.RunPipelineArgsOptions
 	// If running in preview mode, add a preview run option to the ADO pipeline run arguments.
@@ -223,7 +232,23 @@ func buildInADO(o options) error {
 		buildReport       *imagebuilder.BuildReport
 	)
 	if !o.dryRun {
-		ctx := context.Background()
+		// Creating a new ADO pipelines client.
+		spCfg := adoauth.ServicePrincipalConfig{
+			TenantID:     o.azureTenantID,
+			ClientID:     o.azureClientID,
+			ClientSecret: o.azureClientSecret,
+		}
+		cred, err := adoauth.NewServicePrincipalCredential(spCfg)
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed creating service principal credential: %w", err)
+		}
+		provider := adoauth.NewServicePrincipalProvider(cred)
+		adoClient, err := adopipelines.NewClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed creating ADO client with service principal: %w", err)
+		}
+		fmt.Println("Using Service Principal authentication.")
+
 		// Triggering ADO build pipeline.
 		pipelineRun, err := adoClient.RunPipeline(ctx, runPipelineArgs)
 		if err != nil {
@@ -251,16 +276,16 @@ func buildInADO(o options) error {
 
 		// Fetch the ADO pipeline run logs.
 		fmt.Println("Getting ADO pipeline run logs.")
-		// Creating a new ADO build client.
-		adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, o.azureAccessToken)
+		adoBuildClient, err := adopipelines.NewBuildClientWithSP(ctx, o.AdoConfig.ADOOrganizationURL, provider)
 		if err != nil {
 			fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
-		}
-		logs, err = adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, o.azureAccessToken)
-		if err != nil {
-			fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 		} else {
-			fmt.Printf("ADO pipeline image build logs:\n%s", logs)
+			logs, err = adopipelines.GetRunLogsWithBearerToken(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, provider)
+			if err != nil {
+				fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
+			} else {
+				fmt.Printf("ADO pipeline image build logs:\n%s", logs)
+			}
 		}
 
 		fmt.Println("Getting build report.")
@@ -542,7 +567,9 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 	flagSet.StringVar(&o.oidcToken, "oidc-token", "", "Token used to authenticate against Azure DevOps backend service")
-	flagSet.StringVar(&o.azureAccessToken, "azure-access-token", "", "Token used to authenticate against Azure DevOps API")
+	flagSet.StringVar(&o.azureClientID, "azure-client-id", "", "Azure AD Application (client) ID used to authenticate against Azure DevOps API")
+	flagSet.StringVar(&o.azureClientSecret, "azure-client-secret", "", "Azure AD Application client secret used to authenticate against Azure DevOps API")
+	flagSet.StringVar(&o.azureTenantID, "azure-tenant-id", "", "Azure AD Tenant ID used to authenticate against Azure DevOps API")
 	flagSet.StringVar(&o.tagsOutputFile, "tags-output-file", "/generated-tags.json", "Path to file where generated tags will be written as JSON")
 	flagSet.BoolVar(&o.useGoInternalSAPModules, "use-go-internal-sap-modules", false, "Allow access to Go internal modules in ADO backend")
 	flagSet.StringVar(&o.buildReportPath, "build-report-path", "", "Path to file where build report will be written as JSON")

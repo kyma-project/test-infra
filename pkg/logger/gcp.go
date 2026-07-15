@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	gcplogging "cloud.google.com/go/logging"
-	"github.tools.sap/kyma/neighbors-contracts/go/logging"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging/v2"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -21,7 +21,7 @@ type GCPLogger struct {
 	client *gcplogging.Client
 }
 
-// Compile-time check: GCPLogger must implement LoggerInterface.
+// Compile-time check.
 var _ logging.LoggerInterface = (*GCPLogger)(nil)
 
 // With creates a child logger with additional context fields.
@@ -30,6 +30,12 @@ func (l *GCPLogger) With(args ...interface{}) logging.LoggerInterface {
 		SugaredLogger: l.SugaredLogger.With(args...),
 		client:        l.client,
 	}
+}
+
+// WithSpanContext creates a child logger enriched with GCP Cloud Logging
+// trace correlation fields extracted from the span context in ctx.
+func (l *GCPLogger) WithSpanContext(ctx context.Context, projectID string) (logging.LoggerInterface, error) {
+	return withSpanContext(ctx, l, projectID)
 }
 
 // Close flushes pending logs and closes the underlying GCP client.
@@ -113,11 +119,18 @@ func newGCPCore(ctx context.Context, projectID, logName, taskID string, level za
 	}))
 
 	core := &gcpCore{
-		level:     zapcore.Level(level),
-		gcpLogger: gcpLogger,
+		level: zapcore.Level(level),
+		sink:  gcpLogger,
 	}
 
 	return client, core, nil
+}
+
+// gcpLogSink abstracts the Cloud Logging client for testability.
+// In production this is satisfied by *gcplogging.Logger.
+type gcpLogSink interface {
+	Log(gcplogging.Entry)
+	Flush() error
 }
 
 // gcpCore is a custom zapcore.Core that sends log entries to Cloud Logging API
@@ -127,13 +140,13 @@ func newGCPCore(ctx context.Context, projectID, logName, taskID string, level za
 //  1. zap calls Write() with a log entry and fields
 //  2. We collect all fields into a map
 //  3. Extract labels (fields with "labels." prefix from zapdriver)
-//  4. Extract trace ID if present
+//  4. Extract trace correlation fields (trace, spanId, trace_sampled) into dedicated Entry fields
 //  5. Map zap severity to GCP severity
 //  6. Build a logging.Entry and send it via the GCP client
 type gcpCore struct {
-	level     zapcore.Level
-	gcpLogger *gcplogging.Logger
-	fields    []zapcore.Field // fields accumulated via With()
+	level  zapcore.Level
+	sink   gcpLogSink
+	fields []zapcore.Field // fields accumulated via With()
 }
 
 // Enabled checks if the given log level should be logged.
@@ -146,9 +159,9 @@ func (c *gcpCore) Enabled(level zapcore.Level) bool {
 // are stored and included in every subsequent log entry.
 func (c *gcpCore) With(fields []zapcore.Field) zapcore.Core {
 	return &gcpCore{
-		level:     c.level,
-		gcpLogger: c.gcpLogger,
-		fields:    append(append([]zapcore.Field{}, c.fields...), fields...),
+		level:  c.level,
+		sink:   c.sink,
+		fields: append(append([]zapcore.Field{}, c.fields...), fields...),
 	}
 }
 
@@ -212,16 +225,32 @@ func (c *gcpCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 		delete(payload, "logging.googleapis.com/trace")
 	}
 
-	// Build and send the Cloud Logging entry.
-	logEntry := gcplogging.Entry{
-		Timestamp: entry.Time,
-		Severity:  severity,
-		Payload:   payload,
-		Labels:    labels,
-		Trace:     trace,
+	// Extract span ID if present.
+	spanID := ""
+	if s, ok := payload["logging.googleapis.com/spanId"].(string); ok {
+		spanID = s
+		delete(payload, "logging.googleapis.com/spanId")
 	}
 
-	c.gcpLogger.Log(logEntry)
+	// Extract trace sampled flag if present.
+	traceSampled := false
+	if ts, ok := payload["logging.googleapis.com/trace_sampled"].(bool); ok {
+		traceSampled = ts
+		delete(payload, "logging.googleapis.com/trace_sampled")
+	}
+
+	// Build and send the Cloud Logging entry.
+	logEntry := gcplogging.Entry{
+		Timestamp:    entry.Time,
+		Severity:     severity,
+		Payload:      payload,
+		Labels:       labels,
+		Trace:        trace,
+		SpanID:       spanID,
+		TraceSampled: traceSampled,
+	}
+
+	c.sink.Log(logEntry)
 
 	// Auto-flush on errors to ensure they're delivered immediately.
 	if entry.Level >= zapcore.ErrorLevel {
@@ -233,7 +262,7 @@ func (c *gcpCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 
 // Sync flushes all buffered log entries to Cloud Logging.
 func (c *gcpCore) Sync() error {
-	return c.gcpLogger.Flush()
+	return c.sink.Flush()
 }
 
 // mapSeverity converts a zap log level to a Cloud Logging severity.

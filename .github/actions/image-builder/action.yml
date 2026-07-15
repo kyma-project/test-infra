@@ -4,8 +4,14 @@ inputs:
   oidc-token:
     description: The JWT token to authenticate against Azure DevOps image builder backend
     required: true
-  ado-token:
-    description: The personal access token to authenticate against Azure DevOps API
+  azure-client-id:
+    description: Azure AD Application (client) ID to authenticate against Azure DevOps API
+    required: true
+  azure-client-secret:
+    description: Azure AD Application client secret to authenticate against Azure DevOps API
+    required: true
+  azure-tenant-id:
+    description: Azure AD Tenant ID to authenticate against Azure DevOps API
     required: true
   image-name:
     description: Name of the build image
@@ -113,7 +119,7 @@ runs:
       id: prepare-platforms
       shell: bash
 
-    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260528073511
+    - uses: docker://europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260709053023
       id: build
       with:
-        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --target=${{ inputs.target }} --azure-access-token=${{ inputs.ado-token }} --oidc-token=${{ inputs.oidc-token }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }} --use-restricted-registry=${{ inputs.use-restricted-registry }}
+        args: --name=${{ inputs.image-name }} --context=${{ inputs.context }} --dockerfile=${{ inputs.dockerfile }} --target=${{ inputs.target }} --oidc-token=${{ inputs.oidc-token }} --azure-client-id=${{ inputs.azure-client-id }} --azure-client-secret=${{ inputs.azure-client-secret }} --azure-tenant-id=${{ inputs.azure-tenant-id }} ${{ steps.prepare-build-args.outputs.build-args }} ${{ steps.prepare-tags.outputs.tags }} ${{ steps.prepare-platforms.outputs.platforms }} --export-tags=${{ inputs.export-tags }} --config=${{ inputs.config }} --use-go-internal-sap-modules=${{ inputs.use-go-internal-sap-modules }} --use-restricted-registry=${{ inputs.use-restricted-registry }}

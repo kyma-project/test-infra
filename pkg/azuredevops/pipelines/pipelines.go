@@ -23,6 +23,11 @@ import (
 	"k8s.io/utils/ptr"
 )
 
+// TokenProvider acquires a Bearer token for use with Azure DevOps.
+type TokenProvider interface {
+	GetToken(ctx context.Context) (string, error)
+}
+
 type Client interface {
 	RunPipeline(ctx context.Context, args pipelines.RunPipelineArgs) (*pipelines.Run, error)
 	GetRun(ctx context.Context, args pipelines.GetRunArgs) (*pipelines.Run, error)
@@ -99,29 +104,30 @@ func (c Config) GetADOConfig() Config {
 	return c
 }
 
-// NewClient creates a new Azure DevOps (ADO) client to interact with ADO pipelines.
-// It takes the ADO organization URL and a personal access token (PAT) as input parameters.
-// Parameters:
-// adoOrganizationURL - is the URL of the ADO organization containing the pipelines.
-// adoPAT - is the personal access token for authentication in ADO API.
-// TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
-func NewClient(adoOrganizationURL, adoPAT string) Client {
-	adoConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
-	ctx := context.Background()
-	return pipelines.NewClient(ctx, adoConnection)
+// NewClientWithSP creates a new ADO pipelines client authenticated via Azure AD Service Principal.
+func NewClientWithSP(ctx context.Context, organizationURL string, provider TokenProvider) (Client, error) {
+	token, err := provider.GetToken(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting service principal token: %w", err)
+	}
+	connection := &adov7.Connection{
+		BaseUrl:             organizationURL,
+		AuthorizationString: fmt.Sprintf("Bearer %s", token),
+	}
+	return pipelines.NewClient(ctx, connection), nil
 }
 
-// NewBuildClient creates a new Azure DevOps (ADO) build client to interact with ADO pipelines.
-// Build client is used to get build logs and timeline for a specific pipeline run.
-// It takes the ADO organization URL and a personal access token (PAT) as input parameters.
-// Parameters:
-// adoOrganizationURL - is the URL of the ADO organization containing the pipelines.
-// adoPAT - is the personal access token for authentication in ADO API.
-// TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
-func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
-	buildConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
-	ctx := context.Background()
-	return build.NewClient(ctx, buildConnection)
+// NewBuildClientWithSP creates a new ADO build client authenticated via Azure AD Service Principal.
+func NewBuildClientWithSP(ctx context.Context, organizationURL string, provider TokenProvider) (BuildClient, error) {
+	token, err := provider.GetToken(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting service principal token: %w", err)
+	}
+	connection := &adov7.Connection{
+		BaseUrl:             organizationURL,
+		AuthorizationString: fmt.Sprintf("Bearer %s", token),
+	}
+	return build.NewClient(ctx, connection)
 }
 
 // GetRunResult is a function that retrieves the result of a specific Azure DevOps (ADO) pipeline run.
@@ -170,49 +176,33 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 	}
 }
 
-// GetRunLogs is a function that retrieves the logs of a specific Azure DevOps (ADO) pipeline run.
-// It fetches the build logs metadata and then makes an HTTP request to get the actual logs.
-// The function takes a context, a build client, an HTTP client, an ADO configuration, a pipeline run ID, and an ADO personal access token (PAT) as arguments.
-//
-// Parameters:
-// buildClient - The ADO build client to interact with the ADO pipelines.
-// httpClient - The HTTP client to make requests to the ADO API to get logs content.
-// adoConfig - The configuration for the ADO pipelines organization.
-// pipelineRunID - The ID of the pipeline run whose logs are to be fetched.
-// adoPAT - The personal access token for authentication in ADO API.
-//
-// The function returns the logs of the pipeline run as a string and an error. If an error occurs while getting
-// the build logs metadata, making the HTTP request, reading the HTTP response body, or closing the HTTP response body,
-// the function returns the error. If the pipeline run logs are successfully fetched, the function returns the logs.
-func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
-	// Fetch the build logs metadata for the pipeline run. If an error occurs, retry three times with a delay of 5 seconds between each retry.
-	// We get the pipeline run status over network, so we need to handle network errors.
+// GetRunLogsWithBearerToken retrieves the logs of a specific ADO pipeline run using Bearer token authentication.
+func GetRunLogsWithBearerToken(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, provider TokenProvider) (string, error) {
+	token, err := provider.GetToken(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed getting bearer token for build logs: %w", err)
+	}
 	buildLogs, err := retry.NewWithData[*[]build.BuildLog](
 		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
 		retry.Delay(adoConfig.ADORetryStrategy.Delay),
 	).Do(
 		func() (*[]build.BuildLog, error) {
-			buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
+			return buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 				Project: &adoConfig.ADOProjectName,
 				BuildId: pipelineRunID,
 			})
-			return buildLogs, err
 		},
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
 	}
 
-	// The last item in the list represents logs from all pipeline steps visible in ADO GUI
 	lastLog := (*buildLogs)[len(*buildLogs)-1]
-	// Create an HTTP request to get the actual logs content.
 	req, err := http.NewRequest("GET", *lastLog.Url, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed creating http request getting build log, err: %w", err)
 	}
-	req.SetBasicAuth("", adoPAT)
-	// Make the HTTP request to get the actual logs content. If an error occurs, retry three times with a delay of 5 seconds between each retry.
-	// We get the pipeline run status over network, so we need to handle network errors.
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	// TODO: implement checking http response status code, if it's not 2xx, return error
 	resp, err := retry.NewWithData[*http.Response](
 		retry.Attempts(adoConfig.ADORetryStrategy.Attempts),
@@ -225,13 +215,11 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
 	}
-	// Read the HTTP response body to get the logs content.
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("failed reading http body with build log, err: %w", err)
 	}
-	err = resp.Body.Close()
-	if err != nil {
+	if err = resp.Body.Close(); err != nil {
 		return "", fmt.Errorf("failed closing http body with build log, err: %w", err)
 	}
 	return string(body), nil

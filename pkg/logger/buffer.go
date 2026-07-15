@@ -2,12 +2,12 @@ package logger
 
 import (
 	"bytes"
+	"context"
 
 	"github.com/blendle/zapdriver"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	"github.tools.sap/kyma/neighbors-contracts/go/logging"
 )
 
 // BufferLogger writes logs to an in-memory buffer for testing.
@@ -19,7 +19,7 @@ type BufferLogger struct {
 	Buffer *bytes.Buffer
 }
 
-// Compile-time check: BufferLogger must implement LoggerInterface.
+// Compile-time check.
 var _ logging.LoggerInterface = (*BufferLogger)(nil)
 
 // With creates a child logger with additional context fields.
@@ -30,6 +30,12 @@ func (l *BufferLogger) With(args ...interface{}) logging.LoggerInterface {
 		SugaredLogger: l.SugaredLogger.With(args...),
 		Buffer:        l.Buffer,
 	}
+}
+
+// WithSpanContext creates a child logger enriched with GCP Cloud Logging
+// trace correlation fields extracted from the span context in ctx.
+func (l *BufferLogger) WithSpanContext(ctx context.Context, projectID string) (logging.LoggerInterface, error) {
+	return withSpanContext(ctx, l, projectID)
 }
 
 // Logs returns all captured log output as a string.

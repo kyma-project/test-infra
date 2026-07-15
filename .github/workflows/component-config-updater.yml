@@ -1,0 +1,34 @@
+name: component-config-updater
+
+# Caller workflow for kyma-project/test-infra (github.com).
+# Invokes the local reusable-component-config-updater workflow.
+#
+# Uses the -public suffix in component_name to avoid a name collision in mODG
+# with the github.tools.sap kyma/test-infra instance.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Every Sunday at 03:17 UTC. Off-peak; offset to avoid the top of the hour.
+    - cron: '17 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  update:
+    uses: ./.github/workflows/reusable-component-config-updater.yml
+    with:
+      component_name: kyma-project.io/tooling/test-infra-public
+      exclude: |
+        node_modules/**
+        vendor/**
+        **/*.md
+        **/*_test.go
+        **/mocks/**
+        **/testdata/**
+        component-config.yaml
