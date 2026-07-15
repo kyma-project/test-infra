@@ -23,11 +23,24 @@ resource "google_storage_bucket" "release_test_logs" {
   location                    = "EU"
   storage_class               = "STANDARD"
   uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+    condition {
+      age             = 430
+      matches_suffix  = ["logs.zip"]
+      with_state      = "ANY"
+    }
+  }
 
   lifecycle {
     prevent_destroy = true
   }
 }
+
 
 # Bucket IAM - developer read access
 
