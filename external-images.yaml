@@ -1,5 +1,5 @@
 images:
   - source: "alpine:3.24.1"
   - source: "gcr.io/distroless/static:latest"
-  - source: "golang:1.26.4-alpine3.22"
+  - source: "golang:1.26.5-alpine3.23"
   - source: "python:3.14.6-alpine3.23"
