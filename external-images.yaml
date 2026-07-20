@@ -1,6 +1,6 @@
 images:
   - source: "alpine:3.24.1"
   - source: "gcr.io/distroless/static:latest"
-  - source: "golang:1.26.4-alpine3.22"
+  - source: "golang:1.26.5-alpine3.23"
   - source: "python@sha256:02da11a8d221ca167aa07de20b3cd7104c1f01227f4b02b1fa13cf6517280a81"
     tag: "3.14.6-alpine3.23"
