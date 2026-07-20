@@ -1,14 +1,14 @@
 name: kyma-project.io/tooling/test-infra-public
 team: kyma/neighbors
 images:
-  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260720052044"
+  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260720100547"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.1"
-  - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.4-alpine3.22"
+  - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.5-alpine3.23"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/python:3.14.6-alpine3.23"
-  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260720052044"
-  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260720052044"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260709053019"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260720052046"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260623050515"
+  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260720100545"
+  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260720100546"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260720100553"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260720100554"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260720081753"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260716091129"
   - "gcr.io/distroless/static:latest"
