@@ -14,7 +14,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.19.0
 	github.com/go-jose/go-jose/v4 v4.1.4
 	github.com/google/go-containerregistry v0.21.7
-	github.com/google/go-github/v88 v88.0.0
+	github.com/google/go-github/v89 v89.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/onsi/ginkgo/v2 v2.32.0
 	github.com/onsi/gomega v1.42.1
