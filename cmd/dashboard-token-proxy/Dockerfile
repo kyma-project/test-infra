@@ -1,4 +1,4 @@
-FROM europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.4-alpine3.22 AS builder
+FROM europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.5-alpine3.23 AS builder
 
 WORKDIR /app
 
