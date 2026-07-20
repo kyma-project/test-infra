@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/google/go-github/v88/github"
+	"github.com/google/go-github/v89/github"
 	"github.com/kyma-project/test-infra/pkg/gcp/cloudfunctions"
 	"github.com/kyma-project/test-infra/pkg/gcp/gcphttp"
 	"github.com/kyma-project/test-infra/pkg/gcp/pubsub"
