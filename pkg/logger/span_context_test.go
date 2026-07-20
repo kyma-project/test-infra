@@ -20,14 +20,17 @@ var _ = Describe("WithSpanContext", func() {
 
 		It("should return ErrInvalidSpanContext for background context", func() {
 			child, err := logger.WithSpanContext(context.Background(), "my-project")
-			Expect(err).To(MatchError(ErrInvalidSpanContext))
+			Expect(err).To(MatchError(ContainSubstring("span context is not valid")))
+			Expect(err).To(MatchError(ContainSubstring("projectID=my-project")))
 			Expect(child).To(BeNil())
 		})
 
 		It("should return ErrInvalidSpanContext for zero span context", func() {
 			ctx := trace.ContextWithSpanContext(context.Background(), trace.SpanContext{})
 			child, err := logger.WithSpanContext(ctx, "my-project")
-			Expect(err).To(MatchError(ErrInvalidSpanContext))
+			Expect(err).To(MatchError(ContainSubstring("span context is not valid")))
+			Expect(err).To(MatchError(ContainSubstring("traceID=00000000000000000000000000000000")))
+			Expect(err).To(MatchError(ContainSubstring("spanID=0000000000000000")))
 			Expect(child).To(BeNil())
 		})
 	})

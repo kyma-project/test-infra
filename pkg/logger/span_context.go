@@ -18,7 +18,13 @@ var ErrInvalidSpanContext = errors.New("span context is not valid")
 func withSpanContext(ctx context.Context, baseLogger logging.LoggerInterface, projectID string) (logging.LoggerInterface, error) {
 	spanContext := trace.SpanFromContext(ctx).SpanContext()
 	if !spanContext.IsValid() {
-		return nil, ErrInvalidSpanContext
+		return nil, fmt.Errorf("%w: traceID=%s, spanID=%s, traceFlags=%d, projectID=%s",
+			ErrInvalidSpanContext,
+			spanContext.TraceID().String(),
+			spanContext.SpanID().String(),
+			spanContext.TraceFlags(),
+			projectID,
+		)
 	}
 
 	return baseLogger.With(
