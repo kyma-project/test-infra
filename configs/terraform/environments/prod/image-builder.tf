@@ -255,7 +255,6 @@ resource "google_secret_manager_secret" "sap_github_prow_sa_token" {
 }
 
 # Per-secret IAM bindings for kyma-oci-image-builder SA.
-# Replaces the overly broad project-level roles/secretmanager.secretAccessor binding.
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_azure_pipeline_sa_secret_accessor" {
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.oci_image_builder_azure_pipeline_sa.secret_id
