@@ -258,7 +258,7 @@ resource "google_secret_manager_secret" "sap_github_prow_sa_token" {
 # Replaces the overly broad project-level roles/secretmanager.secretAccessor binding.
 import {
   to = google_secret_manager_secret_iam_member.oci_image_builder_azure_pipeline_sa_secret_accessor
-  id = "projects/${var.gcp_project_id}/secrets/azure-pipeline-image-builder-sa/members/serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com/roles/secretmanager.secretAccessor"
+  id = "projects/${var.gcp_project_id}/secrets/azure-pipeline-image-builder-sa roles/secretmanager.secretAccessor serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_azure_pipeline_sa_secret_accessor" {
@@ -270,7 +270,7 @@ resource "google_secret_manager_secret_iam_member" "oci_image_builder_azure_pipe
 
 import {
   to = google_secret_manager_secret_iam_member.oci_image_builder_sa_key_restricted_markets_secret_accessor
-  id = "projects/${var.gcp_project_id}/secrets/image-builder-sa-key-restricted-markets/members/serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com/roles/secretmanager.secretAccessor"
+  id = "projects/${var.gcp_project_id}/secrets/image-builder-sa-key-restricted-markets roles/secretmanager.secretAccessor serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_sa_key_restricted_markets_secret_accessor" {
@@ -282,7 +282,7 @@ resource "google_secret_manager_secret_iam_member" "oci_image_builder_sa_key_res
 
 import {
   to = google_secret_manager_secret_iam_member.oci_image_builder_signify_prod_secret_accessor
-  id = "projects/${var.gcp_project_id}/secrets/kyma-signify-prod/members/serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com/roles/secretmanager.secretAccessor"
+  id = "projects/${var.gcp_project_id}/secrets/kyma-signify-prod roles/secretmanager.secretAccessor serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_signify_prod_secret_accessor" {
@@ -294,7 +294,7 @@ resource "google_secret_manager_secret_iam_member" "oci_image_builder_signify_pr
 
 import {
   to = google_secret_manager_secret_iam_member.oci_image_builder_sap_github_prow_sa_token_secret_accessor
-  id = "projects/${var.gcp_project_id}/secrets/kyma-sap-github-prow-sa-token/members/serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com/roles/secretmanager.secretAccessor"
+  id = "projects/${var.gcp_project_id}/secrets/kyma-sap-github-prow-sa-token roles/secretmanager.secretAccessor serviceAccount:kyma-oci-image-builder@${var.gcp_project_id}.iam.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_sap_github_prow_sa_token_secret_accessor" {
