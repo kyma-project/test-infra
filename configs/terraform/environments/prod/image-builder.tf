@@ -235,11 +235,11 @@ resource "google_secret_manager_secret" "oci_image_builder_signify_prod" {
 }
 
 import {
-  to = google_secret_manager_secret.oci_image_builder_sap_github_prow_sa_token
+  to = google_secret_manager_secret.sap_github_prow_sa_token
   id = "projects/${var.gcp_project_id}/secrets/kyma-sap-github-prow-sa-token"
 }
 
-resource "google_secret_manager_secret" "oci_image_builder_sap_github_prow_sa_token" {
+resource "google_secret_manager_secret" "sap_github_prow_sa_token" {
   project   = var.gcp_project_id
   secret_id = "kyma-sap-github-prow-sa-token"
 
@@ -249,10 +249,8 @@ resource "google_secret_manager_secret" "oci_image_builder_sap_github_prow_sa_to
 
   labels = {
     type            = "github-token"
-    tool            = "image-builder"
     github-instance = "internal"
     owner           = "neighbors"
-    component       = "oci-image-builder"
   }
 }
 
@@ -301,7 +299,7 @@ import {
 
 resource "google_secret_manager_secret_iam_member" "oci_image_builder_sap_github_prow_sa_token_secret_accessor" {
   project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.oci_image_builder_sap_github_prow_sa_token.secret_id
+  secret_id = google_secret_manager_secret.sap_github_prow_sa_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.kyma-oci-image-builder.email}"
 }
