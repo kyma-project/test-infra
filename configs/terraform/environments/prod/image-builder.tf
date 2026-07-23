@@ -163,3 +163,122 @@ resource "google_secret_manager_secret" "image_builder_azure_sp" {
     component = "oci-image-builder"
   }
 }
+
+# Secrets used by kyma-oci-image-builder SA in the ADO pipeline.
+import {
+  to = google_secret_manager_secret.oci_image_builder_azure_pipeline_sa
+  id = "projects/${var.gcp_project_id}/secrets/azure-pipeline-image-builder-sa"
+}
+
+resource "google_secret_manager_secret" "oci_image_builder_azure_pipeline_sa" {
+  project   = var.gcp_project_id
+  secret_id = "azure-pipeline-image-builder-sa"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type      = "service-account-key"
+    tool      = "image-builder"
+    owner     = "neighbors"
+    component = "oci-image-builder"
+  }
+}
+
+import {
+  to = google_secret_manager_secret.oci_image_builder_sa_key_restricted_markets
+  id = "projects/${var.gcp_project_id}/secrets/image-builder-sa-key-restricted-markets"
+}
+
+resource "google_secret_manager_secret" "oci_image_builder_sa_key_restricted_markets" {
+  project   = var.gcp_project_id
+  secret_id = "image-builder-sa-key-restricted-markets"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type        = "service-account-key"
+    tool        = "image-builder"
+    environment = "restricted-markets"
+    owner       = "neighbors"
+    component   = "oci-image-builder"
+  }
+}
+
+import {
+  to = google_secret_manager_secret.oci_image_builder_signify_prod
+  id = "projects/${var.gcp_project_id}/secrets/kyma-signify-prod"
+}
+
+resource "google_secret_manager_secret" "oci_image_builder_signify_prod" {
+  project   = var.gcp_project_id
+  secret_id = "kyma-signify-prod"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type      = "signify"
+    tool      = "image-builder"
+    owner     = "neighbors"
+    component = "oci-image-builder"
+    usage     = "image-builder"
+  }
+
+  lifecycle {
+    ignore_changes = [rotation, topics]
+  }
+}
+
+import {
+  to = google_secret_manager_secret.sap_github_prow_sa_token
+  id = "projects/${var.gcp_project_id}/secrets/kyma-sap-github-prow-sa-token"
+}
+
+resource "google_secret_manager_secret" "sap_github_prow_sa_token" {
+  project   = var.gcp_project_id
+  secret_id = "kyma-sap-github-prow-sa-token"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-token"
+    github-instance = "internal"
+    owner           = "neighbors"
+  }
+}
+
+# Per-secret IAM bindings for kyma-oci-image-builder SA.
+resource "google_secret_manager_secret_iam_member" "oci_image_builder_azure_pipeline_sa_secret_accessor" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.oci_image_builder_azure_pipeline_sa.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.kyma-oci-image-builder.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "oci_image_builder_sa_key_restricted_markets_secret_accessor" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.oci_image_builder_sa_key_restricted_markets.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.kyma-oci-image-builder.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "oci_image_builder_signify_prod_secret_accessor" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.oci_image_builder_signify_prod.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.kyma-oci-image-builder.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "oci_image_builder_sap_github_prow_sa_token_secret_accessor" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.sap_github_prow_sa_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.kyma-oci-image-builder.email}"
+}
