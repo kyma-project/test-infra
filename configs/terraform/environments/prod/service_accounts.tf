@@ -32,6 +32,7 @@ resource "google_service_account" "sa-kyma-project" {
   account_id   = "sa-kyma-project"
   display_name = "sa-kyma-project"
   description  = "SA to manage PROD Artifact Registry in SAP CX Kyma Project"
+  disabled     = true
 
   lifecycle {
     prevent_destroy = true
@@ -58,6 +59,7 @@ resource "google_service_account" "sa-dev-kyma-project" {
   account_id   = "sa-dev-kyma-project"
   display_name = "sa-dev-kyma-project"
   description  = "SA to manage DEV Artifact Registry in SAP CX Kyma Project"
+  disabled     = true
 
   lifecycle {
     prevent_destroy = true
