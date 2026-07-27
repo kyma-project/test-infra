@@ -55,7 +55,7 @@
     {
     "matchManagers": ["regex"],
     "matchDatasources": ["docker"],
-    "matchCurrentVersion": "!/^v?\\d+\\.\\d+\\.\\d+$/",
+    "matchCurrentVersion": "!/v?\\d+\\.\\d+\\.\\d+/",
     "versioning": "loose",
     "groupName": "custom docker images (loose) to {{newVersion}}",
     "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
