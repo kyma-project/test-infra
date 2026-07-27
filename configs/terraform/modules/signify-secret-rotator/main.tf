@@ -8,25 +8,41 @@ resource "google_service_account" "signify_secret_rotator" {
 }
 
 // roles/secretmanager.secretAccessor is required to be able to access the secret version payload in secret manager
-resource "google_project_iam_member" "signify_secret_rotator_secret_version_accessor" {
-  project = data.google_project.project.project_id
-  role = "roles/secretmanager.secretAccessor"
-
-  member = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
+resource "google_secret_manager_secret_iam_member" "signify_secret_rotator_secret_accessor" {
+  project   = data.google_project.project.project_id
+  secret_id = var.signify_secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
 }
 
 // roles/secretmanager.secretVersionAdder is required to be able to add new versions to the secret in secret manager
-resource "google_project_iam_member" "signify_secret_rotator_secret_version_adder" {
-  project = data.google_project.project.project_id
-  role = "roles/secretmanager.secretVersionAdder"
-  member = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
+resource "google_secret_manager_secret_iam_member" "signify_secret_rotator_secret_version_adder" {
+  project   = data.google_project.project.project_id
+  secret_id = var.signify_secret_id
+  role      = "roles/secretmanager.secretVersionAdder"
+  member    = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
 }
 
 // roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
-resource "google_project_iam_member" "service_account_keys_rotator_secret_version_viewer" {
+resource "google_secret_manager_secret_iam_member" "signify_secret_rotator_secret_viewer" {
+  project   = data.google_project.project.project_id
+  secret_id = var.signify_secret_id
+  role      = "roles/secretmanager.viewer"
+  member    = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
+}
+
+// roles/logging.logWriter is required to write logs to Cloud Logging
+resource "google_project_iam_member" "signify_secret_rotator_log_writer" {
   project = data.google_project.project.project_id
-  role    = "roles/secretmanager.viewer"
-  member = "serviceAccount:${google_service_account.signify_secret_rotator.email}"  
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
+}
+
+// roles/errorreporting.writer is required to report errors to Cloud Error Reporting
+resource "google_project_iam_member" "signify_secret_rotator_error_reporting_writer" {
+  project = data.google_project.project.project_id
+  role    = "roles/errorreporting.writer"
+  member  = "serviceAccount:${google_service_account.signify_secret_rotator.email}"
 }
 
 resource "google_cloud_run_service_iam_member" "signify_secret_rotator_invoker" {

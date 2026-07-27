@@ -1,3 +1,8 @@
+variable "signify_secret_id" {
+  type        = string
+  description = "Secret Manager secret ID of the Signify secret that the rotator reads and updates."
+}
+
 variable "region" {
   type        = string
   description = "Google Cloud region to deploy the signify secret rotator to."

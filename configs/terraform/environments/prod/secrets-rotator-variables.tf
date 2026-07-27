@@ -77,6 +77,12 @@ variable "signify_secret_rotator_account_id" {
   description = "Service account ID of the signify secret rotator."
 }
 
+variable "signify_secret_id" {
+  type        = string
+  default     = "kyma-signify-prod"
+  description = "Secret Manager secret ID of the Signify secret that the rotator reads and updates."
+}
+
 variable "signify_secret_rotator_image" {
   type        = string
   description = "Image of the signify secret rotator."
