@@ -64,12 +64,12 @@ output "service_account_keys_cleaner" {
 # -------------------------------------------------------------------------------
 
 import {
-  id = "sap-kyma-prow/roles/logging.logWriter/serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
+  id = "sap-kyma-prow roles/logging.logWriter serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
   to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_log_writer
 }
 
 import {
-  id = "sap-kyma-prow/roles/errorreporting.writer/serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
+  id = "sap-kyma-prow roles/errorreporting.writer serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
   to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_error_reporting_writer
 }
 
