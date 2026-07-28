@@ -58,6 +58,21 @@ output "service_account_keys_cleaner" {
   value = module.service_account_keys_cleaner
 }
 
+# -------------------------------------------------------------------------------
+# Import — signify-rotator project-level IAM bindings created before IaC support.
+# Safe to remove after the first successful apply.
+# -------------------------------------------------------------------------------
+
+import {
+  id = "sap-kyma-prow roles/logging.logWriter serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
+  to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_log_writer
+}
+
+import {
+  id = "sap-kyma-prow roles/errorreporting.writer serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
+  to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_error_reporting_writer
+}
+
 module "signify_secret_rotator" {
   source = "../../modules/signify-secret-rotator"
 
@@ -71,8 +86,8 @@ module "signify_secret_rotator" {
   cloud_run_service_listen_port                = var.secrets_rotator_cloud_run_listen_port
   secret_manager_notifications_topic           = var.secret_manager_notifications_topic
   secrets_rotator_sa_email                     = google_service_account.secrets-rotator.email
+  signify_secret_id                            = google_secret_manager_secret.oci_image_builder_signify_prod.secret_id
 }
-
 
 ### dead letter monitoring ###
 
