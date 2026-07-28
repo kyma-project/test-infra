@@ -53,6 +53,17 @@
       "groupName": "docker images"
     },
     {
+    "matchManagers": ["regex"],
+    "matchDatasources": ["docker"],
+    "matchCurrentVersion": "!/v?\\d+\\.\\d+\\.\\d+/",
+    "versioning": "loose",
+    "groupName": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+    "commitMessageExtra": "",
+    "separateMajorMinor": false,
+    "maxMajorIncrement": 0
+    },
+    {
       "matchManagers": ["regex"],
       "matchDatasources": ["docker"],
       "matchCurrentVersion": "v?\\d+\\.\\d+\\.\\d+",
@@ -61,16 +72,6 @@
       "commitMessageTopic": "custom docker images (semver) to {{newVersion}}",
       "commitMessageExtra": "",
       "separateMajorMinor": false
-    },
-    {
-    "matchManagers": ["regex"],
-    "matchDatasources": ["docker"],
-    "versioning": "loose",
-    "groupName": "custom docker images (loose) to {{newVersion}}",
-    "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
-    "commitMessageExtra": "",
-    "separateMajorMinor": false,
-    "maxMajorIncrement": 0
     }
   ],
 
