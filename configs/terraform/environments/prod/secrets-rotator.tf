@@ -86,7 +86,7 @@ module "signify_secret_rotator" {
   cloud_run_service_listen_port                = var.secrets_rotator_cloud_run_listen_port
   secret_manager_notifications_topic           = var.secret_manager_notifications_topic
   secrets_rotator_sa_email                     = google_service_account.secrets-rotator.email
-  signify_secret_id                            = var.signify_secret_id
+  signify_secret_id                            = google_secret_manager_secret.oci_image_builder_signify_prod.secret_id
 }
 
 ### dead letter monitoring ###
