@@ -31,6 +31,9 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
 
     # Internal GitHub Enterprise (github-tools-sap) — tooling-infra deploy workflow (prod, v-tag)
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_prod}",
+
+    # Internal GitHub Enterprise (github-tools-sap) — tooling-infra deploy workflow (staging branch)
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_staging}",
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name

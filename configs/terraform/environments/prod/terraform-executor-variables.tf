@@ -63,3 +63,9 @@ variable "internal_github_tooling_infra_terraform_deploy_identity_prod" {
   default     = "kyma/tooling-infra/.github/workflows/iac-deploy.yml:vtag"
   description = "Value of the deploy_identity attribute for the terraform deploy workflow in the tooling-infra repo on internal GitHub for prod. The deploy_identity attribute is derived from job_workflow_ref and only populated when the caller ref is a v-tag. Format: org/repo/.github/workflows/workflow.yml:vtag"
 }
+
+variable "internal_github_tooling_infra_terraform_deploy_identity_staging" {
+  type        = string
+  default     = "kyma/tooling-infra/.github/workflows/iac-deploy.yml:staging"
+  description = "Value of the deploy_identity attribute for the terraform deploy workflow in the tooling-infra repo on internal GitHub for staging. The deploy_identity attribute is derived from job_workflow_ref and only populated when the caller ref is refs/heads/staging. Format: org/repo/.github/workflows/workflow.yml:staging"
+}
