@@ -380,11 +380,7 @@ resource "google_secret_manager_secret_iam_member" "terraform_planner_github_app
 # ==============================================================================
 # GitHub App Authentication — internal GitHub (github.tools.sap) — executor
 # ==============================================================================
-# Replaces the long-lived PAT (iac-bot-gh-tools-sap-terraform-executor-token)
-# for the Terraform executor workflow. The App token is generated at runtime
-# via actions/create-github-app-token with github-api-url pointing to
-# github.tools.sap and passed as TF_VAR_internal_github_token.
-# Secret values must be added manually via GCP Console or CLI after App creation.
+# Replaces the long-lived PAT (iac-bot-gh-tools-sap-terraform-executor-token).
 # ==============================================================================
 
 resource "google_secret_manager_secret" "terraform_executor_internal_github_app_id" {
@@ -449,6 +445,9 @@ resource "github_actions_variable" "terraform_executor_internal_github_app_priva
 
 # ==============================================================================
 # GitHub App Authentication — internal GitHub (github.tools.sap) — planner
+# ==============================================================================
+# Replaces the long-lived PAT (iac-bot-gh-tools-sap-terraform-planner-token).
+# Secret values must be added manually after App creation.
 # ==============================================================================
 
 resource "google_secret_manager_secret" "terraform_planner_internal_github_app_id" {
