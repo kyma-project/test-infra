@@ -40,15 +40,25 @@ jobs:
           secrets: |-
             terraform-planner-app-id:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_APP_ID_SECRET_NAME }}
             terraform-planner-app-private-key:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_APP_PRIVATE_KEY_SECRET_NAME }}
-            internal-github-terraform-planner-token:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.INTERNAL_GITHUB_TERRAFORM_PLANNER_SECRET_NAME }}
+            terraform-planner-internal-app-id:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_INTERNAL_APP_ID_SECRET_NAME }}
+            terraform-planner-internal-app-private-key:${{ vars.GCP_KYMA_PROJECT_PROJECT_ID }}/${{ vars.GH_TERRAFORM_PLANNER_INTERNAL_APP_PRIVATE_KEY_SECRET_NAME }}
 
-      - name: Generate GitHub App token for Terraform Planner
+      - name: Generate GitHub App token for Terraform Planner (github.com)
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ steps.secrets.outputs.terraform-planner-app-id }}
           private-key: ${{ steps.secrets.outputs.terraform-planner-app-private-key }}
           owner: ${{ github.repository_owner }}
+
+      - name: Generate GitHub App token for Terraform Planner (github.tools.sap)
+        id: app-token-internal
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ steps.secrets.outputs.terraform-planner-internal-app-id }}
+          private-key: ${{ steps.secrets.outputs.terraform-planner-internal-app-private-key }}
+          owner: kyma
+          github-api-url: https://github.tools.sap/api/v3
 
       - name: Tofu init
         id: tofu_init
@@ -58,7 +68,7 @@ jobs:
         id: tofu_plan
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          TF_VAR_internal_github_token: ${{ steps.secrets.outputs.internal-github-terraform-planner-token }}
+          TF_VAR_internal_github_token: ${{ steps.app-token-internal.outputs.token }}
         run: |
           exitcode=0
           tofu plan -detailed-exitcode -no-color -out plan || exitcode=$?
