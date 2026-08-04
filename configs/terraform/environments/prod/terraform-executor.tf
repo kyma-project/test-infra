@@ -376,3 +376,136 @@ resource "google_secret_manager_secret_iam_member" "terraform_planner_github_app
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.terraform_planner.email}"
 }
+
+# ==============================================================================
+# GitHub App Authentication — internal GitHub (github.tools.sap) — executor
+# ==============================================================================
+# Replaces the long-lived PAT (iac-bot-gh-tools-sap-terraform-executor-token).
+# ==============================================================================
+
+resource "google_secret_manager_secret" "terraform_executor_internal_github_app_id" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "terraform-executor_internal-github-app-id"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-id"
+    tool            = "iac"
+    github-instance = "internal"
+    owner           = "neighbors"
+  }
+}
+
+resource "google_secret_manager_secret" "terraform_executor_internal_github_app_private_key" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "terraform-executor_internal-github-app-private-key"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-private-key"
+    tool            = "iac"
+    github-instance = "internal"
+    owner           = "neighbors"
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "terraform_executor_internal_github_app_id_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_executor_internal_github_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_executor.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "terraform_executor_internal_github_app_private_key_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_executor_internal_github_app_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_executor.email}"
+}
+
+resource "github_actions_variable" "terraform_executor_internal_github_app_id_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_EXECUTOR_INTERNAL_APP_ID_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_executor_internal_github_app_id.secret_id
+}
+
+resource "github_actions_variable" "terraform_executor_internal_github_app_private_key_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_EXECUTOR_INTERNAL_APP_PRIVATE_KEY_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_executor_internal_github_app_private_key.secret_id
+}
+
+# ==============================================================================
+# GitHub App Authentication — internal GitHub (github.tools.sap) — planner
+# ==============================================================================
+# Replaces the long-lived PAT (iac-bot-gh-tools-sap-terraform-planner-token).
+# Secret values must be added manually after App creation.
+# ==============================================================================
+
+resource "google_secret_manager_secret" "terraform_planner_internal_github_app_id" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "terraform-planner_internal-github-app-id"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-id"
+    tool            = "iac"
+    github-instance = "internal"
+    owner           = "neighbors"
+  }
+}
+
+resource "google_secret_manager_secret" "terraform_planner_internal_github_app_private_key" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = "terraform-planner_internal-github-app-private-key"
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-private-key"
+    tool            = "iac"
+    github-instance = "internal"
+    owner           = "neighbors"
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_github_app_id_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_planner_internal_github_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "terraform_planner_internal_github_app_private_key_reader" {
+  project   = var.terraform_executor_gcp_service_account.project_id
+  secret_id = google_secret_manager_secret.terraform_planner_internal_github_app_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.terraform_planner.email}"
+}
+
+resource "github_actions_variable" "terraform_planner_internal_github_app_id_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_PLANNER_INTERNAL_APP_ID_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_planner_internal_github_app_id.secret_id
+}
+
+resource "github_actions_variable" "terraform_planner_internal_github_app_private_key_secret_name" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "GH_TERRAFORM_PLANNER_INTERNAL_APP_PRIVATE_KEY_SECRET_NAME"
+  value         = google_secret_manager_secret.terraform_planner_internal_github_app_private_key.secret_id
+}
