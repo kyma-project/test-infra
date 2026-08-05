@@ -1,12 +1,12 @@
 name: kyma-project.io/tooling/test-infra-public
 team: kyma/neighbors
 images:
-  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260803085103"
+  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260804070225"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.1"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.26.5-alpine3.23"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/python:3.14.6-alpine3.23"
-  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260803085045"
-  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260803085041"
+  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260804070224"
+  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260804070225"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20260803085149"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20260804070215"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/signify-secret-rotator:v20260804065534"
