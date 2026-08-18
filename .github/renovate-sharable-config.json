@@ -50,7 +50,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "groupName": "docker images"
+      "groupName": "docker deps"
     },
     {
       "matchManagers": ["regex"],
@@ -77,7 +77,19 @@
       "matchDepNames": [
         "europe-docker.pkg.dev/kyma-project/prod/external/library/**"
       ],
-      "commitMessageTopic": "docker prod external images"
+      "commitMessageTopic": "external/library image"
+    },
+    {
+      "matchDepNames": [
+        "europe-docker.pkg.dev/kyma-project/prod/**"
+      ],
+      "commitMessageTopic": "prod image"
+    },
+    {
+      "matchDepNames": [
+        "europe-docker.pkg.dev/kyma-project/dev/**"
+      ],
+      "commitMessageTopic": "dev image"
     }
   ],
 
