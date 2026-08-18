@@ -109,6 +109,18 @@
       "depNameTemplate": "{{depName}}",
       "currentValueTemplate": "{{currentValue}}",
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/external-images\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "source:\\s*\"(?<depName>[^:\"]+):(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "{{depName}}",
+      "currentValueTemplate": "{{currentValue}}",
+      "datasourceTemplate": "docker"
     }
   ]
 }
