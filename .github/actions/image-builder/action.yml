@@ -103,6 +103,9 @@ runs:
             result+=" --tag=\"$entry\""
           fi
         done
+        if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "pull_request_target" ]]; then
+          result+=" --tag=\"v{{ .PRNumber }}-PR\""
+        fi
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
       shell: bash
