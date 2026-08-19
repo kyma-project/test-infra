@@ -83,12 +83,11 @@ variable "kyma_restricted_images_dev" {
         }
       },
       {
-        id     = "delete-old-pr-images"
+        id     = "delete-old-images"
         action = "DELETE"
         condition = {
-          tag_state    = "TAGGED"
-          older_than   = "2592000s"
-          tag_prefixes = ["PR-"]
+          tag_state  = "TAGGED"
+          older_than = "2592000s"
         }
       }
     ]

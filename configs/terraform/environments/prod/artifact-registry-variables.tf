@@ -73,15 +73,14 @@ variable "dev_docker_repository" {
       }
       },
       {
-        id     = "delete-old-pr-images"
+        id     = "delete-old-images"
         action = "DELETE"
         condition = {
           tag_state = "TAGGED"
           # Google provider does not support the time units,
           # so we need to provide the time in seconds.
           # Time after which the images will be deleted.
-          older_than   = "2592000s" # 2592000s = 720h = 30 days
-          tag_prefixes = ["PR-"]
+          older_than = "2592000s" # 2592000s = 720h = 30 days
         }
     }]
 
