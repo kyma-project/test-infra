@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.26.5
+go 1.26.6
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
@@ -19,9 +19,9 @@ require (
 	github.com/onsi/ginkgo/v2 v2.32.1
 	github.com/onsi/gomega v1.42.1
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.4
+	github.com/sirupsen/logrus v1.10.0
 	github.com/spf13/cobra v1.10.2
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	github.tools.sap/kyma/neighbors-contracts/go/logging/v2 v2.0.0
 	go.opentelemetry.io/otel/trace v1.45.0
 	go.uber.org/zap v1.28.0
