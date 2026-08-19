@@ -42,6 +42,10 @@ type Config struct {
 	// The value can be a go-template string or literal tag value string.
 	// See tags.Tag struct for more information and available fields
 	DefaultPRTag tags.Tag `yaml:"default-pr-tag" json:"default-pr-tag"`
+	// Default Tag template used for images build on merge group event.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	DefaultMergeGroupTag tags.Tag `yaml:"default-merge-group-tag" json:"default-merge-group-tag"`
 	// LogFormat defines the format docker buildx logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`
