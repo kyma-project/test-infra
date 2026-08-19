@@ -1,8 +1,8 @@
 log-format: json
 default-merge-group-tag:
   name: default_tag
-  value: "MG-{{ .ShortSHA }}"
-  validation: "^MG-[0-9a-f]{8}$"
+  value: "0.0.0-MG.{{ .ShortSHA }}"
+  validation: "^0\\.0\\.0-MG\\.[0-9a-f]{8}$"
 ado-config:
   ado-organization-url: https://dev.azure.com/hyperspace-pipelines
   ado-project-name: kyma

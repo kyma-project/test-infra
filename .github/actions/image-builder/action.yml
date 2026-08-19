@@ -107,7 +107,7 @@ runs:
           result+=" --tag=\"v{{ .PRNumber }}-PR\""
         fi
         if [[ "${{ github.event_name }}" == "merge_group" ]]; then
-          result+=" --tag=\"MG-{{ .ShortSHA }}\""
+          result+=" --tag=\"0.0.0-MG.{{ .ShortSHA }}\""
         fi
         echo "tags=$result" >> $GITHUB_OUTPUT
       id: prepare-tags
