@@ -741,6 +741,10 @@ func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 		logger.Debugw("Running for pull request event, PR number found", "pr-number", pr)
+		if len(o.AdditionalPRTag.Value) > 0 {
+			o.tags = append(o.tags, o.AdditionalPRTag)
+			logger.Debugw("additional PR tag appended", "tag", o.AdditionalPRTag.Value)
+		}
 	}
 	if o.gitState.JobType == "merge_group" && o.gitState.PullHeadCommitSHA != "" {
 		sha = o.gitState.PullHeadCommitSHA

@@ -3,8 +3,8 @@ default-merge-group-tag:
   name: default_tag
   value: "0.0.0-MG.{{ .ShortSHA }}"
   validation: "^0\\.0\\.0-MG\\.[0-9a-f]{8}$"
-default-pr-tag:
-  name: default_tag
+additional-pr-tag:
+  name: semver_pr_tag
   value: "v{{ .PRNumber }}-PR"
   validation: "^v[0-9]+-PR$"
 ado-config:
