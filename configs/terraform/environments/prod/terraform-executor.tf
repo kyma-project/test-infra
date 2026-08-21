@@ -39,6 +39,10 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
 
     # Internal GitHub Enterprise (github-tools-sap) — tooling-infra deploy workflow (staging branch)
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_staging}",
+
+    # Internal GitHub Enterprise (github-tools-sap legacy) — kept during pool migration; remove once GCP_WIF_PROVIDER is updated to v2
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name_legacy}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_prod}",
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name_legacy}/attribute.deploy_identity/${var.internal_github_tooling_infra_terraform_deploy_identity_staging}",
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name
@@ -99,6 +103,10 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
 
     # Internal GitHub Enterprise (github-tools-sap) — any workflow in kyma/tooling-infra
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.repository_id/${data.github_repository.tooling_infra.repo_id}",
+
+    # Internal GitHub Enterprise (github-tools-sap legacy) — kept during pool migration; remove once GCP_WIF_PROVIDER is updated to v2
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name_legacy}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}",
+    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name_legacy}/attribute.repository_id/${data.github_repository.tooling_infra.repo_id}",
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_planner.name
