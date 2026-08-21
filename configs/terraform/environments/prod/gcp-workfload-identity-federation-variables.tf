@@ -37,6 +37,6 @@ variable "gh_com_kyma_project_wif_attribute_condition" {
 # Internal GitHub Enterprise (SAP) Workload Identity Federation
 variable "internal_github_wif_pool_id" {
   type        = string
-  default     = "github-tools-sap"
+  default     = "github-tools-sap-v2"
   description = "Workload Identity Federation pool id used for internal GitHub Enterprise workflows"
 }

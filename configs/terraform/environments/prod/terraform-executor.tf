@@ -97,9 +97,6 @@ resource "google_service_account_iam_binding" "terraform_planner_workload_identi
     # Internal GitHub Enterprise (github-tools-sap) — tooling-infra plan workflow
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_plan_reusable_workflow_ref}",
 
-    # Internal GitHub Enterprise (github-tools-sap) — tooling-infra validate workflow
-    "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_ref/${var.internal_github_tooling_infra_terraform_validate_reusable_workflow_ref}",
-
     # Internal GitHub Enterprise (github-tools-sap) — any workflow in kyma/tooling-infra
     "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.repository_id/${data.github_repository.tooling_infra.repo_id}",
   ]
