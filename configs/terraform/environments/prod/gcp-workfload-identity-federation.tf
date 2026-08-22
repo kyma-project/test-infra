@@ -8,8 +8,12 @@ data "google_project" "current" {
 }
 
 locals {
-  # Full resource name of the internal GitHub Enterprise WIF pool.
+  # Full resource name of the internal GitHub Enterprise WIF pool (v2 — managed by foundation module).
   internal_github_wif_pool_name = "projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.internal_github_wif_pool_id}"
+
+  # Legacy pool kept alongside v2 during migration. Remove once GCP_WIF_PROVIDER is
+  # updated to v2 in all environments and the old pool bindings are no longer needed.
+  internal_github_wif_pool_name_legacy = "projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/github-tools-sap"
 }
 
 module "gh_com_kyma_project_workload_identity_federation" {
