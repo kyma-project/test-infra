@@ -1,3 +1,16 @@
+# -------------------------------------------------------------------------------
+# State migration — google_project_iam_binding (authoritative) replaced by
+# google_project_iam_member (additive) for the PubSub service agent.
+# The binding is removed from state without destruction; the new member resource
+# re-grants the same permission additively so there is no access interruption.
+# Safe to remove this block after the first successful apply.
+# -------------------------------------------------------------------------------
+
+removed {
+  from = module.service_account_keys_rotator.google_project_iam_binding.pubsub_project_token_creator
+  lifecycle { destroy = false }
+}
+
 resource "google_pubsub_topic" "secrets_rotator_dead_letter" {
   name = format("%s-%s", var.secrets_rotator_name, "dead-letter")
 
