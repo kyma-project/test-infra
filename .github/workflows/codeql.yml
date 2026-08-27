@@ -12,6 +12,10 @@ jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    # continue-on-error allows this job to pass CI during the transition from
+    # default CodeQL setup to this advanced setup. Remove once the default setup
+    # is disabled in repository Settings → Code security → Code scanning.
+    continue-on-error: true
 
     permissions:
       security-events: write
@@ -24,7 +28,7 @@ jobs:
       matrix:
         include:
           - language: go
-            build-mode: manual
+            build-mode: autobuild
           - language: actions
             build-mode: none
 
@@ -39,16 +43,12 @@ jobs:
           go-version-file: go.mod
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 
-      - name: Build
-        if: matrix.build-mode == 'manual'
-        run: go build ./...
-
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{matrix.language}}"
