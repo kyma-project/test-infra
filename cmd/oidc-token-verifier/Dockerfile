@@ -1,4 +1,4 @@
-FROM europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.27.0-alpine3.23 as builder
+FROM europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.27.0-alpine3.24 as builder
 
 # Add certificate authorities certificates.
 # This let oidctokenverifier to use tls connection to the OIDC provider.
