@@ -57,6 +57,12 @@ resource "google_cloud_run_service" "signify_secret_rotator" {
   name = var.service_name
   location = var.region
 
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = "internal"
+    }
+  }
+
   template {
     spec {
       service_account_name = google_service_account.signify_secret_rotator.email

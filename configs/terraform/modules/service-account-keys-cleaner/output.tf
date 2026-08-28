@@ -2,6 +2,11 @@ output "service_account_keys_cleaner_service_account" {
   value = google_service_account.service_account_keys_cleaner
 }
 
+output "service_account_keys_cleaner_sa_email" {
+  value       = google_service_account.service_account_keys_cleaner.email
+  description = "Email of the SA keys cleaner service account. Pass to the rotatable-secret module."
+}
+
 output "service_account_keys_cleaner_cloud_run_service" {
   value = {
     id       = google_cloud_run_service.service_account_keys_cleaner.id

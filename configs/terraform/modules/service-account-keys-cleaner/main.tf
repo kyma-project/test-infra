@@ -7,27 +7,6 @@ resource "google_service_account" "service_account_keys_cleaner" {
   description = "Identity of the service account keys rotator service."
 }
 
-// Allow the service account to delete service account keys.
-resource "google_project_iam_member" "service_account_keys_cleaner_sa_keys_admin" {
-  project = data.google_project.project.project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
-}
-
-// Allow the service account to delete secret versions in the secret manager.
-resource "google_project_iam_member" "service_account_keys_cleaner_secrets_versions_manager" {
-  project = data.google_project.project.project_id
-  role    = "roles/secretmanager.secretVersionManager"
-  member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
-}
-
-// roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
-resource "google_project_iam_member" "service_account_keys_cleaner_secret_viewer" {
-  project = data.google_project.project.project_id
-  role    = "roles/secretmanager.viewer"
-  member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
-}
-
 // Allow secrets rotator to call the service account keys cleaner service.
 resource "google_cloud_run_service_iam_member" "service_account_keys_cleaner_invoker" {
   location = google_cloud_run_service.service_account_keys_cleaner.location
@@ -40,6 +19,12 @@ resource "google_cloud_run_service_iam_member" "service_account_keys_cleaner_inv
 resource "google_cloud_run_service" "service_account_keys_cleaner" {
   name     = var.service_name
   location = var.region
+
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = "internal"
+    }
+  }
 
   template {
     spec {

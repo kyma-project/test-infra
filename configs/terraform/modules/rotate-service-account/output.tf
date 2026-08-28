@@ -2,8 +2,9 @@ output "service_account_keys_rotator_service_account" {
   value = google_service_account.service_account_keys_rotator
 }
 
-output "service_account_keys_rotator_service_account_iam" {
-  value = google_project_iam_member.service_account_keys_rotator
+output "service_account_keys_rotator_sa_email" {
+  value       = google_service_account.service_account_keys_rotator.email
+  description = "Email of the SA keys rotator service account. Pass to the rotatable-secret module."
 }
 
 output "service_account_keys_rotator_cloud_run_service" {

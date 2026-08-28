@@ -7,34 +7,6 @@ resource "google_service_account" "service_account_keys_rotator" {
   description = "Identity of the service account keys rotator service."
 }
 
-// roles/iam.serviceAccountKeyAdmin is required to be able to create new keys for the service account
-resource "google_project_iam_member" "service_account_keys_rotator" {
-  project = data.google_project.project.project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
-}
-
-// roles/secretmanager.secretAccessor is required to be able to access the secret version payload in secret manager
-resource "google_project_iam_member" "service_account_keys_rotator_secret_version_accessor" {
-  project = data.google_project.project.project_id
-  role    = "roles/secretmanager.secretAccessor"
-  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
-}
-
-// roles/secretmanager.secretVersionAdder is required to be able to add new versions to the secret in secret manager
-resource "google_project_iam_member" "service_account_keys_rotator_secret_version_adder" {
-  project = data.google_project.project.project_id
-  role    = "roles/secretmanager.secretVersionAdder"
-  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
-}
-
-// roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
-resource "google_project_iam_member" "service_account_keys_rotator_secret_version_viewer" {
-  project = data.google_project.project.project_id
-  role    = "roles/secretmanager.viewer"
-  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
-}
-
 resource "google_cloud_run_service_iam_member" "service_account_keys_rotator_invoker" {
   location = google_cloud_run_service.service_account_keys_rotator.location
   service  = google_cloud_run_service.service_account_keys_rotator.name
@@ -48,15 +20,24 @@ resource "google_project_service_identity" "pubsub_identity_agent" {
   service  = "pubsub.googleapis.com"
 }
 
-resource "google_project_iam_binding" "pubsub_project_token_creator" {
+// roles/iam.serviceAccountTokenCreator is required for PubSub to generate OIDC tokens for push subscriptions.
+// Using google_project_iam_member (additive) instead of google_project_iam_binding (authoritative) to avoid
+// clobbering other members that may hold this role.
+resource "google_project_iam_member" "pubsub_project_token_creator" {
   project = data.google_project.project.project_id
   role    = "roles/iam.serviceAccountTokenCreator"
-  members = ["serviceAccount:${google_project_service_identity.pubsub_identity_agent.email}"]
+  member  = "serviceAccount:${google_project_service_identity.pubsub_identity_agent.email}"
 }
 
 resource "google_cloud_run_service" "service_account_keys_rotator" {
   name     = var.service_name
   location = var.region
+
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = "internal"
+    }
+  }
 
   template {
     spec {
