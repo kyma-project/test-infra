@@ -80,6 +80,10 @@
       "commitMessageTopic": "external/library image"
     },
     {
+      "matchDepNames": ["europe-docker.pkg.dev/kyma-project/prod/external/library/golang"],
+      "groupName": "All Go dependencies"
+    },
+    {
       "matchDepNames": [
         "europe-docker.pkg.dev/kyma-project/prod/**"
       ],
