@@ -200,6 +200,15 @@ func buildInADO(o options) error {
 		fmt.Println("Running in dry-run mode. Skipping authentication check.")
 	}
 
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 && len(o.AdditionalPRTag.Value) > 0 {
+		pr := fmt.Sprint(o.gitState.PullRequestNumber)
+		resolvedAdditionalTags, err := getTags(o.logger, pr, "", []tags.Tag{o.AdditionalPRTag})
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed resolving additional PR tag: %w", err)
+		}
+		o.tags = append(o.tags, resolvedAdditionalTags...)
+	}
+
 	fmt.Println("Preparing ADO template parameters.")
 	// Preparing ADO pipeline parameters.
 	templateParameters, err := prepareADOTemplateParameters(o)
