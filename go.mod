@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.27.0
+go 1.27.1
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
@@ -11,9 +11,9 @@ require (
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/cloudevents/sdk-go/v2 v2.16.2
-	github.com/coreos/go-oidc/v3 v3.20.0
-	github.com/go-jose/go-jose/v4 v4.1.4
-	github.com/google/go-containerregistry v0.22.0
+	github.com/coreos/go-oidc/v3 v3.21.0
+	github.com/go-jose/go-jose/v4 v4.1.5
+	github.com/google/go-containerregistry v0.22.1
 	github.com/google/go-github/v90 v90.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/onsi/ginkgo/v2 v2.32.1
@@ -25,7 +25,7 @@ require (
 	github.tools.sap/kyma/neighbors-contracts/go/logging/v2 v2.0.0
 	go.opentelemetry.io/otel/trace v1.46.0
 	go.uber.org/zap v1.28.0
-	google.golang.org/api v0.296.0
+	google.golang.org/api v0.297.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.37.0
