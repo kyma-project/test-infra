@@ -137,21 +137,7 @@ removed {
 }
 
 removed {
-  from = google_secret_manager_secret_iam_member.doc_collector_reusable_workflow_internal_token_reader["workflow_dispatch"]
-  lifecycle {
-    destroy = true
-  }
-}
-
-removed {
-  from = google_secret_manager_secret_iam_member.doc_collector_reusable_workflow_internal_token_reader["schedule"]
-  lifecycle {
-    destroy = true
-  }
-}
-
-removed {
-  from = google_secret_manager_secret_iam_member.doc_collector_reusable_workflow_internal_token_reader["release"]
+  from = google_secret_manager_secret_iam_member.doc_collector_reusable_workflow_internal_token_reader
   lifecycle {
     destroy = true
   }
