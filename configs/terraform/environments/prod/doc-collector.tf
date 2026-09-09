@@ -5,7 +5,7 @@
 # that synchronizes documentation from various repositories.
 #
 # Resources managed:
-# - GCP Secret Manager secrets for GitHub tokens
+# - GCP Secret Manager secrets for GitHub App credentials
 # - IAM permissions for accessing secrets via Workload Identity Federation
 #
 # The workflow runs in kyma/product-kyma-runtime repository and uses
@@ -42,8 +42,8 @@ variable "doc_collector_gcp_secret_name_github_app_id" {
 }
 
 variable "doc_collector_reusable_workflow_ref" {
-  type = string
-  default = "kyma/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
+  type        = string
+  default     = "kyma/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
   description = "GitHub reference for the reusable workflow used by the documentation collector"
 }
 
@@ -51,14 +51,13 @@ variable "doc_collector_reusable_workflow_ref" {
 # GitHub Data Sources
 # ------------------------------------------------------------------------------
 
-# Fetch the kyma organization data from internal GitHub
 data "github_organization" "kyma_internal" {
   provider = github.internal_github
   name     = "kyma"
 }
 
 # ------------------------------------------------------------------------------
-# GCP Secret Manager - GitHub App Private Key
+# GCP Secret Manager - GitHub App credentials
 # ------------------------------------------------------------------------------
 
 # Secret shell for the doc-collector GitHub App private key.
@@ -102,11 +101,9 @@ resource "google_secret_manager_secret" "doc_collector_github_app_id" {
 }
 
 # ------------------------------------------------------------------------------
-# IAM Permissions - Secret Access for GitHub Actions Workflows via WIF
+# IAM Permissions - GitHub App (new)
 # ------------------------------------------------------------------------------
 
-# Grant the documentation collector workflow access to read the GitHub App private key
-# via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_app_private_key_reader" {
   for_each  = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
@@ -115,8 +112,6 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
 
-# Grant the documentation collector workflow access to read the public GitHub token
-# (kyma-bot-github-public-repo-token) via Workload Identity Federation.
 resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_public_token_reader" {
   for_each  = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
@@ -126,19 +121,36 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
 }
 
 # ------------------------------------------------------------------------------
-# Removed Resources - PAT-based authentication (migrated to GitHub App)
+# TODO: remove after GitHub App auth is validated in production
 # ------------------------------------------------------------------------------
 
-removed {
-  from = google_secret_manager_secret.doc_collector_internal_github_token
-  lifecycle {
-    destroy = false
+variable "doc_collector_gcp_secret_name_internal_github_token" {
+  type        = string
+  default     = "technical-writers-docsync-workflow-gh-tools-neighbors-token"
+  description = "GCP Secret Manager secret name for internal GitHub token used by documentation collector"
+}
+
+resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
+  project   = var.gcp_project_id
+  secret_id = var.doc_collector_gcp_secret_name_internal_github_token
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-token"
+    tool            = "doc-collector"
+    github-instance = "internal"
+    owner           = "neighbors"
+    component       = "github-workflow"
   }
 }
 
-removed {
-  from = google_secret_manager_secret_iam_member.doc_collector_reusable_workflow_internal_token_reader
-  lifecycle {
-    destroy = true
-  }
+resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_internal_token_reader" {
+  for_each  = toset(local.doc_collector_supported_event)
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
 }
