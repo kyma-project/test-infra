@@ -77,6 +77,18 @@ variable "neighbors_gh_automations_internal_private_key_secret_id" {
   description = "GCP Secret Manager secret ID for the neighbors-gh-automations GitHub App private key on the internal GitHub (github.tools.sap)"
 }
 
+variable "gh_neighbors_automations_internal_app_id_secret_var_name" {
+  type        = string
+  default     = "GH_NEIGHBORS_AUTOMATIONS_INTERNAL_APP_ID_SECRET_NAME"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the neighbors-gh-automations App ID"
+}
+
+variable "gh_neighbors_automations_internal_private_key_secret_var_name" {
+  type        = string
+  default     = "GH_NEIGHBORS_AUTOMATIONS_INTERNAL_PRIVATE_KEY_SECRET_NAME"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the neighbors-gh-automations App private key"
+}
+
 # ------------------------------------------------------------------------------
 # GCP Secret Manager — secret containers
 # ------------------------------------------------------------------------------
@@ -149,4 +161,22 @@ resource "google_secret_manager_secret_iam_member" "pull_unit_test_go_neighbors_
   secret_id = google_secret_manager_secret.neighbors_gh_automations_internal_private_key.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_unit_test_go_reusable_workflow_ref}"
+}
+
+# ------------------------------------------------------------------------------
+# GitHub Actions Repository Variables — expose secret names to reusable workflows
+# ------------------------------------------------------------------------------
+
+resource "github_actions_variable" "neighbors_gh_automations_internal_app_id_secret_name" {
+  provider      = github.kyma_project
+  repository    = data.github_repository.test_infra.name
+  variable_name = var.gh_neighbors_automations_internal_app_id_secret_var_name
+  value         = google_secret_manager_secret.neighbors_gh_automations_internal_app_id.secret_id
+}
+
+resource "github_actions_variable" "neighbors_gh_automations_internal_private_key_secret_name" {
+  provider      = github.kyma_project
+  repository    = data.github_repository.test_infra.name
+  variable_name = var.gh_neighbors_automations_internal_private_key_secret_var_name
+  value         = google_secret_manager_secret.neighbors_gh_automations_internal_private_key.secret_id
 }
