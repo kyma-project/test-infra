@@ -59,12 +59,6 @@ variable "doc_collector_internal_reusable_workflow_ref" {
   description = "GitHub reference for the reusable workflow on github.tools.sap used by the documentation collector"
 }
 
-variable "doc_collector_public_reusable_workflow_ref" {
-  type        = string
-  default     = "kyma-project/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
-  description = "GitHub reference for the reusable workflow on github.com used by the documentation collector"
-}
-
 # ------------------------------------------------------------------------------
 # GitHub Data Sources
 # ------------------------------------------------------------------------------
@@ -191,7 +185,7 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_pri
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_public_app_private_key.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.doc_collector_public_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
 }
 
 resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_id_reader" {
@@ -199,7 +193,7 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_id_
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_public_app_id.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.doc_collector_public_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
 }
 
 # ------------------------------------------------------------------------------
