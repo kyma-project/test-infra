@@ -19,21 +19,19 @@ resource "google_secret_manager_secret_iam_member" "webhook_token_accessor" {
   member    = "serviceAccount:${google_service_account.github_webhook_gateway.email}"
 }
 
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
+removed {
+  from = google_cloud_run_service_iam_policy.noauth
+  lifecycle {
+    destroy = false
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "noauth" {
+resource "google_cloud_run_service_iam_member" "public_invoker" {
   location = google_cloud_run_service.github_webhook_gateway.location
   project  = google_cloud_run_service.github_webhook_gateway.project
   service  = google_cloud_run_service.github_webhook_gateway.name
-
-  policy_data = data.google_iam_policy.noauth.policy_data
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }
 
 resource "google_pubsub_topic" "issue_labeled" {
