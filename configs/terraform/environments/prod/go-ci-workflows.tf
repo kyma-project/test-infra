@@ -54,14 +54,99 @@ resource "google_secret_manager_secret_iam_member" "pull_unit_test_go_workflow_i
 # Expose the GCP secret name as a repository-level variable so the reusable
 # workflows can resolve the secret at runtime.
 
-import {
-  to = github_actions_variable.gh_tools_kyma_prow_bot_token_secret_name
-  id = "test-infra:${var.gh_tools_kyma_prow_bot_token_secret_name}"
-}
-
 resource "github_actions_variable" "gh_tools_kyma_prow_bot_token_secret_name" {
   provider      = github.kyma_project
   repository    = data.github_repository.test_infra.name
   variable_name = var.gh_tools_kyma_prow_bot_token_secret_name
   value         = google_secret_manager_secret.kyma_modules_runtime_internal_github_token.secret_id
+}
+
+# ==============================================================================
+# neighbors-gh-automations — GitHub App credentials + WIF access
+# ==============================================================================
+
+variable "neighbors_gh_automations_internal_app_id_secret_id" {
+  type        = string
+  default     = "neighbors-gh-automations_internal-github-app-id"
+  description = "GCP Secret Manager secret ID for the neighbors-gh-automations GitHub App ID on the internal GitHub (github.tools.sap)"
+}
+
+variable "neighbors_gh_automations_internal_private_key_secret_id" {
+  type        = string
+  default     = "neighbors-gh-automations_internal-github-app-private-key"
+  description = "GCP Secret Manager secret ID for the neighbors-gh-automations GitHub App private key on the internal GitHub (github.tools.sap)"
+}
+
+# ------------------------------------------------------------------------------
+# GCP Secret Manager — secret containers
+# ------------------------------------------------------------------------------
+
+resource "google_secret_manager_secret" "neighbors_gh_automations_internal_app_id" {
+  project   = var.gcp_project_id
+  secret_id = var.neighbors_gh_automations_internal_app_id_secret_id
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    owner           = "neighbors"
+    type            = "app-id"
+    tool            = "neighbors-gh-automations"
+    entity          = "github-app"
+    github-instance = "internal"
+  }
+}
+
+resource "google_secret_manager_secret" "neighbors_gh_automations_internal_private_key" {
+  project   = var.gcp_project_id
+  secret_id = var.neighbors_gh_automations_internal_private_key_secret_id
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    owner           = "neighbors"
+    type            = "private-key"
+    tool            = "neighbors-gh-automations"
+    entity          = "github-app"
+    github-instance = "internal"
+  }
+}
+
+# ------------------------------------------------------------------------------
+# IAM — grant pull-go-lint reusable workflow secretAccessor via WIF
+# ------------------------------------------------------------------------------
+
+resource "google_secret_manager_secret_iam_member" "pull_go_lint_neighbors_internal_app_id_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.neighbors_gh_automations_internal_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_go_lint_reusable_workflow_ref}"
+}
+
+resource "google_secret_manager_secret_iam_member" "pull_go_lint_neighbors_internal_private_key_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.neighbors_gh_automations_internal_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_go_lint_reusable_workflow_ref}"
+}
+
+# ------------------------------------------------------------------------------
+# IAM — grant pull-unit-test-go reusable workflow secretAccessor via WIF
+# ------------------------------------------------------------------------------
+
+resource "google_secret_manager_secret_iam_member" "pull_unit_test_go_neighbors_internal_app_id_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.neighbors_gh_automations_internal_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_unit_test_go_reusable_workflow_ref}"
+}
+
+resource "google_secret_manager_secret_iam_member" "pull_unit_test_go_neighbors_internal_private_key_reader" {
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.neighbors_gh_automations_internal_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_ref/${var.pull_unit_test_go_reusable_workflow_ref}"
 }
