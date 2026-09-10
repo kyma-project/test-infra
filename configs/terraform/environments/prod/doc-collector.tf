@@ -29,22 +29,40 @@ locals {
 # Variables
 # ------------------------------------------------------------------------------
 
-variable "doc_collector_gcp_secret_name_github_app_private_key" {
+variable "doc_collector_gcp_secret_name_internal_app_private_key" {
   type        = string
-  default     = "doc-collector_github-app-private-key"
-  description = "GCP Secret Manager secret name for the doc-collector GitHub App private key"
+  default     = "doc-collector_internal-github-app-private-key"
+  description = "GCP Secret Manager secret name for the doc-collector github.tools.sap App private key"
 }
 
-variable "doc_collector_gcp_secret_name_github_app_id" {
+variable "doc_collector_gcp_secret_name_internal_app_id" {
   type        = string
-  default     = "doc-collector_github-app-id"
-  description = "GCP Secret Manager secret name for the doc-collector GitHub App ID"
+  default     = "doc-collector_internal-github-app-id"
+  description = "GCP Secret Manager secret name for the doc-collector github.tools.sap App ID"
 }
 
-variable "doc_collector_reusable_workflow_ref" {
+variable "doc_collector_gcp_secret_name_public_app_private_key" {
+  type        = string
+  default     = "doc-collector_public-github-app-private-key"
+  description = "GCP Secret Manager secret name for the doc-collector github.com App private key"
+}
+
+variable "doc_collector_gcp_secret_name_public_app_id" {
+  type        = string
+  default     = "doc-collector_public-github-app-id"
+  description = "GCP Secret Manager secret name for the doc-collector github.com App ID"
+}
+
+variable "doc_collector_internal_reusable_workflow_ref" {
   type        = string
   default     = "kyma/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
-  description = "GitHub reference for the reusable workflow used by the documentation collector"
+  description = "GitHub reference for the reusable workflow on github.tools.sap used by the documentation collector"
+}
+
+variable "doc_collector_public_reusable_workflow_ref" {
+  type        = string
+  default     = "kyma-project/test-infra/.github/workflows/reusable-doc-collector.yml@refs/heads/main"
+  description = "GitHub reference for the reusable workflow on github.com used by the documentation collector"
 }
 
 # ------------------------------------------------------------------------------
@@ -57,14 +75,14 @@ data "github_organization" "kyma_internal" {
 }
 
 # ------------------------------------------------------------------------------
-# GCP Secret Manager - GitHub App credentials
+# GCP Secret Manager - github.tools.sap App credentials
 # ------------------------------------------------------------------------------
 
-# Secret shell for the doc-collector GitHub App private key.
+# Secret shell for the doc-collector github.tools.sap App private key.
 # The actual PEM value is uploaded manually after app registration.
-resource "google_secret_manager_secret" "doc_collector_github_app_private_key" {
+resource "google_secret_manager_secret" "doc_collector_internal_app_private_key" {
   project   = var.gcp_project_id
-  secret_id = var.doc_collector_gcp_secret_name_github_app_private_key
+  secret_id = var.doc_collector_gcp_secret_name_internal_app_private_key
 
   replication {
     auto {}
@@ -80,11 +98,11 @@ resource "google_secret_manager_secret" "doc_collector_github_app_private_key" {
   }
 }
 
-# Secret shell for the doc-collector GitHub App ID.
+# Secret shell for the doc-collector github.tools.sap App ID.
 # The value is set manually after app registration.
-resource "google_secret_manager_secret" "doc_collector_github_app_id" {
+resource "google_secret_manager_secret" "doc_collector_internal_app_id" {
   project   = var.gcp_project_id
-  secret_id = var.doc_collector_gcp_secret_name_github_app_id
+  secret_id = var.doc_collector_gcp_secret_name_internal_app_id
 
   replication {
     auto {}
@@ -101,23 +119,87 @@ resource "google_secret_manager_secret" "doc_collector_github_app_id" {
 }
 
 # ------------------------------------------------------------------------------
-# IAM Permissions - GitHub App (new)
+# GCP Secret Manager - github.com App credentials
 # ------------------------------------------------------------------------------
 
-resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_app_private_key_reader" {
+# Secret shell for the doc-collector github.com App private key.
+# The actual PEM value is uploaded manually after app registration.
+resource "google_secret_manager_secret" "doc_collector_public_app_private_key" {
+  project   = var.gcp_project_id
+  secret_id = var.doc_collector_gcp_secret_name_public_app_private_key
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-credential"
+    tool            = "doc-collector"
+    github-instance = "public"
+    owner           = "neighbors"
+    component       = "reusable-workflow"
+    entity          = "doc-collector-app"
+  }
+}
+
+# Secret shell for the doc-collector github.com App ID.
+# The value is set manually after app registration.
+resource "google_secret_manager_secret" "doc_collector_public_app_id" {
+  project   = var.gcp_project_id
+  secret_id = var.doc_collector_gcp_secret_name_public_app_id
+
+  replication {
+    auto {}
+  }
+
+  labels = {
+    type            = "github-app-credential"
+    tool            = "doc-collector"
+    github-instance = "public"
+    owner           = "neighbors"
+    component       = "reusable-workflow"
+    entity          = "doc-collector-app"
+  }
+}
+
+# ------------------------------------------------------------------------------
+# IAM Permissions - github.tools.sap App
+# ------------------------------------------------------------------------------
+
+resource "google_secret_manager_secret_iam_member" "doc_collector_internal_app_private_key_reader" {
   for_each  = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.doc_collector_github_app_private_key.secret_id
+  secret_id = google_secret_manager_secret.doc_collector_internal_app_private_key.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
 }
 
-resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_public_token_reader" {
+resource "google_secret_manager_secret_iam_member" "doc_collector_internal_public_token_reader" {
   for_each  = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
+}
+
+# ------------------------------------------------------------------------------
+# IAM Permissions - github.com App
+# ------------------------------------------------------------------------------
+
+resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_private_key_reader" {
+  for_each  = toset(local.doc_collector_supported_event)
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.doc_collector_public_app_private_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.doc_collector_public_reusable_workflow_ref}"
+}
+
+resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_id_reader" {
+  for_each  = toset(local.doc_collector_supported_event)
+  project   = var.gcp_project_id
+  secret_id = google_secret_manager_secret.doc_collector_public_app_id.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principalSet://iam.googleapis.com/${module.gh_com_kyma_project_workload_identity_federation.pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_project.id}:reusable_workflow_ref:${var.doc_collector_public_reusable_workflow_ref}"
 }
 
 # ------------------------------------------------------------------------------
@@ -152,5 +234,5 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_reusable_workflow_ref}"
+  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
 }
