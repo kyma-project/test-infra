@@ -174,7 +174,7 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_internal_app_p
   member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
 }
 
-resource "google_secret_manager_secret_iam_member" "doc_collector_internal_public_token_reader" {
+resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_public_token_reader" {
   for_each  = toset(local.doc_collector_supported_event)
   project   = var.gcp_project_id
   secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
