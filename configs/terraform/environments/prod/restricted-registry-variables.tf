@@ -32,6 +32,14 @@ variable "kyma_restricted_images_prod" {
     cleanup_policy_dry_run     = false
     cleanup_policies = [
       {
+        id     = "keep-tests-images"
+        action = "KEEP"
+        condition = {
+          tag_state    = "TAGGED"
+          tag_prefixes = ["IB-TESTS"]
+        }
+      },
+      {
         id     = "delete-untagged"
         action = "DELETE"
         condition = {
@@ -75,6 +83,14 @@ variable "kyma_restricted_images_dev" {
     type                       = "development"
     cleanup_policy_dry_run     = false
     cleanup_policies = [
+      {
+        id     = "keep-tests-images"
+        action = "KEEP"
+        condition = {
+          tag_state    = "TAGGED"
+          tag_prefixes = ["IB-TESTS"]
+        }
+      },
       {
         id     = "delete-untagged"
         action = "DELETE"
