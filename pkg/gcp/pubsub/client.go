@@ -9,7 +9,6 @@ import (
 	"path"
 
 	"cloud.google.com/go/pubsub/v2"
-	"github.com/google/go-github/v90/github"
 	"github.com/kyma-project/test-infra/pkg/logging"
 	"google.golang.org/api/option"
 )
@@ -90,7 +89,7 @@ func GetJobID(jobURL *string) (*string, error) {
 		return nil, fmt.Errorf("failed parse test URL, error: %w", err)
 	}
 	jobID := path.Base(parsedJobURL.Path)
-	return github.Ptr(jobID), nil
+	return &jobID, nil
 }
 
 // publishPubSubMessage construct pubsub message and publish to pubsub topic.
@@ -111,7 +110,7 @@ func (c *Client) publishPubSubMessage(ctx context.Context, message interface{}, 
 	if err != nil {
 		return nil, fmt.Errorf("failed publishing to topic %s, error: %w", topicName, err)
 	}
-	return github.Ptr(publishedID), nil
+	return &publishedID, nil
 }
 
 // PublishMessage will send message to the topicName. Message must be anything possible to marshal to json.
