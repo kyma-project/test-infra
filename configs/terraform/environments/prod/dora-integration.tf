@@ -90,6 +90,7 @@ resource "google_secret_manager_secret" "dora_integration_githubcom_app_id" {
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "dora-integration-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -108,6 +109,7 @@ resource "google_secret_manager_secret" "dora_integration_githubcom_app_private_
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "dora-integration-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -162,6 +164,7 @@ resource "google_secret_manager_secret" "dora_integration_githubtoolssap_app_id"
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "dora-integration-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -180,6 +183,7 @@ resource "google_secret_manager_secret" "dora_integration_githubtoolssap_app_pri
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "dora-integration-app"
+    managed-by      = "terraform"
   }
 }
 

@@ -89,6 +89,7 @@ resource "google_secret_manager_secret" "doc_collector_internal_app_private_key"
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "doc-collector-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -109,6 +110,7 @@ resource "google_secret_manager_secret" "doc_collector_internal_app_id" {
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "doc-collector-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -133,6 +135,7 @@ resource "google_secret_manager_secret" "doc_collector_public_app_private_key" {
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "doc-collector-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -153,6 +156,7 @@ resource "google_secret_manager_secret" "doc_collector_public_app_id" {
     owner           = "neighbors"
     component       = "reusable-workflow"
     entity          = "doc-collector-app"
+    managed-by      = "terraform"
   }
 }
 
@@ -228,6 +232,7 @@ resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
     github-instance = "internal"
     owner           = "neighbors"
     component       = "github-workflow"
+    managed-by      = "terraform"
   }
 }
 

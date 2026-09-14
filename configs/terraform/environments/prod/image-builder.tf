@@ -143,6 +143,7 @@ resource "google_secret_manager_secret" "image_builder_sa_key_restricted_markets
     environment = "restricted-markets"
     owner       = "neighbors"
     component   = "oci-image-builder"
+    managed-by  = "terraform"
   }
 }
 
@@ -157,10 +158,11 @@ resource "google_secret_manager_secret" "image_builder_azure_sp" {
   }
 
   labels = {
-    type      = "azure-sp-credential"
-    tool      = "image-builder"
-    owner     = "neighbors"
-    component = "oci-image-builder"
+    type       = "azure-sp-credential"
+    tool       = "image-builder"
+    owner      = "neighbors"
+    component  = "oci-image-builder"
+    managed-by = "terraform"
   }
 }
 
@@ -179,10 +181,11 @@ resource "google_secret_manager_secret" "oci_image_builder_azure_pipeline_sa" {
   }
 
   labels = {
-    type      = "service-account-key"
-    tool      = "image-builder"
-    owner     = "neighbors"
-    component = "oci-image-builder"
+    type       = "service-account-key"
+    tool       = "image-builder"
+    owner      = "neighbors"
+    component  = "oci-image-builder"
+    managed-by = "terraform"
   }
 }
 
@@ -205,6 +208,7 @@ resource "google_secret_manager_secret" "oci_image_builder_sa_key_restricted_mar
     environment = "restricted-markets"
     owner       = "neighbors"
     component   = "oci-image-builder"
+    managed-by  = "terraform"
   }
 }
 
@@ -222,11 +226,12 @@ resource "google_secret_manager_secret" "oci_image_builder_signify_prod" {
   }
 
   labels = {
-    type      = "signify"
-    tool      = "image-builder"
-    owner     = "neighbors"
-    component = "oci-image-builder"
-    usage     = "image-builder"
+    type       = "signify"
+    tool       = "image-builder"
+    owner      = "neighbors"
+    component  = "oci-image-builder"
+    usage      = "image-builder"
+    managed-by = "terraform"
   }
 
   lifecycle {
@@ -251,6 +256,7 @@ resource "google_secret_manager_secret" "sap_github_prow_sa_token" {
     type            = "github-token"
     github-instance = "internal"
     owner           = "neighbors"
+    managed-by      = "terraform"
   }
 }
 
