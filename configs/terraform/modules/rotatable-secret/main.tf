@@ -15,7 +15,8 @@ resource "google_secret_manager_secret" "secret" {
   }
 
   labels = merge(var.labels, {
-    type = "service-account"
+    type       = "service-account"
+    managed-by = "terraform"
   })
 
   lifecycle {

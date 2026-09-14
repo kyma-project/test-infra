@@ -35,4 +35,8 @@ resource "google_secret_manager_secret" "kyma_bot_public_github_token" {
   replication {
     auto {}
   }
+
+  labels = {
+    managed-by = "terraform"
+  }
 }

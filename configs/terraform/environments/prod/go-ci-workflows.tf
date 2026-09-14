@@ -60,6 +60,7 @@ resource "google_secret_manager_secret" "test_infra_private_repo_access_internal
     tool            = "test-infra-private-repo-access"
     entity          = "github-app"
     github-instance = "internal"
+    managed-by      = "terraform"
   }
 }
 
@@ -77,6 +78,7 @@ resource "google_secret_manager_secret" "test_infra_private_repo_access_internal
     tool            = "test-infra-private-repo-access"
     entity          = "github-app"
     github-instance = "internal"
+    managed-by      = "terraform"
   }
 }
 
