@@ -7,7 +7,7 @@
 # Resources managed:
 # - GCP Secret Manager secrets for GitHub App credentials
 # - IAM permissions for accessing secrets via Workload Identity Federation
-# - GitHub Actions organization variables exposing the GCP secret names to the workflow
+# - GitHub Actions repository variables exposing the GCP secret names to the workflow
 #
 # The workflow runs in kyma/product-kyma-runtime repository and uses
 # WIF to authenticate and access secrets from GCP Secret Manager.
@@ -60,28 +60,34 @@ variable "doc_collector_internal_reusable_workflow_ref" {
   description = "GitHub reference for the reusable workflow on github.tools.sap used by the documentation collector"
 }
 
-variable "doc_collector_gcp_secret_name_public_app_id_github_organization_variable" {
+variable "doc_collector_caller_repository_names" {
+  type        = list(string)
+  default     = ["product-kyma-runtime"]
+  description = "Repository names on internal GitHub Enterprise (github.tools.sap) that call the reusable documentation collector workflow and where the GCP secret name variables are exposed"
+}
+
+variable "doc_collector_gcp_secret_name_public_app_id_github_repository_variable" {
   type        = string
   default     = "DOC_COLLECTOR_GITHUBCOM_APP_ID_GCP_SECRET_NAME"
-  description = "GitHub Actions organization variable name that holds the GCP secret name for the doc-collector github.com App ID"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the doc-collector github.com App ID"
 }
 
-variable "doc_collector_gcp_secret_name_public_app_private_key_github_organization_variable" {
+variable "doc_collector_gcp_secret_name_public_app_private_key_github_repository_variable" {
   type        = string
   default     = "DOC_COLLECTOR_GITHUBCOM_APP_PRIVATE_KEY_GCP_SECRET_NAME"
-  description = "GitHub Actions organization variable name that holds the GCP secret name for the doc-collector github.com App private key"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the doc-collector github.com App private key"
 }
 
-variable "doc_collector_gcp_secret_name_internal_app_id_github_organization_variable" {
+variable "doc_collector_gcp_secret_name_internal_app_id_github_repository_variable" {
   type        = string
   default     = "DOC_COLLECTOR_GITHUBTOOLSSAP_APP_ID_GCP_SECRET_NAME"
-  description = "GitHub Actions organization variable name that holds the GCP secret name for the doc-collector github.tools.sap App ID"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the doc-collector github.tools.sap App ID"
 }
 
-variable "doc_collector_gcp_secret_name_internal_app_private_key_github_organization_variable" {
+variable "doc_collector_gcp_secret_name_internal_app_private_key_github_repository_variable" {
   type        = string
   default     = "DOC_COLLECTOR_GITHUBTOOLSSAP_APP_PRIVATE_KEY_GCP_SECRET_NAME"
-  description = "GitHub Actions organization variable name that holds the GCP secret name for the doc-collector github.tools.sap App private key"
+  description = "GitHub Actions repository variable name that holds the GCP secret name for the doc-collector github.tools.sap App private key"
 }
 
 # ------------------------------------------------------------------------------
@@ -270,37 +276,42 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workf
 }
 
 # ------------------------------------------------------------------------------
-# GitHub Actions Organization Variables (internal GitHub Enterprise)
+# GitHub Actions Repository Variables (internal GitHub Enterprise)
 # ------------------------------------------------------------------------------
-# Expose the GCP Secret Manager secret names as organization-level variables on
-# the internal GitHub org (visibility = "all") so the reusable documentation
-# collector workflow can resolve the doc-collector GitHub App credentials from
-# any caller repository. The secret values themselves are populated by hand.
+# Expose the GCP Secret Manager secret names as repository-level variables on
+# each caller repository so the reusable documentation collector workflow can
+# resolve the doc-collector GitHub App credentials at runtime. Add repositories
+# to var.doc_collector_caller_repository_names to enable additional callers.
+# The secret values themselves are populated by hand.
 
-resource "github_actions_organization_variable" "doc_collector_public_app_id_gcp_secret_name" {
+resource "github_actions_variable" "doc_collector_public_app_id_secret_name" {
+  for_each      = toset(var.doc_collector_caller_repository_names)
   provider      = github.internal_github
-  visibility    = "all"
-  variable_name = var.doc_collector_gcp_secret_name_public_app_id_github_organization_variable
+  repository    = each.value
+  variable_name = var.doc_collector_gcp_secret_name_public_app_id_github_repository_variable
   value         = google_secret_manager_secret.doc_collector_public_app_id.secret_id
 }
 
-resource "github_actions_organization_variable" "doc_collector_public_app_private_key_gcp_secret_name" {
+resource "github_actions_variable" "doc_collector_public_app_private_key_secret_name" {
+  for_each      = toset(var.doc_collector_caller_repository_names)
   provider      = github.internal_github
-  visibility    = "all"
-  variable_name = var.doc_collector_gcp_secret_name_public_app_private_key_github_organization_variable
+  repository    = each.value
+  variable_name = var.doc_collector_gcp_secret_name_public_app_private_key_github_repository_variable
   value         = google_secret_manager_secret.doc_collector_public_app_private_key.secret_id
 }
 
-resource "github_actions_organization_variable" "doc_collector_internal_app_id_gcp_secret_name" {
+resource "github_actions_variable" "doc_collector_internal_app_id_secret_name" {
+  for_each      = toset(var.doc_collector_caller_repository_names)
   provider      = github.internal_github
-  visibility    = "all"
-  variable_name = var.doc_collector_gcp_secret_name_internal_app_id_github_organization_variable
+  repository    = each.value
+  variable_name = var.doc_collector_gcp_secret_name_internal_app_id_github_repository_variable
   value         = google_secret_manager_secret.doc_collector_internal_app_id.secret_id
 }
 
-resource "github_actions_organization_variable" "doc_collector_internal_app_private_key_gcp_secret_name" {
+resource "github_actions_variable" "doc_collector_internal_app_private_key_secret_name" {
+  for_each      = toset(var.doc_collector_caller_repository_names)
   provider      = github.internal_github
-  visibility    = "all"
-  variable_name = var.doc_collector_gcp_secret_name_internal_app_private_key_github_organization_variable
+  repository    = each.value
+  variable_name = var.doc_collector_gcp_secret_name_internal_app_private_key_github_repository_variable
   value         = google_secret_manager_secret.doc_collector_internal_app_private_key.secret_id
 }
