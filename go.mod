@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.27.0
+go 1.27.1
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0
@@ -11,12 +11,12 @@ require (
 	github.com/avast/retry-go/v5 v5.0.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/cloudevents/sdk-go/v2 v2.16.2
-	github.com/coreos/go-oidc/v3 v3.20.0
-	github.com/go-jose/go-jose/v4 v4.1.4
-	github.com/google/go-containerregistry v0.22.0
-	github.com/google/go-github/v90 v90.0.0
+	github.com/coreos/go-oidc/v3 v3.21.0
+	github.com/go-jose/go-jose/v4 v4.1.5
+	github.com/google/go-containerregistry v0.22.1
+	github.com/google/go-github/v92 v92.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/onsi/ginkgo/v2 v2.32.1
+	github.com/onsi/ginkgo/v2 v2.32.2
 	github.com/onsi/gomega v1.43.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.10.2
@@ -25,7 +25,7 @@ require (
 	github.tools.sap/kyma/neighbors-contracts/go/logging/v2 v2.0.0
 	go.opentelemetry.io/otel/trace v1.46.0
 	go.uber.org/zap v1.28.0
-	google.golang.org/api v0.296.0
+	google.golang.org/api v0.298.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.37.0
@@ -46,7 +46,6 @@ require (
 	github.com/bombsimon/logrusr/v4 v4.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cjwagner/httpcache v0.0.0-20230907212505-d4841bbad466 // indirect
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/docker/cli v29.7.2+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.4 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -76,7 +75,6 @@ require (
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.67.4 // indirect

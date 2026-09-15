@@ -319,6 +319,7 @@ resource "google_secret_manager_secret" "terraform_executor_internal_github_app_
     tool            = "iac"
     github-instance = "internal"
     owner           = "neighbors"
+    managed-by      = "terraform"
   }
 }
 
@@ -349,6 +350,7 @@ resource "google_secret_manager_secret" "terraform_planner_internal_github_app_i
     tool            = "iac"
     github-instance = "internal"
     owner           = "neighbors"
+    managed-by      = "terraform"
   }
 }
 
