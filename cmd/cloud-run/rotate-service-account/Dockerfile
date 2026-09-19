@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /rotateserviceaccount -ldflags="-s -w" ./cmd/cloud-run/rotate-service-account
 
-FROM europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.1
+FROM europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.2
 
 COPY --from=builder /rotateserviceaccount /rotateserviceaccount
 RUN apk add --no-cache ca-certificates && \
