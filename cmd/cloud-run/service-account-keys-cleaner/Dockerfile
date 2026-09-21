@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /serviceaccountkeyscleaner -ldflags="-s -w" ./cmd/cloud-run/service-account-keys-cleaner
 
-FROM europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.1
+FROM europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.2
 
 COPY --from=builder /serviceaccountkeyscleaner /serviceaccountkeyscleaner
 RUN apk add --no-cache ca-certificates && \
