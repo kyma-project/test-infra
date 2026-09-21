@@ -232,50 +232,6 @@ resource "google_secret_manager_secret_iam_member" "doc_collector_public_app_id_
 }
 
 # ------------------------------------------------------------------------------
-# TODO: remove after GitHub App auth is validated in production
-# ------------------------------------------------------------------------------
-
-resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_public_token_reader" {
-  for_each  = toset(local.doc_collector_supported_event)
-  project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.kyma_bot_public_github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
-}
-
-variable "doc_collector_gcp_secret_name_internal_github_token" {
-  type        = string
-  default     = "technical-writers-docsync-workflow-gh-tools-neighbors-token"
-  description = "GCP Secret Manager secret name for internal GitHub token used by documentation collector"
-}
-
-resource "google_secret_manager_secret" "doc_collector_internal_github_token" {
-  project   = var.gcp_project_id
-  secret_id = var.doc_collector_gcp_secret_name_internal_github_token
-
-  replication {
-    auto {}
-  }
-
-  labels = {
-    type            = "github-token"
-    tool            = "doc-collector"
-    github-instance = "internal"
-    owner           = "neighbors"
-    component       = "github-workflow"
-    managed-by      = "terraform"
-  }
-}
-
-resource "google_secret_manager_secret_iam_member" "doc_collector_reusable_workflow_internal_token_reader" {
-  for_each  = toset(local.doc_collector_supported_event)
-  project   = var.gcp_project_id
-  secret_id = google_secret_manager_secret.doc_collector_internal_github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "principalSet://iam.googleapis.com/${local.internal_github_wif_pool_name}/attribute.reusable_workflow_run/event_name:${each.value}:repository_owner_id:${data.github_organization.kyma_internal.id}:reusable_workflow_ref:${var.doc_collector_internal_reusable_workflow_ref}"
-}
-
-# ------------------------------------------------------------------------------
 # GitHub Actions Repository Variables (internal GitHub Enterprise)
 # ------------------------------------------------------------------------------
 # Expose the GCP Secret Manager secret names as repository-level variables on
