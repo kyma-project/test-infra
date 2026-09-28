@@ -3,8 +3,8 @@ module github.com/kyma-project/test-infra
 go 1.27.1
 
 require (
-	cloud.google.com/go/compute/metadata v0.9.1
-	cloud.google.com/go/logging v1.19.1
+	cloud.google.com/go/compute/metadata v0.10.0
+	cloud.google.com/go/logging v1.20.0
 	cloud.google.com/go/pubsub/v2 v2.7.0
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.23.1
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.14.1
@@ -17,7 +17,7 @@ require (
 	github.com/google/go-github/v92 v92.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/onsi/ginkgo/v2 v2.33.0
-	github.com/onsi/gomega v1.43.1
+	github.com/onsi/gomega v1.44.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.10.2
 	github.com/spf13/cobra v1.10.2
@@ -28,7 +28,7 @@ require (
 	google.golang.org/api v0.299.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.37.0
+	k8s.io/apimachinery v0.37.1
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/prow v0.0.0-20251223160831-f0341d7b5660
 )
