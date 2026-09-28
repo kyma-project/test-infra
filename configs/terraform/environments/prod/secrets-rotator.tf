@@ -1,168 +1,55 @@
-# -------------------------------------------------------------------------------
-# State migration — google_project_iam_binding (authoritative) replaced by
-# google_project_iam_member (additive) for the PubSub service agent.
-# The binding is removed from state without destruction; the new member resource
-# re-grants the same permission additively so there is no access interruption.
-# Safe to remove this block after the first successful apply.
-# -------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Secrets Rotator — migration to tooling-infra
+# -----------------------------------------------------------------------------
+# The secrets-rotator applications (signify-secret-rotator, service-account-keys
+# rotator + cleaner) and their shared infrastructure have been migrated to the
+# internal github.tools.sap/kyma/tooling-infra central root, which manages the
+# sap-kyma-prow project going forward.
+#
+# Removal strategy (single-owner rule — a resource is managed by exactly one
+# Terraform state at a time):
+#
+#   * Resources that hold non-recoverable data or have many dependents are
+#     RELEASED FROM STATE ONLY here (removed { destroy = false }), so they stay
+#     alive and are then IMPORTED by tooling-infra:
+#       - google_pubsub_topic.secrets_rotator_dead_letter
+#       - google_pubsub_subscription.secrets-rotator-dead-letter
+#       - google_storage_bucket.secret-rotator-dead-letters-bucket
+#         (force_destroy = true, holds archived dead-letter messages)
+#
+#   * Recreatable resources (config only, no data) are simply deleted from the
+#     configuration so Terraform DESTROYS them; tooling-infra recreates them:
+#       - google_service_account.secrets-rotator (orchestration SA — dropped;
+#         each migrated app module now owns its own service account)
+#       - google_storage_bucket_iam_member.dead-letter-bucket-access
+#       - google_monitoring_alert_policy.dead-letter-alert
+#       - module.service_account_keys_rotator
+#       - module.service_account_keys_cleaner
+#       - module.signify_secret_rotator
+#
+# The kyma-signify-prod secret is NOT touched — it is owned by the image-builder
+# service (see image-builder.tf) and stays in this state.
+#
+# These removed{} blocks are safe to delete after the first successful apply.
+# -----------------------------------------------------------------------------
 
 removed {
-  from = module.service_account_keys_rotator.google_project_iam_binding.pubsub_project_token_creator
-  lifecycle { destroy = false }
-}
-
-resource "google_pubsub_topic" "secrets_rotator_dead_letter" {
-  name = format("%s-%s", var.secrets_rotator_name, "dead-letter")
-
-  labels = {
-    application = var.secrets_rotator_name
-  }
-
-  message_retention_duration = "86600s"
-}
-
-resource "google_service_account" "secrets-rotator" {
-  account_id   = "secrets-rotator"
-  display_name = "secrets-rotator"
-  description  = "Identity of the secrets rotator application"
-}
-
-data "google_pubsub_topic" "secret-manager-notifications-topic" {
-  name = var.secret_manager_notifications_topic
-}
-
-module "service_account_keys_rotator" {
-  source = "../../modules/rotate-service-account"
-
-  application_name = var.secrets_rotator_name
-  service_name     = var.service_account_keys_rotator_service_name
-
-  region                                             = var.gcp_region
-  service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
-  service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
-  service_account_keys_rotator_image                 = var.service_account_keys_rotator_image
-  cloud_run_service_listen_port                      = var.secrets_rotator_cloud_run_listen_port
-  secret_manager_notifications_topic                 = var.secret_manager_notifications_topic
-  secrets_rotator_sa_email                           = google_service_account.secrets-rotator.email
-}
-
-output "service_account_keys_rotator" {
-  value = module.service_account_keys_rotator
-}
-
-module "service_account_keys_cleaner" {
-  source = "../../modules/service-account-keys-cleaner"
-
-  application_name = var.secrets_rotator_name
-  service_name     = var.service_account_keys_cleaner_service_name
-
-  region                                     = var.gcp_region
-  scheduler_region                           = var.gcp_scheduler_region
-  service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
-  service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
-  cloud_run_service_listen_port              = var.secrets_rotator_cloud_run_listen_port
-  scheduler_name                             = var.service_account_keys_cleaner_service_name
-  secrets_rotator_sa_email                   = google_service_account.secrets-rotator.email
-  scheduler_cron_schedule                    = var.service_account_keys_cleaner_scheduler_cron_schedule
-  service_account_key_latest_version_min_age = var.service_account_key_latest_version_min_age
-}
-
-output "service_account_keys_cleaner" {
-  value = module.service_account_keys_cleaner
-}
-
-# -------------------------------------------------------------------------------
-# Import — signify-rotator project-level IAM bindings created before IaC support.
-# Safe to remove after the first successful apply.
-# -------------------------------------------------------------------------------
-
-import {
-  id = "sap-kyma-prow roles/logging.logWriter serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
-  to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_log_writer
-}
-
-import {
-  id = "sap-kyma-prow roles/errorreporting.writer serviceAccount:signify-rotator@sap-kyma-prow.iam.gserviceaccount.com"
-  to = module.signify_secret_rotator.google_project_iam_member.signify_secret_rotator_error_reporting_writer
-}
-
-module "signify_secret_rotator" {
-  source = "../../modules/signify-secret-rotator"
-
-  application_name = var.secrets_rotator_name
-  service_name     = var.signify_secret_rotator_service_name
-
-  region                                       = var.gcp_region
-  signify_secret_rotator_account_id            = var.signify_secret_rotator_account_id
-  signify_secret_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
-  signify_secret_rotator_image                 = var.signify_secret_rotator_image
-  cloud_run_service_listen_port                = var.secrets_rotator_cloud_run_listen_port
-  secret_manager_notifications_topic           = var.secret_manager_notifications_topic
-  secrets_rotator_sa_email                     = google_service_account.secrets-rotator.email
-  signify_secret_id                            = google_secret_manager_secret.oci_image_builder_signify_prod.secret_id
-}
-
-### dead letter monitoring ###
-
-resource "google_pubsub_subscription" "secrets-rotator-dead-letter" {
-  name  = format("%s-dead-letter", var.secrets_rotator_name)
-  topic = google_pubsub_topic.secrets_rotator_dead_letter.id
-
-  expiration_policy {
-    # Disable expiration
-    # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription#expiration_policy-1
-    ttl = ""
-  }
-  message_retention_duration = "864000s" // 10 days
-
-  retry_policy {
-    minimum_backoff = "1s" // fast start, so the incident is closable ASAP
-    maximum_backoff = "600s"
-  }
-
-  cloud_storage_config {
-    bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
-  }
-  depends_on = [google_storage_bucket_iam_member.dead-letter-bucket-access]
-}
-
-resource "google_storage_bucket" "secret-rotator-dead-letters-bucket" {
-  name          = format("%s-dead-letters", var.secrets_rotator_name)
-  location      = "EU"
-  force_destroy = true
-
-  uniform_bucket_level_access = true
-}
-
-resource "google_storage_bucket_iam_member" "dead-letter-bucket-access" {
-  bucket = google_storage_bucket.secret-rotator-dead-letters-bucket.name
-  for_each = toset(["roles/storage.legacyBucketReader", "roles/storage.objectCreator"])
-  role   = each.value
-  member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
-}
-
-resource "google_monitoring_alert_policy" "dead-letter-alert" {
-  display_name = format("%s dead letter monitoring", var.secrets_rotator_name)
-  combiner     = "OR"
-  severity = "ERROR"
-  notification_channels = [
-    data.google_monitoring_notification_channel.kyma_tooling.name,
-  ]
-  conditions {
-    display_name = format("%s dead letter message count", var.secrets_rotator_name)
-    condition_threshold {
-        filter     = "resource.type = \"pubsub_subscription\" AND (resource.labels.subscription_id = \"${google_pubsub_subscription.secrets-rotator-dead-letter.name}\" AND resource.labels.project_id = \"${var.gcp_project_id}\") AND metric.type = \"pubsub.googleapis.com/subscription/dead_letter_message_count\""
-      duration   = "60s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period   = "60s"
-        per_series_aligner = "ALIGN_COUNT"
-      }
-    }
+  from = google_pubsub_topic.secrets_rotator_dead_letter
+  lifecycle {
+    destroy = false
   }
 }
 
-# Reference to an existing notification channel
-data "google_monitoring_notification_channel" "kyma_tooling" {
-  display_name = "Alerting channel for Kyma tooling components."
+removed {
+  from = google_pubsub_subscription.secrets-rotator-dead-letter
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = google_storage_bucket.secret-rotator-dead-letters-bucket
+  lifecycle {
+    destroy = false
+  }
 }
