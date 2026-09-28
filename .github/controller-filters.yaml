@@ -29,23 +29,6 @@ build-oidc-token-verifier-filter:
   - "go.mod"
   - "go.sum"
 
-build-rotate-service-account-keys-filter:
-  - "cmd/cloud-run/rotate-service-account/*.go"
-  - "cmd/cloud-run/rotate-service-account/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
-build-service-account-keys-cleaner-filter:
-  - "cmd/cloud-run/service-account-keys-cleaner/*.go"
-  - "cmd/cloud-run/service-account-keys-cleaner/Dockerfile"
-  - "pkg/**"
-  - "go.mod"
-  - "go.sum"
-
-build-signify-secret-rotator-filter:
-  - "cmd/cloud-run/signifysecretrotator/**"
-
 build-slack-message-sender-filter:
   - "cmd/cloud-run/slackmessagesender/**"
 
