@@ -28,6 +28,8 @@ jobs:
           - input-name: platforms
             input-value: "linux/amd64;evil"
           - input-name: platforms
+            input-value: "linux/amd64,linux/arm64;evil"
+          - input-name: platforms
             input-value: "windows/amd64"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -55,10 +57,22 @@ jobs:
 
   validate-valid-inputs:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: newline-separated platforms
+            platforms: |
+              linux/amd64
+              linux/arm64
+          - name: comma-separated platforms
+            platforms: "linux/amd64,linux/arm64"
+          - name: single platform comma style
+            platforms: "linux/amd64"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Action must accept valid inputs and complete dry-run
+      - name: Action must accept valid inputs (${{ matrix.name }})
         uses: ./.github/actions/image-builder
         with:
           oidc-token: dummy
@@ -73,6 +87,4 @@ jobs:
           tags: |
             1.2.3
             PR-123
-          platforms: |
-            linux/amd64
-            linux/arm64
+          platforms: ${{ matrix.platforms }}
