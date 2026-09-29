@@ -118,7 +118,7 @@ runs:
     - env:
         INPUT_PLATFORMS: ${{ inputs.platforms }}
       run: |
-        readarray -t lines <<< "$INPUT_PLATFORMS"
+        readarray -t lines < <(tr ',' '\n' <<< "$INPUT_PLATFORMS")
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
