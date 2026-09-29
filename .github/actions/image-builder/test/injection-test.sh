@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Validates that the three input-preparation steps in action.yml are not vulnerable
-# to shell injection. Each step is replicated verbatim here so the test stays in
-# sync with the action and catches regressions if someone reverts the env: fix.
+# Regression tests for the input validation in action.yml prepare-* steps.
 #
-# Strategy: start a nc listener on localhost, run each step with a payload that
-# would curl that listener if injection were possible, then assert:
-#   1. the step exits non-zero (validation rejected the input), and
-#   2. nc received no data (the curl never fired).
+# Each step is replicated verbatim so this test stays in sync with the action
+# and catches any revert of the env: isolation or allowlist validation.
+#
+# Injection tests start a nc listener and confirm that malicious payloads are
+# blocked by the allowlist before the shell ever evaluates them.
+#
+# Requires: bash 4+, nc (netcat)
 
 set -euo pipefail
 
@@ -20,7 +21,6 @@ start_listener() {
   rm -f /tmp/nc-out
   nc -l -p "$PORT" > /tmp/nc-out 2>/dev/null &
   NC_PID=$!
-  # give nc a moment to bind
   sleep 0.2
 }
 
@@ -42,26 +42,24 @@ assert_no_connection() {
   fi
 }
 
-assert_exit_nonzero() {
-  local label="$1"
-  local exit_code="$2"
-  if [[ "$exit_code" -ne 0 ]]; then
-    echo "PASS [$label]: step rejected input (exit $exit_code)"
+assert_exit_zero() {
+  local label="$1" exit_code="$2"
+  if [[ "$exit_code" -eq 0 ]]; then
+    echo "PASS [$label]: accepted valid input"
     PASS=$((PASS + 1))
   else
-    echo "FAIL [$label]: step accepted malicious input (exit 0)"
+    echo "FAIL [$label]: rejected valid input (exit $exit_code)"
     FAIL=$((FAIL + 1))
   fi
 }
 
-assert_exit_zero() {
-  local label="$1"
-  local exit_code="$2"
-  if [[ "$exit_code" -eq 0 ]]; then
-    echo "PASS [$label]: step accepted valid input (exit 0)"
+assert_exit_nonzero() {
+  local label="$1" exit_code="$2"
+  if [[ "$exit_code" -ne 0 ]]; then
+    echo "PASS [$label]: rejected invalid input (exit $exit_code)"
     PASS=$((PASS + 1))
   else
-    echo "FAIL [$label]: step rejected valid input (exit $exit_code)"
+    echo "FAIL [$label]: accepted invalid input (exit 0)"
     FAIL=$((FAIL + 1))
   fi
 }
@@ -70,8 +68,8 @@ assert_exit_zero() {
 
 run_prepare_build_args() {
   local input="$1"
-  local output
-  OUTPUT_FILE=$(mktemp)
+  local out
+  out=$(mktemp)
   INPUT_BUILD_ARGS="$input" bash -c '
     readarray -t lines <<< "$INPUT_BUILD_ARGS"
     result=""
@@ -82,16 +80,17 @@ run_prepare_build_args() {
         result+=" --build-arg=$entry"
       fi
     done
-    echo "build-args=$result" >> "$OUTPUT_FILE"
-  ' OUTPUT_FILE="$OUTPUT_FILE"
-  local exit_code=$?
-  rm -f "$OUTPUT_FILE"
-  return $exit_code
+    echo "build-args=$result" >> "$OUT_FILE"
+  ' OUT_FILE="$out"
+  local ec=$?
+  rm -f "$out"
+  return $ec
 }
 
 run_prepare_tags() {
   local input="$1"
-  OUTPUT_FILE=$(mktemp)
+  local out
+  out=$(mktemp)
   INPUT_TAGS="$input" bash -c '
     readarray -t lines <<< "$INPUT_TAGS"
     result=""
@@ -102,16 +101,17 @@ run_prepare_tags() {
         result+=" --tag=$entry"
       fi
     done
-    echo "tags=$result" >> "$OUTPUT_FILE"
-  ' OUTPUT_FILE="$OUTPUT_FILE"
-  local exit_code=$?
-  rm -f "$OUTPUT_FILE"
-  return $exit_code
+    echo "tags=$result" >> "$OUT_FILE"
+  ' OUT_FILE="$out"
+  local ec=$?
+  rm -f "$out"
+  return $ec
 }
 
 run_prepare_platforms() {
   local input="$1"
-  OUTPUT_FILE=$(mktemp)
+  local out
+  out=$(mktemp)
   INPUT_PLATFORMS="$input" bash -c '
     readarray -t lines <<< "$INPUT_PLATFORMS"
     result=""
@@ -122,109 +122,123 @@ run_prepare_platforms() {
         result+=" --platform=$entry"
       fi
     done
-    echo "platforms=$result" >> "$OUTPUT_FILE"
-  ' OUTPUT_FILE="$OUTPUT_FILE"
-  local exit_code=$?
-  rm -f "$OUTPUT_FILE"
-  return $exit_code
+    echo "platforms=$result" >> "$OUT_FILE"
+  ' OUT_FILE="$out"
+  local ec=$?
+  rm -f "$out"
+  return $ec
 }
 
-# ── injection payloads ────────────────────────────────────────────────────────
-
-# Payload that would fire curl if the here-string is broken out of
-CURL_PAYLOAD='$(curl -s http://localhost:'"$PORT"'/pwned)'
-BACKTICK_PAYLOAD='`curl -s http://localhost:'"$PORT"'/pwned`'
-HEREDOC_BREAK_PAYLOAD="foo\"
-\$(curl -s http://localhost:$PORT/pwned)
-\""
-
-# ── tests: build-args ─────────────────────────────────────────────────────────
+# ── build-args ────────────────────────────────────────────────────────────────
 
 echo ""
-echo "=== build-args ==="
+echo "=== build-args: valid inputs ==="
 
-# valid inputs
 run_prepare_build_args "VERSION=1.2.3"
-assert_exit_zero "build-args valid single" $?
+assert_exit_zero "single arg" $?
 
 run_prepare_build_args "$(printf 'VERSION=1.2.3\nREGISTRY=europe-docker.pkg.dev/kyma/prod')"
-assert_exit_zero "build-args valid multi-line" $?
+assert_exit_zero "multi-line args" $?
 
-# injection: curl payload as value
+run_prepare_build_args ""
+assert_exit_zero "empty input" $?
+
+echo ""
+echo "=== build-args: injection payloads (must be blocked before execution) ==="
+
 start_listener
-run_prepare_build_args "KEY=$CURL_PAYLOAD" || true
-EC=$?
-assert_no_connection "build-args curl-payload no-exec"
-assert_exit_nonzero "build-args curl-payload rejected" $EC
+run_prepare_build_args "KEY=$(printf '$(curl -s http://localhost:%s/pwned)' "$PORT")" || true; ec=$?
+assert_no_connection "build-args subshell \$()"
+assert_exit_nonzero "build-args subshell \$() rejected" $ec
 
-# injection: semicolon
+start_listener
+run_prepare_build_args "KEY=$(printf '`curl -s http://localhost:%s/pwned`' "$PORT")" || true; ec=$?
+assert_no_connection "build-args backtick"
+assert_exit_nonzero "build-args backtick rejected" $ec
+
 run_prepare_build_args "KEY=val;rm -rf /tmp/pwned" || true
 assert_exit_nonzero "build-args semicolon rejected" $?
 
-# injection: backtick
-start_listener
-run_prepare_build_args "KEY=$BACKTICK_PAYLOAD" || true
-EC=$?
-assert_no_connection "build-args backtick no-exec"
-assert_exit_nonzero "build-args backtick rejected" $EC
+run_prepare_build_args "KEY=val|evil" || true
+assert_exit_nonzero "build-args pipe rejected" $?
 
-# ── tests: tags ──────────────────────────────────────────────────────────────
+run_prepare_build_args "KEY=val space" || true
+assert_exit_nonzero "build-args space rejected" $?
+
+# ── tags ──────────────────────────────────────────────────────────────────────
 
 echo ""
-echo "=== tags ==="
+echo "=== tags: valid inputs ==="
 
 run_prepare_tags "1.2.3"
-assert_exit_zero "tags valid semver" $?
+assert_exit_zero "semver tag" $?
 
 run_prepare_tags "PR-123"
-assert_exit_zero "tags valid PR tag" $?
+assert_exit_zero "PR tag" $?
 
 run_prepare_tags "name=1.2.3"
-assert_exit_zero "tags valid name=value" $?
+assert_exit_zero "name=value tag" $?
 
 run_prepare_tags "$(printf '1.2.3\nlatest')"
-assert_exit_zero "tags valid multi-line" $?
+assert_exit_zero "multi-line tags" $?
 
-start_listener
-run_prepare_tags "$CURL_PAYLOAD" || true
-EC=$?
-assert_no_connection "tags curl-payload no-exec"
-assert_exit_nonzero "tags curl-payload rejected" $EC
-
-start_listener
-run_prepare_tags "\";exit 1" || true
-EC=$?
-assert_no_connection "tags quote-break no-exec"
-assert_exit_nonzero "tags quote-break rejected" $EC
-
-# ── tests: platforms ─────────────────────────────────────────────────────────
+run_prepare_tags ""
+assert_exit_zero "empty input" $?
 
 echo ""
-echo "=== platforms ==="
+echo "=== tags: injection payloads (must be blocked before execution) ==="
+
+start_listener
+run_prepare_tags "$(printf '$(curl -s http://localhost:%s/pwned)' "$PORT")" || true; ec=$?
+assert_no_connection "tags subshell \$()"
+assert_exit_nonzero "tags subshell \$() rejected" $ec
+
+start_listener
+run_prepare_tags "$(printf '`curl -s http://localhost:%s/pwned`' "$PORT")" || true; ec=$?
+assert_no_connection "tags backtick"
+assert_exit_nonzero "tags backtick rejected" $ec
+
+run_prepare_tags '";exit 1' || true
+assert_exit_nonzero "tags quote-break rejected" $?
+
+run_prepare_tags "tag;evil" || true
+assert_exit_nonzero "tags semicolon rejected" $?
+
+run_prepare_tags "tag|evil" || true
+assert_exit_nonzero "tags pipe rejected" $?
+
+# ── platforms ─────────────────────────────────────────────────────────────────
+
+echo ""
+echo "=== platforms: valid inputs ==="
 
 run_prepare_platforms "linux/amd64"
-assert_exit_zero "platforms valid amd64" $?
+assert_exit_zero "linux/amd64" $?
 
 run_prepare_platforms "linux/arm64"
-assert_exit_zero "platforms valid arm64" $?
+assert_exit_zero "linux/arm64" $?
 
 run_prepare_platforms "$(printf 'linux/amd64\nlinux/arm64')"
-assert_exit_zero "platforms valid multi-line" $?
+assert_exit_zero "multi-line platforms" $?
+
+echo ""
+echo "=== platforms: injection payloads (must be blocked before execution) ==="
+
+start_listener
+run_prepare_platforms "$(printf '$(curl -s http://localhost:%s/pwned)' "$PORT")" || true; ec=$?
+assert_no_connection "platforms subshell \$()"
+assert_exit_nonzero "platforms subshell \$() rejected" $ec
+
+start_listener
+run_prepare_platforms "$(printf 'linux/amd64;curl -s http://localhost:%s/pwned' "$PORT")" || true; ec=$?
+assert_no_connection "platforms semicolon injection"
+assert_exit_nonzero "platforms semicolon rejected" $ec
 
 run_prepare_platforms "windows/amd64" || true
-assert_exit_nonzero "platforms windows rejected" $?
+assert_exit_nonzero "platforms unknown os rejected" $?
 
-start_listener
-run_prepare_platforms "linux/amd64;curl -s http://localhost:$PORT/pwned" || true
-EC=$?
-assert_no_connection "platforms injection no-exec"
-assert_exit_nonzero "platforms injection rejected" $EC
-
-start_listener
-run_prepare_platforms "$CURL_PAYLOAD" || true
-EC=$?
-assert_no_connection "platforms curl-payload no-exec"
-assert_exit_nonzero "platforms curl-payload rejected" $EC
+run_prepare_platforms "linux/amd64 extra" || true
+assert_exit_nonzero "platforms trailing content rejected" $?
 
 # ── summary ───────────────────────────────────────────────────────────────────
 
