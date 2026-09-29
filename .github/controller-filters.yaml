@@ -68,5 +68,9 @@ code-checks-python-filter:
   - "**/*.py"
   - "**/requirements.txt"
 
+pull-validate-image-builder-action-filter:
+  - ".github/actions/image-builder/**"
+  - ".github/workflows/pull-validate-image-builder-action.yaml"
+
 lint-markdown-links-pr-filter:
   - "**/*"

@@ -41,6 +41,11 @@ jobs:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'code-checks-python-filter') }}
 
+  pull-validate-image-builder-action:
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-image-builder-action.yaml@main
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-image-builder-action-filter') }}
+
   lint-markdown-links-pr:
     uses: kyma-project/test-infra/.github/workflows/lint-markdown-links-pr.yml@main
     needs: detect-changed-files

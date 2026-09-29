@@ -1,0 +1,14 @@
+name: pull-validate-image-builder-action
+
+on:
+  # Triggered by workflow-controller-pull-requests-unprivileged
+  workflow_call:
+
+jobs:
+  injection-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Run injection tests
+        run: bash .github/actions/image-builder/test/injection-test.sh
