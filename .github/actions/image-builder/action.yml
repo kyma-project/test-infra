@@ -122,7 +122,7 @@ runs:
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            [[ "$entry" =~ ^linux/(amd64|arm64|arm/v7|s390x|ppc64le)$ ]] || \
+            [[ "$entry" =~ ^linux/(amd64|arm64)$ ]] || \
               { echo "::error::Invalid platform: $entry"; exit 1; }
             result+=" --platform=$entry"
           fi
