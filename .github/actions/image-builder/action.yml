@@ -83,39 +83,51 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: |
-        readarray -t lines <<<"${{ inputs.build-args }}"
+    - env:
+        INPUT_BUILD_ARGS: ${{ inputs.build-args }}
+      run: |
+        readarray -t lines <<< "$INPUT_BUILD_ARGS"
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --build-arg=\"$entry\""
+            [[ "$entry" =~ ^[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9._:/@+\-]*$ ]] || \
+              { echo "::error::Invalid build-arg: $entry"; exit 1; }
+            result+=" --build-arg=$entry"
           fi
         done
-        echo "build-args=$result" >> $GITHUB_OUTPUT
+        echo "build-args=$result" >> "$GITHUB_OUTPUT"
       id: prepare-build-args
       shell: bash
 
-    - run: |
-        readarray -t lines <<<"${{ inputs.tags }}"
+    - env:
+        INPUT_TAGS: ${{ inputs.tags }}
+      run: |
+        readarray -t lines <<< "$INPUT_TAGS"
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --tag=\"$entry\""
+            [[ "$entry" =~ ^[A-Za-z0-9._:/@+\-]+(=[A-Za-z0-9._:/@+\-]+)?$ ]] || \
+              { echo "::error::Invalid tag: $entry"; exit 1; }
+            result+=" --tag=$entry"
           fi
         done
-        echo "tags=$result" >> $GITHUB_OUTPUT
+        echo "tags=$result" >> "$GITHUB_OUTPUT"
       id: prepare-tags
       shell: bash
 
-    - run: |
-        readarray -t lines <<<"${{ inputs.platforms }}"
+    - env:
+        INPUT_PLATFORMS: ${{ inputs.platforms }}
+      run: |
+        readarray -t lines <<< "$INPUT_PLATFORMS"
         result=""
         for entry in "${lines[@]}"; do
           if [[ -n "$entry" ]]; then
-            result+=" --platform=\"$entry\""
+            [[ "$entry" =~ ^linux/(amd64|arm64|arm/v7|s390x|ppc64le)$ ]] || \
+              { echo "::error::Invalid platform: $entry"; exit 1; }
+            result+=" --platform=$entry"
           fi
         done
-        echo "platforms=$result" >> $GITHUB_OUTPUT
+        echo "platforms=$result" >> "$GITHUB_OUTPUT"
       id: prepare-platforms
       shell: bash
 
