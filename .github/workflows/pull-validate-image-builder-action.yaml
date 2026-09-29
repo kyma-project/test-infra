@@ -26,11 +26,11 @@ jobs:
             input-value: "tag space"
           # platforms
           - input-name: platforms
-            input-value: "windows/amd64"
+            input-value: "invalid/platform"
           - input-name: platforms
-            input-value: "linux/amd64,windows/amd64"
+            input-value: "linux/amd64,invalid/platform"
           - input-name: platforms
-            input-value: "linux/amd64,linux/arm64,linux/s390x"
+            input-value: "linux/amd64,linux/arm64,invalid/platform"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
