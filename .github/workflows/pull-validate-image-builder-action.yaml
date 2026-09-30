@@ -1,0 +1,90 @@
+name: pull-validate-image-builder-action
+
+on:
+  workflow_call:
+
+jobs:
+  validate-invalid-inputs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # build-args
+          - input-name: build-args
+            input-value: "KEY=val;evil"
+          - input-name: build-args
+            input-value: "KEY=val|evil"
+          - input-name: build-args
+            input-value: "KEY=val space"
+          # tags
+          - input-name: tags
+            input-value: "tag;evil"
+          - input-name: tags
+            input-value: "tag|evil"
+          - input-name: tags
+            input-value: "tag space"
+          # platforms
+          - input-name: platforms
+            input-value: "invalid/platform"
+          - input-name: platforms
+            input-value: "linux/amd64,invalid/platform"
+          - input-name: platforms
+            input-value: "linux/amd64,linux/arm64,invalid/platform"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Action must reject invalid ${{ matrix.input-name }}
+        id: action
+        uses: ./.github/actions/image-builder
+        continue-on-error: true
+        with:
+          oidc-token: dummy
+          azure-client-id: dummy
+          azure-client-secret: dummy
+          azure-tenant-id: dummy
+          image-name: test/image
+          dry-run: "true"
+          build-args: ${{ matrix.input-name == 'build-args' && matrix.input-value || '' }}
+          tags: ${{ matrix.input-name == 'tags' && matrix.input-value || '' }}
+          platforms: ${{ matrix.input-name == 'platforms' && matrix.input-value || 'linux/amd64' }}
+
+      - name: Assert action rejected the input
+        if: steps.action.outcome == 'success'
+        run: |
+          echo "::error::Action accepted invalid ${{ matrix.input-name }}: ${{ matrix.input-value }}"
+          exit 1
+
+  validate-valid-inputs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: newline-separated platforms
+            platforms: |
+              linux/amd64
+              linux/arm64
+          - name: comma-separated platforms
+            platforms: "linux/amd64,linux/arm64"
+          - name: single platform comma style
+            platforms: "linux/amd64"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Action must accept valid inputs (${{ matrix.name }})
+        uses: ./.github/actions/image-builder
+        with:
+          oidc-token: dummy
+          azure-client-id: dummy
+          azure-client-secret: dummy
+          azure-tenant-id: dummy
+          image-name: test/image
+          dry-run: "true"
+          build-args: |
+            VERSION=1.2.3
+            REGISTRY=europe-docker.pkg.dev/kyma/prod
+          tags: |
+            1.2.3
+            PR-123
+          platforms: ${{ matrix.platforms }}
