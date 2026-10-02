@@ -1,11 +1,10 @@
 name: kyma-project.io/tooling/test-infra-public
 team: kyma/neighbors
 images:
-  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260921114017"
-  - "europe-docker.pkg.dev/kyma-project/prod/external/library/alpine:3.24.2"
+  - "europe-docker.pkg.dev/kyma-project/prod/dashboard-token-proxy:v20260930073052"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.27.1-alpine3.24"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/python:3.14.6-alpine3.23"
-  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260921114016"
-  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260921114017"
+  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20260930073052"
+  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20260925075025"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260907072605"
   - "gcr.io/distroless/static:latest"
