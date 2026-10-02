@@ -6,6 +6,12 @@ on:
 jobs:
   validate-invalid-inputs:
     runs-on: ubuntu-latest
+    environment:
+      name: prod
+      deployment: false
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +38,10 @@ jobs:
           - input-name: platforms
             input-value: "linux/amd64,linux/arm64,invalid/platform"
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Checkout PR code
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+        with:
+          allow-unsafe-pr-checkout: "true"
 
       - name: Action must reject invalid ${{ matrix.input-name }}
         id: action
@@ -57,6 +66,12 @@ jobs:
 
   validate-valid-inputs:
     runs-on: ubuntu-latest
+    environment:
+      name: prod
+      deployment: false
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -70,7 +85,10 @@ jobs:
           - name: single platform comma style
             platforms: "linux/amd64"
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Checkout PR code
+        uses: kyma-project/test-infra/.github/actions/checkout@main
+        with:
+          allow-unsafe-pr-checkout: "true"
 
       - name: Action must accept valid inputs (${{ matrix.name }})
         uses: ./.github/actions/image-builder
