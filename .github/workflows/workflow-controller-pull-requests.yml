@@ -57,3 +57,11 @@ jobs:
       pull-requests: read
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-unit-test-go-filter') }}
+
+  pull-validate-image-builder-action:
+    uses: kyma-project/test-infra/.github/workflows/pull-validate-image-builder-action.yaml@main
+    permissions:
+      contents: read
+      id-token: write
+    needs: detect-changed-files
+    if: ${{ contains(needs.detect-changed-files.outputs.files, 'pull-validate-image-builder-action-filter') }}
