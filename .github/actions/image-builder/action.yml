@@ -2,7 +2,7 @@ name: image-builder
 description: "Triggers the run of the ADO image builder backend"
 inputs:
   oidc-token:
-    description: The JWT token to authenticate against Azure DevOps image builder backend
+    description: The JWT token to  authenticate against Azure DevOps image builder backend
     required: true
   azure-client-id:
     description: Azure AD Application (client) ID to authenticate against Azure DevOps API
