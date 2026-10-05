@@ -89,6 +89,7 @@ runs:
         readarray -t lines <<< "$INPUT_BUILD_ARGS"
         result=""
         for entry in "${lines[@]}"; do
+          entry="${entry//$'\r'/}"
           if [[ -n "$entry" ]]; then
             [[ "$entry" =~ ^[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9._:/@+\-]*$ ]] || \
               { echo "::error::Invalid build-arg: $entry"; exit 1; }
@@ -105,6 +106,7 @@ runs:
         readarray -t lines <<< "$INPUT_TAGS"
         result=""
         for entry in "${lines[@]}"; do
+          entry="${entry//$'\r'/}"
           if [[ -n "$entry" ]]; then
             [[ "$entry" =~ ^[A-Za-z0-9._:/@+\-]+(=[A-Za-z0-9._:/@+\-]+)?$ ]] || \
               { echo "::error::Invalid tag: $entry"; exit 1; }
@@ -121,6 +123,7 @@ runs:
         readarray -t lines < <(tr ',' '\n' <<< "$INPUT_PLATFORMS")
         result=""
         for entry in "${lines[@]}"; do
+          entry="${entry//$'\r'/}"
           if [[ -n "$entry" ]]; then
             [[ "$entry" =~ ^linux/(amd64|arm64)$ ]] || \
               { echo "::error::Invalid platform: $entry"; exit 1; }
