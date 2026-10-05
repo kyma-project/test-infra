@@ -308,6 +308,7 @@ func buildInADO(o options) error {
 	} else {
 		dryRunPipelineRunResult := pipelines.RunResult("Succeeded")
 		pipelineRunResult = &dryRunPipelineRunResult
+		buildReport = &imagebuilder.BuildReport{}
 	}
 
 	// TODO: Setting github outputs should happen outside buildInADO function.
