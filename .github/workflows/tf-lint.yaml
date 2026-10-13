@@ -20,8 +20,18 @@ jobs:
       - name: Checkout PR code
         uses: kyma-project/test-infra/.github/actions/checkout@main
 
+      - name: Cache TFLint plugins
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ runner.os }}-${{ hashFiles('.tflint.hcl') }}
+
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6
+        with:
+          # Pin the version so the action does not query github.com's
+          # releases/latest endpoint on every run.
+          tflint_version: v0.64.0
 
       - name: Init TFLint
         run: tflint --init
