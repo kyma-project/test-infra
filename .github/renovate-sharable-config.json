@@ -18,8 +18,8 @@
     "**/node_modules/**",
     "**/bower_components/**",
     "**/test*/**",
-    "**/cypress/**"
-
+    "**/cypress/**",
+    "component-config.yaml"
   ],
 
   "packageRules": [
@@ -50,7 +50,18 @@
     },
     {
       "matchDatasources": ["docker"],
-      "groupName": "docker images"
+      "groupName": "docker deps"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDatasources": ["docker"],
+      "matchCurrentVersion": "!/v?\\d+\\.\\d+\\.\\d+/",
+      "versioning": "loose",
+      "groupName": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
+      "commitMessageExtra": "",
+      "separateMajorMinor": false,
+      "maxMajorIncrement": 0
     },
     {
       "matchManagers": ["regex"],
@@ -63,14 +74,26 @@
       "separateMajorMinor": false
     },
     {
-    "matchManagers": ["regex"],
-    "matchDatasources": ["docker"],
-    "versioning": "loose",
-    "groupName": "custom docker images (loose) to {{newVersion}}",
-    "commitMessageTopic": "custom docker images (loose) to {{newVersion}}",
-    "commitMessageExtra": "",
-    "separateMajorMinor": false,
-    "maxMajorIncrement": 0
+      "matchDepNames": [
+        "europe-docker.pkg.dev/kyma-project/prod/external/library/**"
+      ],
+      "commitMessageTopic": "external/library image"
+    },
+    {
+      "matchDepNames": ["europe-docker.pkg.dev/kyma-project/prod/external/library/golang"],
+      "groupName": "All Go dependencies"
+    },
+    {
+      "matchDepNames": [
+        "europe-docker.pkg.dev/kyma-project/prod/**"
+      ],
+      "commitMessageTopic": "prod image"
+    },
+    {
+      "matchDepNames": [
+        "europe-docker.pkg.dev/kyma-project/dev/**"
+      ],
+      "commitMessageTopic": "dev image"
     }
   ],
 
@@ -86,6 +109,18 @@
       ],
       "matchStrings": [
         "(?<depName>[a-z0-9.-]*\\.[a-z0-9.-]*(?:/[a-z0-9._-]+)+):(?<currentValue>(?:v?\\d[\\w.-]*))"
+      ],
+      "depNameTemplate": "{{depName}}",
+      "currentValueTemplate": "{{currentValue}}",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/external-images\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "source:\\s*\"(?<depName>[^:\"]+):(?<currentValue>[^\"]+)\""
       ],
       "depNameTemplate": "{{depName}}",
       "currentValueTemplate": "{{currentValue}}",

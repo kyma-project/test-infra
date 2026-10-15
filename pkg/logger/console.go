@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.tools.sap/kyma/neighbors-contracts/go/logging"
+	"github.tools.sap/kyma/neighbors-contracts/go/logging/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -19,7 +20,7 @@ type ConsoleLogger struct {
 	*zap.SugaredLogger
 }
 
-// Compile-time check: ConsoleLogger must implement LoggerInterface.
+// Compile-time check.
 var _ logging.LoggerInterface = (*ConsoleLogger)(nil)
 
 // With creates a child logger with additional context fields.
@@ -27,6 +28,12 @@ func (l *ConsoleLogger) With(args ...interface{}) logging.LoggerInterface {
 	return &ConsoleLogger{
 		SugaredLogger: l.SugaredLogger.With(args...),
 	}
+}
+
+// WithSpanContext creates a child logger enriched with GCP Cloud Logging
+// trace correlation fields extracted from the span context in ctx.
+func (l *ConsoleLogger) WithSpanContext(ctx context.Context, projectID string) (logging.LoggerInterface, error) {
+	return withSpanContext(ctx, l, projectID)
 }
 
 // newConsoleLogger creates a GCP-compatible console logger.

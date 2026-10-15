@@ -21,29 +21,14 @@ jobs:
       name: prod
       deployment: false
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: kyma-project/test-infra
           ref: main
-      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
         id: pathFilters
         with:
           filters: .github/controller-filters.yaml
-
-  build-rotate-service-account-keys:
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-rotate-service-account-keys-filter') }}
-    needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-rotate-service-account-keys.yml@main
-  
-  build-service-account-keys-cleaner-filter:
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-service-account-keys-cleaner-filter') }}
-    needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-service-account-keys-cleaner.yml@main
-
-  build-signify-secret-rotator:
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-signify-secret-rotator-filter') }}
-    needs: detect-changed-files
-    uses: kyma-project/test-infra/.github/workflows/build-signify-secret-rotator.yml@main
 
   build-slack-message-sender:
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-slack-message-sender-filter') }}

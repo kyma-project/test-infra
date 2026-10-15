@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/google/go-github/v88/github"
+	"github.com/google/go-github/v92/github"
 	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
@@ -42,6 +42,14 @@ type Config struct {
 	// The value can be a go-template string or literal tag value string.
 	// See tags.Tag struct for more information and available fields
 	DefaultPRTag tags.Tag `yaml:"default-pr-tag" json:"default-pr-tag"`
+	// Default Tag template used for images build on merge group event.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	DefaultMergeGroupTag tags.Tag `yaml:"default-merge-group-tag" json:"default-merge-group-tag"`
+	// AdditionalPRTag is an extra tag added for pull request builds alongside DefaultPRTag.
+	// The value can be a go-template string or literal tag value string.
+	// See tags.Tag struct for more information and available fields
+	AdditionalPRTag tags.Tag `yaml:"additional-pr-tag" json:"additional-pr-tag"`
 	// LogFormat defines the format docker buildx logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`

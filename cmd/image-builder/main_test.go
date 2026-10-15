@@ -832,6 +832,35 @@ func Test_parseTags(t *testing.T) {
 				{Name: "base64testtemplate", Value: "test-5"},
 				expectedDefaultPRTag(prGitState.PullRequestNumber)},
 		},
+		{
+			name: "parse PR default tag and additional PR tag from config",
+			options: options{
+				gitState: prGitState,
+				Config: Config{
+					DefaultPRTag:     defaultPRTag,
+					DefaultCommitTag: defaultCommitTag,
+					AdditionalPRTag:  tags.Tag{Name: "semver_pr_tag", Value: "v{{ .PRNumber }}-PR", Validation: "^v[0-9]+-PR$"},
+				},
+				logger: logger,
+			},
+			expectedTags: []tags.Tag{
+				{Name: "semver_pr_tag", Value: "v5-PR", Validation: "^v[0-9]+-PR$"},
+				expectedDefaultPRTag(prGitState.PullRequestNumber),
+			},
+		},
+		{
+			name: "additional PR tag from config is not added for non-PR builds",
+			options: options{
+				gitState: commitGitState,
+				Config: Config{
+					DefaultPRTag:     defaultPRTag,
+					DefaultCommitTag: defaultCommitTag,
+					AdditionalPRTag:  tags.Tag{Name: "semver_pr_tag", Value: "v{{ .PRNumber }}-PR", Validation: "^v[0-9]+-PR$"},
+				},
+				logger: logger,
+			},
+			expectedTags: []tags.Tag{expectedDefaultCommitTag(commitGitState.BaseCommitSHA)},
+		},
 	}
 
 	for _, c := range tc {

@@ -200,6 +200,15 @@ func buildInADO(o options) error {
 		fmt.Println("Running in dry-run mode. Skipping authentication check.")
 	}
 
+	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 && len(o.AdditionalPRTag.Value) > 0 {
+		pr := fmt.Sprint(o.gitState.PullRequestNumber)
+		resolvedAdditionalTags, err := getTags(o.logger, pr, "", []tags.Tag{o.AdditionalPRTag})
+		if err != nil {
+			return fmt.Errorf("build in ADO failed, failed resolving additional PR tag: %w", err)
+		}
+		o.tags = append(o.tags, resolvedAdditionalTags...)
+	}
+
 	fmt.Println("Preparing ADO template parameters.")
 	// Preparing ADO pipeline parameters.
 	templateParameters, err := prepareADOTemplateParameters(o)
@@ -299,6 +308,7 @@ func buildInADO(o options) error {
 	} else {
 		dryRunPipelineRunResult := pipelines.RunResult("Succeeded")
 		pipelineRunResult = &dryRunPipelineRunResult
+		buildReport = &imagebuilder.BuildReport{}
 	}
 
 	// TODO: Setting github outputs should happen outside buildInADO function.
@@ -741,6 +751,14 @@ func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		pr = fmt.Sprint(o.gitState.PullRequestNumber)
 		logger.Debugw("Running for pull request event, PR number found", "pr-number", pr)
+		if len(o.AdditionalPRTag.Value) > 0 {
+			o.tags = append(o.tags, o.AdditionalPRTag)
+			logger.Debugw("additional PR tag appended", "tag", o.AdditionalPRTag.Value)
+		}
+	}
+	if o.gitState.JobType == "merge_group" && o.gitState.PullHeadCommitSHA != "" {
+		sha = o.gitState.PullHeadCommitSHA
+		logger.Debugw("running for merge_group event, pull head commit SHA found", "sha", sha)
 	}
 
 	// TODO (dekiel): Tags provided as base64 encoded string should be parsed and added to the tags list when parsing flags.
@@ -792,6 +810,10 @@ func parseTags(logger Logger, o options) ([]tags.Tag, error) {
 // The default tag is read from the provided 'options' struct.
 func getDefaultTag(logger Logger, o options) (tags.Tag, error) {
 	logger.Debugw("reading gitstate data")
+	if o.gitState.JobType == "merge_group" {
+		logger.Debugw("merge_group event, returning default merge group tag")
+		return o.DefaultMergeGroupTag, nil
+	}
 	if o.gitState.isPullRequest && o.gitState.PullRequestNumber > 0 {
 		logger.Debugw("pull request number provided, returning default pr tag")
 		return o.DefaultPRTag, nil

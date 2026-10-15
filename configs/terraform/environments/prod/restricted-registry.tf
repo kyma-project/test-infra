@@ -55,10 +55,11 @@ resource "google_secret_manager_secret" "chainguard_pull_token" {
   }
 
   labels = {
-    type      = "authentication-token"
-    tool      = "chainguard"
-    owner     = "neighbors"
-    component = "restricted-registry"
+    type       = "authentication-token"
+    tool       = "chainguard"
+    owner      = "neighbors"
+    component  = "restricted-registry"
+    managed-by = "terraform"
   }
 }
 
