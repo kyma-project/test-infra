@@ -30,11 +30,6 @@ jobs:
         with:
           filters: .github/controller-filters.yaml
 
-  build-dashboard-token-proxy:
-    needs: detect-changed-files
-    if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-dashboard-token-proxy-filter') }}
-    uses: kyma-project/test-infra/.github/workflows/build-dashboard-token-proxy.yml@main
-
   build-github-webhook-gateway:
     needs: detect-changed-files
     if: ${{ contains(needs.detect-changed-files.outputs.files, 'build-github-webhook-gateway-filter') }}
