@@ -3,7 +3,6 @@ module github.com/kyma-project/test-infra
 go 1.27.2
 
 require (
-	cloud.google.com/go/compute/metadata v0.10.0
 	cloud.google.com/go/logging v1.20.0
 	cloud.google.com/go/pubsub/v2 v2.7.0
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.23.3
@@ -14,7 +13,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/go-jose/go-jose/v4 v4.1.6
 	github.com/google/go-containerregistry v0.22.1
-	github.com/google/go-github/v92 v92.0.0
+	github.com/google/go-github/v93 v93.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/onsi/ginkgo/v2 v2.33.1
 	github.com/onsi/gomega v1.44.0
@@ -37,6 +36,7 @@ require (
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/auth v0.24.1-0.20261001053825-dbc26066f70a // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.3.0 // indirect
+	cloud.google.com/go/compute/metadata v0.10.0 // indirect
 	cloud.google.com/go/iam v1.12.0 // indirect
 	cloud.google.com/go/longrunning v1.2.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.13.0 // indirect
