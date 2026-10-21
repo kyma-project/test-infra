@@ -58,7 +58,4 @@ jobs:
           echo "password ${{ steps.app-token.outputs.token }}" >> ~/.netrc
           chmod 600 ~/.netrc
 
-      # https://github.com/golang/go/issues/75031
-      - name: Set toolchain version
-        run: go env -w GOTOOLCHAIN=go1.25.1+auto
       - run: go test -cover ./...
