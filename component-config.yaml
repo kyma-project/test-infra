@@ -3,8 +3,8 @@ team: kyma/neighbors
 images:
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/golang:1.27.3-alpine3.24"
   - "europe-docker.pkg.dev/kyma-project/prod/external/library/python:3.14.6-alpine3.23"
-  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20261026074532"
-  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20261026074533"
+  - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20261027082518"
+  - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20261027082518"
   - "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20261022002708"
   - "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20260930074048"
   - "gcr.io/distroless/static:latest"
