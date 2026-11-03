@@ -187,6 +187,5 @@ def issue_labeled() -> Response:
             return prepare_success_response()
 
         return prepare_error_response("Cannot parse pubsub data", log_fields)
-    # pylint: disable=broad-exception-caught
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         return prepare_error_response(str(err), log_fields)
