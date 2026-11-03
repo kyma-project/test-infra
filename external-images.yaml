@@ -1,6 +1,7 @@
 images:
   - source: "alpine@sha256:1b7232cda4ca3dc20b5d1247bdc9bfb631f2661d15d323bdd6fccc035ed1a9e7"
     tag: "3.24.3"
-  - source: "golang:1.27.3-alpine3.24"
+  - source: "golang@sha256:f2c872bcee949b7be9c490efd02b48a8a2fbf947cdf533f1c58525ec9d8170fd"
+    tag: "1.27.3-alpine3.24"
   - source: "python@sha256:02da11a8d221ca167aa07de20b3cd7104c1f01227f4b02b1fa13cf6517280a81"
     tag: "3.14.6-alpine3.23"
