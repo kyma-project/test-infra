@@ -6,5 +6,5 @@ images:
   - "europe-docker.pkg.dev/kyma-project/prod/github-webhook-gateway:v20261103075059"
   - "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20261103075112"
   - "europe-docker.pkg.dev/kyma-project/prod/image-syncer:v20261022002708"
-  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/old-slackmessagesender:v20261103074840"
+  - "europe-docker.pkg.dev/kyma-project/prod/test-infra/old-slackmessagesender:v20261103075109"
   - "gcr.io/distroless/static:latest"
