@@ -17,7 +17,7 @@ jobs:
     needs: generate-timestamp-tag
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
-      name: test-infra/slackmessagesender
+      name: test-infra/old-slackmessagesender
       dockerfile: cmd/cloud-run/slackmessagesender/Dockerfile
       context: .
       platforms: |
