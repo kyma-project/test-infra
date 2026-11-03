@@ -94,6 +94,13 @@
         "europe-docker.pkg.dev/kyma-project/dev/**"
       ],
       "commitMessageTopic": "dev image"
+    },
+    {
+      "description": "Mirror tags are immutable; refresh digests only with version upgrades.",
+      "matchFileNames": ["**/external-images.yaml", "**/external-images.yml"],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "enabled": false
     }
   ],
 
@@ -120,11 +127,13 @@
         "/external-images\\.ya?ml$/"
       ],
       "matchStrings": [
-        "source:\\s*\"(?<depName>[^:\"]+):(?<currentValue>[^\"]+)\""
+        "source:\\s*\"(?<depName>[^:@\"]+):(?<currentValue>[^@\"]+)\"",
+        "source:\\s*\"(?<depName>[^:@\"]+)@(?<currentDigest>sha256:[a-f0-9]{64})\"\\s+tag:\\s*\"(?<currentValue>[^\"]+)\""
       ],
       "depNameTemplate": "{{depName}}",
       "currentValueTemplate": "{{currentValue}}",
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ]
 }
