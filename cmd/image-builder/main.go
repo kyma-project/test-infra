@@ -164,6 +164,23 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	return templateParameters, nil
 }
 
+// redactSensitiveParams returns a copy of the parameters map with secret-bearing
+// values replaced by a "[REDACTED]" placeholder, safe for logging.
+func redactSensitiveParams(params adopipelines.OCIImageBuilderTemplateParams) map[string]string {
+	sensitiveKeys := map[string]bool{
+		"Authorization": true,
+	}
+	redacted := make(map[string]string, len(params))
+	for k, v := range params {
+		if sensitiveKeys[k] {
+			redacted[k] = "[REDACTED]"
+		} else {
+			redacted[k] = v
+		}
+	}
+	return redacted
+}
+
 // buildInADO is a function that triggers the Azure DevOps (ADO) pipeline to build an image.
 // It takes an options struct as an argument and returns an error.
 // The function fetches Azure AD Service Principal credentials from environment variables and validates they are present.
@@ -215,7 +232,7 @@ func buildInADO(o options) error {
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
 	}
-	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
+	fmt.Printf("Using TemplateParameters: %+v\n", redactSensitiveParams(templateParameters))
 
 	ctx := context.Background()
 
