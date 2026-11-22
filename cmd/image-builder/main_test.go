@@ -552,6 +552,46 @@ var _ = Describe("Image Builder", func() {
 			false,
 		),
 	)
+
+	DescribeTable("Test redactSensitiveParams",
+		func(buildParams func() pipelines.OCIImageBuilderTemplateParams, wantRedacted map[string]string) {
+			params := buildParams()
+			originalAuthorization := params["Authorization"]
+
+			got := redactSensitiveParams(params)
+
+			Expect(got).To(Equal(wantRedacted), "redacted parameters mismatch")
+			Expect(params["Authorization"]).To(Equal(originalAuthorization),
+				"original Authorization token must not be mutated, it is still needed for the ADO request")
+		},
+		Entry("Redacts the Authorization token and preserves other values",
+			func() pipelines.OCIImageBuilderTemplateParams {
+				params := pipelines.OCIImageBuilderTemplateParams{
+					"Name":    "image",
+					"JobType": "presubmit",
+				}
+				params.SetAuthorization("super-secret-oidc-token")
+				return params
+			},
+			map[string]string{
+				"Name":          "image",
+				"JobType":       "presubmit",
+				"Authorization": "[REDACTED]",
+			},
+		),
+		Entry("Returns an unchanged copy when no sensitive keys are present",
+			func() pipelines.OCIImageBuilderTemplateParams {
+				return pipelines.OCIImageBuilderTemplateParams{
+					"Name":    "image",
+					"JobType": "presubmit",
+				}
+			},
+			map[string]string{
+				"Name":    "image",
+				"JobType": "presubmit",
+			},
+		),
+	)
 })
 
 func Test_getTags(t *testing.T) {
