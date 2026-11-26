@@ -24,10 +24,10 @@ require (
 	github.tools.sap/kyma/neighbors-contracts/go/logging/v2 v2.0.0
 	go.opentelemetry.io/otel/trace v1.47.0
 	go.uber.org/zap v1.28.0
-	google.golang.org/api v0.315.0
+	google.golang.org/api v0.317.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20261012220534-4341edf3f941
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.37.2
+	k8s.io/apimachinery v0.37.3
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/prow v0.0.0-20251223160831-f0341d7b5660
 )
